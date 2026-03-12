@@ -884,7 +884,7 @@ const LaunchModal = ({ onClose }) => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Login failed");
       setMsg({ text:`✅ Welcome back${data.user?.name ? ", "+data.user.name : ""}! Redirecting...`, type:"success" });
-      setTimeout(() => { onClose(); window.location.reload(); = `${API.replace("/api","")}`; }, 1500);
+      setTimeout(() => { onClose(); window.location.reload(); }, 1500);
     } catch(e) { setMsg({text:e.message,type:"error"}); }
     setLoading(false);
   };
