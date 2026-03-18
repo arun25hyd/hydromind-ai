@@ -155,7 +155,10 @@
 <!-- BUILT-IN DOCUMENTS -->
 <section class="section section-dark" style="padding-top:1rem;">
   <div class="container">
-    <div class="eyebrow" style="margin-bottom:1rem;">Built-in Documents</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+      <div class="eyebrow">Built-in Documents</div>
+      <button id="kbUploadBtn" onclick="document.getElementById('adminKBPanel').scrollIntoView({behavior:'smooth'});document.getElementById('adminKBPanel').style.display='block';" style="display:none;background:rgba(200,165,80,.1);border:1px solid rgba(200,165,80,.3);border-radius:8px;color:var(--gold);font-family:'Space Mono',monospace;font-size:.72rem;padding:7px 16px;cursor:pointer;transition:.2s;" onmouseover="this.style.background='rgba(200,165,80,.2)'" onmouseout="this.style.background='rgba(200,165,80,.1)'">📎 Upload Document</button>
+    </div>
     <div style="display:flex;flex-direction:column;gap:1rem;">
 
       <div class="card" style="padding:1.25rem 1.5rem;">
@@ -223,25 +226,46 @@
 </section>
 
 <!-- ADMIN UPLOAD PANEL -->
-<section class="section section-dark" id="adminKBPanel" style="display:none;border-top:2px solid rgba(200,165,80,.2);padding-top:2rem;">
+<section class="section section-dark" id="adminKBPanel" style="display:none;border-top:2px solid rgba(200,165,80,.25);padding-top:2.5rem;padding-bottom:2.5rem;">
   <div class="container">
-    <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem;">
-      <div style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;background:rgba(200,165,80,.1);padding:4px 12px;border-radius:100px;border:1px solid rgba(200,165,80,.2);">⚙ Admin Panel</div>
-      <h3 style="margin:0;font-size:1.1rem;">Knowledge Base Manager</h3>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
 
-      <!-- ADD FORM -->
-      <div style="background:rgba(200,165,80,.03);border:1px solid rgba(200,165,80,.15);border-radius:14px;padding:1.5rem;">
-        <div style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem;">Add New Document</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
+    <!-- Header -->
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem;">
+      <div style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;background:rgba(200,165,80,.1);padding:4px 14px;border-radius:100px;border:1px solid rgba(200,165,80,.25);">⚙ Admin — Upload Document</div>
+      <h3 style="margin:0;font-size:1.1rem;color:var(--text1);">Add to Knowledge Base</h3>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:2rem;align-items:start;">
+
+      <!-- LEFT: Upload Form -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.75rem;">
+        
+        <!-- File drop zone -->
+        <div id="kbDropZone" onclick="document.getElementById('kbFile').click()"
+          style="border:2px dashed rgba(200,165,80,.3);border-radius:10px;padding:2rem;text-align:center;cursor:pointer;margin-bottom:1.25rem;transition:.2s;background:rgba(200,165,80,.03);"
+          onmouseover="this.style.borderColor='rgba(200,165,80,.6)';this.style.background='rgba(200,165,80,.06)'"
+          onmouseout="this.style.borderColor='rgba(200,165,80,.3)';this.style.background='rgba(200,165,80,.03)'">
+          <div style="font-size:2rem;margin-bottom:.5rem;">📄</div>
+          <div style="font-family:'Space Mono',monospace;font-size:.75rem;color:var(--gold);margin-bottom:.3rem;">Click to select PDF / DOCX</div>
+          <div style="font-size:.78rem;color:var(--text3);">or drag and drop here</div>
+          <input type="file" id="kbFile" accept=".pdf,.doc,.docx,.txt,.png,.jpg" style="display:none;" onchange="onFileChosen(this)">
+        </div>
+
+        <!-- File preview -->
+        <div id="kbFilePreview" style="display:none;background:rgba(200,165,80,.06);border:1px solid rgba(200,165,80,.2);border-radius:8px;padding:.6rem 1rem;margin-bottom:1rem;display:none;align-items:center;justify-content:space-between;">
+          <span id="kbFileInfo" style="font-size:.82rem;color:var(--gold);font-family:'Space Mono',monospace;"></span>
+          <button onclick="clearFile()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:1rem;padding:0 4px;">✕</button>
+        </div>
+
+        <!-- Form fields -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:.85rem;">
           <div>
-            <label class="form-label">KB Number</label>
-            <input type="text" id="kbNum" class="form-input" placeholder="e.g. KB05">
+            <label style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:.3rem;">KB Number</label>
+            <input id="kbNum" type="text" placeholder="e.g. KB05" style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:.55rem .8rem;color:var(--text1);font-size:.85rem;box-sizing:border-box;">
           </div>
           <div>
-            <label class="form-label">Category</label>
-            <select id="kbCat" class="form-input" style="cursor:pointer;">
+            <label style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:.3rem;">Category *</label>
+            <select id="kbCat" style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:.55rem .8rem;color:var(--text1);font-size:.85rem;box-sizing:border-box;">
               <option value="pump">Pump Documentation</option>
               <option value="motor">Motor Documentation</option>
               <option value="valve">Valve / DCV</option>
@@ -249,46 +273,41 @@
               <option value="hpu">HPU / Circuit Design</option>
               <option value="field">Offshore Field Case</option>
               <option value="electrical">Electrical / PLC</option>
-              <option value="fluid">Fluid &amp; Filtration</option>
+              <option value="fluid">Fluid & Filtration</option>
               <option value="technical">Technical</option>
             </select>
           </div>
         </div>
-        <div style="margin-bottom:.75rem;">
-          <label class="form-label">Document Title</label>
-          <input type="text" id="kbTitle" class="form-input" placeholder="e.g. Parker F11/F12 Motor — Service Manual">
+
+        <div style="margin-bottom:.85rem;">
+          <label style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:.3rem;">Document Title *</label>
+          <input id="kbTitle" type="text" placeholder="e.g. Rexroth A10VO Series — Variable Pump Manual" style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:.55rem .8rem;color:var(--text1);font-size:.85rem;box-sizing:border-box;">
         </div>
-        <div style="margin-bottom:.75rem;">
-          <label class="form-label">Description</label>
-          <textarea id="kbDesc" class="form-input" rows="3" style="resize:vertical;min-height:75px;line-height:1.6;" placeholder="Brief description of what this document covers..."></textarea>
+
+        <div style="margin-bottom:.85rem;">
+          <label style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:.3rem;">Description *</label>
+          <textarea id="kbDesc" rows="3" placeholder="Brief description of what this document covers..." style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:.55rem .8rem;color:var(--text1);font-size:.85rem;resize:vertical;box-sizing:border-box;font-family:inherit;"></textarea>
         </div>
-        <div style="margin-bottom:.75rem;">
-          <label class="form-label">Document URL (optional)</label>
-          <input type="text" id="kbUrl" class="form-input" placeholder="https://drive.google.com/...">
+
+        <div style="margin-bottom:1.25rem;">
+          <label style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:.3rem;">External URL (optional)</label>
+          <input id="kbUrl" type="url" placeholder="https://..." style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:.55rem .8rem;color:var(--text1);font-size:.85rem;box-sizing:border-box;">
         </div>
-        <div style="margin-bottom:1rem;">
-          <label class="form-label">📎 Attach File (PDF / Word / Image)</label>
-          <label for="kbFile" id="kbFileLabel" style="display:flex;align-items:center;gap:.65rem;cursor:pointer;background:var(--card);border:1.5px dashed rgba(200,165,80,.3);border-radius:8px;padding:.75rem 1rem;transition:.2s;" onmouseover="this.style.borderColor='rgba(200,165,80,.7)'" onmouseout="this.style.borderColor='rgba(200,165,80,.3)'">
-            <span style="font-size:1.4rem;">📎</span>
-            <span id="kbFileLabelText" style="font-size:.85rem;color:var(--text3);">Click to choose file...</span>
-            <input type="file" id="kbFile" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.txt,.xlsx,.xls" style="display:none;" onchange="onFileChosen(this)">
-          </label>
-          <div id="kbFilePreview" style="display:none;margin-top:.4rem;background:rgba(200,165,80,.06);border:1px solid rgba(200,165,80,.2);border-radius:6px;padding:.5rem .85rem;align-items:center;justify-content:space-between;">
-            <span id="kbFileInfo" style="font-size:.8rem;color:var(--gold);font-family:'Space Mono',monospace;"></span>
-            <button type="button" onclick="clearFile()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:.85rem;padding:2px 6px;">✕</button>
-          </div>
-        </div>
-        <div id="kbAddMsg" style="display:none;margin-bottom:.75rem;border-radius:8px;padding:.7rem 1rem;font-size:.85rem;"></div>
-        <div style="display:flex;gap:.6rem;">
-          <button type="button" onclick="addKBEntry()" class="btn-primary" style="padding:10px 24px;">+ Add to KB</button>
-          <button type="button" onclick="clearKBForm()" class="btn-outline" style="padding:10px 18px;">Clear</button>
-        </div>
+
+        <!-- Message area -->
+        <div id="kbAddMsg" style="display:none;margin-bottom:.75rem;"></div>
+
+        <button onclick="addKBEntry()"
+          style="width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#080c12;border:none;border-radius:9px;padding:.8rem;font-family:'Syne',sans-serif;font-weight:800;font-size:.95rem;cursor:pointer;transition:.2s;"
+          onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+          📎 Upload to Knowledge Base
+        </button>
       </div>
 
-      <!-- FULL DOCUMENT LIST -->
+      <!-- RIGHT: Current KB List -->
       <div>
-        <div style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem;">All KB Documents</div>
-        <div id="adminKBList" style="display:flex;flex-direction:column;gap:.4rem;max-height:520px;overflow-y:auto;"></div>
+        <div style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem;">Current Documents</div>
+        <div id="adminKBList" style="display:flex;flex-direction:column;gap:.4rem;max-height:480px;overflow-y:auto;"></div>
       </div>
 
     </div>
@@ -467,16 +486,25 @@ function checkAdminPanel(){
     var u=hmGetSession();
     if(u&&u.isAdmin){
       var p=document.getElementById('adminKBPanel'); if(p) p.style.display='block';
+      var btn=document.getElementById('kbUploadBtn'); if(btn) btn.style.display='inline-block';
       renderAdminList();
     }
   }
 }
 window.addEventListener('hm:login',function(e){
   var u=e.detail;
-  if(u&&u.isAdmin){ var p=document.getElementById('adminKBPanel'); if(p) p.style.display='block'; renderAdminList(); }
+  if(u&&u.isAdmin){
+    var p=document.getElementById('adminKBPanel'); if(p) p.style.display='block';
+    var btn=document.getElementById('kbUploadBtn'); if(btn) btn.style.display='inline-block';
+    renderAdminList();
+  }
 });
 document.addEventListener('DOMContentLoaded',function(){
-  renderDynamicKB(); updateKBCount(); setTimeout(checkAdminPanel,300);
+  renderDynamicKB(); updateKBCount();
+  // Try multiple times to catch admin session
+  setTimeout(checkAdminPanel,300);
+  setTimeout(checkAdminPanel,800);
+  setTimeout(checkAdminPanel,1500);
 });
 </script>
 </body>
