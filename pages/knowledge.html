@@ -1,29 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Pricing & Plans — HydroMind.AI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Knowledge Base — HydroMind.AI</title>
+<link rel="icon" href="../favicon.ico">
 <link rel="stylesheet" href="../css/style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Outfit:wght@300;400;500;600&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;500&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="circuit-bg"><svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="pbg" cx="50%" cy="50%" r="55%"><stop offset="0%" stop-color="#0d1220"/><stop offset="100%" stop-color="#080c12"/></radialGradient></defs><rect width="1400" height="900" fill="url(#pbg)"/><line class="c-trace" x1="0" y1="450" x2="300" y2="450" stroke="#c8a550" stroke-width=".5" opacity=".06" fill="none"/><line class="c-trace-r" x1="1400" y1="450" x2="1100" y2="450" stroke="#c8a550" stroke-width=".5" opacity=".06" fill="none"/></svg></div>
 
-<!-- LEFT SIDEBAR -->
-<div class="hm-left-sidebar" id="hmLeftSidebar">
-  <div class="hm-left-inner">
-    <div id="hmSidebarNoAuth">
-      <div style="margin-bottom:.75rem;">
-        <div class="hm-sidebar-label">Quick Links</div>
-        <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
-        <div class="hm-hist-item" onclick="location.href='system-design.html'"><span class="hm-hist-icon">&#9881;&#65039;</span><span class="hm-hist-text">System Design</span></div>
-        <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
-        <div class="hm-hist-item" onclick="location.href='news.html'"><span class="hm-hist-icon">&#128240;</span><span class="hm-hist-text">Industry News</span></div>
-        <div class="hm-hist-item" onclick="location.href='pricing.html'" style="background:rgba(200,165,80,.07);"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text" style="color:var(--gold);">Upgrade Plan</span></div>
+<div class="circuit-bg"><svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><g stroke="rgba(0,212,255,0.04)" stroke-width="1" fill="none"><line x1="0" y1="200" x2="1400" y2="200"/><line x1="0" y1="400" x2="1400" y2="400"/><line x1="0" y1="600" x2="1400" y2="600"/><line x1="200" y1="0" x2="200" y2="900"/><line x1="500" y1="0" x2="500" y2="900"/><line x1="800" y1="0" x2="800" y2="900"/><line x1="1100" y1="0" x2="1100" y2="900"/></g></svg></div>
+
+<nav class="navbar" id="navbar">
+  <div class="navbar-inner">
+    <a href="../index.html" class="hm-logo-wrap">
+      <div class="hm-logo-icon">
+        <div class="hm-logo-ring"></div>
+        <div class="hm-logo-h">H</div>
       </div>
-      <div style="font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.45rem;border-bottom:1px solid var(--border);margin-bottom:.5rem;">Sponsored</div>
-      <div style="background:rgba(200,165,80,.03);border:1px dashed rgba(200,165,80,.12);border-radius:6px;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;margin-bottom:.5rem;"><div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement</div>
-      <div style="text-align:center;"><a href="pricing.html" style="font-family:'Space Mono',monospace;font-size:.56rem;color:rgba(200,165,80,.38);text-transform:uppercase;text-decoration:none;">Advertise here &#8594;</a></div>
+      <div class="hm-logo-text">
+        <div class="hm-logo-name">HYDROMIND<span>.AI</span></div>
+        <div class="hm-logo-sub">Hydraulic Intelligence</div>
+      </div>
+    </a>
+        <div class="navbar-menu">
+      <a href="../index.html" class="navbar-link">Home</a>
+      <a href="advisor.html" class="navbar-link">AI Advisor</a>
+      <a href="system-design.html" class="navbar-link">&#9881; System Design</a>
+      <a href="knowledge.html" class="navbar-link">Knowledge Base</a>
+      <a href="news.html" class="navbar-link">News</a>
+      <a href="../index.html#electrical" class="navbar-link" style="color:#f5c842;">&#9889; Electrical</a>
+      <a href="../index.html#calculator" class="navbar-link">Calculator</a>
+      <a href="pricing.html" class="navbar-link">Pricing</a>
+      <a href="feedback.html" class="navbar-link">Feedback</a>
     </div>
+    <div class="navbar-cta" id="hmNavCta">
+      <button onclick="openAuthModal('login')" class="btn-outline" style="padding:8px 18px;font-size:.82rem;" id="hmNavLogin">Login</button>
+      <button onclick="openAuthModal('register')" class="btn-primary" style="padding:8px 18px;font-size:.82rem;" id="hmNavRegister">Register</button>
+      <div id="hmNavUser" style="display:none;align-items:center;gap:.5rem;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);border-radius:8px;padding:5px 10px;cursor:pointer;" onclick="doLogout()">
+        <div id="hmNavAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#0050aa);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;color:#fff;"></div>
+        <span id="hmNavName" style="font-size:.82rem;color:#e8f4ff;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+        <span id="hmNavPlan" style="font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:2px 8px;border-radius:100px;background:rgba(0,212,255,.1);color:var(--cyan);"></span>
+      </div>
+    </div>
+    <button class="navbar-toggle" id="navToggle"><span></span><span></span><span></span></button>
+  </div>
+  <div class="navbar-mobile" id="navMobile">
+    <a href="../index.html">Home</a>
+    <a href="../pages/advisor.html">AI Advisor</a>
+    <a href="../pages/system-design.html">&#9881; System Design</a>
+    <a href="../pages/knowledge.html">Knowledge Base</a>
+    <a href="../pages/news.html">News</a>
+    <a href="../pages/advisor.html">&#9889; Electrical</a>
+    <a href="../index.html#calculator">Calculator</a>
+    <a href="../pages/pricing.html">Pricing</a>
+    <a href="../pages/feedback.html">Feedback</a>
+    <div class="navbar-mobile-auth" style="display:flex;gap:.5rem;margin-top:.5rem;padding-top:.75rem;border-top:1px solid var(--border);">
+      <button onclick="openAuthModal('login')" class="btn-outline" style="flex:1;padding:8px;font-size:.85rem;">Login</button>
+      <button onclick="openAuthModal('register')" class="btn-primary" style="flex:1;padding:8px;font-size:.85rem;">Register</button>
+    </div>
+  </div>
+</nav>
+
+<div class="page-layout">
+
+<div class="hm-left-sidebar" id="hmLeftSidebar">
+    <div class="hm-left-inner">
+
+    <!-- Profile card (shown after login) -->
     <div id="hmSidebarProfile" style="display:none;">
       <div class="hm-profile-card">
         <div class="hm-prof-av" id="hmProfAvatar">--</div>
@@ -32,136 +78,255 @@
         <span class="hm-prof-plan" id="hmProfPlan">Free</span>
       </div>
     </div>
+
+    <!-- Guest state: no login button - just quick links and ad -->
+    <div id="hmSidebarNoAuth">
+      <div style="margin-bottom:.75rem;">
+        <div class="hm-sidebar-label">Quick Links</div>
+        <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
+        <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
+        <div class="hm-hist-item" onclick="location.href='news.html'"><span class="hm-hist-icon">&#128240;</span><span class="hm-hist-text">Industry News</span></div>
+        <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
+      </div>
+      <!-- Ad slot in left sidebar -->
+      <div style="font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.45rem;border-bottom:1px solid var(--border);margin-bottom:.5rem;">Sponsored</div>
+      <div style="background:rgba(200,165,80,.03);border:1px dashed rgba(200,165,80,.12);border-radius:6px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem;">
+        <div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement
+      </div>
+      <div style="text-align:center;">
+        <a href="pricing.html" style="font-family:'Space Mono',monospace;font-size:.56rem;color:rgba(200,165,80,.38);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a>
+      </div>
+    </div>
+
+    <!-- Chat history (shown after login) -->
     <div id="hmSidebarHistory" style="display:none;margin-top:.75rem;">
       <div class="hm-sidebar-label">Chat History</div>
       <div id="hmHistoryList"></div>
     </div>
+
+    <!-- Quick links (shown after login) -->
     <div id="hmSidebarLinks" style="display:none;margin-top:.75rem;">
       <div class="hm-sidebar-label">Quick Links</div>
       <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
-      <div class="hm-hist-item" onclick="location.href='system-design.html'"><span class="hm-hist-icon">&#9881;&#65039;</span><span class="hm-hist-text">System Design</span></div>
       <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
+      <div class="hm-hist-item" onclick="location.href='news.html'"><span class="hm-hist-icon">&#128240;</span><span class="hm-hist-text">Industry News</span></div>
+      <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
     </div>
+
   </div>
   <div class="hm-left-bottom"><button class="hm-logout-btn" id="hmLogoutBtn" onclick="doLogout()" style="display:none;">Sign Out</button></div>
 </div>
 
-<!-- RIGHT SIDEBAR -->
-<div class="hm-right-sidebar" id="hmAdSidebar">
-  <div id="hmAdTitle" style="font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.5rem;border-bottom:1px solid var(--border);margin-bottom:.55rem;">Sponsored</div>
-  <div id="hmNoAdBadge" style="display:none;background:rgba(76,175,130,.06);border:1px solid rgba(76,175,130,.2);border-radius:8px;padding:.75rem;text-align:center;margin-bottom:.55rem;"><div style="font-size:1.2rem;">&#127881;</div><p style="font-size:.68rem;color:var(--green);margin:.25rem 0 0;line-height:1.4;">Ad-free<br>Pro/Enterprise</p></div>
-  <div id="hmAd1" style="background:rgba(200,165,80,.03);border:1px dashed rgba(200,165,80,.12);border-radius:6px;height:195px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'Space Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:1rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement</div>
-  <div id="hmAd2" style="background:rgba(200,165,80,.04);border:1px solid rgba(200,165,80,.1);border-radius:6px;padding:.65rem .6rem;text-align:center;margin-bottom:.55rem;"><div style="font-family:'Space Mono',monospace;font-size:.56rem;color:var(--text3);text-transform:uppercase;">Partner</div><div style="font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;color:var(--gold);margin:.15rem 0 .2rem;">Your Brand</div><div style="font-size:.65rem;color:var(--text2);line-height:1.4;">Reach hydraulic engineers worldwide.</div></div>
-  <div id="hmAd3" style="background:rgba(200,165,80,.03);border:1px dashed rgba(200,165,80,.12);border-radius:6px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'Space Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128296;</div>Banner Ad</div>
-  <div id="hmAd5" style="margin-top:auto;padding-top:.55rem;border-top:1px solid var(--border);text-align:center;"><a href="pricing.html" style="font-family:'Space Mono',monospace;font-size:.57rem;color:rgba(200,165,80,.4);text-transform:uppercase;text-decoration:none;">Advertise here &#8594;</a></div>
-</div>
-
-<!-- AUTH MODAL -->
-<div class="hm-auth-overlay" id="hmAuthOverlay">
-  <div class="hm-auth-box">
-    <div class="hm-auth-tabs"><button class="hm-auth-tab active" id="hmTab_login" onclick="switchAuthTab('login')">Login</button><button class="hm-auth-tab" id="hmTab_register" onclick="switchAuthTab('register')">Register</button><button class="hm-auth-close" onclick="closeAuthModal()">&#215;</button></div>
-    <div class="hm-auth-error" id="hmAuthError"></div>
-    <div class="hm-auth-panel" id="hmPanel_login"><div class="hm-auth-title">Welcome Back</div><div class="hm-auth-sub">Sign in to HydroMind.AI</div><div class="hm-auth-field"><label>Email</label><input type="email" id="hmLoginEmail" class="hm-auth-input" placeholder="your@email.com"></div><div class="hm-auth-field"><label>Password</label><input type="password" id="hmLoginPass" class="hm-auth-input" onkeydown="if(event.key==='Enter')doLogin()"></div><div class="hm-auth-forgot"><button class="hm-auth-link" onclick="switchAuthTab('forgot')">Forgot password?</button></div><button class="hm-auth-btn" onclick="doLogin()">Sign In</button><div class="hm-auth-footer">No account? <button class="hm-auth-link" onclick="switchAuthTab('register')">Register free</button></div></div>
-    <div class="hm-auth-panel" id="hmPanel_register" style="display:none;"><div class="hm-auth-title">Create Account</div><div class="hm-auth-row"><div class="hm-auth-field"><label>First Name *</label><input type="text" id="hmRegFirst" class="hm-auth-input"></div><div class="hm-auth-field"><label>Last Name</label><input type="text" id="hmRegLast" class="hm-auth-input"></div></div><div class="hm-auth-field"><label>Email *</label><input type="email" id="hmRegEmail" class="hm-auth-input"></div><div class="hm-auth-field"><label>Password *</label><input type="password" id="hmRegPass" class="hm-auth-input" onkeydown="if(event.key==='Enter')doRegister()"></div><div class="hm-auth-field"><label>Select Plan</label><select id="hmRegPlan" class="hm-auth-input"><option value="Basic">Basic — $29/month</option><option value="Pro" selected>Pro — $79/month</option><option value="Enterprise">Enterprise — $199/month</option></select></div><button class="hm-auth-btn" onclick="doRegister()">Create Account</button><div class="hm-auth-footer">Have account? <button class="hm-auth-link" onclick="switchAuthTab('login')">Sign in</button></div></div>
-    <div class="hm-auth-panel" id="hmPanel_forgot" style="display:none;"><div class="hm-auth-title">Reset Password</div><div class="hm-auth-field"><label>Email</label><input type="email" id="hmForgotEmail" class="hm-auth-input"></div><div class="hm-auth-ok" id="hmForgotOk"></div><button class="hm-auth-btn cyan" onclick="doForgot()">Send Reset Link</button><div class="hm-auth-footer"><button class="hm-auth-link" onclick="switchAuthTab('login')">&#8592; Back</button></div></div>
-  </div>
-</div>
-
-
-<!-- NAVBAR -->
-<nav class="navbar" id="navbar">
-  <div class="navbar-inner">
-    <a href="../index.html" class="hm-logo-wrap">
-      <div class="hm-logo-icon"><div class="hm-logo-ring"></div><div class="hm-logo-h">H</div></div>
-      <div class="hm-logo-text"><div class="hm-logo-name">HYDROMIND<span>.AI</span></div><div class="hm-logo-sub">Hydraulic Intelligence</div></div>
-    </a>
-    <div class="navbar-menu">
-      <a href="../index.html" class="navbar-link">Home</a>
-      <a href="advisor.html" class="navbar-link">AI Advisor</a>
-      <a href="system-design.html" class="navbar-link">&#9881; System Design</a>
-      <a href="knowledge.html" class="navbar-link">Knowledge Base</a>
-      <a href="news.html" class="navbar-link">News</a>
-      <a href="../index.html#electrical" class="navbar-link" style="color:#f5c842;">&#9889; Electrical</a>
-      <a href="../index.html#calculator" class="navbar-link">Calculator</a>
-      <a href="pricing.html" class="navbar-link active" style="color:var(--gold);">Pricing</a>
-      <a href="feedback.html" class="navbar-link">Feedback</a>
-    </div>
-    <div class="navbar-cta" id="hmNavCta">
-      <button onclick="openAuthModal('login')" class="btn-outline" style="padding:8px 18px;font-size:.82rem;" id="hmNavLogin">Login</button>
-      <button onclick="openAuthModal('register')" class="btn-primary" style="padding:8px 18px;font-size:.82rem;" id="hmNavRegister">Register</button>
-      <div id="hmNavUser" style="display:none;align-items:center;gap:.5rem;background:rgba(200,165,80,.06);border:1px solid rgba(200,165,80,.15);border-radius:8px;padding:5px 10px;cursor:pointer;" onclick="doLogout()">
-        <div id="hmNavAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.78rem;color:#080c12;"></div>
-        <span id="hmNavName" style="font-size:.82rem;color:var(--text1);"></span>
-        <span id="hmNavPlan" style="font-family:'Space Mono',monospace;font-size:.62rem;padding:2px 8px;border-radius:100px;background:rgba(200,165,80,.1);color:var(--gold);"></span>
-      </div>
-    </div>
-    <button class="navbar-toggle" id="navToggle"><span></span><span></span><span></span></button>
-  </div>
-  <div class="navbar-mobile" id="navMobile">
-    <a href="../index.html" class="navbar-link">Home</a>
-    <a href="advisor.html" class="navbar-link">AI Advisor</a>
-    <a href="system-design.html" class="navbar-link">&#9881; System Design</a>
-    <a href="knowledge.html" class="navbar-link">Knowledge Base</a>
-    <a href="pricing.html" class="navbar-link">Pricing</a>
-  </div>
-</nav>
-
-
-
 <div class="hm-main-content">
 
-<div class="page-header">
+<!-- HERO -->
+<section class="section" style="padding:5rem 0 3rem;background:var(--bg-dark);">
   <div class="container">
-    <div class="breadcrumb"><a href="../index.html">Home</a> › Knowledge Base</div>
-    <div class="eyebrow">KB v2.0 — March 2026</div>
-    <h1>Hydraulic <span class="text-gold">Knowledge Base</span></h1>
-    <p style="color:var(--text2);max-width:580px;margin-top:1rem;line-height:1.8;">30+ indexed OEM manuals, real offshore field cases, troubleshooting guides, and hydraulic formula references — all searchable through the AI Advisor.</p>
+    <div class="eyebrow">Knowledge Base</div>
+    <h1 class="section-title">Technical Document Library</h1>
+    <p class="section-subtitle">OEM manuals, field cases, hydraulic system documentation and troubleshooting guides — indexed and searchable via AI Advisor.</p>
   </div>
-</div>
+</section>
 
-<section class="section section-dark">
+<!-- STATS -->
+<section class="section section-dark" style="padding:2rem 0;">
   <div class="container">
-    <div id="hmKBGate">
-      <div style="text-align:center;padding:3rem 1.5rem;">
-        <div style="font-size:3rem;margin-bottom:1rem;">&#128218;</div>
-        <h2 style="margin-bottom:.75rem;">Pro &amp; Enterprise Access</h2>
-        <p style="color:var(--text2);max-width:480px;margin:0 auto 2rem;line-height:1.8;">The Knowledge Base is available to Pro and Enterprise subscribers. Upgrade to access 30+ OEM manuals, field case studies, and technical references.</p>
-        <a href="pricing.html" class="btn-primary" style="margin-right:.75rem;">Upgrade Now</a>
-        <a href="advisor.html" class="btn-outline">Try AI Advisor Free</a>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;">
+      <div class="card" style="text-align:center;padding:1.25rem;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;color:var(--gold);" id="kbTotalCount">4</div>
+        <div style="font-size:.8rem;color:var(--text3);">Documents</div>
       </div>
-    </div>
-    <div id="hmKBContent" style="display:none;">
-      <div class="eyebrow">OEM Pump Documentation</div>
-      <h2 style="margin-bottom:2rem;">Pump Knowledge Base</h2>
-      <div style="display:flex;flex-direction:column;gap:1rem;">
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.25rem 1.5rem;">
-          <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;"><span style="font-size:1.1rem;">&#9881;</span><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text1);">Rexroth A4VG Series 40</div><span style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--gold);padding:2px 8px;border:1px solid rgba(200,165,80,.2);border-radius:100px;">KB01</span></div>
-          <p style="font-size:.88rem;color:var(--text2);">Variable displacement axial piston pump — closed loop. Includes Series 56, 71, 90, 125, 180, 250cc.</p>
-          <div style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text3);margin-top:.5rem;">// KB01 — Full datasheet + settings</div>
-        </div>
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.25rem 1.5rem;">
-          <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;"><span style="font-size:1.1rem;">&#9881;</span><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text1);">Rexroth A2FO / A7VO</div><span style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--gold);padding:2px 8px;border:1px solid rgba(200,165,80,.2);border-radius:100px;">KB02-03</span></div>
-          <p style="font-size:.88rem;color:var(--text2);">Fixed and variable displacement open circuit pumps. Includes case drain limits, compensator settings.</p>
-          <div style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text3);margin-top:.5rem;">// KB02-03 — OEM specifications</div>
-        </div>
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.25rem 1.5rem;">
-          <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;"><span style="font-size:1.1rem;">&#9881;</span><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text1);">Danfoss Series 90</div><span style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--gold);padding:2px 8px;border:1px solid rgba(200,165,80,.2);border-radius:100px;">KB04</span></div>
-          <p style="font-size:.88rem;color:var(--text2);">75cc closed-loop pump. Charge pressure settings, servo control, case drain flow limits, loop flushing.</p>
-          <div style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text3);margin-top:.5rem;">// KB04 — Danfoss Series 90 full reference</div>
-        </div>
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.25rem 1.5rem;">
-          <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;"><span style="font-size:1.1rem;">&#129302;</span><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text1);">Favelle Favco Field Case — KB30</div><span style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--green);padding:2px 8px;border:1px solid rgba(76,175,130,.2);border-radius:100px;">OFFSHORE</span></div>
-          <p style="font-size:.88rem;color:var(--text2);">Rig Al-Hail, ADNOC Drilling, Jan 2026. Hoist pump null adjustment, brake band diagnosis, motor replacement. A4VG56 + A4VG90.</p>
-          <div style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text3);margin-top:.5rem;">// KB30 — Real offshore field case</div>
-        </div>
+      <div class="card" style="text-align:center;padding:1.25rem;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;color:var(--cyan);">3</div>
+        <div style="font-size:.8rem;color:var(--text3);">OEM Brands</div>
       </div>
-      <div style="text-align:center;margin-top:2rem;padding:1.5rem;background:rgba(200,165,80,.04);border:1px solid var(--border);border-radius:10px;">
-        <p style="font-size:.9rem;color:var(--text2);margin-bottom:1rem;">Access the full Knowledge Base through the AI Advisor — ask any question and the AI searches KB automatically.</p>
-        <a href="advisor.html" class="btn-primary">Open AI Advisor</a>
+      <div class="card" style="text-align:center;padding:1.25rem;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;color:var(--gold);">v2.0</div>
+        <div style="font-size:.8rem;color:var(--text3);">KB Version</div>
+      </div>
+      <div class="card" style="text-align:center;padding:1.25rem;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;color:var(--cyan);">AI</div>
+        <div style="font-size:.8rem;color:var(--text3);">Powered Search</div>
       </div>
     </div>
   </div>
 </section>
+
+<!-- BUILT-IN DOCUMENTS -->
+<section class="section section-dark" style="padding-top:1rem;">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+      <div class="eyebrow">Built-in Documents</div>
+      <button id="kbUploadBtn" onclick="document.getElementById('adminKBPanel').scrollIntoView({behavior:'smooth'});document.getElementById('adminKBPanel').style.display='block';" style="display:none;background:rgba(200,165,80,.1);border:1px solid rgba(200,165,80,.3);border-radius:8px;color:var(--gold);font-family:'Space Mono',monospace;font-size:.72rem;padding:7px 16px;cursor:pointer;transition:.2s;" onmouseover="this.style.background='rgba(200,165,80,.2)'" onmouseout="this.style.background='rgba(200,165,80,.1)'">📎 Upload Document</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+
+      <div class="card" style="padding:1.25rem 1.5rem;">
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;">
+          <span style="font-size:1.1rem;">⚙️</span>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text1);">Rexroth A4VG Series 40 — Variable Displacement Axial Piston Pump</div>
+          <span style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--gold);padding:2px 8px;border:1px solid rgba(200,165,80,.2);border-radius:100px;white-space:nowrap;margin-left:auto;">KB01</span>
+        </div>
+        <p style="font-size:.88rem;color:var(--text2);margin-bottom:.5rem;">Closed-loop pump reference: charge pressure specs, servo control, variable displacement diagnostics, fault isolation for A4VG028–180 variants.</p>
+        <div style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text3);">// OEM Pump Documentation · Bosch Rexroth</div>
+      </div>
+
+      <div class="card" style="padding:1.25rem 1.5rem;">
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;">
+          <span style="font-size:1.1rem;">⚙️</span>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text1);">Rexroth A2FO / A7VO — Fixed &amp; Variable Displacement Open Circuit Pumps</div>
+          <span style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--gold);padding:2px 8px;border:1px solid rgba(200,165,80,.2);border-radius:100px;white-space:nowrap;margin-left:auto;">KB02-03</span>
+        </div>
+        <p style="font-size:.88rem;color:var(--text2);margin-bottom:.5rem;">Open-circuit pump selection guide, pressure/flow sizing, shaft options, port identifications, commissioning procedure and case drain limits.</p>
+        <div style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text3);">// OEM Pump Documentation · Bosch Rexroth</div>
+      </div>
+
+      <div class="card" style="padding:1.25rem 1.5rem;">
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;">
+          <span style="font-size:1.1rem;">⚙️</span>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text1);">Danfoss Series 90 — Closed-Loop Pump Full Reference</div>
+          <span style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--gold);padding:2px 8px;border:1px solid rgba(200,165,80,.2);border-radius:100px;white-space:nowrap;margin-left:auto;">KB04</span>
+        </div>
+        <p style="font-size:.88rem;color:var(--text2);margin-bottom:.5rem;">S90 pump/motor integration: charge circuit, servo pressure, EDC/HDC control, brake valve settings and fault diagnostic flow charts.</p>
+        <div style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text3);">// OEM Pump Documentation · Danfoss Power Solutions</div>
+      </div>
+
+      <div class="card" style="padding:1.25rem 1.5rem;">
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;">
+          <span style="font-size:1.1rem;">🛢️</span>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text1);">Favelle Favco Field Case — Rig Al-Hail ADNOC Drilling Jan 2026</div>
+          <span style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--gold);padding:2px 8px;border:1px solid rgba(200,165,80,.2);border-radius:100px;white-space:nowrap;margin-left:auto;">KB30</span>
+        </div>
+        <p style="font-size:.88rem;color:var(--text2);margin-bottom:.5rem;">Offshore field case: main hoist HPU low charge pressure fault, root cause analysis, corrective actions and preventive maintenance recommendations.</p>
+        <div style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text3);">// Offshore Field Case · Favelle Favco · ADNOC Drilling</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- DYNAMIC KB (admin added) -->
+<section class="section section-dark" id="dynamicKBSection" style="display:none;padding-top:0;">
+  <div class="container">
+    <div class="eyebrow" style="margin-bottom:1rem;" id="dynamicKBLabel"></div>
+    <div id="dynamicKBGrid" style="display:flex;flex-direction:column;gap:1rem;"></div>
+  </div>
+</section>
+
+<!-- AI ADVISOR LINK -->
+<section class="section section-dark" style="padding:2rem 0 3rem;">
+  <div class="container">
+    <div class="card" style="text-align:center;padding:2.5rem;">
+      <div class="eyebrow" style="margin-bottom:.75rem;">AI-Powered Search</div>
+      <h3 style="margin-bottom:.75rem;">Ask the AI Advisor</h3>
+      <p style="font-size:.9rem;color:var(--text2);margin-bottom:1rem;">Access the full Knowledge Base through the AI Advisor — ask any question and the AI searches KB automatically.</p>
+      <a href="advisor.html" class="btn-primary">Open AI Advisor</a>
+    </div>
+  </div>
+</section>
+
+<!-- ADMIN UPLOAD PANEL -->
+<section class="section section-dark" id="adminKBPanel" style="display:none;border-top:2px solid rgba(200,165,80,.25);padding-top:2.5rem;padding-bottom:2.5rem;">
+  <div class="container">
+
+    <!-- Header -->
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem;">
+      <div style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;background:rgba(200,165,80,.1);padding:4px 14px;border-radius:100px;border:1px solid rgba(200,165,80,.25);">⚙ Admin — Upload Document</div>
+      <h3 style="margin:0;font-size:1.1rem;color:var(--text1);">Add to Knowledge Base</h3>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:2rem;align-items:start;">
+
+      <!-- LEFT: Upload Form -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.75rem;">
+        
+        <!-- File drop zone -->
+        <div id="kbDropZone" onclick="document.getElementById('kbFile').click()"
+          style="border:2px dashed rgba(200,165,80,.3);border-radius:10px;padding:2rem;text-align:center;cursor:pointer;margin-bottom:1.25rem;transition:.2s;background:rgba(200,165,80,.03);"
+          onmouseover="this.style.borderColor='rgba(200,165,80,.6)';this.style.background='rgba(200,165,80,.06)'"
+          onmouseout="this.style.borderColor='rgba(200,165,80,.3)';this.style.background='rgba(200,165,80,.03)'">
+          <div style="font-size:2rem;margin-bottom:.5rem;">📄</div>
+          <div style="font-family:'Space Mono',monospace;font-size:.75rem;color:var(--gold);margin-bottom:.3rem;">Click to select PDF / DOCX</div>
+          <div style="font-size:.78rem;color:var(--text3);">or drag and drop here</div>
+          <input type="file" id="kbFile" accept=".pdf,.doc,.docx,.txt,.png,.jpg" style="display:none;" onchange="onFileChosen(this)">
+        </div>
+
+        <!-- File preview -->
+        <div id="kbFilePreview" style="display:none;background:rgba(200,165,80,.06);border:1px solid rgba(200,165,80,.2);border-radius:8px;padding:.6rem 1rem;margin-bottom:1rem;display:none;align-items:center;justify-content:space-between;">
+          <span id="kbFileInfo" style="font-size:.82rem;color:var(--gold);font-family:'Space Mono',monospace;"></span>
+          <button onclick="clearFile()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:1rem;padding:0 4px;">✕</button>
+        </div>
+
+        <!-- Form fields -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:.85rem;">
+          <div>
+            <label style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:.3rem;">KB Number</label>
+            <input id="kbNum" type="text" placeholder="e.g. KB05" style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:.55rem .8rem;color:var(--text1);font-size:.85rem;box-sizing:border-box;">
+          </div>
+          <div>
+            <label style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:.3rem;">Category *</label>
+            <select id="kbCat" style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:.55rem .8rem;color:var(--text1);font-size:.85rem;box-sizing:border-box;">
+              <option value="pump">Pump Documentation</option>
+              <option value="motor">Motor Documentation</option>
+              <option value="valve">Valve / DCV</option>
+              <option value="crane">Crane Systems</option>
+              <option value="hpu">HPU / Circuit Design</option>
+              <option value="field">Offshore Field Case</option>
+              <option value="electrical">Electrical / PLC</option>
+              <option value="fluid">Fluid & Filtration</option>
+              <option value="technical">Technical</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-bottom:.85rem;">
+          <label style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:.3rem;">Document Title *</label>
+          <input id="kbTitle" type="text" placeholder="e.g. Rexroth A10VO Series — Variable Pump Manual" style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:.55rem .8rem;color:var(--text1);font-size:.85rem;box-sizing:border-box;">
+        </div>
+
+        <div style="margin-bottom:.85rem;">
+          <label style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:.3rem;">Description *</label>
+          <textarea id="kbDesc" rows="3" placeholder="Brief description of what this document covers..." style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:.55rem .8rem;color:var(--text1);font-size:.85rem;resize:vertical;box-sizing:border-box;font-family:inherit;"></textarea>
+        </div>
+
+        <div style="margin-bottom:1.25rem;">
+          <label style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:.3rem;">External URL (optional)</label>
+          <input id="kbUrl" type="url" placeholder="https://..." style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:.55rem .8rem;color:var(--text1);font-size:.85rem;box-sizing:border-box;">
+        </div>
+
+        <!-- Message area -->
+        <div id="kbAddMsg" style="display:none;margin-bottom:.75rem;"></div>
+
+        <button onclick="addKBEntry()"
+          style="width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#080c12;border:none;border-radius:9px;padding:.8rem;font-family:'Syne',sans-serif;font-weight:800;font-size:.95rem;cursor:pointer;transition:.2s;"
+          onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+          📎 Upload to Knowledge Base
+        </button>
+      </div>
+
+      <!-- RIGHT: Current KB List -->
+      <div>
+        <div style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem;">Current Documents</div>
+        <div id="adminKBList" style="display:flex;flex-direction:column;gap:.4rem;max-height:480px;overflow-y:auto;"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+</div><!-- end hm-main-content -->
+
+<div class="hm-right-sidebar" id="hmAdSidebar">
+  <div id="hmAdTitle" style="font-family:'JetBrains Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.5rem;border-bottom:1px solid var(--border);margin-bottom:.55rem;">Sponsored</div>
+  <div id="hmNoAdBadge" style="display:none;background:rgba(61,214,140,.06);border:1px solid rgba(61,214,140,.2);border-radius:8px;padding:.75rem;text-align:center;margin-bottom:.55rem;"><div style="font-size:1.2rem;">&#127881;</div><p style="font-size:.68rem;color:#3dd68c;margin:.25rem 0 0;line-height:1.4;">Ad-free<br>Pro/Enterprise</p></div>
+  <div id="hmAd1" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:195px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:1rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement<br>200×195</div>
+  <div id="hmAd2" style="background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.11);border-radius:6px;padding:.65rem .6rem;text-align:center;margin-bottom:.55rem;"><div style="font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Partner</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:var(--cyan);margin:.15rem 0 .2rem;">Your Brand</div><div style="font-size:.65rem;color:var(--text2);line-height:1.4;">Reach hydraulic engineers worldwide.</div></div>
+  <div id="hmAd3" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128296;</div>Banner Ad<br>200×110</div>
+  <div id="hmAd4" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;"><div style="font-size:.85rem;opacity:.22;margin-bottom:3px;">&#128161;</div>Link Ad</div>
+  <div id="hmAd5" style="margin-top:auto;padding-top:.55rem;border-top:1px solid var(--border);text-align:center;"><a href="pricing.html" style="font-family:'JetBrains Mono',monospace;font-size:.57rem;color:rgba(0,212,255,.4);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a></div>
+</div>
+
+</div><!-- end page-layout -->
 
 <footer class="footer">
     <div class="container">
@@ -184,29 +349,163 @@
       </div>
     </div>
   </footer>
-
 </div><!-- /hm-main-content -->
-
 <script src="../js/main.js"></script>
+
+</body>
+</html>
 <script src="../js/auth.js"></script>
 <script>
-
-(function(){
-  const user = typeof hmGetSession === 'function' ? hmGetSession() : null;
-  const isPaid = user && (user.isAdmin || user.plan === 'Pro' || user.plan === 'Enterprise');
-  if (isPaid) {
-    document.getElementById('hmKBGate').style.display = 'none';
-    document.getElementById('hmKBContent').style.display = 'block';
+var KB_STATIC = [
+  {num:'KB01', title:'Rexroth A4VG Series 40 — Variable Displacement Axial Piston Pump', cat:'pump'},
+  {num:'KB02-03', title:'Rexroth A2FO / A7VO — Fixed & Variable Displacement Open Circuit Pumps', cat:'pump'},
+  {num:'KB04', title:'Danfoss Series 90 — Closed-Loop Pump Full Reference', cat:'pump'},
+  {num:'KB30', title:'Favelle Favco Field Case — Rig Al-Hail ADNOC Drilling Jan 2026', cat:'field'}
+];
+var KB_CAT_LABELS = {
+  pump:'Pump Documentation', motor:'Motor Documentation',
+  valve:'Valve / DCV', crane:'Crane Systems',
+  hpu:'HPU / Circuit Design', field:'Offshore Field Case',
+  electrical:'Electrical / PLC', fluid:'Fluid & Filtration', technical:'Technical'
+};
+var KB_CAT_ICONS = {
+  pump:'⚙️', motor:'🔩', valve:'🔧', crane:'🏗️',
+  hpu:'📐', field:'🛢️', electrical:'⚡', fluid:'💧', technical:'📋'
+};
+function getKBEntries(){ try{ return JSON.parse(localStorage.getItem('hm_kb_entries')||'[]'); }catch(e){ return []; } }
+function saveKBEntries(e){ localStorage.setItem('hm_kb_entries', JSON.stringify(e)); }
+function onFileChosen(input){
+  var preview=document.getElementById('kbFilePreview');
+  var info=document.getElementById('kbFileInfo');
+  var txt=document.getElementById('kbFileLabelText');
+  if(input.files&&input.files[0]){
+    var f=input.files[0];
+    var sz=f.size>1048576?(f.size/1048576).toFixed(1)+' MB':Math.round(f.size/1024)+' KB';
+    txt.textContent=f.name; txt.style.color='var(--gold)';
+    info.textContent='📎 '+f.name+'  ('+sz+')';
+    preview.style.display='flex';
   }
-  window.addEventListener('hm:login', e => {
-    const u = e.detail;
-    if (u && (u.isAdmin || u.plan === 'Pro' || u.plan === 'Enterprise')) {
-      document.getElementById('hmKBGate').style.display = 'none';
-      document.getElementById('hmKBContent').style.display = 'block';
-    }
+}
+function clearFile(){
+  var fi=document.getElementById('kbFile'); if(fi) fi.value='';
+  document.getElementById('kbFileLabelText').textContent='Click to choose file...';
+  document.getElementById('kbFileLabelText').style.color='';
+  document.getElementById('kbFilePreview').style.display='none';
+}
+function addKBEntry(){
+  var num=document.getElementById('kbNum').value.trim();
+  var cat=document.getElementById('kbCat').value;
+  var title=document.getElementById('kbTitle').value.trim();
+  var desc=document.getElementById('kbDesc').value.trim();
+  var url=document.getElementById('kbUrl').value.trim();
+  var fi=document.getElementById('kbFile');
+  var fname=fi&&fi.files[0]?fi.files[0].name:'';
+  var msg=document.getElementById('kbAddMsg');
+  function showMsg(txt,type){
+    var c=type==='ok'?'background:rgba(76,175,130,.07);border:1px solid rgba(76,175,130,.25);color:#4caf82;':
+      type==='warn'?'background:rgba(245,200,66,.07);border:1px solid rgba(245,200,66,.3);color:#f5c842;':
+      'background:rgba(226,75,74,.08);border:1px solid rgba(226,75,74,.2);color:#e24b4a;';
+    msg.style.cssText='display:block;border-radius:8px;padding:.7rem 1rem;font-size:.85rem;margin-bottom:.75rem;'+c;
+    msg.textContent=txt;
+  }
+  if(!title||!desc){ showMsg('Please fill in Title and Description.','err'); return; }
+  var entries=getKBEntries();
+  var tl=title.toLowerCase();
+  var ds=KB_STATIC.find(function(e){ return e.title.toLowerCase()===tl||(num&&e.num.toLowerCase()===num.toLowerCase()); });
+  if(ds){ showMsg('⚠ Already in KB (built-in): "'+ds.title+'" ('+ds.num+')','warn'); return; }
+  var dt=entries.find(function(e){ return e.title.toLowerCase()===tl; });
+  if(dt){ showMsg('⚠ Already in KB: "'+dt.title+'" ('+dt.num+')','warn'); return; }
+  var dn=num?entries.find(function(e){ return e.num.toLowerCase()===num.toLowerCase(); }):null;
+  if(dn){ showMsg('⚠ KB number '+num+' already used: "'+dn.title+'"','warn'); return; }
+  var entry={id:Date.now(),num:num||('KB'+String(entries.length+5).padStart(2,'0')),cat:cat,title:title,desc:desc,url:url,file:fname,date:new Date().toLocaleDateString('en-GB',{month:'short',year:'numeric'})};
+  entries.unshift(entry); saveKBEntries(entries);
+  showMsg('✓ '+entry.num+' — "'+title+'" added!','ok');
+  clearKBForm(); renderDynamicKB(); renderAdminList(); updateKBCount();
+}
+function clearKBForm(){
+  ['kbNum','kbTitle','kbDesc','kbUrl'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  clearFile();
+}
+function deleteKBEntry(id){
+  if(!confirm('Delete this KB entry?')) return;
+  saveKBEntries(getKBEntries().filter(function(e){ return e.id!==id; }));
+  renderDynamicKB(); renderAdminList(); updateKBCount();
+}
+function renderDynamicKB(){
+  var entries=getKBEntries();
+  var section=document.getElementById('dynamicKBSection');
+  var grid=document.getElementById('dynamicKBGrid');
+  var label=document.getElementById('dynamicKBLabel');
+  if(!section||!grid) return;
+  if(!entries.length){ section.style.display='none'; return; }
+  section.style.display='block';
+  label.textContent='Additional Documents ('+entries.length+')';
+  grid.innerHTML=entries.map(function(e){
+    var icon=KB_CAT_ICONS[e.cat]||'📄';
+    return '<div class="card" style="padding:1.25rem 1.5rem;">'+
+      '<div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;">'+
+      '<span>'+icon+'</span>'+
+      '<div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text1);">'+e.title+'</div>'+
+      '<span style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--gold);padding:2px 8px;border:1px solid rgba(200,165,80,.2);border-radius:100px;white-space:nowrap;margin-left:auto;">'+e.num+'</span>'+
+      '</div><p style="font-size:.88rem;color:var(--text2);margin-bottom:.5rem;">'+e.desc+'</p>'+
+      '<div style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text3);">// '+(KB_CAT_LABELS[e.cat]||e.cat)+' · Added '+e.date+(e.file?' · 📎 '+e.file:'')+'</div>'+
+      (e.url?'<a href="'+e.url+'" target="_blank" style="font-size:.78rem;color:var(--gold);text-decoration:none;margin-top:.5rem;display:inline-block;">View Document →</a>':'')+
+      '</div>';
+  }).join('');
+}
+function renderAdminList(){
+  var list=document.getElementById('adminKBList'); if(!list) return;
+  var entries=getKBEntries();
+  var html='<div style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;padding:4px 0 6px;">Built-in ('+KB_STATIC.length+')</div>';
+  KB_STATIC.forEach(function(e){
+    html+='<div style="background:rgba(200,165,80,.04);border:1px solid rgba(200,165,80,.1);border-radius:7px;padding:.55rem .85rem;display:flex;align-items:center;gap:.6rem;margin-bottom:.3rem;">'+
+      '<span style="font-family:'Space Mono',monospace;font-size:.58rem;color:var(--gold);padding:1px 7px;border:1px solid rgba(200,165,80,.2);border-radius:100px;white-space:nowrap;">'+e.num+'</span>'+
+      '<span style="font-size:.82rem;color:var(--text2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+e.title+'</span>'+
+      '<span style="font-family:'Space Mono',monospace;font-size:.58rem;color:var(--text3);">locked</span></div>';
   });
-})();
-
+  if(entries.length){
+    html+='<div style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;padding:10px 0 6px;">Admin Added ('+entries.length+')</div>';
+    entries.forEach(function(e){
+      html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.55rem .85rem;display:flex;align-items:center;gap:.6rem;margin-bottom:.3rem;">'+
+        '<span style="font-family:'Space Mono',monospace;font-size:.58rem;color:var(--cyan);padding:1px 7px;border:1px solid rgba(0,212,255,.2);border-radius:100px;white-space:nowrap;">'+e.num+'</span>'+
+        '<div style="flex:1;min-width:0;"><div style="font-size:.82rem;color:var(--text1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+e.title+'</div>'+
+        '<div style="font-size:.7rem;color:var(--text3);">'+(KB_CAT_LABELS[e.cat]||e.cat)+' · '+e.date+(e.file?' · 📎 '+e.file:'')+'</div></div>'+
+        '<button type="button" onclick="deleteKBEntry('+e.id+')" style="flex-shrink:0;background:rgba(226,75,74,.08);border:1px solid rgba(226,75,74,.2);border-radius:5px;color:#e24b4a;cursor:pointer;padding:3px 9px;font-size:.75rem;">Delete</button></div>';
+    });
+  } else {
+    html+='<div style="font-size:.82rem;color:var(--text3);font-style:italic;padding:.5rem 0;">No documents added yet.</div>';
+  }
+  html+='<div style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);border-top:1px solid var(--border);padding-top:.5rem;margin-top:.5rem;">Total: '+(KB_STATIC.length+entries.length)+' documents</div>';
+  list.innerHTML=html;
+}
+function updateKBCount(){
+  var el=document.getElementById('kbTotalCount'); if(el) el.textContent=KB_STATIC.length+getKBEntries().length;
+}
+function checkAdminPanel(){
+  if(typeof hmGetSession==='function'){
+    var u=hmGetSession();
+    if(u&&u.isAdmin){
+      var p=document.getElementById('adminKBPanel'); if(p) p.style.display='block';
+      var btn=document.getElementById('kbUploadBtn'); if(btn) btn.style.display='inline-block';
+      renderAdminList();
+    }
+  }
+}
+window.addEventListener('hm:login',function(e){
+  var u=e.detail;
+  if(u&&u.isAdmin){
+    var p=document.getElementById('adminKBPanel'); if(p) p.style.display='block';
+    var btn=document.getElementById('kbUploadBtn'); if(btn) btn.style.display='inline-block';
+    renderAdminList();
+  }
+});
+document.addEventListener('DOMContentLoaded',function(){
+  renderDynamicKB(); updateKBCount();
+  // Try multiple times to catch admin session
+  setTimeout(checkAdminPanel,300);
+  setTimeout(checkAdminPanel,800);
+  setTimeout(checkAdminPanel,1500);
+});
 </script>
 </body>
 </html>
