@@ -413,9 +413,18 @@ textarea.form-input { resize: vertical; min-height: 130px; }
   .hm-left-sidebar{width:160px;}
   .hm-main-content{margin-left:160px;}
   .footer{margin-left:160px;}
-  .navbar-inner{gap:.5rem;}
-  .navbar-menu{gap:.25rem;}
-  .navbar-menu a{font-size:.8rem;padding:4px 8px;}
+  .navbar-inner{gap:.3rem;padding:0 .75rem;}
+  .navbar-menu{gap:0;}
+  .navbar-menu a{font-size:.75rem;padding:4px 6px;}
+  .hm-logo-sub{display:none;}
+  .hm-logo-name{font-size:.9rem;}
+  .hm-logo-icon{width:30px;height:30px;}
+  .navbar-cta{gap:.4rem;}
+  #hmAdminLink{padding:5px 10px;font-size:.72rem;}
+  #hmNavUser{gap:.35rem;}
+  #hmNavPlan{display:none;}
+  #hmNavName{font-size:.78rem;}
+  #hmNavAvatar{width:24px;height:24px;font-size:.65rem;}
 }
 @media(max-width:768px){
   .hm-left-sidebar{display:none;}
