@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HydroMind.AI — AI-Powered Hydraulic Intelligence</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ANIMATED CIRCUIT BACKGROUND -->
+<div class="circuit-bg"><svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+<defs><radialGradient id="cbg" cx="50%" cy="55%" r="60%"><stop offset="0%" stop-color="#001830"/><stop offset="100%" stop-color="#020b18"/></radialGradient>
+<marker id="harr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect width="1400" height="900" fill="url(#cbg)"/>
+<!-- Reservoir -->
+<rect x="60" y="500" width="90" height="110" rx="4" fill="none" stroke="#00d4ff" stroke-width="1" opacity=".28"/>
+<rect x="60" y="555" width="90" height="55" fill="rgba(0,212,255,.04)"/>
+<text font-family="monospace" font-size="9" fill="#00d4ff" opacity=".3" x="105" y="516" text-anchor="middle">RESERVOIR</text>
+<!-- Suction line -->
+<line x1="105" y1="500" x2="105" y2="420" stroke="#00d4ff" stroke-width=".8" opacity=".12"/>
+<line class="c-trace" x1="105" y1="500" x2="105" y2="420" stroke="#00d4ff" stroke-width="1.5" opacity=".4" fill="none"/>
+<line x1="105" y1="420" x2="240" y2="420" stroke="#00d4ff" stroke-width=".8" opacity=".12"/>
+<line class="c-trace" x1="105" y1="420" x2="240" y2="420" stroke="#00d4ff" stroke-width="1.5" opacity=".4" fill="none"/>
+<!-- Motor -->
+<rect x="210" y="280" width="110" height="40" rx="5" fill="none" stroke="#00d4ff" stroke-width=".9" opacity=".32"/>
+<text font-family="monospace" font-size="9" fill="#00d4ff" opacity=".32" x="265" y="296" text-anchor="middle">ELEC. MOTOR</text>
+<text font-family="monospace" font-size="9" fill="#00d4ff" opacity=".22" x="265" y="309" text-anchor="middle">45 kW  1500 rpm</text>
+<line x1="265" y1="320" x2="265" y2="336" stroke="#00d4ff" stroke-width="1.5" stroke-dasharray="4 2" opacity=".32"/>
+<line x1="265" y1="336" x2="285" y2="336" stroke="#00d4ff" stroke-width="1.5" opacity=".32"/>
+<!-- Pump -->
+<circle cx="330" cy="380" r="46" fill="none" stroke="#00d4ff" stroke-width="1.2" opacity=".45"/>
+<circle cx="330" cy="380" r="40" fill="rgba(0,212,255,.03)"/>
+<g opacity=".45"><path d="M330 342 L338 374 L330 380Z" fill="#00d4ff"><animateTransform attributeName="transform" type="rotate" values="0 330 380;360 330 380" dur="3s" repeatCount="indefinite"/></path><path d="M330 380 L362 388 L330 380 L352 358Z" fill="#00d4ff" opacity=".7"><animateTransform attributeName="transform" type="rotate" values="0 330 380;360 330 380" dur="3s" repeatCount="indefinite"/></path></g>
+<text font-family="monospace" font-size="9" fill="#00d4ff" opacity=".38" x="330" y="440" text-anchor="middle">PUMP A4VG</text>
+<!-- HP line -->
+<circle cx="390" cy="380" r="5" fill="none" stroke="#00d4ff" stroke-width="1" opacity=".45"><animate attributeName="r" values="4;18;4" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values=".7;0;.7" dur="2s" repeatCount="indefinite"/></circle>
+<line x1="376" y1="380" x2="620" y2="380" stroke="#00d4ff" stroke-width=".8" opacity=".12"/>
+<line class="c-trace" x1="376" y1="380" x2="620" y2="380" stroke="#00d4ff" stroke-width="2" opacity=".5" fill="none"/>
+<text font-family="monospace" font-size="9" fill="#f5c842" opacity=".4" x="495" y="370" text-anchor="middle">HP  285 bar</text>
+<!-- Pressure gauge -->
+<line x1="490" y1="380" x2="490" y2="326" stroke="#00d4ff" stroke-width=".8" stroke-dasharray="3 3" opacity=".25"/>
+<circle cx="490" cy="308" r="19" fill="none" stroke="#00d4ff" stroke-width=".9" opacity=".42"/>
+<circle cx="490" cy="308" r="13" fill="rgba(0,212,255,.03)"/>
+<line x1="490" y1="308" x2="490" y2="297" stroke="#f5c842" stroke-width="1.2" opacity=".6" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" values="-30 490 308;22 490 308;-30 490 308" dur="4s" repeatCount="indefinite"/></line>
+<circle cx="490" cy="308" r="2.5" fill="#00d4ff" opacity=".6"/>
+<!-- DCV -->
+<rect x="620" y="356" width="118" height="48" rx="4" fill="none" stroke="#00d4ff" stroke-width="1.1" opacity=".5"/>
+<rect x="658" y="359" width="30" height="42" rx="2" fill="rgba(0,212,255,.1)" stroke="#00d4ff" stroke-width=".7" opacity=".52"/>
+<line x1="663" y1="370" x2="684" y2="381" stroke="#00d4ff" stroke-width=".9" opacity=".52"/>
+<line x1="684" y1="370" x2="663" y2="381" stroke="#00d4ff" stroke-width=".9" opacity=".52"/>
+<circle cx="679" cy="354" r="5" fill="#00d4ff" opacity=".7"><animate attributeName="opacity" values=".9;.2;.9" dur="1.8s" repeatCount="indefinite"/></circle>
+<text font-family="monospace" font-size="9" fill="#00d4ff" opacity=".38" x="679" y="418" text-anchor="middle">DCV 4/3 WE6</text>
+<!-- Port A to motor -->
+<line class="c-trace" x1="638" y1="404" x2="638" y2="560" stroke="#00d4ff" stroke-width="1.5" opacity=".45" fill="none"/>
+<line class="c-trace" x1="638" y1="560" x2="840" y2="560" stroke="#00d4ff" stroke-width="1.5" opacity=".45" fill="none"/>
+<!-- Motor -->
+<circle cx="900" cy="545" r="46" fill="none" stroke="#00d4ff" stroke-width="1.2" opacity=".45"/>
+<polygon points="883,529 917,529 900,561" fill="rgba(0,212,255,.07)" stroke="#00d4ff" stroke-width=".9" opacity=".45"/>
+<line x1="854" y1="578" x2="926" y2="510" stroke="#f5c842" stroke-width="1.2" opacity=".42"/>
+<text font-family="monospace" font-size="9" fill="#00d4ff" opacity=".35" x="900" y="604" text-anchor="middle">MOTOR A6VM</text>
+<!-- Return line -->
+<line class="c-trace-slow" x1="900" y1="591" x2="900" y2="660" stroke="#0077aa" stroke-width="1.2" opacity=".32" fill="none"/>
+<line class="c-trace-slow" x1="900" y1="660" x2="105" y2="660" stroke="#0077aa" stroke-width="1.2" opacity=".32" fill="none"/>
+<line class="c-trace-slow" x1="105" y1="660" x2="105" y2="610" stroke="#0077aa" stroke-width="1.2" opacity=".32" fill="none"/>
+<!-- Filter -->
+<rect x="575" y="648" width="50" height="24" rx="3" fill="none" stroke="#00d4ff" stroke-width=".9" opacity=".38"/>
+<text font-family="monospace" font-size="8" fill="#00d4ff" opacity=".35" x="600" y="640" text-anchor="middle">FILTER</text>
+<!-- Cooler -->
+<rect x="760" y="648" width="62" height="24" rx="4" fill="none" stroke="#00d4ff" stroke-width=".9" opacity=".38"/>
+<text font-family="monospace" font-size="8" fill="#00d4ff" opacity=".35" x="791" y="640" text-anchor="middle">COOLER</text>
+<!-- AI labels -->
+<text font-family="monospace" font-size="12" fill="#00d4ff" opacity=".08" x="55" y="200">AI</text>
+<text font-family="monospace" font-size="12" fill="#00d4ff" opacity=".07" x="1300" y="190">AI</text>
+<text font-family="monospace" font-size="12" fill="#00d4ff" opacity=".07" x="1300" y="750">AI</text>
+<text font-family="monospace" font-size="10" fill="#00d4ff" opacity=".08" x="700" y="840" text-anchor="middle" letter-spacing="3">HYDRAULIC CIRCUIT — ISO 1219-1 — HydroMind.AI</text>
+</svg></div>
+
+<!-- ═══════════════ LEFT SIDEBAR ═══════════════ -->
+<div class="hm-left-sidebar" id="hmLeftSidebar">
+    <div class="hm-left-inner">
+
+    <!-- Profile card (shown after login) -->
+    <div id="hmSidebarProfile" style="display:none;">
+      <div class="hm-profile-card">
+        <div class="hm-prof-av" id="hmProfAvatar">--</div>
+        <div class="hm-prof-name" id="hmProfName"></div>
+        <div class="hm-prof-email" id="hmProfEmail"></div>
+        <span class="hm-prof-plan" id="hmProfPlan">Free</span>
+      </div>
+    </div>
+
+    <!-- Guest state: no login button - just quick links and ad -->
+    <div id="hmSidebarNoAuth">
+      <div style="margin-bottom:.75rem;">
+        <div class="hm-sidebar-label">Quick Links</div>
+        <div class="hm-hist-item" onclick="location.href='pages/advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
+        <div class="hm-hist-item" onclick="location.href='pages/knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
+        <div class="hm-hist-item" onclick="location.href='pages/news.html'"><span class="hm-hist-icon">&#128240;</span><span class="hm-hist-text">Industry News</span></div>
+        <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
+      </div>
+      <!-- Ad slot in left sidebar -->
+      <div style="font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.45rem;border-bottom:1px solid var(--border);margin-bottom:.5rem;">Sponsored</div>
+      <div style="background:rgba(200,165,80,.03);border:1px dashed rgba(200,165,80,.12);border-radius:6px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem;">
+        <div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement
+      </div>
+      <div style="text-align:center;">
+        <a href="pages/pricing.html" style="font-family:'Space Mono',monospace;font-size:.56rem;color:rgba(200,165,80,.38);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a>
+      </div>
+    </div>
+
+    <!-- Chat history (shown after login) -->
+    <div id="hmSidebarHistory" style="display:none;margin-top:.75rem;">
+      <div class="hm-sidebar-label">Chat History</div>
+      <div id="hmHistoryList"></div>
+    </div>
+
+    <!-- Quick links (shown after login) -->
+    <div id="hmSidebarLinks" style="display:none;margin-top:.75rem;">
+      <div class="hm-sidebar-label">Quick Links</div>
+      <div class="hm-hist-item" onclick="location.href='pages/advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
+      <div class="hm-hist-item" onclick="location.href='pages/knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
+      <div class="hm-hist-item" onclick="location.href='pages/news.html'"><span class="hm-hist-icon">&#128240;</span><span class="hm-hist-text">Industry News</span></div>
+      <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
+    </div>
+
+  </div>
+  <div class="hm-left-bottom">
+    <button class="hm-logout-btn" id="hmLogoutBtn" onclick="doLogout()" style="display:none;">Sign Out</button>
+  </div>
+</div>
+
+<!-- ═══════════════ RIGHT SIDEBAR — ADS ONLY ═══════════════ -->
+<div class="hm-right-sidebar" id="hmAdSidebar">
+  <div id="hmAdTitle" style="font-family:'JetBrains Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.5rem;border-bottom:1px solid var(--border);margin-bottom:.55rem;">Sponsored</div>
+  <div id="hmNoAdBadge" style="display:none;background:rgba(61,214,140,.06);border:1px solid rgba(61,214,140,.2);border-radius:8px;padding:.75rem;text-align:center;margin-bottom:.55rem;">
+    <div style="font-size:1.2rem;">&#127881;</div>
+    <p style="font-size:.68rem;color:#3dd68c;margin:.25rem 0 0;line-height:1.4;">Ad-free<br>Pro/Enterprise</p>
+  </div>
+  <div id="hmAd1" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:195px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.55rem;">
+    <div style="font-size:1rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement<br>200×195
+  </div>
+  <div id="hmAd2" style="background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.11);border-radius:6px;padding:.65rem .6rem;text-align:center;margin-bottom:.55rem;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Partner</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:var(--cyan);margin:.15rem 0 .2rem;">Your Brand</div>
+    <div style="font-size:.65rem;color:var(--text2);line-height:1.4;">Reach hydraulic engineers worldwide.</div>
+  </div>
+  <div id="hmAd3" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.55rem;">
+    <div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128296;</div>Banner Ad<br>200×110
+  </div>
+  <div id="hmAd4" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;">
+    <div style="font-size:.85rem;opacity:.22;margin-bottom:3px;">&#128161;</div>Link Ad
+  </div>
+  <div id="hmAd5" style="margin-top:auto;padding-top:.55rem;border-top:1px solid var(--border);text-align:center;">
+    <a href="pages/pricing.html" style="font-family:'JetBrains Mono',monospace;font-size:.57rem;color:rgba(0,212,255,.4);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a>
+  </div>
+</div>
+
+<!-- ═══════════════ AUTH MODAL ═══════════════ -->
+<div class="hm-auth-overlay" id="hmAuthOverlay">
+  <div class="hm-auth-box">
+    <div class="hm-auth-tabs">
+      <button class="hm-auth-tab active" id="hmTab_login" onclick="switchAuthTab('login')">Login</button>
+      <button class="hm-auth-tab" id="hmTab_register" onclick="switchAuthTab('register')">Register</button>
+      <button class="hm-auth-close" onclick="closeAuthModal()">&#215;</button>
+    </div>
+    <div class="hm-auth-error" id="hmAuthError"></div>
+    <div class="hm-auth-panel" id="hmPanel_login">
+      <div class="hm-auth-title">Welcome Back</div>
+      <div class="hm-auth-sub">Sign in to your HydroMind.AI account</div>
+      <div class="hm-auth-field"><label>Email Address</label><input type="email" id="hmLoginEmail" class="hm-auth-input" placeholder="your@email.com"></div>
+      <div class="hm-auth-field"><label>Password</label><input type="password" id="hmLoginPass" class="hm-auth-input" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div class="hm-auth-forgot"><button class="hm-auth-link" onclick="switchAuthTab('forgot')">Forgot password?</button></div>
+      <button class="hm-auth-btn" onclick="doLogin()">Sign In</button>
+      <div class="hm-auth-footer">No account? <button class="hm-auth-link" onclick="switchAuthTab('register')">Register free</button></div>
+    </div>
+    <div class="hm-auth-panel" id="hmPanel_register" style="display:none;">
+      <div class="hm-auth-title">Create Account</div>
+      <div class="hm-auth-sub">14-day free trial — no card required</div>
+      <div class="hm-auth-row">
+        <div class="hm-auth-field"><label>First Name *</label><input type="text" id="hmRegFirst" class="hm-auth-input" placeholder="Arun"></div>
+        <div class="hm-auth-field"><label>Last Name</label><input type="text" id="hmRegLast" class="hm-auth-input" placeholder="Tiwari"></div>
+      </div>
+      <div class="hm-auth-field"><label>Work Email *</label><input type="email" id="hmRegEmail" class="hm-auth-input" placeholder="your@email.com"></div>
+      <div class="hm-auth-field"><label>Password * (min 6 chars)</label><input type="password" id="hmRegPass" class="hm-auth-input" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doRegister()"></div>
+      <div class="hm-auth-field"><label>Select Plan</label><select id="hmRegPlan" class="hm-auth-input" style="cursor:pointer;"><option value="Free">Free — Basic access</option><option value="Basic">Basic — $29/month</option><option value="Pro" selected>Pro — $79/month</option><option value="Enterprise">Enterprise — $199/month</option></select></div>
+<button class="hm-auth-btn" onclick="doRegister()">Create Account</button>
+      <div class="hm-auth-footer">Have an account? <button class="hm-auth-link" onclick="switchAuthTab('login')">Sign in</button></div>
+    </div>
+    <div class="hm-auth-panel" id="hmPanel_forgot" style="display:none;">
+      <div class="hm-auth-title">Reset Password</div>
+      <div class="hm-auth-sub">Enter your registered email address</div>
+      <div class="hm-auth-field"><label>Registered Email</label><input type="email" id="hmForgotEmail" class="hm-auth-input" placeholder="your@email.com"></div>
+      <div class="hm-auth-ok" id="hmForgotOk"></div>
+      <button class="hm-auth-btn cyan" onclick="doForgot()">Send Reset Link</button>
+      <div class="hm-auth-footer"><button class="hm-auth-link" onclick="switchAuthTab('login')">&#8592; Back to Login</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="navbar-inner">
+    <a href="index.html" class="hm-logo-wrap">
+      <div class="hm-logo-icon">
+        <div class="hm-logo-ring"></div>
+        <div class="hm-logo-h">H</div>
+      </div>
+      <div class="hm-logo-text">
+        <div class="hm-logo-name">HYDROMIND<span>.AI</span></div>
+        <div class="hm-logo-sub">Hydraulic Intelligence</div>
+      </div>
+    </a>
+        <div class="navbar-menu">
+      <a href="index.html" class="navbar-link">Home</a>
+      <a href="pages/advisor.html" class="navbar-link">AI Advisor</a>
+      <a href="pages/system-design.html" class="navbar-link">&#9881; System Design</a>
+      <a href="pages/knowledge.html" class="navbar-link">Knowledge Base</a>
+      <a href="pages/news.html" class="navbar-link">News</a>
+      <a href="index.html#electrical" class="navbar-link" style="color:#f5c842;">&#9889; Electrical</a>
+      <a href="index.html#calculator" class="navbar-link">Calculator</a>
+      <a href="pages/pricing.html" class="navbar-link">Pricing</a>
+      <a href="pages/feedback.html" class="navbar-link">Feedback</a>
+    </div>
+    <div class="navbar-cta" id="hmNavCta">
+      <button onclick="openAuthModal('login')" class="btn-outline" style="padding:8px 18px;font-size:.82rem;" id="hmNavLogin">Login</button>
+      <button onclick="openAuthModal('register')" class="btn-primary" style="padding:8px 18px;font-size:.82rem;" id="hmNavRegister">Register</button>
+      <div id="hmNavUser" style="display:none;align-items:center;gap:.5rem;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);border-radius:8px;padding:5px 10px;cursor:pointer;" onclick="doLogout()">
+        <div id="hmNavAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#0050aa);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;color:#fff;"></div>
+        <span id="hmNavName" style="font-size:.82rem;color:#e8f4ff;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+        <span id="hmNavPlan" style="font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:2px 8px;border-radius:100px;background:rgba(0,212,255,.1);color:var(--cyan);"></span>
+      </div>
+    </div>
+    <button class="navbar-toggle" id="navToggle"><span></span><span></span><span></span></button>
+  </div>
+  <div class="navbar-mobile" id="navMobile">
+    <a href="index.html">Home</a>
+    <a href="pages/advisor.html">AI Advisor</a>
+    <a href="pages/system-design.html">&#9881; System Design</a>
+    <a href="pages/knowledge.html">Knowledge Base</a>
+    <a href="pages/news.html">News</a>
+    <a href="pages/advisor.html">&#9889; Electrical</a>
+    <a href="index.html#calculator">Calculator</a>
+    <a href="pages/pricing.html">Pricing</a>
+    <a href="pages/feedback.html">Feedback</a>
+    <div class="navbar-mobile-auth" style="display:flex;gap:.5rem;margin-top:.5rem;padding-top:.75rem;border-top:1px solid var(--border);">
+      <button onclick="openAuthModal('login')" class="btn-outline" style="flex:1;padding:8px;font-size:.85rem;">Login</button>
+      <button onclick="openAuthModal('register')" class="btn-primary" style="flex:1;padding:8px;font-size:.85rem;">Register</button>
+    </div>
+  </div>
+</nav>
+
+<div class="hm-main-content">
+
+<!-- ═══ HERO ═══ -->
+<section style="min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;padding:40px 2rem 80px;text-align:center;overflow:hidden;">
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:580px;height:580px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,255,.06) 0%,transparent 70%);pointer-events:none;"></div>
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:620px;height:620px;border-radius:50%;border:1px solid rgba(0,212,255,.07);pointer-events:none;"></div>
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:760px;height:760px;border-radius:50%;border:1px solid rgba(0,212,255,.04);pointer-events:none;"></div>
+  <!-- AI head -->
+  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);width:300px;height:300px;border-radius:50%;border:1px solid rgba(0,212,255,.1);display:flex;align-items:center;justify-content:center;pointer-events:none;">
+    <svg viewBox="0 0 200 220" width="160" height="176" opacity=".15" xmlns="http://www.w3.org/2000/svg">
+      <path d="M100 20 C60 20 30 50 30 90 C30 120 48 145 75 158 L75 180 L125 180 L125 158 C152 145 170 120 170 90 C170 50 140 20 100 20Z" fill="none" stroke="#00d4ff" stroke-width="1.5"/>
+      <path d="M75 158 L75 195 Q100 205 125 195 L125 158" fill="none" stroke="#00d4ff" stroke-width="1.5"/>
+      <line x1="75" y1="168" x2="125" y2="168" stroke="#00d4ff" stroke-width="1"/>
+      <line x1="55" y1="90" x2="145" y2="90" stroke="#00d4ff" stroke-width=".8" opacity=".5"/>
+      <line x1="65" y1="75" x2="135" y2="75" stroke="#00d4ff" stroke-width=".8" opacity=".4"/>
+      <line x1="60" y1="105" x2="140" y2="105" stroke="#00d4ff" stroke-width=".8" opacity=".4"/>
+      <circle cx="80" cy="90" r="3" fill="#00d4ff" opacity=".8"/>
+      <circle cx="100" cy="90" r="3" fill="#00d4ff" opacity=".8"/>
+      <circle cx="120" cy="90" r="3" fill="#00d4ff" opacity=".8"/>
+      <circle cx="100" cy="55" r="4" fill="#00d4ff" opacity=".9"><animate attributeName="opacity" values=".9;.2;.9" dur="2s" repeatCount="indefinite"/></circle>
+      <circle cx="100" cy="32" r="3" fill="#f5c842" opacity=".8"><animate attributeName="opacity" values=".8;.2;.8" dur="2s" begin=".5s" repeatCount="indefinite"/></circle>
+    </svg>
+  </div>
+  <div style="position:relative;z-index:2;max-width:780px;margin:0 auto;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.82rem;color:#f5c842;letter-spacing:.12em;margin-bottom:1.4rem;">Smarter, Faster, and Built for Offshore Operations</div>
+    <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(2.8rem,7vw,5.2rem);font-weight:800;line-height:1.05;color:#e8f4ff;margin-bottom:1.4rem;font-size:clamp(2rem,7vw,4rem);">AI Intelligence for<br><span style="color:#00d4ff;">Hydraulic Systems</span></h1>
+    <p style="font-size:1.05rem;color:rgba(200,216,232,.65);max-width:560px;margin:0 auto 2.5rem;line-height:1.85;">Expert AI advisor for hydraulic systems, offshore cranes, and HPUs — backed by 33+ indexed OEM manuals and real offshore field cases.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem;">
+      <a href="pages/advisor.html" class="btn-primary" style="padding:14px 36px;font-size:1rem;">Start Free Trial</a>
+      <a href="pages/knowledge.html" class="btn-outline" style="padding:14px 32px;font-size:1rem;">Knowledge Base</a>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:.85rem;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;">
+        <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#c026d3,#9333ea);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.82rem;color:#fff;border:2px solid var(--bg);margin-right:-7px;z-index:5;">AT</div>
+        <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#0050aa);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.82rem;color:#fff;border:2px solid var(--bg);margin-right:-7px;z-index:4;">MR</div>
+        <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#3dd68c,#0a7a44);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.82rem;color:#fff;border:2px solid var(--bg);margin-right:-7px;z-index:3;">SK</div>
+        <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#f5c842,#c17d0a);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.82rem;color:#000;border:2px solid var(--bg);z-index:2;">JA</div>
+      </div>
+      <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;color:#e8f4ff;">1,200+ Engineers</div><div style="font-size:.75rem;color:rgba(200,216,232,.45);">using HydroMind.AI</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div style="background:rgba(4,14,32,.92);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:1.75rem 0;position:relative;z-index:1;">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;text-align:center;width:100%;box-sizing:border-box;">
+      <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;color:var(--cyan);">33+</div><div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);">OEM Manuals</div></div>
+      <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;color:var(--cyan);">KB33</div><div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);">Knowledge Base</div></div>
+      <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;color:var(--cyan);">24/7</div><div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);">AI Available</div></div>
+      <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;color:var(--cyan);">v2.0</div><div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);">Latest Version</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ELECTRICAL SECTION ═══ -->
+<section class="section section-darker" id="electrical">
+  <div class="container">
+    <div class="text-center reveal" style="max-width:620px;margin:0 auto 3rem;">
+      <div class="eyebrow" style="justify-content:center;color:#f5c842;">&#9889; Electrical &amp; PLC Intelligence</div>
+      <h2 style="font-size:clamp(1.4rem,4vw,2.2rem);word-break:break-word;">Electrical · PLC ·<br>Sensor · VFD<br><span style="color:var(--gold-y);">Fault Diagnosis</span></h2>
+      <p style="color:var(--text2);margin-top:1rem;">HydroMind covers the full electrical and PLC interface of hydraulic systems — solenoids, sensors, drives, and fieldbus networks.</p>
+    </div>
+    <div class="grid-3">
+      <div class="service-card reveal" style="border-color:rgba(245,200,66,.15);">
+        <div class="service-icon" style="background:rgba(245,200,66,.08);border-color:rgba(245,200,66,.2);">&#128187;</div>
+        <h3>PLC Fault Codes</h3>
+        <p style="font-size:.84rem;color:var(--text2);">Siemens S7-300/400/1200, Allen Bradley ControlLogix, Omron CJ/CS. Fault code lookup, I/O diagnostics, ladder logic guidance.</p>
+        <a href="pages/advisor.html" onclick="localStorage.setItem('advMode','elec')" class="service-link" style="color:var(--gold-y);">Ask AI &#8594;</a>
+      </div>
+      <div class="service-card reveal" style="border-color:rgba(245,200,66,.15);">
+        <div class="service-icon" style="background:rgba(245,200,66,.08);border-color:rgba(245,200,66,.2);">&#9889;</div>
+        <h3>Solenoid Diagnostics</h3>
+        <p style="font-size:.84rem;color:var(--text2);">Coil resistance testing (20–40Ω for 24VDC), current draw measurement, manual override, wiring verification.</p>
+        <a href="pages/advisor.html" onclick="localStorage.setItem('advMode','elec')" class="service-link" style="color:var(--gold-y);">Ask AI &#8594;</a>
+      </div>
+      <div class="service-card reveal" style="border-color:rgba(245,200,66,.15);">
+        <div class="service-icon" style="background:rgba(245,200,66,.08);border-color:rgba(245,200,66,.2);">&#128200;</div>
+        <h3>Pressure &amp; Flow Sensors</h3>
+        <p style="font-size:.84rem;color:var(--text2);">4–20mA and 0–10V transducer calibration, zero/span adjustment, wiring checks, fault isolation.</p>
+        <a href="pages/advisor.html" onclick="localStorage.setItem('advMode','elec')" class="service-link" style="color:var(--gold-y);">Ask AI &#8594;</a>
+      </div>
+      <div class="service-card reveal" style="border-color:rgba(245,200,66,.15);">
+        <div class="service-icon" style="background:rgba(245,200,66,.08);border-color:rgba(245,200,66,.2);">&#9881;&#65039;</div>
+        <h3>VFD / Inverter Faults</h3>
+        <p style="font-size:.84rem;color:var(--text2);">Danfoss FC, ABB ACS, Siemens SINAMICS fault codes. Overcurrent, overvoltage, earth fault diagnosis for pump drives.</p>
+        <a href="pages/advisor.html" onclick="localStorage.setItem('advMode','elec')" class="service-link" style="color:var(--gold-y);">Ask AI &#8594;</a>
+      </div>
+      <div class="service-card reveal" style="border-color:rgba(245,200,66,.15);">
+        <div class="service-icon" style="background:rgba(245,200,66,.08);border-color:rgba(245,200,66,.2);">&#128279;</div>
+        <h3>CAN Bus &amp; Fieldbus</h3>
+        <p style="font-size:.84rem;color:var(--text2);">CANopen, Profibus, Modbus RTU/TCP diagnostics. Node fault isolation, communication timeout troubleshooting.</p>
+        <a href="pages/advisor.html" onclick="localStorage.setItem('advMode','elec')" class="service-link" style="color:var(--gold-y);">Ask AI &#8594;</a>
+      </div>
+      <div class="service-card reveal" style="border-color:rgba(245,200,66,.15);">
+        <div class="service-icon" style="background:rgba(245,200,66,.08);border-color:rgba(245,200,66,.2);">&#128196;</div>
+        <h3>Upload Electrical Manuals</h3>
+        <p style="font-size:.84rem;color:var(--text2);">Upload PLC programs, electrical schematics, or VFD manuals and ask HydroMind AI to reference them in answers.</p>
+        <a href="pages/advisor.html" onclick="localStorage.setItem('advMode','elec')" class="service-link" style="color:var(--gold-y);">Upload &amp; Ask &#8594;</a>
+      </div>
+    </div>
+    <div class="text-center mt-4 reveal">
+      <a href="pages/advisor.html" onclick="localStorage.setItem('advMode','elec')" class="btn-primary" style="background:linear-gradient(135deg,#c49000,#f5c842);color:#000;padding:13px 32px;">&#9889; Open Electrical/PLC Advisor</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CALCULATOR ═══ -->
+<section class="section section-dark" id="calculator">
+  <div class="container">
+    <div class="text-center reveal" style="max-width:600px;margin:0 auto 2.5rem;">
+      <div class="eyebrow" style="justify-content:center;">&#128210; Engineering Calculator</div>
+      <h2>Hydraulic &amp; Electrical<br><span class="text-cyan">Engineering Calculator</span></h2>
+    </div>
+    <div style="background:rgba(5,15,35,.95);border:1px solid var(--border);border-radius:14px;overflow:hidden;max-width:900px;margin:0 auto;">
+      <!-- Header -->
+      <div style="background:rgba(3,10,24,.98);border-bottom:1px solid var(--border);padding:.85rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.6rem;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--cyan);" id="calcHeader">// Cylinder Calculator — Force · Area · Speed · Volume</span>
+        <div style="display:flex;align-items:center;gap:.5rem;">
+          <div style="display:flex;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.18);border-radius:6px;overflow:hidden;">
+            <button id="unitISO" onclick="setCalcUnit('iso')" style="padding:4px 13px;font-family:'JetBrains Mono',monospace;font-size:.68rem;border:none;cursor:pointer;transition:.2s;background:rgba(0,212,255,.15);color:var(--cyan);">ISO</button>
+            <button id="unitIMP" onclick="setCalcUnit('imp')" style="padding:4px 13px;font-family:'JetBrains Mono',monospace;font-size:.68rem;border:none;cursor:pointer;transition:.2s;background:transparent;color:var(--text3);">Imperial</button>
+          </div>
+          <button onclick="resetCalc()" style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text3);background:none;border:1px solid var(--border);border-radius:5px;padding:4px 12px;cursor:pointer;">Reset</button>
+        </div>
+      </div>
+      <!-- Tabs -->
+      <div style="display:flex;gap:.5rem;padding:.75rem 1.5rem;flex-wrap:wrap;border-bottom:1px solid var(--border);">
+        <button class="calc-tab active" onclick="switchCalc('cylinder',this)" id="ctab-cylinder">&#9899; Cylinder</button>
+        <button class="calc-tab" onclick="switchCalc('pump',this)" id="ctab-pump">&#9899; Pump</button>
+        <button class="calc-tab" onclick="switchCalc('motor',this)" id="ctab-motor">&#9899; Motor</button>
+        <button class="calc-tab" onclick="switchCalc('pdrop',this)" id="ctab-pdrop">&#9899; Pressure Drop</button>
+        <button class="calc-tab" onclick="switchCalc('piping',this)" id="ctab-piping">&#9899; Piping</button>
+        <button class="calc-tab" onclick="switchCalc('elec',this)" id="ctab-elec" style="color:#f5c842;border-color:rgba(245,200,66,.3);">&#9889; Electrical</button>
+      </div>
+
+      <!-- CYLINDER PANEL -->
+      <div class="calc-panel calc-body" id="calc-cylinder">
+        <div class="calc-row">
+          <div class="calc-field"><div class="calc-label">Bore Diameter</div><div class="calc-input-wrap"><input class="calc-input" id="cyl-bore" type="number" placeholder="0" oninput="calcCylinder()"><span class="calc-unit">mm</span></div></div>
+          <div class="calc-field"><div class="calc-label">Rod Diameter</div><div class="calc-input-wrap"><input class="calc-input" id="cyl-rod" type="number" placeholder="0" oninput="calcCylinder()"><span class="calc-unit">mm</span></div></div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-field"><div class="calc-label">Stroke</div><div class="calc-input-wrap"><input class="calc-input" id="cyl-stroke" type="number" placeholder="0" oninput="calcCylinder()"><span class="calc-unit">mm</span></div></div>
+          <div class="calc-field"><div class="calc-label">Working Pressure</div><div class="calc-input-wrap"><input class="calc-input" id="cyl-press" type="number" placeholder="0" oninput="calcCylinder()"><span class="calc-unit">bar</span></div></div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-field"><div class="calc-label">Flow Rate</div><div class="calc-input-wrap"><input class="calc-input" id="cyl-flow" type="number" placeholder="0" oninput="calcCylinder()"><span class="calc-unit">L/min</span></div></div>
+          <div class="calc-field"></div>
+        </div>
+        <div class="calc-divider"></div>
+        <div class="calc-results-grid">
+          <div class="calc-result-card"><div class="calc-result-label">Bore Area</div><div class="calc-result-val" id="res-bore-area">—</div><div class="calc-result-unit">cm²</div></div>
+          <div class="calc-result-card"><div class="calc-result-label">Rod Area</div><div class="calc-result-val" id="res-rod-area">—</div><div class="calc-result-unit">cm²</div></div>
+          <div class="calc-result-card"><div class="calc-result-label">Extend Force</div><div class="calc-result-val" id="res-ext-force">—</div><div class="calc-result-unit">kN</div></div>
+          <div class="calc-result-card"><div class="calc-result-label">Retract Force</div><div class="calc-result-val" id="res-ret-force">—</div><div class="calc-result-unit">kN</div></div>
+          <div class="calc-result-card"><div class="calc-result-label">Extend Speed</div><div class="calc-result-val" id="res-ext-spd">—</div><div class="calc-result-unit">mm/s</div></div>
+          <div class="calc-result-card"><div class="calc-result-label">Retract Speed</div><div class="calc-result-val" id="res-ret-spd">—</div><div class="calc-result-unit">mm/s</div></div>
+          <div class="calc-result-card"><div class="calc-result-label">Extend Vol.</div><div class="calc-result-val" id="res-ext-vol">—</div><div class="calc-result-unit">L</div></div>
+          <div class="calc-result-card"><div class="calc-result-label">Retract Vol.</div><div class="calc-result-val" id="res-ret-vol">—</div><div class="calc-result-unit">L</div></div>
+        </div>
+      </div>
+
+      <!-- PUMP PANEL -->
+      <div class="calc-panel calc-body" id="calc-pump" style="display:none;">
+        <div style="display:flex;gap:.6rem;margin-bottom:1rem;flex-wrap:wrap;">
+          <button class="calc-mode-btn active" id="pump-mode-flow" onclick="setPumpMode('flow',this)">Flow Rate</button>
+          <button class="calc-mode-btn" id="pump-mode-power" onclick="setPumpMode('power',this)">Power</button>
+          <button class="calc-mode-btn" id="pump-mode-disp" onclick="setPumpMode('disp',this)">Displacement</button>
+        </div>
+        <div class="calc-row">
+          <div class="calc-field"><div class="calc-label">Displacement</div><div class="calc-input-wrap"><input class="calc-input" id="pump-disp" type="number" placeholder="0" oninput="calcPump()"><span class="calc-unit">cc/rev</span></div></div>
+          <div class="calc-field"><div class="calc-label">Speed</div><div class="calc-input-wrap"><input class="calc-input" id="pump-rpm" type="number" placeholder="1500" oninput="calcPump()"><span class="calc-unit">rpm</span></div></div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-field"><div class="calc-label">Vol. Efficiency</div><div class="calc-input-wrap"><input class="calc-input" id="pump-voleff" type="number" placeholder="95" oninput="calcPump()"><span class="calc-unit">%</span></div></div>
+          <div class="calc-field"><div class="calc-label">Pressure</div><div class="calc-input-wrap"><input class="calc-input" id="pump-press" type="number" placeholder="0" oninput="calcPump()"><span class="calc-unit">bar</span></div></div>
+        </div>
+        <div class="calc-divider"></div>
+        <div class="calc-results-grid">
+          <div class="calc-result-card"><div class="calc-result-label">Flow Rate</div><div class="calc-result-val" id="res-pump-flow">—</div><div class="calc-result-unit">L/min</div></div>
+          <div class="calc-result-card"><div class="calc-result-label">Hyd. Power</div><div class="calc-result-val" id="res-pump-hpow">—</div><div class="calc-result-unit">kW</div></div>
+          <div class="calc-result-card"><div class="calc-result-label">Input Power</div><div class="calc-result-val" id="res-pump-ipow">—</div><div class="calc-result-unit">kW</div></div>
+          <div class="calc-result-card"><div class="calc-result-label">Shaft Torque</div><div class="calc-result-val" id="res-pump-torq">—</div><div class="calc-result-unit">Nm</div></div>
+        </div>
+      </div>
+
+      <!-- MOTOR PANEL -->
+      <div class="calc-panel calc-body" id="calc-motor" style="display:none;">
+        <div class="calc-row">
+          <div class="calc-field"><div class="calc-label">Displacement</div><div class="calc-input-wrap"><input class="calc-input" id="mot-disp" type="number" placeholder="0" oninput="calcMotor()"><span class="calc-unit">cc/rev</span></div></div>
+          <div class="calc-field"><div class="calc-label">Pressure</div><div class="calc-input-wrap"><input class="calc-input" id="mot-press" type="number" placeholder="0" oninput="calcMotor()"><span class="calc-unit">bar</span></div></div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-field"><div class="calc-label">Flow Rate</div><div class="calc-input-wrap"><input class="calc-input" id="mot-flow" type="number" placeholder="0" oninput="calcMotor()"><span class="calc-unit">L/min</span></div></div>
+          <div class="calc-field"><div class="calc-label">Mech. Efficiency</div><div class="calc-input-wrap"><input class="calc-input" id="mot-meff" type="number" placeholder="90" oninput="calcMotor()"><span class="calc-unit">%</span></div></div>
+        </div>
+        <div class="calc-divider"></div>
+        <div class="calc-results-grid">
+          <div class="calc-result-card"><div class="calc-result-label">Output Torque</div><div class="calc-result-val" id="res-mot-torq">—</div><div class="calc-result-unit">Nm</div></div>
+          <div class="calc-result-card"><div class="calc-result-label">Speed</div><div class="calc-result-val" id="res-mot-rpm">—</div><div class="calc-result-unit">rpm</div></div>
+          <div class="calc-result-card"><div class="calc-result-label">Power</div><div class="calc-result-val" id="res-mot-pow">—</div><div class="calc-result-unit">kW</div></div>
+          <div class="calc-result-card"><div class="calc-result-label">Mech. Eff.</div><div class="calc-result-val" id="res-mot-eff">—</div><div class="calc-result-unit">%</div></div>
+        </div>
+      </div>
+
+      <!-- PRESSURE DROP PANEL -->
+      <div class="calc-panel calc-body" id="calc-pdrop" style="display:none;">
+        <div class="calc-row">
+          <div class="calc-field"><div class="calc-label">Flow Rate</div><div class="calc-input-wrap"><input class="calc-input" id="pd-flow" type="number" placeholder="0" oninput="calcPdrop()"><span class="calc-unit">L/min</span></div></div>
+          <div class="calc-field"><div class="calc-label">Pipe Diameter</div><div class="calc-input-wrap"><input class="calc-input" id="pd-diam" type="number" placeholder="0" oninput="calcPdrop()"><span class="calc-unit">mm</span></div></div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-field"><div class="calc-label">Pipe Length</div><div class="calc-input-wrap"><input class="calc-input" id="pd-len" type="number" placeholder="0" oninput="calcPdrop()"><span class="calc-unit">m</span></div></div>
+          <div class="calc-field"><div class="calc-label">Viscosity (cSt)</div><div class="calc-input-wrap"><input class="calc-input" id="pd-visc" type="number" placeholder="46" oninput="calcPdrop()"><span class="calc-unit">cSt</span></div></div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-field"><div class="calc-label">Fluid Density</div><div class="calc-input-wrap"><input class="calc-input" id="pd-dens" type="number" placeholder="870" oninput="calcPdrop()"><span class="calc-unit">kg/m³</span></div></div>
+          <div class="calc-field"></div>
+        </div>
+        <div class="calc-divider"></div>
+        <div class="calc-results-grid">
+          <div class="calc-result-card"><div class="calc-result-label">Velocity</div><div class="calc-result-val" id="res-pd-vel">—</div><div class="calc-result-unit">m/s</div></div>
+          <div class="calc-result-card"><div class="calc-result-label">Reynolds No.</div><div class="calc-result-val" id="res-pd-re">—</div><div class="calc-result-unit">—</div></div>
+          <div class="calc-result-card"><div class="calc-result-label">Pressure Drop</div><div class="calc-result-val" id="res-pd-bar">—</div><div class="calc-result-unit">bar</div></div>
+          <div class="calc-result-card"><div class="calc-result-label">Flow Input</div><div class="calc-result-val" id="res-pd-flow">—</div><div class="calc-result-unit">L/min</div></div>
+        </div>
+      </div>
+
+      <!-- PIPING PANEL -->
+      <div class="calc-panel calc-body" id="calc-piping" style="display:none;">
+        <div class="calc-row">
+          <div class="calc-field"><div class="calc-label">Flow Rate</div><div class="calc-input-wrap"><input class="calc-input" id="pipe-flow" type="number" placeholder="0" oninput="calcPiping()"><span class="calc-unit">L/min</span></div></div>
+          <div class="calc-field"><div class="calc-label">Pipe Bore</div><div class="calc-input-wrap"><input class="calc-input" id="pipe-diam" type="number" placeholder="0" oninput="calcPiping()"><span class="calc-unit">mm</span></div></div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-field"><div class="calc-label">Viscosity (cSt)</div><div class="calc-input-wrap"><input class="calc-input" id="pipe-visc" type="number" placeholder="46" oninput="calcPiping()"><span class="calc-unit">cSt</span></div></div>
+          <div class="calc-field"><div class="calc-label">Fluid Density</div><div class="calc-input-wrap"><input class="calc-input" id="pipe-dens" type="number" placeholder="870" oninput="calcPiping()"><span class="calc-unit">kg/m³</span></div></div>
+        </div>
+        <div class="calc-divider"></div>
+        <div class="calc-results-grid">
+          <div class="calc-result-card"><div class="calc-result-label">Velocity</div><div class="calc-result-val" id="res-pipe-vel">—</div><div class="calc-result-unit">m/s</div></div>
+          <div class="calc-result-card"><div class="calc-result-label">Pipe Area</div><div class="calc-result-val" id="res-pipe-area">—</div><div class="calc-result-unit">mm²</div></div>
+          <div class="calc-result-card"><div class="calc-result-label">Reynolds No.</div><div class="calc-result-val" id="res-pipe-re">—</div><div class="calc-result-unit">—</div></div>
+          <div class="calc-result-card"><div class="calc-result-label">Flow Regime</div><div class="calc-result-val" id="res-pipe-regime" style="font-size:.85rem;">—</div><div class="calc-result-unit">—</div></div>
+        </div>
+      </div>
+
+      <!-- ELECTRICAL PANEL -->
+      <div class="calc-panel calc-body" id="calc-elec" style="display:none;">
+        <div style="display:flex;gap:.6rem;margin-bottom:1.1rem;flex-wrap:wrap;">
+          <button class="calc-mode-btn active" id="elec-mode-ohm"    onclick="setElecMode('ohm',this)">Ohm's Law</button>
+          <button class="calc-mode-btn"        id="elec-mode-power"  onclick="setElecMode('power',this)">Power</button>
+          <button class="calc-mode-btn"        id="elec-mode-sol"    onclick="setElecMode('sol',this)">Solenoid</button>
+          <button class="calc-mode-btn"        id="elec-mode-sensor" onclick="setElecMode('sensor',this)">4-20mA Sensor</button>
+        </div>
+        <!-- Ohm's law -->
+        <div id="elec-panel-ohm">
+          <div class="calc-row">
+            <div class="calc-field"><div class="calc-label">Voltage (V)</div><div class="calc-input-wrap"><input class="calc-input" id="el-volt" type="number" placeholder="0" oninput="calcElec()"><span class="calc-unit">V</span></div></div>
+            <div class="calc-field"><div class="calc-label">Current (I)</div><div class="calc-input-wrap"><input class="calc-input" id="el-curr" type="number" placeholder="0" oninput="calcElec()"><span class="calc-unit">A</span></div></div>
+          </div>
+          <div class="calc-row">
+            <div class="calc-field"><div class="calc-label">Resistance (R)</div><div class="calc-input-wrap"><input class="calc-input" id="el-res" type="number" placeholder="0" oninput="calcElec()"><span class="calc-unit">&#937;</span></div></div>
+            <div class="calc-field"></div>
+          </div>
+        </div>
+        <!-- Power -->
+        <div id="elec-panel-power" style="display:none;">
+          <div class="calc-row">
+            <div class="calc-field"><div class="calc-label">Voltage</div><div class="calc-input-wrap"><input class="calc-input" id="el-pvolt" type="number" placeholder="0" oninput="calcElec()"><span class="calc-unit">V</span></div></div>
+            <div class="calc-field"><div class="calc-label">Current</div><div class="calc-input-wrap"><input class="calc-input" id="el-pcurr" type="number" placeholder="0" oninput="calcElec()"><span class="calc-unit">A</span></div></div>
+          </div>
+          <div class="calc-row">
+            <div class="calc-field"><div class="calc-label">Power Factor</div><div class="calc-input-wrap"><input class="calc-input" id="el-pf" type="number" placeholder="0.85" oninput="calcElec()"><span class="calc-unit">cos&#966;</span></div></div>
+            <div class="calc-field"><div class="calc-label">Phases</div>
+              <div style="display:flex;gap:.5rem;margin-top:4px;">
+                <button class="calc-mode-btn active" id="el-ph1" onclick="setPhase(1,this)">1&#966; Single</button>
+                <button class="calc-mode-btn" id="el-ph3" onclick="setPhase(3,this)">3&#966; Three</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Solenoid -->
+        <div id="elec-panel-sol" style="display:none;">
+          <div style="background:rgba(245,200,66,.05);border:1px solid rgba(245,200,66,.15);border-radius:7px;padding:.8rem;margin-bottom:1rem;font-size:.8rem;color:rgba(200,216,232,.65);line-height:1.6;">
+            &#9889; <strong style="color:var(--gold-y);">Solenoid coil check:</strong> 24VDC = 20–40Ω &nbsp;|&nbsp; 110VAC = 200–400Ω &nbsp;|&nbsp; Open circuit (&gt;5kΩ) = failed coil &nbsp;|&nbsp; Short (&lt;5Ω) = shorted
+          </div>
+          <div class="calc-row">
+            <div class="calc-field"><div class="calc-label">Supply Voltage</div><div class="calc-input-wrap"><input class="calc-input" id="el-svolt" type="number" placeholder="24" oninput="calcElec()"><span class="calc-unit">V</span></div></div>
+            <div class="calc-field"><div class="calc-label">Measured Resistance</div><div class="calc-input-wrap"><input class="calc-input" id="el-sres" type="number" placeholder="0" oninput="calcElec()"><span class="calc-unit">&#937;</span></div></div>
+          </div>
+        </div>
+        <!-- 4-20mA Sensor -->
+        <div id="elec-panel-sensor" style="display:none;">
+          <div class="calc-row">
+            <div class="calc-field"><div class="calc-label">Sensor Range Min</div><div class="calc-input-wrap"><input class="calc-input" id="el-smin" type="number" placeholder="0" oninput="calcElec()"><span class="calc-unit">bar</span></div></div>
+            <div class="calc-field"><div class="calc-label">Sensor Range Max</div><div class="calc-input-wrap"><input class="calc-input" id="el-smax" type="number" placeholder="400" oninput="calcElec()"><span class="calc-unit">bar</span></div></div>
+          </div>
+          <div class="calc-row">
+            <div class="calc-field"><div class="calc-label">Measured mA Signal</div><div class="calc-input-wrap"><input class="calc-input" id="el-sma" type="number" placeholder="12.0" oninput="calcElec()"><span class="calc-unit">mA</span></div></div>
+            <div class="calc-field"></div>
+          </div>
+        </div>
+        <div class="calc-divider"></div>
+        <div class="calc-results-grid">
+          <div class="calc-result-card"><div class="calc-result-label" id="elec-r1-lbl">Voltage</div><div class="calc-result-val" id="elec-r1">—</div><div class="calc-result-unit" id="elec-r1-unit">V</div></div>
+          <div class="calc-result-card"><div class="calc-result-label" id="elec-r2-lbl">Current</div><div class="calc-result-val" id="elec-r2">—</div><div class="calc-result-unit" id="elec-r2-unit">A</div></div>
+          <div class="calc-result-card"><div class="calc-result-label" id="elec-r3-lbl">Resistance / Status</div><div class="calc-result-val" id="elec-r3">—</div><div class="calc-result-unit" id="elec-r3-unit">&#937;</div></div>
+          <div class="calc-result-card"><div class="calc-result-label" id="elec-r4-lbl">Power / Range</div><div class="calc-result-val" id="elec-r4">—</div><div class="calc-result-unit" id="elec-r4-unit">W</div></div>
+        </div>
+      </div>
+
+      <!-- Formula footer -->
+      <div style="padding:.75rem 1.5rem;border-top:1px solid var(--border);background:rgba(0,212,255,.02);">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--text3);" id="calcFormula">F = p × A  |  v = Q / A  |  A = π × d² / 4</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="hm-logo-wrap" style="margin-bottom:.75rem;"><div class="hm-logo-icon"><div class="hm-logo-ring"></div><div class="hm-logo-h">H</div></div><div class="hm-logo-text"><div class="hm-logo-name">HYDROMIND<span>.AI</span></div><div class="hm-logo-sub">Hydraulic Intelligence</div></div></div>
+        <p>AI-powered hydraulic intelligence for offshore crane supervisors and hydraulic technicians.</p>
+        <div class="badge-pill">&#9679; AI Online — KB v2.0</div>
+      </div>
+      <div class="footer-col"><h5>Platform</h5><div class="footer-links"><a href="pages/advisor.html">AI Advisor</a><a href="pages/knowledge.html">Knowledge Base</a><a href="pages/news.html">Industry News</a><a href="index.html#calculator">Calculator</a></div></div>
+      <div class="footer-col"><h5>Company</h5><div class="footer-links"><a href="pages/pricing.html">Pricing</a><a href="pages/feedback.html">Feedback</a><a href="pages/admin.html">Admin</a><a href="pages/privacy.html">Privacy Policy</a><a href="pages/disclaimer.html">Disclaimer</a></div></div>
+      <div class="footer-col"><h5>Contact</h5><div class="footer-links"><a href="mailto:arun25hyd@gmail.com">arun25hyd@gmail.com</a><a href="#">Abu Dhabi, UAE</a></div></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 HydroMind.AI — All rights reserved</span>
+      <div class="footer-bottom-links"><a href="pages/privacy.html">Privacy Policy</a><a href="pages/disclaimer.html">Disclaimer</a></div>
+    </div>
+  </div>
+</footer>
+
+</div><!-- /hm-main-content -->
+
+<script src="js/main.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>

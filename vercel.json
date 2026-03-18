@@ -1,0 +1,84 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/chat",
+      "destination": "/api/chat.js"
+    },
+    {
+      "source": "/api/feedback",
+      "destination": "/api/feedback.js"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/advisor.html",
+      "destination": "/pages/advisor.html",
+      "permanent": true
+    },
+    {
+      "source": "/pricing.html",
+      "destination": "/pages/pricing.html",
+      "permanent": true
+    },
+    {
+      "source": "/knowledge.html",
+      "destination": "/pages/knowledge.html",
+      "permanent": true
+    },
+    {
+      "source": "/news.html",
+      "destination": "/pages/news.html",
+      "permanent": true
+    },
+    {
+      "source": "/feedback.html",
+      "destination": "/pages/feedback.html",
+      "permanent": true
+    },
+    {
+      "source": "/admin.html",
+      "destination": "/pages/admin.html",
+      "permanent": true
+    },
+    {
+      "source": "/services.html",
+      "destination": "/pages/services.html",
+      "permanent": true
+    },
+    {
+      "source": "/privacy.html",
+      "destination": "/pages/privacy.html",
+      "permanent": true
+    },
+    {
+      "source": "/disclaimer.html",
+      "destination": "/pages/disclaimer.html",
+      "permanent": true
+    },
+    {
+      "source": "/system-design.html",
+      "destination": "/pages/system-design.html",
+      "permanent": true
+    },
+    {
+      "source": "/contact.html",
+      "destination": "/pages/pricing.html",
+      "permanent": true
+    },
+    {
+      "source": "/about.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/pages/contact.html",
+      "destination": "/pages/pricing.html",
+      "permanent": true
+    },
+    {
+      "source": "/pages/about.html",
+      "destination": "/",
+      "permanent": true
+    }
+  ]
+}
