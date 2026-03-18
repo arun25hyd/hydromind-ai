@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI Advisor — HydroMind.AI</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.advisor-wrap{display:flex;height:calc(100vh - 72px);margin-top:72px;margin-left:220px;margin-right:200px;position:relative;z-index:1;background:rgba(2,8,18,.97);}
+@media(max-width:1200px){.advisor-wrap{margin-right:0;}}
+@media(max-width:900px){.advisor-wrap{margin-left:0;}}
+.mode-pill{padding:5px 14px;border:1px solid var(--border);border-radius:100px;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text3);cursor:pointer;transition:.18s;flex-shrink:0;}
+.mode-pill:hover{border-color:rgba(0,212,255,.35);color:var(--text2);}
+.mode-pill.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,.07);}
+.adv-messages{flex:1;overflow-y:auto;padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:.9rem;}
+.msg-row{display:flex;gap:.7rem;max-width:88%;}
+.msg-row.user{flex-direction:row-reverse;align-self:flex-end;}
+.msg-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;}
+.msg-av.ai{background:rgba(0,212,255,.12);color:var(--cyan);border:1px solid rgba(0,212,255,.2);}
+.msg-av.usr{background:rgba(192,38,211,.12);color:#e040fb;border:1px solid rgba(192,38,211,.2);}
+.msg-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text3);margin-bottom:3px;}
+.msg-bubble{background:rgba(8,22,40,.92);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;font-size:.875rem;color:var(--text2);line-height:1.75;}
+.msg-row.user .msg-bubble{background:rgba(192,38,211,.07);border-color:rgba(192,38,211,.18);color:#e8f4ff;}
+.msg-bubble strong{color:#e8f4ff;}
+.typing-ind{display:flex;gap:4px;padding:9px 13px;background:rgba(8,22,40,.92);border:1px solid var(--border);border-radius:10px;width:fit-content;}
+.typing-dot{width:6px;height:6px;border-radius:50%;background:rgba(0,212,255,.5);animation:tbounce .8s ease-in-out infinite;}
+.typing-dot:nth-child(2){animation-delay:.15s;}.typing-dot:nth-child(3){animation-delay:.3s;}
+@keyframes tbounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+.adv-input-area{flex-shrink:0;border-top:1px solid var(--border);background:rgba(3,10,24,.98);}
+.attach-preview{display:none;padding:.45rem 1.25rem;background:rgba(0,212,255,.04);border-bottom:1px solid rgba(0,212,255,.08);gap:.45rem;flex-wrap:wrap;}
+.attach-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(0,212,255,.09);border:1px solid rgba(0,212,255,.18);border-radius:100px;padding:3px 10px;font-family:'JetBrains Mono',monospace;font-size:.67rem;color:var(--cyan);}
+.adv-input-row{display:flex;gap:.55rem;padding:.9rem 1.25rem;align-items:flex-end;}
+.attach-btn{width:38px;height:38px;flex-shrink:0;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.18);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.95rem;transition:.18s;align-self:flex-end;}
+.attach-btn:hover{background:rgba(0,212,255,.14);}
+.adv-textarea{flex:1;background:rgba(2,11,24,.88);border:1px solid var(--border);border-radius:8px;padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:.88rem;color:#e8f4ff;resize:none;outline:none;min-height:42px;max-height:110px;transition:.18s;line-height:1.5;}
+.adv-textarea:focus{border-color:rgba(0,212,255,.38);}
+.send-btn{width:38px;height:38px;flex-shrink:0;background:linear-gradient(135deg,#c026d3,#9333ea);border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.9rem;transition:.18s;align-self:flex-end;}
+.send-btn:hover{opacity:.85;transform:translateY(-1px);}
+.adv-hint{padding:.3rem 1.25rem .65rem;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text3);}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#3dd68c;animation:node-pulse 2s infinite;}
+
+
+
+</style>
+</head>
+<body>
+
+<div class="circuit-bg"><svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="abg" cx="50%" cy="50%" r="55%"><stop offset="0%" stop-color="#001830"/><stop offset="100%" stop-color="#020b18"/></radialGradient></defs><rect width="1400" height="900" fill="url(#abg)"/><line class="c-trace" x1="0" y1="450" x2="300" y2="450" stroke="#00d4ff" stroke-width=".7" opacity=".12" fill="none"/><line class="c-trace-r" x1="1400" y1="450" x2="1100" y2="450" stroke="#00d4ff" stroke-width=".7" opacity=".12" fill="none"/></svg></div>
+
+<!-- LEFT SIDEBAR -->
+<div class="hm-left-sidebar" id="hmLeftSidebar">
+    <div class="hm-left-inner">
+
+    <!-- Profile card (shown after login) -->
+    <div id="hmSidebarProfile" style="display:none;">
+      <div class="hm-profile-card">
+        <div class="hm-prof-av" id="hmProfAvatar">--</div>
+        <div class="hm-prof-name" id="hmProfName"></div>
+        <div class="hm-prof-email" id="hmProfEmail"></div>
+        <span class="hm-prof-plan" id="hmProfPlan">Free</span>
+      </div>
+    </div>
+
+    <!-- Guest state: no login button - just quick links and ad -->
+    <div id="hmSidebarNoAuth">
+      <div style="margin-bottom:.75rem;">
+        <div class="hm-sidebar-label">Quick Links</div>
+        <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
+        <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
+        <div class="hm-hist-item" onclick="location.href='news.html'"><span class="hm-hist-icon">&#128240;</span><span class="hm-hist-text">Industry News</span></div>
+        <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
+      </div>
+      <!-- Ad slot in left sidebar -->
+      <div style="font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.45rem;border-bottom:1px solid var(--border);margin-bottom:.5rem;">Sponsored</div>
+      <div style="background:rgba(200,165,80,.03);border:1px dashed rgba(200,165,80,.12);border-radius:6px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem;">
+        <div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement
+      </div>
+      <div style="text-align:center;">
+        <a href="pricing.html" style="font-family:'Space Mono',monospace;font-size:.56rem;color:rgba(200,165,80,.38);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a>
+      </div>
+    </div>
+
+    <!-- Chat history (shown after login) -->
+    <div id="hmSidebarHistory" style="display:none;margin-top:.75rem;">
+      <div class="hm-sidebar-label">Chat History</div>
+      <div id="hmHistoryList"></div>
+    </div>
+
+    <!-- Quick links (shown after login) -->
+    <div id="hmSidebarLinks" style="display:none;margin-top:.75rem;">
+      <div class="hm-sidebar-label">Quick Links</div>
+      <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
+      <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
+      <div class="hm-hist-item" onclick="location.href='news.html'"><span class="hm-hist-icon">&#128240;</span><span class="hm-hist-text">Industry News</span></div>
+      <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
+    </div>
+
+  </div>
+  <div class="hm-left-bottom"><button class="hm-logout-btn" id="hmLogoutBtn" onclick="doLogout()" style="display:none;">Sign Out</button></div>
+</div>
+
+<!-- RIGHT SIDEBAR -->
+<div class="hm-right-sidebar" id="hmAdSidebar">
+  <div id="hmAdTitle" style="font-family:'JetBrains Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.5rem;border-bottom:1px solid var(--border);margin-bottom:.55rem;">Sponsored</div>
+  <div id="hmNoAdBadge" style="display:none;background:rgba(61,214,140,.06);border:1px solid rgba(61,214,140,.2);border-radius:8px;padding:.75rem;text-align:center;margin-bottom:.55rem;"><div style="font-size:1.2rem;">&#127881;</div><p style="font-size:.68rem;color:#3dd68c;margin:.25rem 0 0;line-height:1.4;">Ad-free<br>Pro/Enterprise</p></div>
+  <div id="hmAd1" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:195px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:1rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement<br>200×195</div>
+  <div id="hmAd2" style="background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.11);border-radius:6px;padding:.65rem .6rem;text-align:center;margin-bottom:.55rem;"><div style="font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Partner</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:var(--cyan);margin:.15rem 0 .2rem;">Your Brand</div><div style="font-size:.65rem;color:var(--text2);line-height:1.4;">Reach hydraulic engineers worldwide.</div></div>
+  <div id="hmAd3" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128296;</div>Banner Ad<br>200×110</div>
+  <div id="hmAd4" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;"><div style="font-size:.85rem;opacity:.22;margin-bottom:3px;">&#128161;</div>Link Ad</div>
+  <div id="hmAd5" style="margin-top:auto;padding-top:.55rem;border-top:1px solid var(--border);text-align:center;"><a href="pricing.html" style="font-family:'JetBrains Mono',monospace;font-size:.57rem;color:rgba(0,212,255,.4);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a></div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="hm-auth-overlay" id="hmAuthOverlay">
+  <div class="hm-auth-box">
+    <div class="hm-auth-tabs">
+      <button class="hm-auth-tab active" id="hmTab_login" onclick="switchAuthTab('login')">Login</button>
+      <button class="hm-auth-tab" id="hmTab_register" onclick="switchAuthTab('register')">Register</button>
+      <button class="hm-auth-close" onclick="closeAuthModal()">&#215;</button>
+    </div>
+    <div class="hm-auth-error" id="hmAuthError"></div>
+    <div class="hm-auth-panel" id="hmPanel_login">
+      <div class="hm-auth-title">Welcome Back</div><div class="hm-auth-sub">Sign in to HydroMind.AI</div>
+      <div class="hm-auth-field"><label>Email</label><input type="email" id="hmLoginEmail" class="hm-auth-input" placeholder="your@email.com"></div>
+      <div class="hm-auth-field"><label>Password</label><input type="password" id="hmLoginPass" class="hm-auth-input" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div class="hm-auth-forgot"><button class="hm-auth-link" onclick="switchAuthTab('forgot')">Forgot password?</button></div>
+      <button class="hm-auth-btn" onclick="doLogin()">Sign In</button>
+      <div class="hm-auth-footer">No account? <button class="hm-auth-link" onclick="switchAuthTab('register')">Register free</button></div>
+    </div>
+    <div class="hm-auth-panel" id="hmPanel_register" style="display:none;">
+      <div class="hm-auth-title">Create Account</div><div class="hm-auth-sub">14-day free trial</div>
+      <div class="hm-auth-row"><div class="hm-auth-field"><label>First Name *</label><input type="text" id="hmRegFirst" class="hm-auth-input" placeholder="Arun"></div><div class="hm-auth-field"><label>Last Name</label><input type="text" id="hmRegLast" class="hm-auth-input" placeholder="Tiwari"></div></div>
+      <div class="hm-auth-field"><label>Email *</label><input type="email" id="hmRegEmail" class="hm-auth-input" placeholder="your@email.com"></div>
+      <div class="hm-auth-field"><label>Password *</label><input type="password" id="hmRegPass" class="hm-auth-input" placeholder="Min 6 chars" onkeydown="if(event.key==='Enter')doRegister()"></div>
+      <div class="hm-auth-field"><label>Select Plan</label><select id="hmRegPlan" class="hm-auth-input" style="cursor:pointer;"><option value="Free">Free — Basic access</option><option value="Basic">Basic — $29/month</option><option value="Pro" selected>Pro — $79/month</option><option value="Enterprise">Enterprise — $199/month</option></select></div>
+<button class="hm-auth-btn" onclick="doRegister()">Create Account</button>
+      <div class="hm-auth-footer">Have account? <button class="hm-auth-link" onclick="switchAuthTab('login')">Sign in</button></div>
+    </div>
+    <div class="hm-auth-panel" id="hmPanel_forgot" style="display:none;">
+      <div class="hm-auth-title">Reset Password</div><div class="hm-auth-sub">Enter your registered email</div>
+      <div class="hm-auth-field"><label>Email</label><input type="email" id="hmForgotEmail" class="hm-auth-input" placeholder="your@email.com"></div>
+      <div class="hm-auth-ok" id="hmForgotOk"></div>
+      <button class="hm-auth-btn cyan" onclick="doForgot()">Send Reset Link</button>
+      <div class="hm-auth-footer"><button class="hm-auth-link" onclick="switchAuthTab('login')">&#8592; Back</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="navbar-inner">
+    <a href="../index.html" class="hm-logo-wrap">
+      <div class="hm-logo-icon">
+        <div class="hm-logo-ring"></div>
+        <div class="hm-logo-h">H</div>
+      </div>
+      <div class="hm-logo-text">
+        <div class="hm-logo-name">HYDROMIND<span>.AI</span></div>
+        <div class="hm-logo-sub">Hydraulic Intelligence</div>
+      </div>
+    </a>
+        <div class="navbar-menu">
+      <a href="../index.html" class="navbar-link">Home</a>
+      <a href="advisor.html" class="navbar-link">AI Advisor</a>
+      <a href="system-design.html" class="navbar-link">&#9881; System Design</a>
+      <a href="knowledge.html" class="navbar-link">Knowledge Base</a>
+      <a href="news.html" class="navbar-link">News</a>
+      <a href="../index.html#electrical" class="navbar-link" style="color:#f5c842;">&#9889; Electrical</a>
+      <a href="../index.html#calculator" class="navbar-link">Calculator</a>
+      <a href="pricing.html" class="navbar-link">Pricing</a>
+      <a href="feedback.html" class="navbar-link">Feedback</a>
+    </div>
+    <div class="navbar-cta" id="hmNavCta">
+      <button onclick="openAuthModal('login')" class="btn-outline" style="padding:8px 18px;font-size:.82rem;" id="hmNavLogin">Login</button>
+      <button onclick="openAuthModal('register')" class="btn-primary" style="padding:8px 18px;font-size:.82rem;" id="hmNavRegister">Register</button>
+      <div id="hmNavUser" style="display:none;align-items:center;gap:.5rem;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);border-radius:8px;padding:5px 10px;cursor:pointer;" onclick="doLogout()">
+        <div id="hmNavAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#0050aa);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;color:#fff;"></div>
+        <span id="hmNavName" style="font-size:.82rem;color:#e8f4ff;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+        <span id="hmNavPlan" style="font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:2px 8px;border-radius:100px;background:rgba(0,212,255,.1);color:var(--cyan);"></span>
+      </div>
+    </div>
+    <button class="navbar-toggle" id="navToggle"><span></span><span></span><span></span></button>
+  </div>
+  <div class="navbar-mobile" id="navMobile">
+    <a href="../index.html">Home</a>
+    <a href="../pages/advisor.html">AI Advisor</a>
+    <a href="../pages/system-design.html">&#9881; System Design</a>
+    <a href="../pages/knowledge.html">Knowledge Base</a>
+    <a href="../pages/news.html">News</a>
+    <a href="../pages/advisor.html">&#9889; Electrical</a>
+    <a href="../index.html#calculator">Calculator</a>
+    <a href="../pages/pricing.html">Pricing</a>
+    <a href="../pages/feedback.html">Feedback</a>
+    <div class="navbar-mobile-auth" style="display:flex;gap:.5rem;margin-top:.5rem;padding-top:.75rem;border-top:1px solid var(--border);">
+      <button onclick="openAuthModal('login')" class="btn-outline" style="flex:1;padding:8px;font-size:.85rem;">Login</button>
+      <button onclick="openAuthModal('register')" class="btn-primary" style="flex:1;padding:8px;font-size:.85rem;">Register</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ADVISOR -->
+<div class="advisor-wrap">
+  <div style="flex:1;display:flex;flex-direction:column;min-width:0;">
+    <div style="padding:.85rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:rgba(3,10,24,.98);">
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;color:#e8f4ff;">HydroMind AI Advisor</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text3);">Hydraulic · Electrical · PLC · Crane</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#3dd68c;">
+        <div class="status-dot"></div>AI Online — KB v2.0
+      </div>
+    </div>
+    <div style="display:flex;gap:.45rem;padding:.65rem 1.25rem 0;flex-wrap:wrap;flex-shrink:0;">
+      <div class="mode-pill active" id="mode-hyd"   onclick="setMode('hyd',this)">&#9881;&#65039; Hydraulic</div>
+      <div class="mode-pill"        id="mode-elec"  onclick="setMode('elec',this)">&#9889; Electrical/PLC</div>
+      <div class="mode-pill"        id="mode-crane" onclick="setMode('crane',this)">&#127959;&#65039; Crane</div>
+      <div class="mode-pill"        id="mode-fluid" onclick="setMode('fluid',this)">&#128722; Fluid/Oil</div>
+      <div class="mode-pill"        id="mode-calc"  onclick="setMode('calc',this)">&#128210; Calculations</div>
+
+    </div>
+    <div class="adv-messages" id="advMessages">
+      <div class="msg-row">
+        <div class="msg-av ai">HM</div>
+        <div>
+          <div class="msg-tag">HydroMind AI · KB v2.0</div>
+          <div class="msg-bubble">
+            Welcome to <strong>HydroMind.AI</strong> — your expert hydraulic and offshore crane advisor.<br><br>
+            <strong>How I work:</strong><br>
+            1. Describe your fault or ask a technical question<br>
+            2. I give a short 2-3 line diagnosis<br>
+            3. I ask if you want step-by-step instructions<br>
+            4. When you say Yes — I give the full procedure<br><br>
+            Select a mode and type your question. Attach manuals with &#128204;
+          </div>
+        </div>
+      </div>
+    </div>
+          <!-- Phase 1: Intake Q&A -->
+      
+
+      <!-- Phase 2: Summary + Confirm -->
+      
+
+      <!-- Phase 3: Design Report (AI generated) -->
+      
+    </div>
+
+    <div class="adv-input-area">
+      <div class="attach-preview" id="attachPreview"></div>
+      <div class="adv-input-row">
+        <button class="attach-btn" title="Attach PDF, PNG or DOCX" onclick="document.getElementById('kbFile').click()">&#128204;</button>
+        <input type="file" id="kbFile" accept=".pdf,.png,.jpg,.jpeg,.docx" multiple style="display:none" onchange="handleAttach(event)">
+        <textarea class="adv-textarea" id="advInput" placeholder="Describe your fault or ask a technical question..." rows="1" oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()">&#8599;</button>
+      </div>
+      <div class="adv-hint">&#128204; PDF manuals · PNG schematics · DOCX guides &nbsp;|&nbsp; Enter to send · Shift+Enter for new line</div>
+    </div>
+  </div>
+</div>
+
+<script src="../js/main.js"></script>
+<script src="../js/auth.js"></script>
+<script>
+/* ================================================================
+   AI ADVISOR LOGIC
+   KEY: anthropic-dangerous-direct-browser-access REQUIRED for browser
+   KEY: mode context only on FIRST message — "yes" stays clean
+   ================================================================ */
+
+const SYSTEM_PROMPT = `You are HydroMind AI — expert technical advisor for hydraulic systems, electrical/PLC faults, and offshore crane operations.
+
+ANSWER RULES:
+
+RULE 1 — NEW QUESTION: Give ONLY 2-3 lines identifying the most likely cause. End with: "Do you want me to walk you through the step-by-step procedure?"
+
+RULE 2 — AFTER "YES": When the user replies with yes/ok/sure/please/go ahead/show me — give the COMPLETE step-by-step procedure. DO NOT ask again. DO NOT repeat the short diagnosis.
+
+RULE 3 — SAFETY: If user mentions fire, burst, injury, spill, LOTO — give safety/isolation steps FIRST.
+
+RULE 4 — OEM SPECIFICITY: Reference specific models: Rexroth A4VG/A6VM, Danfoss Series 90, Siemens S7-300/400/1200, Allen Bradley ControlLogix, Parker F11/F12, Liebherr/Favco crane.
+
+RULE 5 — ELECTRICAL: Solenoid coil 24VDC = 20-40Ω, 110VAC = 200-400Ω. 4-20mA sensor faults. VFD trips (Danfoss FC, ABB ACS, Siemens SINAMICS).
+
+RULE 6 — NEW SYSTEM DESIGN (when user selects System Design mode):
+Run the 12-step design workflow:
+Phase 1 - Intake: Ask ONE question at a time to collect: application, operating pressure, flow rate, duty cycle, environment (indoor/offshore/ATEX), power source, budget tier.
+Phase 2 - Design: After collecting requirements, produce: pump sizing, motor sizing, DCV selection, pipe sizing, filter sizing, tank sizing, cooler sizing, accumulator (if needed), full BOM with part numbers.
+Always reference Rexroth, Danfoss, Parker, or Bosch component models by name.
+Format the final design as a structured report with sections.`;
+
+let currentMode = 'hyd';
+let conversationHistory = [];
+let isFirstMessage = true;
+
+const modeHints = {
+  hyd:   'Describe the hydraulic fault (pump, motor, valve, HPU, cylinder)...',
+  elec:  'Describe the electrical or PLC fault (fault code, solenoid, sensor)...',
+  crane: 'Describe the crane fault (hoist, slew, luffing, Favco, Liebherr)...',
+  fluid: 'Ask about oil grade, ISO 4406 cleanliness, contamination...',
+  calc:   'Ask me to calculate flow, pressure, torque, pipe velocity...',
+  design: 'Describe your system requirements — type, application, operating pressure, flow rate, duty cycle...'
+};
+const modeLabels = {
+  hyd:'hydraulic systems (pumps, motors, valves, HPU)',
+  elec:'electrical/PLC systems (solenoids, sensors, VFD)',
+  crane:'offshore crane hydraulic systems (hoist, slew, Favco, Liebherr)',
+  fluid:'hydraulic fluid and oil analysis',
+  calc:'hydraulic/electrical engineering calculations',
+};
+
+function setMode(mode, btn) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('advInput').placeholder = modeHints[mode]||'Ask your question...';
+  // Set mode from localStorage if navigated via Electrical button
+  localStorage.removeItem('advMode');
+}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
+function handleKey(e){
+  if(e.key==='Enter'&&!e.shiftKey){
+    e.preventDefault();
+    sendMessage();
+  }
+}
+function newChat(){conversationHistory=[];isFirstMessage=true;window._currentChatId=null;document.getElementById('advMessages').innerHTML='';appendAI('New chat started. Select a mode and ask your question.');}
+function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function appendUser(text){
+  const msgs=document.getElementById('advMessages');
+  const user=window._hmUser;
+  const initials=user?(user.first||'U').slice(0,2).toUpperCase():'U';
+  const div=document.createElement('div');div.className='msg-row user';
+  div.innerHTML=`<div class="msg-av usr">${initials}</div><div><div class="msg-tag">You</div><div class="msg-bubble">${esc(text)}</div></div>`;
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+function appendAI(text,source){
+  const msgs=document.getElementById('advMessages');
+  const div=document.createElement('div');div.className='msg-row';
+  const fmt=text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  const src=source?`<div style="font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text3);margin-top:4px;">Source: <span style="color:rgba(0,212,255,.5);">${source}</span></div>`:'';
+  div.innerHTML=`<div class="msg-av ai">HM</div><div><div class="msg-tag">HydroMind AI · ${currentMode.toUpperCase()}</div><div class="msg-bubble">${fmt}${src}</div></div>`;
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+function showTyping(){const msgs=document.getElementById('advMessages');const div=document.createElement('div');div.className='msg-row';div.id='typingRow';div.innerHTML=`<div class="msg-av ai">HM</div><div><div class="msg-tag">HydroMind AI</div><div class="typing-ind"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>`;msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;}
+function hideTyping(){const el=document.getElementById('typingRow');if(el)el.remove();}
+
+async function sendMessage(){
+  const input = document.getElementById('advInput');
+  const text = (input.value || '').trim();
+  if(!text) return;
+  
+  // Clear input
+  input.value = '';
+  input.style.height = 'auto';
+  
+  // Show user message
+  appendUser(text);
+  
+  // Build message content
+  let msgContent = text;
+  if(isFirstMessage){
+    msgContent = '[Topic: ' + (modeLabels[currentMode] || 'hydraulic') + '] ' + text;
+    isFirstMessage = false;
+  }
+  conversationHistory.push({role:'user', content:msgContent});
+  
+  // Show typing indicator
+  showTyping();
+  document.getElementById('sendBtn').disabled = true;
+  
+  // API call wrapped in try/catch
+  try {
+    const resp = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2000,
+        system: SYSTEM_PROMPT,
+        messages: conversationHistory
+      })
+    });
+    
+    if(!resp.ok){
+      throw new Error('Server returned ' + resp.status + ' ' + resp.statusText);
+    }
+    
+    const data = await resp.json();
+    hideTyping();
+    
+    if(data.content && data.content[0] && data.content[0].text){
+      const reply = data.content[0].text;
+      conversationHistory.push({role:'assistant', content:reply});
+      appendAI(reply, 'HydroMind KB v2.0');
+    } else if(data.error){
+      appendAI('⚠️ API Error: ' + (data.error.message || JSON.stringify(data.error)), 'Error');
+    } else {
+      appendAI('⚠️ Unexpected response. Please try again.', 'Error');
+      console.error('Unexpected API response:', data);
+    }
+    
+  } catch(err) {
+    hideTyping();
+    appendAI('⚠️ Error: ' + err.message + '. Please try again.', 'Error');
+    console.error('sendMessage error:', err);
+  }
+  
+  document.getElementById('sendBtn').disabled = false;
+}
+
+function handleAttach(event){
+  const files=Array.from(event.target.files);
+  if(!files.length)return;
+  const preview=document.getElementById('attachPreview');preview.style.display='flex';
+  files.forEach(file=>{
+    const icon=file.name.endsWith('.pdf')?'📄':file.name.match(/\.(png|jpg|jpeg)$/i)?'🖼️':'📝';
+    const chip=document.createElement('span');chip.className='attach-chip';
+    chip.innerHTML=`${icon} ${file.name} <span style="cursor:pointer;opacity:.6;margin-left:3px;" onclick="this.parentElement.remove();checkPreview()">×</span>`;
+    preview.appendChild(chip);
+  });
+  appendAI(`📎 **${files.map(f=>f.name).join(', ')}** attached. Ask your question about this document.`);
+}
+function checkPreview(){const p=document.getElementById('attachPreview');if(!p.children.length)p.style.display='none';}
+
+// Handle URL params
+(function(){
+  const params=new URLSearchParams(window.location.search);
+  const autoQ=params.get('q');
+  const loadchat=params.get('loadchat');
+  // Set mode from localStorage (Electrical section button)
+  const savedMode=localStorage.getItem('advMode');
+  if(savedMode){
+    const btn=document.getElementById('mode-'+savedMode);
+    if(btn)setMode(savedMode,btn);
+  }
+  if(loadchat){
+    try{
+      const hist=JSON.parse(localStorage.getItem('hm_history')||'[]');
+      const entry=hist.find(h=>String(h.id)===String(loadchat));
+      if(entry){
+        const btn=document.getElementById('mode-'+(entry.mode||'hyd'));
+        if(btn)setMode(entry.mode||'hyd',btn);
+        window._currentChatId=entry.id;
+        isFirstMessage=false;
+        // Restore full conversation if stored
+        if(entry.messages&&entry.messages.length>0){
+          conversationHistory=entry.messages;
+          entry.messages.forEach(m=>{
+            if(m.role==='user') appendUser(m.content.replace(/^\[Topic:[^\]]+\]\s*/,''));
+            else if(m.role==='assistant') appendAI(m.content,'HydroMind KB v2.0');
+          });
+        } else {
+          // Old chat - show question and re-ask AI directly (no double send)
+          const question=entry.title;
+          appendUser(question);
+          conversationHistory=[{role:'user',content:'[Topic: hydraulic systems] '+question}];
+          isFirstMessage=false;
+          showTyping();
+          fetch('/api/chat',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({
+              model:'claude-sonnet-4-20250514',
+              max_tokens:2000,
+              system:SYSTEM_PROMPT,
+              messages:conversationHistory
+            })
+          }).then(r=>r.json()).then(data=>{
+            hideTyping();
+            if(data.content?.[0]?.text){
+              const reply=data.content[0].text;
+              conversationHistory.push({role:'assistant',content:reply});
+              appendAI(reply,'HydroMind KB v2.0');
+            }
+          }).catch(()=>hideTyping());
+        }
+      }
+    }catch(e){}
+    history.replaceState({},'','advisor.html');
+  }
+  if(autoQ){
+    const input=document.getElementById('advInput');
+    if(input){input.value=decodeURIComponent(autoQ);setTimeout(()=>sendMessage(),600);}
+    history.replaceState({},'','advisor.html');
+  }
+})();
+
+window.addEventListener('hm:login',e=>{window._hmUser=e.detail;});
+
+
+</script>
+</body>
+</html>
