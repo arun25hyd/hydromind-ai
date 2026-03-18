@@ -95,10 +95,16 @@
 <nav class="navbar" id="navbar">
   <div class="navbar-inner">
     <a href="../index.html" class="hm-logo-wrap">
-      <div class="hm-logo-icon"><div class="hm-logo-ring"></div><div class="hm-logo-h">H</div></div>
-      <div class="hm-logo-text"><div class="hm-logo-name">HYDROMIND<span>.AI</span></div><div class="hm-logo-sub">Hydraulic Intelligence</div></div>
+      <div class="hm-logo-icon">
+        <div class="hm-logo-ring"></div>
+        <div class="hm-logo-h">H</div>
+      </div>
+      <div class="hm-logo-text">
+        <div class="hm-logo-name">HYDROMIND<span>.AI</span></div>
+        <div class="hm-logo-sub">Hydraulic Intelligence</div>
+      </div>
     </a>
-    <div class="navbar-menu">
+        <div class="navbar-menu">
       <a href="../index.html" class="navbar-link">Home</a>
       <a href="advisor.html" class="navbar-link">AI Advisor</a>
       <a href="system-design.html" class="navbar-link">&#9881; System Design</a>
@@ -106,16 +112,16 @@
       <a href="news.html" class="navbar-link">News</a>
       <a href="../index.html#electrical" class="navbar-link" style="color:#f5c842;">&#9889; Electrical</a>
       <a href="../index.html#calculator" class="navbar-link">Calculator</a>
-      <a href="pricing.html" class="navbar-link active" style="color:var(--gold);">Pricing</a>
+      <a href="pricing.html" class="navbar-link">Pricing</a>
       <a href="feedback.html" class="navbar-link">Feedback</a>
     </div>
     <div class="navbar-cta" id="hmNavCta">
       <button onclick="openAuthModal('login')" class="btn-outline" style="padding:8px 18px;font-size:.82rem;" id="hmNavLogin">Login</button>
       <button onclick="openAuthModal('register')" class="btn-primary" style="padding:8px 18px;font-size:.82rem;" id="hmNavRegister">Register</button>
-      <div id="hmNavUser" style="display:none;align-items:center;gap:.5rem;background:rgba(200,165,80,.06);border:1px solid rgba(200,165,80,.15);border-radius:8px;padding:5px 10px;cursor:pointer;" onclick="doLogout()">
-        <div id="hmNavAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.78rem;color:#080c12;"></div>
-        <span id="hmNavName" style="font-size:.82rem;color:var(--text1);"></span>
-        <span id="hmNavPlan" style="font-family:'Space Mono',monospace;font-size:.62rem;padding:2px 8px;border-radius:100px;background:rgba(200,165,80,.1);color:var(--gold);"></span>
+      <div id="hmNavUser" style="display:none;align-items:center;gap:.5rem;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);border-radius:8px;padding:5px 10px;cursor:pointer;" onclick="doLogout()">
+        <div id="hmNavAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#0050aa);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;color:#fff;"></div>
+        <span id="hmNavName" style="font-size:.82rem;color:#e8f4ff;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+        <span id="hmNavPlan" style="font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:2px 8px;border-radius:100px;background:rgba(0,212,255,.1);color:var(--cyan);"></span>
       </div>
     </div>
     <button class="navbar-toggle" id="navToggle"><span></span><span></span><span></span></button>

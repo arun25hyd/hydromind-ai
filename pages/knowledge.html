@@ -13,36 +13,50 @@
 
 <div class="circuit-bg"><svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><g stroke="rgba(0,212,255,0.04)" stroke-width="1" fill="none"><line x1="0" y1="200" x2="1400" y2="200"/><line x1="0" y1="400" x2="1400" y2="400"/><line x1="0" y1="600" x2="1400" y2="600"/><line x1="200" y1="0" x2="200" y2="900"/><line x1="500" y1="0" x2="500" y2="900"/><line x1="800" y1="0" x2="800" y2="900"/><line x1="1100" y1="0" x2="1100" y2="900"/></g></svg></div>
 
-<nav class="navbar" id="hmNavbar">
+<nav class="navbar" id="navbar">
   <div class="navbar-inner">
-    <a href="../index.html" class="navbar-brand">
-      <div class="navbar-logo"><span>H</span></div>
-      <span class="navbar-name">HYDROMIND<span style="color:var(--gold);">.AI</span></span>
+    <a href="../index.html" class="hm-logo-wrap">
+      <div class="hm-logo-icon">
+        <div class="hm-logo-ring"></div>
+        <div class="hm-logo-h">H</div>
+      </div>
+      <div class="hm-logo-text">
+        <div class="hm-logo-name">HYDROMIND<span>.AI</span></div>
+        <div class="hm-logo-sub">Hydraulic Intelligence</div>
+      </div>
     </a>
-    <div class="navbar-menu" id="navMenu">
-      <a href="../index.html">Home</a>
-      <a href="advisor.html">AI Advisor</a>
-      <a href="system-design.html">&#9881;&#65039; System Design</a>
-      <a href="knowledge.html" class="active">Knowledge Base</a>
-      <a href="news.html">News</a>
-      <a href="../index.html#calculator">Calculator</a>
-      <a href="pricing.html">Pricing</a>
-      <a href="feedback.html">Feedback</a>
+        <div class="navbar-menu">
+      <a href="../index.html" class="navbar-link">Home</a>
+      <a href="advisor.html" class="navbar-link">AI Advisor</a>
+      <a href="system-design.html" class="navbar-link">&#9881; System Design</a>
+      <a href="knowledge.html" class="navbar-link">Knowledge Base</a>
+      <a href="news.html" class="navbar-link">News</a>
+      <a href="../index.html#electrical" class="navbar-link" style="color:#f5c842;">&#9889; Electrical</a>
+      <a href="../index.html#calculator" class="navbar-link">Calculator</a>
+      <a href="pricing.html" class="navbar-link">Pricing</a>
+      <a href="feedback.html" class="navbar-link">Feedback</a>
     </div>
-    <div class="navbar-auth" id="navAuth">
-      <span id="hmNavPlan" style="font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:2px 8px;border-radius:100px;background:rgba(0,212,255,.1);color:var(--cyan);"></span>
+    <div class="navbar-cta" id="hmNavCta">
+      <button onclick="openAuthModal('login')" class="btn-outline" style="padding:8px 18px;font-size:.82rem;" id="hmNavLogin">Login</button>
+      <button onclick="openAuthModal('register')" class="btn-primary" style="padding:8px 18px;font-size:.82rem;" id="hmNavRegister">Register</button>
+      <div id="hmNavUser" style="display:none;align-items:center;gap:.5rem;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);border-radius:8px;padding:5px 10px;cursor:pointer;" onclick="doLogout()">
+        <div id="hmNavAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#0050aa);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;color:#fff;"></div>
+        <span id="hmNavName" style="font-size:.82rem;color:#e8f4ff;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+        <span id="hmNavPlan" style="font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:2px 8px;border-radius:100px;background:rgba(0,212,255,.1);color:var(--cyan);"></span>
+      </div>
     </div>
     <button class="navbar-toggle" id="navToggle"><span></span><span></span><span></span></button>
   </div>
   <div class="navbar-mobile" id="navMobile">
     <a href="../index.html">Home</a>
-    <a href="advisor.html">AI Advisor</a>
-    <a href="system-design.html">System Design</a>
-    <a href="knowledge.html">Knowledge Base</a>
-    <a href="news.html">News</a>
+    <a href="../pages/advisor.html">AI Advisor</a>
+    <a href="../pages/system-design.html">&#9881; System Design</a>
+    <a href="../pages/knowledge.html">Knowledge Base</a>
+    <a href="../pages/news.html">News</a>
+    <a href="../pages/advisor.html">&#9889; Electrical</a>
     <a href="../index.html#calculator">Calculator</a>
-    <a href="pricing.html">Pricing</a>
-    <a href="feedback.html">Feedback</a>
+    <a href="../pages/pricing.html">Pricing</a>
+    <a href="../pages/feedback.html">Feedback</a>
     <div class="navbar-mobile-auth" style="display:flex;gap:.5rem;margin-top:.5rem;padding-top:.75rem;border-top:1px solid var(--border);">
       <button onclick="openAuthModal('login')" class="btn-outline" style="flex:1;padding:8px;font-size:.85rem;">Login</button>
       <button onclick="openAuthModal('register')" class="btn-primary" style="flex:1;padding:8px;font-size:.85rem;">Register</button>
