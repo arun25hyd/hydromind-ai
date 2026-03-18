@@ -310,89 +310,112 @@
 </div><!-- end page-layout -->
 
 <footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div class="footer-col"><h5>HydroMind.AI</h5><p style="font-size:.85rem;color:var(--text3);margin-top:.5rem;">AI-powered hydraulic intelligence for offshore crane supervisors and hydraulic technicians.</p></div>
-      <div class="footer-col"><h5>Platform</h5><div class="footer-links"><a href="advisor.html">AI Advisor</a><a href="system-design.html">System Design</a><a href="knowledge.html">Knowledge Base</a><a href="news.html">Industry News</a></div></div>
-      <div class="footer-col"><h5>Company</h5><div class="footer-links"><a href="pricing.html">Pricing</a><a href="services.html">Services</a><a href="feedback.html">Feedback</a><a href="privacy.html">Privacy Policy</a></div></div>
-      <div class="footer-col"><h5>Contact</h5><div class="footer-links"><a href="mailto:support@hydromindai.com">support@hydromindai.com</a><a href="#">Abu Dhabi, UAE</a><a href="#">Response: 24hrs (Pro: 4hrs)</a></div></div>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="hm-logo-wrap" style="margin-bottom:.85rem;">
+            <div class="hm-logo-icon"><div class="hm-logo-ring"></div><div class="hm-logo-h">H</div></div>
+            <div class="hm-logo-text"><div class="hm-logo-name">HYDROMIND<span>.AI</span></div><div class="hm-logo-sub">Hydraulic Intelligence</div></div>
+          </div>
+          <p>Expert AI advisor for hydraulic systems and offshore crane operations. Built by engineers, for engineers.</p>
+          <span class="badge-pill">&#128994; AI Online — KB v2.0</span>
+        </div>
+        <div class="footer-col"><h5>Platform</h5><div class="footer-links"><a href="advisor.html">AI Advisor</a><a href="system-design.html">System Design</a><a href="knowledge.html">Knowledge Base</a><a href="news.html">Industry News</a></div></div>
+        <div class="footer-col"><h5>Account</h5><div class="footer-links"><a href="pricing.html">Pricing & Plans</a><a href="feedback.html">Feedback</a><a href="privacy.html">Privacy Policy</a><a href="disclaimer.html">Disclaimer</a></div></div>
+        <div class="footer-col"><h5>Contact</h5><div class="footer-links"><a href="mailto:support@hydromindai.com">support@hydromindai.com</a><a href="#">Abu Dhabi, UAE</a><a href="#">Response: 24hrs (Pro: 4hrs)</a></div></div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 HydroMind.AI — All rights reserved</span>
+        <div class="footer-bottom-links"><a href="privacy.html">Privacy</a><a href="disclaimer.html">Disclaimer</a></div>
+      </div>
     </div>
-    <div class="footer-bottom"><span>© 2026 HydroMind.AI — All rights reserved.</span><span>Built for hydraulic professionals.</span></div>
-  </div>
-</footer>
-
+  </footer>
+</div><!-- /hm-main-content -->
+<script src="../js/main.js"></script>
 <script src="../js/auth.js"></script>
 <script>
-var KB_STATIC = [
-  {num:'KB01',title:'Rexroth A4VG Series 40 — Variable Displacement Axial Piston Pump',cat:'pump'},
-  {num:'KB02-03',title:'Rexroth A2FO / A7VO — Fixed & Variable Displacement Open Circuit Pumps',cat:'pump'},
-  {num:'KB04',title:'Danfoss Series 90 — Closed-Loop Pump Full Reference',cat:'pump'},
-  {num:'KB30',title:'Favelle Favco Field Case — Rig Al-Hail ADNOC Drilling Jan 2026',cat:'field'}
+var NM_SRC = 'all', NM_CAT = 'all';
+var NM_DATA = [
+  {ft:1,src:'fpw',cat:'event',ic:'🏗',s:'Fluid Power World',d:'Mar 2026',
+   t:'CONEXPO 2026: Bosch Rexroth and HydraForce Showcase Compact Hydraulic Solutions in Las Vegas',
+   p:'Bosch Rexroth and subsidiary HydraForce exhibited compact hydraulic solutions at CONEXPO/CON-AGG 2026, Las Vegas, March 3-7. Highlights included the HydraForce hybrid hydraulic system combining cartridge valves and compact directional valves, and the new Rexroth EDG-OBE piloted directional valve for high-precision mobile applications. Both companies demonstrated combined OEM design-to-production capability.',
+   u:'https://www.fluidpowerworld.com'},
+  {ft:0,src:'danfoss',cat:'product',ic:'⚙',s:'Danfoss Power Solutions',d:'Jan 2026',
+   t:'Danfoss Exhibits 100+ Products at CONEXPO 2026 Including New MP1T Tandem Axial Piston Pump',
+   p:'Danfoss Power Solutions exhibited at CONEXPO 2026 booth S80614, showcasing over 100 products covering mobile and industrial hydraulics, eHydraulics, electrification, digitalization, and autonomy. Key launch: the MP1T axial piston tandem pump, latest addition to the MP1 medium-power closed-circuit hydraulic platform.',
+   u:'https://www.danfoss.com/en/about-danfoss/news/dps/'},
+  {ft:0,src:'fpw',cat:'market',ic:'📊',s:'Fluid Power World',d:'Feb 2026',
+   t:'Hydraulic Equipment Market Valued at USD 44.25 Billion in 2026 — Growing at 5.05% CAGR to 2031',
+   p:'The hydraulic equipment market, valued at USD 44.25 billion in 2026, is forecast to reach USD 56.63 billion by 2031 at a 5.05% CAGR. Pumps dominate with 27.85% revenue share. Key drivers: infrastructure spending, warehouse automation, and electro-hydraulic hybrids delivering up to 30% energy savings. Bosch Rexroth integration of HydraForce deepens mobile-valve stack architectures.',
+   u:'https://www.fluidpowerworld.com'},
+  {ft:0,src:'ifpe',cat:'event',ic:'📋',s:'IFPE / NFPA',d:'Mar 2026',
+   t:'NFPA Advanced Hydraulics Conference 2026 — Technical Sessions on eHydraulics and Efficiency',
+   p:'The NFPA Advanced Hydraulics Conference took place March 4-5, 2026 in Las Vegas alongside CONEXPO-CON/AGG. Expert sessions covered eHydraulics, hydraulic system efficiency improvements, digitalization trends, and developments in ISO and NFPA fluid power standards. Registration required CONEXPO-CON/AGG badge or exhibitor access.',
+   u:'https://www.nfpa.com/en/connect/meetings-and-events.html'},
+  {ft:0,src:'hp',cat:'tech',ic:'🔧',s:'H&P Magazine',d:'Feb 2026',
+   t:'Electro-Hydraulic System Integration 2026 — Compatibility is Critical for Stable Performance',
+   p:'Hydraulics and Pneumatics Magazine reports on how connected valves, electrohydraulic controls and intelligent compressors offer improved system visibility in 2026. Investment decisions hinge on integration, interoperability and long-term support. Installations combine mechanical hardware with electronic controls and software, stretching traditional maintenance role definitions.',
+   u:'https://www.hpmag.co.uk'},
+  {ft:0,src:'rexroth',cat:'product',ic:'🏭',s:'Bosch Rexroth',d:'Feb 2026',
+   t:'Bosch Rexroth CytroBox HPU — Intelligent Connectivity and Energy Efficiency for Industry',
+   p:'Bosch Rexroth promotes the CytroBox medium-size hydraulic power unit for industrial automation. The unit delivers energy efficiency through demand-driven pump control, IoT-enabled condition monitoring via the CytroConnect interface, and a significantly reduced footprint versus traditional HPUs. Suitable for machine tools, presses, and production line hydraulic circuits.',
+   u:'https://www.boschrexroth.com/en/xc/products/product-groups/industrial-hydraulics'},
+  {ft:0,src:'parker',cat:'tech',ic:'⚡',s:'Parker Hannifin',d:'Jan 2026',
+   t:'Parker Hannifin: Fluid Power Will Continue Key Role Alongside Electrification in Mobile Equipment',
+   p:'Parker Hannifin Director Chris Griffin discussed with Fluid Power World how hydraulic systems will remain critical alongside electrification in mobile equipment. Parker has launched upgraded hydraulic power unit platforms for improved energy efficiency and reliability. The company sees hybrid electro-hydraulic architectures as the dominant direction for construction and agriculture OEMs through 2030.',
+   u:'https://www.parker.com/portal/site/PARKER/menuitem.223a4a3cce02eb6315731910237ad1ca/'},
+  {ft:0,src:'hp',cat:'tech',ic:'🌡',s:'H&P Magazine',d:'Dec 2025',
+   t:'Thermal Management in Hydraulic Systems — Rising Power Densities Demand Better Cooling Solutions',
+   p:'H&P examines how thermal management has become central to hydraulic system performance as higher power densities raise operating temperatures. The article covers heat generation calculation using Q_heat = P_input x (1-eta), oil cooler sizing methodology, thermostatically controlled bypass valve settings, and selection criteria between air-blast and water-cooled exchangers for offshore and hot-climate applications.',
+   u:'https://www.hpmag.co.uk'}
 ];
-var KB_CAT_LABELS={pump:'Pump Documentation',motor:'Motor Documentation',valve:'Valve / DCV',crane:'Crane Systems',hpu:'HPU / Circuit Design',field:'Offshore Field Case',electrical:'Electrical / PLC',fluid:'Fluid & Filtration',technical:'Technical'};
-var KB_CAT_ICONS={pump:'⚙️',motor:'🔩',valve:'🔧',crane:'🏗️',hpu:'📐',field:'🛢️',electrical:'⚡',fluid:'💧',technical:'📋'};
 
-function getKBEntries(){try{return JSON.parse(localStorage.getItem('hm_kb_entries')||'[]');}catch(e){return [];}}
-function saveKBEntries(e){localStorage.setItem('hm_kb_entries',JSON.stringify(e));}
-
-function onFileChosen(input){
-  var preview=document.getElementById('kbFilePreview'),info=document.getElementById('kbFileInfo'),txt=document.getElementById('kbFileLabelText');
-  if(input.files&&input.files[0]){var f=input.files[0],sz=f.size>1048576?(f.size/1048576).toFixed(1)+' MB':Math.round(f.size/1024)+' KB';txt.textContent=f.name;txt.style.color='var(--gold)';info.textContent='📎 '+f.name+'  ('+sz+')';preview.style.display='flex';}
-}
-function clearFile(){var fi=document.getElementById('kbFile');if(fi)fi.value='';document.getElementById('kbFileLabelText').textContent='Click to choose file...';document.getElementById('kbFileLabelText').style.color='';document.getElementById('kbFilePreview').style.display='none';}
-
-function addKBEntry(){
-  var num=document.getElementById('kbNum').value.trim(),cat=document.getElementById('kbCat').value,title=document.getElementById('kbTitle').value.trim(),desc=document.getElementById('kbDesc').value.trim(),url=document.getElementById('kbUrl').value.trim(),fi=document.getElementById('kbFile'),fname=fi&&fi.files[0]?fi.files[0].name:'',msg=document.getElementById('kbAddMsg');
-  function showMsg(t,type){var c=type==='ok'?'background:rgba(76,175,130,.07);border:1px solid rgba(76,175,130,.25);color:#4caf82;':type==='warn'?'background:rgba(245,200,66,.07);border:1px solid rgba(245,200,66,.3);color:#f5c842;':'background:rgba(226,75,74,.08);border:1px solid rgba(226,75,74,.2);color:#e24b4a;';msg.style.cssText='display:block;'+c;msg.textContent=t;}
-  if(!title||!desc){showMsg('Please fill in Title and Description.','err');return;}
-  var entries=getKBEntries(),tl=title.toLowerCase();
-  var dupS=KB_STATIC.find(function(e){return e.title.toLowerCase()===tl||(num&&e.num.toLowerCase()===num.toLowerCase());});
-  if(dupS){showMsg('⚠ Already in KB (built-in): "'+dupS.title+'" ('+dupS.num+')','warn');return;}
-  var dupT=entries.find(function(e){return e.title.toLowerCase()===tl;});
-  if(dupT){showMsg('⚠ Already in KB: "'+dupT.title+'" ('+dupT.num+')','warn');return;}
-  var dupN=num?entries.find(function(e){return e.num.toLowerCase()===num.toLowerCase();}):null;
-  if(dupN){showMsg('⚠ KB number '+num+' already used: "'+dupN.title+'"','warn');return;}
-  var entry={id:Date.now(),num:num||('KB'+String(entries.length+5).padStart(2,'0')),cat:cat,title:title,desc:desc,url:url,file:fname,date:new Date().toLocaleDateString('en-GB',{month:'short',year:'numeric'})};
-  entries.unshift(entry);saveKBEntries(entries);
-  showMsg('✓ '+entry.num+' — "'+title+'" added!','ok');
-  clearKBForm();renderDynamicKB();renderAdminList();updateKBCount();
-}
-function clearKBForm(){['kbNum','kbTitle','kbDesc','kbUrl'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});clearFile();}
-function deleteKBEntry(id){if(!confirm('Delete this KB entry?'))return;var entries=getKBEntries().filter(function(e){return e.id!==id;});saveKBEntries(entries);renderDynamicKB();renderAdminList();updateKBCount();}
-
-function renderDynamicKB(){
-  var entries=getKBEntries(),section=document.getElementById('dynamicKBSection'),grid=document.getElementById('dynamicKBGrid'),label=document.getElementById('dynamicKBLabel');
-  if(!section||!grid)return;
-  if(!entries.length){section.style.display='none';return;}
-  section.style.display='block';
-  label.textContent='Additional Documents ('+entries.length+')';
-  grid.innerHTML=entries.map(function(e){
-    var icon=KB_CAT_ICONS[e.cat]||'📄';
-    return '<div class="card" style="padding:1.25rem 1.5rem;"><div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;"><span style="font-size:1.1rem;">'+icon+'</span><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text1);">'+e.title+'</div><span style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--gold);padding:2px 8px;border:1px solid rgba(200,165,80,.2);border-radius:100px;white-space:nowrap;margin-left:auto;">'+e.num+'</span></div><p style="font-size:.88rem;color:var(--text2);margin-bottom:.5rem;">'+e.desc+'</p><div style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text3);">// '+(KB_CAT_LABELS[e.cat]||e.cat)+' · Added '+e.date+(e.file?' · 📎 '+e.file:'')+'</div>'+(e.url?'<a href="'+e.url+'" target="_blank" style="font-size:.78rem;color:var(--gold);text-decoration:none;margin-top:.5rem;display:inline-block;">View Document →</a>':'')+'</div>';
-  }).join('');
-}
-
-function renderAdminList(){
-  var list=document.getElementById('adminKBList');if(!list)return;
-  var entries=getKBEntries(),total=KB_STATIC.length+entries.length,html='';
-  html+='<div style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;padding:4px 0 6px;">Built-in ('+KB_STATIC.length+')</div>';
-  KB_STATIC.forEach(function(e){html+='<div style="background:rgba(200,165,80,.04);border:1px solid rgba(200,165,80,.1);border-radius:7px;padding:.55rem .85rem;display:flex;align-items:center;gap:.6rem;"><span style="font-family:'Space Mono',monospace;font-size:.58rem;color:var(--gold);padding:1px 7px;border:1px solid rgba(200,165,80,.2);border-radius:100px;white-space:nowrap;">'+e.num+'</span><span style="font-size:.82rem;color:var(--text2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+e.title+'</span><span style="font-family:'Space Mono',monospace;font-size:.58rem;color:var(--text3);white-space:nowrap;">locked</span></div>';});
-  if(entries.length){
-    html+='<div style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;padding:10px 0 6px;">Admin Added ('+entries.length+')</div>';
-    entries.forEach(function(e){html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.55rem .85rem;display:flex;align-items:center;gap:.6rem;"><span style="font-family:'Space Mono',monospace;font-size:.58rem;color:var(--cyan);padding:1px 7px;border:1px solid rgba(0,212,255,.2);border-radius:100px;white-space:nowrap;">'+e.num+'</span><div style="flex:1;min-width:0;"><div style="font-size:.82rem;color:var(--text1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+e.title+'</div><div style="font-size:.7rem;color:var(--text3);margin-top:1px;">'+(KB_CAT_LABELS[e.cat]||e.cat)+' · '+e.date+(e.file?' · 📎 '+e.file:'')+'</div></div><button type="button" onclick="deleteKBEntry('+e.id+')" style="flex-shrink:0;background:rgba(226,75,74,.08);border:1px solid rgba(226,75,74,.2);border-radius:5px;color:#e24b4a;cursor:pointer;padding:3px 9px;font-size:.75rem;">Delete</button></div>';});
+function hf(type, val, el) {
+  if (type === 'src') {
+    NM_SRC = val;
+    document.querySelectorAll('#srcBar .s-pill').forEach(function(p){p.classList.remove('on');});
+  } else {
+    NM_CAT = val;
+    document.querySelectorAll('#catBar .c-btn').forEach(function(b){b.classList.remove('on');});
   }
-  html+='<div style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);border-top:1px solid var(--border);padding-top:.5rem;margin-top:.5rem;">Total: '+total+' documents</div>';
-  list.innerHTML=html;
+  el.classList.add('on');
+  nmRender();
 }
 
-function updateKBCount(){var el=document.getElementById('kbTotalCount');if(el)el.textContent=KB_STATIC.length+getKBEntries().length;}
-
-function checkAdminPanel(){
-  if(typeof hmGetSession==='function'){var u=hmGetSession();if(u&&u.isAdmin){var p=document.getElementById('adminKBPanel');if(p)p.style.display='block';renderAdminList();}}
+function nmRender() {
+  var list = NM_DATA.filter(function(a) {
+    return (NM_SRC === 'all' || a.src === NM_SRC) &&
+           (NM_CAT === 'all' || a.cat === NM_CAT);
+  });
+  var stat = document.getElementById('nStat');
+  var grid = document.getElementById('nGrid');
+  if (!grid) return;
+  stat.textContent = list.length + ' articles — real industry sources — verified publisher links';
+  if (!list.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text3);">No articles match the selected filters.</div>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < list.length; i++) {
+    var a = list[i];
+    var cat = a.cat.charAt(0).toUpperCase() + a.cat.slice(1);
+    html += '<div class="news-card' + (a.ft ? ' featured' : '') + '">';
+    html += '<div class="n-thumb">' + a.ic + '</div>';
+    html += '<div class="n-body">';
+    html += '<div class="n-src">' + a.s + '</div>';
+    html += '<div class="n-title">' + a.t + '</div>';
+    html += '<div class="n-desc">' + a.p + '</div>';
+    html += '<div class="n-foot">';
+    html += '<span class="n-date">' + a.d + '</span>';
+    html += '<span class="n-cat">' + cat + '</span>';
+    html += '<a href="' + a.u + '" target="_blank" rel="noopener noreferrer" class="n-link">Read Article &rarr;</a>';
+    html += '</div></div></div>';
+  }
+  grid.innerHTML = html;
 }
-window.addEventListener('hm:login',function(e){var u=e.detail;if(u&&u.isAdmin){var p=document.getElementById('adminKBPanel');if(p)p.style.display='block';renderAdminList();}});
-document.addEventListener('DOMContentLoaded',function(){renderDynamicKB();updateKBCount();setTimeout(checkAdminPanel,300);});
+
+// Fire immediately - no template literals, no DOMContentLoaded dependency
+nmRender();
 </script>
-
 </body>
 </html>
