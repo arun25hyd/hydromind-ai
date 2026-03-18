@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>User Feedback — HydroMind.AI</title>
+<title>Pricing & Plans — HydroMind.AI</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -72,16 +72,10 @@
 <nav class="navbar" id="navbar">
   <div class="navbar-inner">
     <a href="../index.html" class="hm-logo-wrap">
-      <div class="hm-logo-icon">
-        <div class="hm-logo-ring"></div>
-        <div class="hm-logo-h">H</div>
-      </div>
-      <div class="hm-logo-text">
-        <div class="hm-logo-name">HYDROMIND<span>.AI</span></div>
-        <div class="hm-logo-sub">Hydraulic Intelligence</div>
-      </div>
+      <div class="hm-logo-icon"><div class="hm-logo-ring"></div><div class="hm-logo-h">H</div></div>
+      <div class="hm-logo-text"><div class="hm-logo-name">HYDROMIND<span>.AI</span></div><div class="hm-logo-sub">Hydraulic Intelligence</div></div>
     </a>
-        <div class="navbar-menu">
+    <div class="navbar-menu">
       <a href="../index.html" class="navbar-link">Home</a>
       <a href="advisor.html" class="navbar-link">AI Advisor</a>
       <a href="system-design.html" class="navbar-link">&#9881; System Design</a>
@@ -89,125 +83,85 @@
       <a href="news.html" class="navbar-link">News</a>
       <a href="../index.html#electrical" class="navbar-link" style="color:#f5c842;">&#9889; Electrical</a>
       <a href="../index.html#calculator" class="navbar-link">Calculator</a>
-      <a href="pricing.html" class="navbar-link">Pricing</a>
+      <a href="pricing.html" class="navbar-link active" style="color:var(--gold);">Pricing</a>
       <a href="feedback.html" class="navbar-link">Feedback</a>
     </div>
     <div class="navbar-cta" id="hmNavCta">
       <button onclick="openAuthModal('login')" class="btn-outline" style="padding:8px 18px;font-size:.82rem;" id="hmNavLogin">Login</button>
       <button onclick="openAuthModal('register')" class="btn-primary" style="padding:8px 18px;font-size:.82rem;" id="hmNavRegister">Register</button>
-      <div id="hmNavUser" style="display:none;align-items:center;gap:.5rem;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);border-radius:8px;padding:5px 10px;cursor:pointer;" onclick="doLogout()">
-        <div id="hmNavAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#0050aa);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;color:#fff;"></div>
-        <span id="hmNavName" style="font-size:.82rem;color:#e8f4ff;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
-        <span id="hmNavPlan" style="font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:2px 8px;border-radius:100px;background:rgba(0,212,255,.1);color:var(--cyan);"></span>
+      <div id="hmNavUser" style="display:none;align-items:center;gap:.5rem;background:rgba(200,165,80,.06);border:1px solid rgba(200,165,80,.15);border-radius:8px;padding:5px 10px;cursor:pointer;" onclick="doLogout()">
+        <div id="hmNavAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.78rem;color:#080c12;"></div>
+        <span id="hmNavName" style="font-size:.82rem;color:var(--text1);"></span>
+        <span id="hmNavPlan" style="font-family:'Space Mono',monospace;font-size:.62rem;padding:2px 8px;border-radius:100px;background:rgba(200,165,80,.1);color:var(--gold);"></span>
       </div>
     </div>
     <button class="navbar-toggle" id="navToggle"><span></span><span></span><span></span></button>
   </div>
   <div class="navbar-mobile" id="navMobile">
-    <a href="../index.html">Home</a>
-    <a href="../pages/advisor.html">AI Advisor</a>
-    <a href="../pages/system-design.html">&#9881; System Design</a>
-    <a href="../pages/knowledge.html">Knowledge Base</a>
-    <a href="../pages/news.html">News</a>
-    <a href="../pages/advisor.html">&#9889; Electrical</a>
-    <a href="../index.html#calculator">Calculator</a>
-    <a href="../pages/pricing.html">Pricing</a>
-    <a href="../pages/feedback.html">Feedback</a>
-    <div class="navbar-mobile-auth" style="display:flex;gap:.5rem;margin-top:.5rem;padding-top:.75rem;border-top:1px solid var(--border);">
-      <button onclick="openAuthModal('login')" class="btn-outline" style="flex:1;padding:8px;font-size:.85rem;">Login</button>
-      <button onclick="openAuthModal('register')" class="btn-primary" style="flex:1;padding:8px;font-size:.85rem;">Register</button>
-    </div>
+    <a href="../index.html" class="navbar-link">Home</a>
+    <a href="advisor.html" class="navbar-link">AI Advisor</a>
+    <a href="system-design.html" class="navbar-link">&#9881; System Design</a>
+    <a href="knowledge.html" class="navbar-link">Knowledge Base</a>
+    <a href="pricing.html" class="navbar-link">Pricing</a>
   </div>
 </nav>
 
-<div class="page-layout">
 
-<div class="hm-left-sidebar" id="hmLeftSidebar">
-    <div class="hm-left-inner">
-
-    <!-- Profile card (shown after login) -->
-    <div id="hmSidebarProfile" style="display:none;">
-      <div class="hm-profile-card">
-        <div class="hm-prof-av" id="hmProfAvatar">--</div>
-        <div class="hm-prof-name" id="hmProfName"></div>
-        <div class="hm-prof-email" id="hmProfEmail"></div>
-        <span class="hm-prof-plan" id="hmProfPlan">Free</span>
-      </div>
-    </div>
-
-    <!-- Guest state: no login button - just quick links and ad -->
-    <div id="hmSidebarNoAuth">
-      <div style="margin-bottom:.75rem;">
-        <div class="hm-sidebar-label">Quick Links</div>
-        <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
-        <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
-        <div class="hm-hist-item" onclick="location.href='news.html'"><span class="hm-hist-icon">&#128240;</span><span class="hm-hist-text">Industry News</span></div>
-        <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
-      </div>
-      <!-- Ad slot in left sidebar -->
-      <div style="font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.45rem;border-bottom:1px solid var(--border);margin-bottom:.5rem;">Sponsored</div>
-      <div style="background:rgba(200,165,80,.03);border:1px dashed rgba(200,165,80,.12);border-radius:6px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem;">
-        <div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement
-      </div>
-      <div style="text-align:center;">
-        <a href="pricing.html" style="font-family:'Space Mono',monospace;font-size:.56rem;color:rgba(200,165,80,.38);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a>
-      </div>
-    </div>
-
-    <!-- Chat history (shown after login) -->
-    <div id="hmSidebarHistory" style="display:none;margin-top:.75rem;">
-      <div class="hm-sidebar-label">Chat History</div>
-      <div id="hmHistoryList"></div>
-    </div>
-
-    <!-- Quick links (shown after login) -->
-    <div id="hmSidebarLinks" style="display:none;margin-top:.75rem;">
-      <div class="hm-sidebar-label">Quick Links</div>
-      <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
-      <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
-      <div class="hm-hist-item" onclick="location.href='news.html'"><span class="hm-hist-icon">&#128240;</span><span class="hm-hist-text">Industry News</span></div>
-      <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
-    </div>
-
-  </div>
-  <div class="hm-left-bottom"><button class="hm-logout-btn" id="hmLogoutBtn" onclick="doLogout()" style="display:none;">Sign Out</button></div>
-</div>
 
 <div class="hm-main-content">
 
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> › User Feedback</div>
+    <div class="eyebrow">Your Voice Matters</div>
+    <h1>Share Your <span class="text-gold">Feedback</span></h1>
+    <p style="color:var(--text2);max-width:560px;margin-top:1rem;line-height:1.8;">Help us improve HydroMind.AI. Your experience as a hydraulic technician or crane supervisor shapes the platform's development.</p>
+  </div>
+</div>
+
 <section class="section section-dark">
   <div class="container">
-    <div style="display:grid;grid-template-columns:1fr;gap:2rem;align-items:flex-start;">
+    <div style="display:grid;grid-template-columns:1.2fr 0.8fr;gap:3rem;align-items:flex-start;">
 
       <!-- LEFT: FORM -->
       <div>
         <div class="eyebrow">Submit Feedback</div>
         <h2 style="margin-bottom:1.5rem;">Tell Us What<br>You Think</h2>
 
-        <form id="feedbackForm" style="display:flex;flex-direction:column;gap:1.25rem;width:100%;box-sizing:border-box;">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;width:100%;box-sizing:border-box;">
+        <form id="feedbackForm" style="display:flex;flex-direction:column;gap:1.25rem;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
             <div class="form-group" style="margin:0;">
               <label class="form-label">Your Name</label>
               <input type="text" class="form-input" id="fbName" placeholder="Your name">
+            </div>
             <div class="form-group" style="margin:0;">
               <label class="form-label">Your Role</label>
               <input type="text" class="form-input" id="fbRole" placeholder="Your role">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;width:100%;box-sizing:border-box;">
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
             <div class="form-group" style="margin:0;">
               <label class="form-label">Organisation</label>
               <input type="text" class="form-input" id="fbOrg" placeholder="Your organisation">
+            </div>
             <div class="form-group" style="margin:0;">
               <label class="form-label">Country</label>
               <input type="text" class="form-input" id="fbCountry" placeholder="Your country">
+            </div>
+          </div>
+
           <div class="form-group" style="margin:0;">
-              <label class="form-label">Overall Rating</label>
-              <div id="starRating" style="display:flex;flex-direction:row;gap:6px;margin-top:.5rem;">
-                <span data-val="1" onclick="selectStar(1)" style="font-size:2rem;cursor:pointer;color:rgba(200,165,80,.25);transition:.2s;user-select:none;">&#9733;</span>
-                <span data-val="2" onclick="selectStar(2)" style="font-size:2rem;cursor:pointer;color:rgba(200,165,80,.25);transition:.2s;user-select:none;">&#9733;</span>
-                <span data-val="3" onclick="selectStar(3)" style="font-size:2rem;cursor:pointer;color:rgba(200,165,80,.25);transition:.2s;user-select:none;">&#9733;</span>
-                <span data-val="4" onclick="selectStar(4)" style="font-size:2rem;cursor:pointer;color:rgba(200,165,80,.25);transition:.2s;user-select:none;">&#9733;</span>
-                <span data-val="5" onclick="selectStar(5)" style="font-size:2rem;cursor:pointer;color:rgba(200,165,80,.25);transition:.2s;user-select:none;">&#9733;</span>
-              <input type="hidden" id="starValue" value="">
+            <label class="form-label">Overall Rating</label>
+            <div style="display:flex;flex-direction:row-reverse;justify-content:flex-end;gap:4px;margin-top:.4rem;">
+              <input type="radio" name="rating" id="s5" value="5" style="display:none;"><label for="s5" style="font-size:1.8rem;cursor:pointer;color:rgba(200,165,80,.25);transition:.2s;">★</label>
+              <input type="radio" name="rating" id="s4" value="4" style="display:none;"><label for="s4" style="font-size:1.8rem;cursor:pointer;color:rgba(200,165,80,.25);transition:.2s;">★</label>
+              <input type="radio" name="rating" id="s3" value="3" style="display:none;"><label for="s3" style="font-size:1.8rem;cursor:pointer;color:rgba(200,165,80,.25);transition:.2s;">★</label>
+              <input type="radio" name="rating" id="s2" value="2" style="display:none;"><label for="s2" style="font-size:1.8rem;cursor:pointer;color:rgba(200,165,80,.25);transition:.2s;">★</label>
+              <input type="radio" name="rating" id="s1" value="1" style="display:none;"><label for="s1" style="font-size:1.8rem;cursor:pointer;color:rgba(200,165,80,.25);transition:.2s;">★</label>
+            </div>
+          </div>
+
           <div class="form-group" style="margin:0;">
             <label class="form-label">Category (select all that apply)</label>
             <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem;">
@@ -219,6 +173,9 @@
               <label style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border:1px solid var(--border);border-radius:100px;cursor:pointer;font-size:.82rem;color:var(--text2);transition:.2s;"><input type="checkbox" name="cat" value="UI/Experience" style="accent-color:var(--gold);"> UI/Experience</label>
               <label style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border:1px solid var(--border);border-radius:100px;cursor:pointer;font-size:.82rem;color:var(--text2);transition:.2s;"><input type="checkbox" name="cat" value="Speed" style="accent-color:var(--gold);"> Speed</label>
               <label style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border:1px solid var(--border);border-radius:100px;cursor:pointer;font-size:.82rem;color:var(--text2);transition:.2s;"><input type="checkbox" name="cat" value="Pricing" style="accent-color:var(--gold);"> Pricing</label>
+            </div>
+          </div>
+
           <div class="form-group" style="margin:0;">
             <label class="form-label">How did you use HydroMind.AI?</label>
             <select class="form-input" id="fbUse" style="cursor:pointer;">
@@ -232,15 +189,22 @@
               <option>Training / learning</option>
               <option>Other</option>
             </select>
+          </div>
+
           <div class="form-group" style="margin:0;">
             <label class="form-label">Your Feedback</label>
             <textarea class="form-input" id="fbText" rows="6" placeholder="Tell us about your experience — what worked well, what could be improved, or what you would like to see added..." style="resize:vertical;min-height:160px;line-height:1.7;"></textarea>
+          </div>
+
           <div class="form-group" style="margin:0;">
             <label class="form-label">Would you recommend HydroMind.AI to colleagues?</label>
             <div style="display:flex;gap:1.5rem;margin-top:.5rem;">
               <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.9rem;color:var(--text2);"><input type="radio" name="recommend" value="yes" style="accent-color:var(--gold);"> Yes, definitely</label>
               <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.9rem;color:var(--text2);"><input type="radio" name="recommend" value="maybe" style="accent-color:var(--gold);"> Maybe</label>
               <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.9rem;color:var(--text2);"><input type="radio" name="recommend" value="no" style="accent-color:var(--gold);"> Not yet</label>
+            </div>
+          </div>
+
           <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
             <input type="checkbox" id="fbConsent" style="margin-top:4px;accent-color:var(--gold);">
             <span style="font-size:.85rem;color:var(--text2);line-height:1.6;">I agree that HydroMind.AI may publish my feedback (anonymised if preferred) to help other engineers evaluate the platform.</span>
@@ -248,11 +212,14 @@
 
           <div id="fbMsg" style="display:none;padding:.85rem 1rem;border-radius:8px;font-size:.9rem;"></div>
 
-          <button type="button" id="submitBtn" onclick="submitFeedback()" class="btn-primary" style="align-self:flex-start;padding:14px 40px;">Submit Feedback ↗</button>
+          <button type="button" onclick="submitFeedback()" class="btn-primary" style="align-self:flex-start;padding:14px 40px;">Submit Feedback ↗</button>
           <div style="margin-top:.75rem;font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text3);line-height:1.7;">
             &#128274; Your feedback is sent to <span style="color:var(--gold);">support@hydromindai.com</span><br>
             We respond within 24 hours (Pro/Enterprise: within 4 hours)
+          </div>
         </form>
+      </div>
+
       <!-- RIGHT: RATINGS -->
       <div>
         <div class="eyebrow">Platform Ratings</div>
@@ -264,57 +231,34 @@
             <div>
               <div style="font-size:1.4rem;color:var(--gold);letter-spacing:3px;">★★★★★</div>
               <div style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text3);margin-top:.25rem;">1,200+ reviews</div>
+            </div>
+          </div>
           <div style="display:flex;flex-direction:column;gap:.5rem;">
             <div style="display:flex;align-items:center;gap:.75rem;font-size:.82rem;"><span style="color:var(--text3);min-width:20px;">5 ★</span><div style="flex:1;height:6px;background:rgba(200,165,80,.1);border-radius:3px;overflow:hidden;"><div style="width:88%;height:100%;background:var(--gold);border-radius:3px;"></div></div><span style="color:var(--text3);min-width:32px;text-align:right;">88%</span></div>
             <div style="display:flex;align-items:center;gap:.75rem;font-size:.82rem;"><span style="color:var(--text3);min-width:20px;">4 ★</span><div style="flex:1;height:6px;background:rgba(200,165,80,.1);border-radius:3px;overflow:hidden;"><div style="width:9%;height:100%;background:var(--gold);opacity:.6;border-radius:3px;"></div></div><span style="color:var(--text3);min-width:32px;text-align:right;">9%</span></div>
             <div style="display:flex;align-items:center;gap:.75rem;font-size:.82rem;"><span style="color:var(--text3);min-width:20px;">3 ★</span><div style="flex:1;height:6px;background:rgba(200,165,80,.1);border-radius:3px;overflow:hidden;"><div style="width:2%;height:100%;background:var(--gold);opacity:.4;border-radius:3px;"></div></div><span style="color:var(--text3);min-width:32px;text-align:right;">2%</span></div>
             <div style="display:flex;align-items:center;gap:.75rem;font-size:.82rem;"><span style="color:var(--text3);min-width:20px;">2 ★</span><div style="flex:1;height:6px;background:rgba(200,165,80,.1);border-radius:3px;overflow:hidden;"><div style="width:1%;height:100%;background:var(--gold);opacity:.3;border-radius:3px;"></div></div><span style="color:var(--text3);min-width:32px;text-align:right;">1%</span></div>
             <div style="display:flex;align-items:center;gap:.75rem;font-size:.82rem;"><span style="color:var(--text3);min-width:20px;">1 ★</span><div style="flex:1;height:6px;background:rgba(200,165,80,.1);border-radius:3px;overflow:hidden;"><div style="width:0%;height:100%;background:var(--gold);opacity:.2;border-radius:3px;"></div></div><span style="color:var(--text3);min-width:32px;text-align:right;">0%</span></div>
+          </div>
+        </div>
+
         <div class="eyebrow">Recent Feedback</div>
         <div style="display:flex;flex-direction:column;gap:1rem;margin-top:.75rem;">
           <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.25rem;">
             <div style="color:var(--gold);font-size:.9rem;margin-bottom:.4rem;">★★★★★</div>
             <div style="font-size:.88rem;color:var(--text2);line-height:1.65;margin-bottom:.6rem;">"The A4VG null adjustment guide saved us 3 hours of downtime offshore. Exactly what I needed."</div>
             <div style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);">Crane Supervisor · ADNOC · Mar 2026</div>
+          </div>
           <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.25rem;">
             <div style="color:var(--gold);font-size:.9rem;margin-bottom:.4rem;">★★★★★</div>
             <div style="font-size:.88rem;color:var(--text2);line-height:1.65;margin-bottom:.6rem;">"Best hydraulic reference tool I have used. The case drain diagnostics are spot on."</div>
             <div style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);">Hydraulic Technician · EnerMech · Feb 2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
-<div id="hmNoAdBadge" style="display:none;background:rgba(61,214,140,.06);border:1px solid rgba(61,214,140,.2);border-radius:8px;padding:.75rem;text-align:center;margin-bottom:.55rem;"><div style="font-size:1.2rem;">&#127881;</div><p style="font-size:.68rem;color:#3dd68c;margin:.25rem 0 0;line-height:1.4;">Ad-free<br>Pro/Enterprise</p></div>
-  <div id="hmAd1" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:195px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:1rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement<br>200×195</div>
-  <div id="hmAd2" style="background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.11);border-radius:6px;padding:.65rem .6rem;text-align:center;margin-bottom:.55rem;"><div style="font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Partner</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:var(--cyan);margin:.15rem 0 .2rem;">Your Brand</div><div style="font-size:.65rem;color:var(--text2);line-height:1.4;">Reach hydraulic engineers worldwide.</div></div>
-  <div id="hmAd3" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128296;</div>Banner Ad<br>200×110</div>
-  <div id="hmAd4" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;"><div style="font-size:.85rem;opacity:.22;margin-bottom:3px;">&#128161;</div>Link Ad</div>
-  <div id="hmAd5" style="margin-top:auto;padding-top:.55rem;border-top:1px solid var(--border);text-align:center;"><a href="pricing.html" style="font-family:'JetBrains Mono',monospace;font-size:.57rem;color:rgba(0,212,255,.4);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a></div>
-
-</div><!-- end hm-main-content -->
-
-<div class="hm-right-sidebar" id="hmAdSidebar">
-  <div id="hmAdTitle" style="font-family:'JetBrains Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.5rem;border-bottom:1px solid var(--border);margin-bottom:.55rem;">Sponsored</div>
-  <div id="hmNoAdBadge" style="display:none;background:rgba(61,214,140,.06);border:1px solid rgba(61,214,140,.2);border-radius:8px;padding:.75rem;text-align:center;margin-bottom:.55rem;"><div style="font-size:1.2rem;">&#127881;</div><p style="font-size:.68rem;color:#3dd68c;margin:.25rem 0 0;line-height:1.4;">Ad-free<br>Pro/Enterprise</p></div>
-  <div id="hmAd1" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:195px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:1rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement<br>200×195</div>
-  <div id="hmAd2" style="background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.11);border-radius:6px;padding:.65rem .6rem;text-align:center;margin-bottom:.55rem;"><div style="font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Partner</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:var(--cyan);margin:.15rem 0 .2rem;">Your Brand</div><div style="font-size:.65rem;color:var(--text2);line-height:1.4;">Reach hydraulic engineers worldwide.</div></div>
-  <div id="hmAd3" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128296;</div>Banner Ad<br>200×110</div>
-  <div id="hmAd4" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;"><div style="font-size:.85rem;opacity:.22;margin-bottom:3px;">&#128161;</div>Link Ad</div>
-  <div id="hmAd5" style="margin-top:auto;padding-top:.55rem;border-top:1px solid var(--border);text-align:center;"><a href="pricing.html" style="font-family:'JetBrains Mono',monospace;font-size:.57rem;color:rgba(0,212,255,.4);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a></div>
-</div>
-
-</div><!-- end page-layout -->
-
-</div><!-- end hm-main-content -->
-
-<div class="hm-right-sidebar" id="hmAdSidebar">
-  <div id="hmAdTitle" style="font-family:'JetBrains Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.5rem;border-bottom:1px solid var(--border);margin-bottom:.55rem;">Sponsored</div>
-  <div id="hmNoAdBadge" style="display:none;background:rgba(61,214,140,.06);border:1px solid rgba(61,214,140,.2);border-radius:8px;padding:.75rem;text-align:center;margin-bottom:.55rem;"><div style="font-size:1.2rem;">&#127881;</div><p style="font-size:.68rem;color:#3dd68c;margin:.25rem 0 0;line-height:1.4;">Ad-free<br>Pro/Enterprise</p></div>
-  <div id="hmAd1" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:195px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:1rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement<br>200×195</div>
-  <div id="hmAd2" style="background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.11);border-radius:6px;padding:.65rem .6rem;text-align:center;margin-bottom:.55rem;"><div style="font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Partner</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:var(--cyan);margin:.15rem 0 .2rem;">Your Brand</div><div style="font-size:.65rem;color:var(--text2);line-height:1.4;">Reach hydraulic engineers worldwide.</div></div>
-  <div id="hmAd3" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128296;</div>Banner Ad<br>200×110</div>
-  <div id="hmAd4" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;"><div style="font-size:.85rem;opacity:.22;margin-bottom:3px;">&#128161;</div>Link Ad</div>
-  <div id="hmAd5" style="margin-top:auto;padding-top:.55rem;border-top:1px solid var(--border);text-align:center;"><a href="pricing.html" style="font-family:'JetBrains Mono',monospace;font-size:.57rem;color:rgba(0,212,255,.4);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a></div>
-</div>
-
-</div><!-- end page-layout -->
 
 <footer class="footer">
     <div class="container">
@@ -343,109 +287,67 @@
 <script src="../js/main.js"></script>
 <script src="../js/auth.js"></script>
 <script>
-// Star rating
-var selectedStar = 0;
-function selectStar(val) {
-  selectedStar = val;
-  document.getElementById('starValue').value = val;
-  document.querySelectorAll('#starRating span').forEach(function(s) {
-    s.style.color = parseInt(s.getAttribute('data-val')) <= val
-      ? 'var(--gold)'
-      : 'rgba(200,165,80,.25)';
-  });
-}
-// Star hover
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('#starRating span').forEach(function(s) {
-    s.addEventListener('mouseover', function() {
-      var v = parseInt(this.getAttribute('data-val'));
-      document.querySelectorAll('#starRating span').forEach(function(x) {
-        x.style.color = parseInt(x.getAttribute('data-val')) <= v
-          ? 'var(--gold)'
-          : 'rgba(200,165,80,.25)';
-      });
+// Star rating interaction
+document.querySelectorAll('label[for^="s"]').forEach(lbl => {
+  lbl.addEventListener('mouseover', function() {
+    const val = parseInt(this.getAttribute('for').replace('s',''));
+    document.querySelectorAll('label[for^="s"]').forEach(l => {
+      const v = parseInt(l.getAttribute('for').replace('s',''));
+      l.style.color = v <= val ? 'var(--gold)' : 'rgba(200,165,80,.25)';
     });
-    s.addEventListener('mouseout', function() {
-      document.querySelectorAll('#starRating span').forEach(function(x) {
-        x.style.color = parseInt(x.getAttribute('data-val')) <= selectedStar
-          ? 'var(--gold)'
-          : 'rgba(200,165,80,.25)';
-      });
+  });
+});
+document.querySelectorAll('input[name="rating"]').forEach(r => {
+  r.addEventListener('change', function() {
+    const val = parseInt(this.value);
+    document.querySelectorAll('label[for^="s"]').forEach(l => {
+      const v = parseInt(l.getAttribute('for').replace('s',''));
+      l.style.color = v <= val ? 'var(--gold)' : 'rgba(200,165,80,.25)';
     });
   });
 });
 
-async function submitFeedback() {
-  var name    = document.getElementById('fbName').value.trim();
-  var role    = document.getElementById('fbRole').value.trim();
-  var org     = document.getElementById('fbOrg').value.trim();
-  var country = document.getElementById('fbCountry').value.trim();
-  var text    = document.getElementById('fbText').value.trim();
-  var rating  = document.getElementById('starValue').value || 'Not rated';
-  var usage   = document.getElementById('fbUse').value || '—';
-  var msg     = document.getElementById('fbMsg');
-  var btn     = document.getElementById('submitBtn');
+function submitFeedback() {
+  const name = document.getElementById('fbName').value.trim();
+  const role = document.getElementById('fbRole').value.trim();
+  const org  = document.getElementById('fbOrg').value.trim();
+  const text = document.getElementById('fbText').value.trim();
+  const msg  = document.getElementById('fbMsg');
 
   if (!name || !text) {
-    msg.style.cssText = 'display:block;background:rgba(226,75,74,.08);border:1px solid rgba(226,75,74,.2);border-radius:8px;padding:.85rem 1rem;font-size:.88rem;color:#e24b4a;margin-top:.75rem;';
+    msg.style.cssText = 'display:block;background:rgba(226,75,74,.08);border:1px solid rgba(226,75,74,.2);border-radius:8px;padding:.85rem 1rem;font-size:.88rem;color:var(--red);margin-top:.75rem;';
     msg.textContent = 'Please fill in your name and feedback before submitting.';
     return;
   }
 
-  var cats = [];
-  document.querySelectorAll('input[name="cat"]:checked').forEach(function(c){ cats.push(c.value); });
-  var recEl = document.querySelector('input[name="recommend"]:checked');
-  var rec = recEl ? recEl.value : 'Not answered';
+  // Get rating
+  const ratingEl = document.querySelector('input[name="rating"]:checked');
+  const rating = ratingEl ? ratingEl.value + ' stars' : 'Not rated';
 
-  btn.disabled = true;
-  btn.textContent = 'Sending...';
-  msg.style.display = 'none';
+  // Get categories
+  const cats = [...document.querySelectorAll('input[name="cat"]:checked')].map(c=>c.value).join(', ') || 'None selected';
 
-  var message =
+  // Get recommendation
+  const recEl = document.querySelector('input[name="recommend"]:checked');
+  const rec = recEl ? recEl.value : 'Not answered';
+
+  // Compose mailto
+  const subject = encodeURIComponent('HydroMind.AI Feedback — ' + name);
+  const body = encodeURIComponent(
     'Name: ' + name + '\n' +
     'Role: ' + (role||'—') + '\n' +
     'Organisation: ' + (org||'—') + '\n' +
-    'Country: ' + (country||'—') + '\n' +
-    'Rating: ' + (rating ? rating + ' stars' : 'Not rated') + '\n' +
-    'Categories: ' + (cats.length ? cats.join(', ') : 'None') + '\n' +
-    'Used for: ' + usage + '\n' +
-    'Recommend: ' + rec + '\n\n' +
-    'FEEDBACK:\n' + text;
+    'Rating: ' + rating + '\n' +
+    'Categories: ' + cats + '\n' +
+    'Would Recommend: ' + rec + '\n\n' +
+    'Feedback:\n' + text
+  );
+  window.location.href = 'mailto:support@hydromindai.com?subject=' + subject + '&body=' + body;
 
-  try {
-    var resp = await fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        access_key: '4ac24c17-fe70-4b40-a498-238c616f3f03',
-        subject: 'HydroMind.AI Feedback from ' + name,
-        from_name: name + ' via HydroMind.AI',
-        message: message,
-        botcheck: ''
-      })
-    });
-
-    var data = await resp.json();
-
-    if (data.success) {
-      msg.style.cssText = 'display:block;background:rgba(76,175,130,.07);border:1px solid rgba(76,175,130,.2);border-radius:8px;padding:.85rem 1rem;font-size:.88rem;color:#4caf82;margin-top:.75rem;';
-      msg.textContent = '✓ Thank you ' + name + '! Your feedback has been sent to support@hydromindai.com';
-      document.getElementById('feedbackForm').reset();
-      selectedStar = 0;
-      document.querySelectorAll('#starRating span').forEach(function(s){
-        s.style.color = 'rgba(200,165,80,.25)';
-      });
-    } else {
-      throw new Error(data.message || 'Submission failed');
-    }
-  } catch(err) {
-    msg.style.cssText = 'display:block;background:rgba(226,75,74,.08);border:1px solid rgba(226,75,74,.2);border-radius:8px;padding:.85rem 1rem;font-size:.88rem;color:#e24b4a;margin-top:.75rem;';
-    msg.textContent = '⚠ Could not send. Please email directly: support@hydromindai.com';
-    console.error('Web3Forms error:', err);
-  }
-
-  btn.disabled = false;
-  btn.textContent = 'Submit Feedback ↗';
+  msg.style.cssText = 'display:block;background:rgba(76,175,130,.07);border:1px solid rgba(76,175,130,.2);border-radius:8px;padding:.85rem 1rem;font-size:.88rem;color:var(--green);margin-top:.75rem;';
+  msg.textContent = '✓ Opening your email client to send feedback to support@hydromindai.com';
+  document.getElementById('feedbackForm').reset();
+  document.querySelectorAll('label[for^="s"]').forEach(l => l.style.color = 'rgba(200,165,80,.25)');
 }
 </script>
 </body>
