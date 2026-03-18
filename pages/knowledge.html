@@ -351,9 +351,6 @@
   </footer>
 </div><!-- /hm-main-content -->
 <script src="../js/main.js"></script>
-
-</body>
-</html>
 <script src="../js/auth.js"></script>
 <script>
 var KB_STATIC = [
@@ -362,35 +359,39 @@ var KB_STATIC = [
   {num:'KB04', title:'Danfoss Series 90 — Closed-Loop Pump Full Reference', cat:'pump'},
   {num:'KB30', title:'Favelle Favco Field Case — Rig Al-Hail ADNOC Drilling Jan 2026', cat:'field'}
 ];
-var KB_CAT_LABELS = {
-  pump:'Pump Documentation', motor:'Motor Documentation',
-  valve:'Valve / DCV', crane:'Crane Systems',
-  hpu:'HPU / Circuit Design', field:'Offshore Field Case',
-  electrical:'Electrical / PLC', fluid:'Fluid & Filtration', technical:'Technical'
-};
-var KB_CAT_ICONS = {
-  pump:'⚙️', motor:'🔩', valve:'🔧', crane:'🏗️',
-  hpu:'📐', field:'🛢️', electrical:'⚡', fluid:'💧', technical:'📋'
-};
-function getKBEntries(){ try{ return JSON.parse(localStorage.getItem('hm_kb_entries')||'[]'); }catch(e){ return []; } }
-function saveKBEntries(e){ localStorage.setItem('hm_kb_entries', JSON.stringify(e)); }
+var KB_CAT_LABELS = {pump:'Pump Documentation',motor:'Motor Documentation',valve:'Valve / DCV',crane:'Crane Systems',hpu:'HPU / Circuit Design',field:'Offshore Field Case',electrical:'Electrical / PLC',fluid:'Fluid & Filtration',technical:'Technical'};
+var KB_CAT_ICONS = {pump:'⚙️',motor:'🔩',valve:'🔧',crane:'🏗️',hpu:'📐',field:'🛢️',electrical:'⚡',fluid:'💧',technical:'📋'};
+function getKBEntries(){ try{return JSON.parse(localStorage.getItem('hm_kb_entries')||'[]');}catch(e){return[];} }
+function saveKBEntries(e){ localStorage.setItem('hm_kb_entries',JSON.stringify(e)); }
+function showAdminPanel(){
+  var p=document.getElementById('adminKBPanel'); if(p) p.style.display='block';
+  var btn=document.getElementById('kbUploadBtn'); if(btn) btn.style.display='inline-block';
+  renderAdminList();
+}
+function checkAdmin(){
+  try{
+    var s=JSON.parse(localStorage.getItem('hm_session')||'null');
+    if(s&&(s.isAdmin||s.email==='arun25hyd@gmail.com')){showAdminPanel();return true;}
+  }catch(e){}
+  if(typeof hmGetSession==='function'){
+    var u=hmGetSession();
+    if(u&&u.isAdmin){showAdminPanel();return true;}
+  }
+  return false;
+}
 function onFileChosen(input){
   var preview=document.getElementById('kbFilePreview');
   var info=document.getElementById('kbFileInfo');
-  var txt=document.getElementById('kbFileLabelText');
   if(input.files&&input.files[0]){
     var f=input.files[0];
     var sz=f.size>1048576?(f.size/1048576).toFixed(1)+' MB':Math.round(f.size/1024)+' KB';
-    txt.textContent=f.name; txt.style.color='var(--gold)';
     info.textContent='📎 '+f.name+'  ('+sz+')';
     preview.style.display='flex';
   }
 }
 function clearFile(){
   var fi=document.getElementById('kbFile'); if(fi) fi.value='';
-  document.getElementById('kbFileLabelText').textContent='Click to choose file...';
-  document.getElementById('kbFileLabelText').style.color='';
-  document.getElementById('kbFilePreview').style.display='none';
+  var preview=document.getElementById('kbFilePreview'); if(preview) preview.style.display='none';
 }
 function addKBEntry(){
   var num=document.getElementById('kbNum').value.trim();
@@ -408,27 +409,22 @@ function addKBEntry(){
     msg.style.cssText='display:block;border-radius:8px;padding:.7rem 1rem;font-size:.85rem;margin-bottom:.75rem;'+c;
     msg.textContent=txt;
   }
-  if(!title||!desc){ showMsg('Please fill in Title and Description.','err'); return; }
+  if(!title||!desc){showMsg('Please fill in Title and Description.','err');return;}
   var entries=getKBEntries();
   var tl=title.toLowerCase();
-  var ds=KB_STATIC.find(function(e){ return e.title.toLowerCase()===tl||(num&&e.num.toLowerCase()===num.toLowerCase()); });
-  if(ds){ showMsg('⚠ Already in KB (built-in): "'+ds.title+'" ('+ds.num+')','warn'); return; }
-  var dt=entries.find(function(e){ return e.title.toLowerCase()===tl; });
-  if(dt){ showMsg('⚠ Already in KB: "'+dt.title+'" ('+dt.num+')','warn'); return; }
-  var dn=num?entries.find(function(e){ return e.num.toLowerCase()===num.toLowerCase(); }):null;
-  if(dn){ showMsg('⚠ KB number '+num+' already used: "'+dn.title+'"','warn'); return; }
+  var ds=KB_STATIC.find(function(e){return e.title.toLowerCase()===tl||(num&&e.num.toLowerCase()===num.toLowerCase());});
+  if(ds){showMsg('Already in KB (built-in): "'+ds.title+'"','warn');return;}
+  var dt=entries.find(function(e){return e.title.toLowerCase()===tl;});
+  if(dt){showMsg('Already in KB: "'+dt.title+'"','warn');return;}
   var entry={id:Date.now(),num:num||('KB'+String(entries.length+5).padStart(2,'0')),cat:cat,title:title,desc:desc,url:url,file:fname,date:new Date().toLocaleDateString('en-GB',{month:'short',year:'numeric'})};
   entries.unshift(entry); saveKBEntries(entries);
   showMsg('✓ '+entry.num+' — "'+title+'" added!','ok');
-  clearKBForm(); renderDynamicKB(); renderAdminList(); updateKBCount();
-}
-function clearKBForm(){
-  ['kbNum','kbTitle','kbDesc','kbUrl'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
-  clearFile();
+  ['kbNum','kbTitle','kbDesc','kbUrl'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  clearFile(); renderDynamicKB(); renderAdminList(); updateKBCount();
 }
 function deleteKBEntry(id){
-  if(!confirm('Delete this KB entry?')) return;
-  saveKBEntries(getKBEntries().filter(function(e){ return e.id!==id; }));
+  if(!confirm('Delete this KB entry?'))return;
+  saveKBEntries(getKBEntries().filter(function(e){return e.id!==id;}));
   renderDynamicKB(); renderAdminList(); updateKBCount();
 }
 function renderDynamicKB(){
@@ -436,93 +432,65 @@ function renderDynamicKB(){
   var section=document.getElementById('dynamicKBSection');
   var grid=document.getElementById('dynamicKBGrid');
   var label=document.getElementById('dynamicKBLabel');
-  if(!section||!grid) return;
-  if(!entries.length){ section.style.display='none'; return; }
+  if(!section||!grid)return;
+  if(!entries.length){section.style.display='none';return;}
   section.style.display='block';
   label.textContent='Additional Documents ('+entries.length+')';
-  grid.innerHTML=entries.map(function(e){
+  var html='';
+  entries.forEach(function(e){
     var icon=KB_CAT_ICONS[e.cat]||'📄';
-    return '<div class="card" style="padding:1.25rem 1.5rem;">'+
-      '<div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;">'+
-      '<span>'+icon+'</span>'+
-      '<div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text1);">'+e.title+'</div>'+
-      '<span style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--gold);padding:2px 8px;border:1px solid rgba(200,165,80,.2);border-radius:100px;white-space:nowrap;margin-left:auto;">'+e.num+'</span>'+
-      '</div><p style="font-size:.88rem;color:var(--text2);margin-bottom:.5rem;">'+e.desc+'</p>'+
-      '<div style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text3);">// '+(KB_CAT_LABELS[e.cat]||e.cat)+' · Added '+e.date+(e.file?' · 📎 '+e.file:'')+'</div>'+
-      (e.url?'<a href="'+e.url+'" target="_blank" style="font-size:.78rem;color:var(--gold);text-decoration:none;margin-top:.5rem;display:inline-block;">View Document →</a>':'')+
-      '</div>';
-  }).join('');
+    html+='<div class="card" style="padding:1.25rem 1.5rem;">';
+    html+='<div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;">';
+    html+='<span>'+icon+'</span>';
+    html+='<div style="font-family:Syne,sans-serif;font-weight:700;font-size:1rem;color:var(--text1);">'+e.title+'</div>';
+    html+='<span style="font-family:monospace;font-size:.62rem;color:var(--gold);padding:2px 8px;border:1px solid rgba(200,165,80,.2);border-radius:100px;white-space:nowrap;margin-left:auto;">'+e.num+'</span>';
+    html+='</div><p style="font-size:.88rem;color:var(--text2);margin-bottom:.5rem;">'+e.desc+'</p>';
+    html+='<div style="font-size:.68rem;color:var(--text3);">// '+(KB_CAT_LABELS[e.cat]||e.cat)+' · Added '+e.date+(e.file?' · 📎 '+e.file:'')+'</div>';
+    if(e.url)html+='<a href="'+e.url+'" target="_blank" style="font-size:.78rem;color:var(--gold);text-decoration:none;margin-top:.5rem;display:inline-block;">View Document →</a>';
+    html+='</div>';
+  });
+  grid.innerHTML=html;
 }
 function renderAdminList(){
-  var list=document.getElementById('adminKBList'); if(!list) return;
+  var list=document.getElementById('adminKBList'); if(!list)return;
   var entries=getKBEntries();
-  var html='<div style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;padding:4px 0 6px;">Built-in ('+KB_STATIC.length+')</div>';
+  var html='<div style="font-size:.62rem;color:var(--text3);text-transform:uppercase;padding:4px 0 6px;">Built-in ('+KB_STATIC.length+')</div>';
   KB_STATIC.forEach(function(e){
-    html+='<div style="background:rgba(200,165,80,.04);border:1px solid rgba(200,165,80,.1);border-radius:7px;padding:.55rem .85rem;display:flex;align-items:center;gap:.6rem;margin-bottom:.3rem;">'+
-      '<span style="font-family:'Space Mono',monospace;font-size:.58rem;color:var(--gold);padding:1px 7px;border:1px solid rgba(200,165,80,.2);border-radius:100px;white-space:nowrap;">'+e.num+'</span>'+
-      '<span style="font-size:.82rem;color:var(--text2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+e.title+'</span>'+
-      '<span style="font-family:'Space Mono',monospace;font-size:.58rem;color:var(--text3);">locked</span></div>';
+    html+='<div style="background:rgba(200,165,80,.04);border:1px solid rgba(200,165,80,.1);border-radius:7px;padding:.5rem .85rem;display:flex;align-items:center;gap:.6rem;margin-bottom:.3rem;">';
+    html+='<span style="font-size:.58rem;color:var(--gold);padding:1px 7px;border:1px solid rgba(200,165,80,.2);border-radius:100px;white-space:nowrap;">'+e.num+'</span>';
+    html+='<span style="font-size:.82rem;color:var(--text2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+e.title+'</span>';
+    html+='<span style="font-size:.58rem;color:var(--text3);">locked</span></div>';
   });
   if(entries.length){
-    html+='<div style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;padding:10px 0 6px;">Admin Added ('+entries.length+')</div>';
+    html+='<div style="font-size:.62rem;color:var(--text3);text-transform:uppercase;padding:10px 0 6px;">Admin Added ('+entries.length+')</div>';
     entries.forEach(function(e){
-      html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.55rem .85rem;display:flex;align-items:center;gap:.6rem;margin-bottom:.3rem;">'+
-        '<span style="font-family:'Space Mono',monospace;font-size:.58rem;color:var(--cyan);padding:1px 7px;border:1px solid rgba(0,212,255,.2);border-radius:100px;white-space:nowrap;">'+e.num+'</span>'+
-        '<div style="flex:1;min-width:0;"><div style="font-size:.82rem;color:var(--text1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+e.title+'</div>'+
-        '<div style="font-size:.7rem;color:var(--text3);">'+(KB_CAT_LABELS[e.cat]||e.cat)+' · '+e.date+(e.file?' · 📎 '+e.file:'')+'</div></div>'+
-        '<button type="button" onclick="deleteKBEntry('+e.id+')" style="flex-shrink:0;background:rgba(226,75,74,.08);border:1px solid rgba(226,75,74,.2);border-radius:5px;color:#e24b4a;cursor:pointer;padding:3px 9px;font-size:.75rem;">Delete</button></div>';
+      html+='<div style="background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.5rem .85rem;display:flex;align-items:center;gap:.6rem;margin-bottom:.3rem;">';
+      html+='<span style="font-size:.58rem;color:var(--cyan);padding:1px 7px;border:1px solid rgba(0,212,255,.2);border-radius:100px;white-space:nowrap;">'+e.num+'</span>';
+      html+='<div style="flex:1;min-width:0;"><div style="font-size:.82rem;color:var(--text1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+e.title+'</div>';
+      html+='<div style="font-size:.7rem;color:var(--text3);">'+(KB_CAT_LABELS[e.cat]||e.cat)+' · '+e.date+(e.file?' · 📎 '+e.file:'')+'</div></div>';
+      html+='<button type="button" onclick="deleteKBEntry('+e.id+')" style="flex-shrink:0;background:rgba(226,75,74,.08);border:1px solid rgba(226,75,74,.2);border-radius:5px;color:#e24b4a;cursor:pointer;padding:3px 9px;font-size:.75rem;">Delete</button></div>';
     });
   } else {
     html+='<div style="font-size:.82rem;color:var(--text3);font-style:italic;padding:.5rem 0;">No documents added yet.</div>';
   }
-  html+='<div style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);border-top:1px solid var(--border);padding-top:.5rem;margin-top:.5rem;">Total: '+(KB_STATIC.length+entries.length)+' documents</div>';
+  html+='<div style="font-size:.62rem;color:var(--text3);border-top:1px solid var(--border);padding-top:.5rem;margin-top:.5rem;">Total: '+(KB_STATIC.length+entries.length)+' documents</div>';
   list.innerHTML=html;
 }
 function updateKBCount(){
   var el=document.getElementById('kbTotalCount'); if(el) el.textContent=KB_STATIC.length+getKBEntries().length;
 }
-function checkAdminPanel(){
-  // Method 1: session function
-  if(typeof hmGetSession==='function'){
-    var u=hmGetSession();
-    if(u&&u.isAdmin){ showAdminPanel(); return; }
-  }
-  // Method 2: check Admin badge in DOM (fallback)
-  var adminBadge = document.querySelector('.hm-admin-badge, [class*="admin"]');
-  var sidebarAdmin = document.querySelector('#hmSidebarProfile .plan-badge');
-  if(sidebarAdmin && sidebarAdmin.textContent.toLowerCase().includes('admin')){ showAdminPanel(); return; }
-  // Method 3: check localStorage directly
-  try {
-    var raw = localStorage.getItem('hm_session');
-    if(raw){ var s=JSON.parse(raw); if(s&&s.isAdmin){ showAdminPanel(); return; } }
-    var raw2 = localStorage.getItem('hm_user');
-    if(raw2){ var s2=JSON.parse(raw2); if(s2&&s2.isAdmin){ showAdminPanel(); return; } }
-  } catch(e){}
-}
-function showAdminPanel(){
-  var p=document.getElementById('adminKBPanel'); if(p) p.style.display='block';
-  var btn=document.getElementById('kbUploadBtn'); if(btn) btn.style.display='inline-block';
-  renderAdminList();
-}
-window.addEventListener('hm:login',function(e){
-  var u=e.detail;
-  if(u&&u.isAdmin){
-    var p=document.getElementById('adminKBPanel'); if(p) p.style.display='block';
-    var btn=document.getElementById('kbUploadBtn'); if(btn) btn.style.display='inline-block';
-    renderAdminList();
-  }
-});
+// Run immediately when script loads
+renderDynamicKB();
+updateKBCount();
+checkAdmin();
+// Also on DOMContentLoaded and hm:login
 document.addEventListener('DOMContentLoaded',function(){
-  renderDynamicKB(); updateKBCount();
-  // Check immediately from localStorage
-  try {
-    var s = JSON.parse(localStorage.getItem('hm_session')||'{}');
-    if(s && (s.isAdmin || s.email === 'arun25hyd@gmail.com')) { showAdminPanel(); }
-  } catch(e){}
-  // Also try via hmGetSession with retries
-  setTimeout(checkAdminPanel,100);
-  setTimeout(checkAdminPanel,600);
-  setTimeout(checkAdminPanel,1500);
+  renderDynamicKB(); updateKBCount(); checkAdmin();
+  setTimeout(checkAdmin,500);
+  setTimeout(checkAdmin,1500);
+});
+window.addEventListener('hm:login',function(e){
+  if(e.detail&&(e.detail.isAdmin||e.detail.email==='arun25hyd@gmail.com')) showAdminPanel();
 });
 </script>
 </body>
