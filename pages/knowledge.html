@@ -482,14 +482,27 @@ function updateKBCount(){
   var el=document.getElementById('kbTotalCount'); if(el) el.textContent=KB_STATIC.length+getKBEntries().length;
 }
 function checkAdminPanel(){
+  // Method 1: session function
   if(typeof hmGetSession==='function'){
     var u=hmGetSession();
-    if(u&&u.isAdmin){
-      var p=document.getElementById('adminKBPanel'); if(p) p.style.display='block';
-      var btn=document.getElementById('kbUploadBtn'); if(btn) btn.style.display='inline-block';
-      renderAdminList();
-    }
+    if(u&&u.isAdmin){ showAdminPanel(); return; }
   }
+  // Method 2: check Admin badge in DOM (fallback)
+  var adminBadge = document.querySelector('.hm-admin-badge, [class*="admin"]');
+  var sidebarAdmin = document.querySelector('#hmSidebarProfile .plan-badge');
+  if(sidebarAdmin && sidebarAdmin.textContent.toLowerCase().includes('admin')){ showAdminPanel(); return; }
+  // Method 3: check localStorage directly
+  try {
+    var raw = localStorage.getItem('hm_session');
+    if(raw){ var s=JSON.parse(raw); if(s&&s.isAdmin){ showAdminPanel(); return; } }
+    var raw2 = localStorage.getItem('hm_user');
+    if(raw2){ var s2=JSON.parse(raw2); if(s2&&s2.isAdmin){ showAdminPanel(); return; } }
+  } catch(e){}
+}
+function showAdminPanel(){
+  var p=document.getElementById('adminKBPanel'); if(p) p.style.display='block';
+  var btn=document.getElementById('kbUploadBtn'); if(btn) btn.style.display='inline-block';
+  renderAdminList();
 }
 window.addEventListener('hm:login',function(e){
   var u=e.detail;
