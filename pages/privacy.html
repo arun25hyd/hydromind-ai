@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Pricing & Plans — HydroMind.AI</title>
+<title>Privacy Policy — HydroMind.AI</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -72,10 +72,16 @@
 <nav class="navbar" id="navbar">
   <div class="navbar-inner">
     <a href="../index.html" class="hm-logo-wrap">
-      <div class="hm-logo-icon"><div class="hm-logo-ring"></div><div class="hm-logo-h">H</div></div>
-      <div class="hm-logo-text"><div class="hm-logo-name">HYDROMIND<span>.AI</span></div><div class="hm-logo-sub">Hydraulic Intelligence</div></div>
+      <div class="hm-logo-icon">
+        <div class="hm-logo-ring"></div>
+        <div class="hm-logo-h">H</div>
+      </div>
+      <div class="hm-logo-text">
+        <div class="hm-logo-name">HYDROMIND<span>.AI</span></div>
+        <div class="hm-logo-sub">Hydraulic Intelligence</div>
+      </div>
     </a>
-    <div class="navbar-menu">
+        <div class="navbar-menu">
       <a href="../index.html" class="navbar-link">Home</a>
       <a href="advisor.html" class="navbar-link">AI Advisor</a>
       <a href="system-design.html" class="navbar-link">&#9881; System Design</a>
@@ -83,41 +89,127 @@
       <a href="news.html" class="navbar-link">News</a>
       <a href="../index.html#electrical" class="navbar-link" style="color:#f5c842;">&#9889; Electrical</a>
       <a href="../index.html#calculator" class="navbar-link">Calculator</a>
-      <a href="pricing.html" class="navbar-link active" style="color:var(--gold);">Pricing</a>
+      <a href="pricing.html" class="navbar-link">Pricing</a>
       <a href="feedback.html" class="navbar-link">Feedback</a>
     </div>
     <div class="navbar-cta" id="hmNavCta">
       <button onclick="openAuthModal('login')" class="btn-outline" style="padding:8px 18px;font-size:.82rem;" id="hmNavLogin">Login</button>
       <button onclick="openAuthModal('register')" class="btn-primary" style="padding:8px 18px;font-size:.82rem;" id="hmNavRegister">Register</button>
-      <div id="hmNavUser" style="display:none;align-items:center;gap:.5rem;background:rgba(200,165,80,.06);border:1px solid rgba(200,165,80,.15);border-radius:8px;padding:5px 10px;cursor:pointer;" onclick="doLogout()">
-        <div id="hmNavAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.78rem;color:#080c12;"></div>
-        <span id="hmNavName" style="font-size:.82rem;color:var(--text1);"></span>
-        <span id="hmNavPlan" style="font-family:'Space Mono',monospace;font-size:.62rem;padding:2px 8px;border-radius:100px;background:rgba(200,165,80,.1);color:var(--gold);"></span>
+      <div id="hmNavUser" style="display:none;align-items:center;gap:.5rem;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);border-radius:8px;padding:5px 10px;cursor:pointer;" onclick="doLogout()">
+        <div id="hmNavAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#0050aa);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;color:#fff;"></div>
+        <span id="hmNavName" style="font-size:.82rem;color:#e8f4ff;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+        <span id="hmNavPlan" style="font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:2px 8px;border-radius:100px;background:rgba(0,212,255,.1);color:var(--cyan);"></span>
       </div>
     </div>
     <button class="navbar-toggle" id="navToggle"><span></span><span></span><span></span></button>
   </div>
   <div class="navbar-mobile" id="navMobile">
-    <a href="../index.html" class="navbar-link">Home</a>
-    <a href="advisor.html" class="navbar-link">AI Advisor</a>
-    <a href="system-design.html" class="navbar-link">&#9881; System Design</a>
-    <a href="knowledge.html" class="navbar-link">Knowledge Base</a>
-    <a href="pricing.html" class="navbar-link">Pricing</a>
+    <a href="../index.html">Home</a>
+    <a href="../pages/advisor.html">AI Advisor</a>
+    <a href="../pages/system-design.html">&#9881; System Design</a>
+    <a href="../pages/knowledge.html">Knowledge Base</a>
+    <a href="../pages/news.html">News</a>
+    <a href="../pages/advisor.html">&#9889; Electrical</a>
+    <a href="../index.html#calculator">Calculator</a>
+    <a href="../pages/pricing.html">Pricing</a>
+    <a href="../pages/feedback.html">Feedback</a>
+    <div class="navbar-mobile-auth" style="display:flex;gap:.5rem;margin-top:.5rem;padding-top:.75rem;border-top:1px solid var(--border);">
+      <button onclick="openAuthModal('login')" class="btn-outline" style="flex:1;padding:8px;font-size:.85rem;">Login</button>
+      <button onclick="openAuthModal('register')" class="btn-primary" style="flex:1;padding:8px;font-size:.85rem;">Register</button>
+    </div>
   </div>
 </nav>
 
+<div class="page-layout">
 
+<div class="hm-left-sidebar" id="hmLeftSidebar">
+    <div class="hm-left-inner">
+
+    <!-- Profile card (shown after login) -->
+    <div id="hmSidebarProfile" style="display:none;">
+      <div class="hm-profile-card">
+        <div class="hm-prof-av" id="hmProfAvatar">--</div>
+        <div class="hm-prof-name" id="hmProfName"></div>
+        <div class="hm-prof-email" id="hmProfEmail"></div>
+        <span class="hm-prof-plan" id="hmProfPlan">Free</span>
+      </div>
+    </div>
+
+    <!-- Guest state: no login button - just quick links and ad -->
+    <div id="hmSidebarNoAuth">
+      <div style="margin-bottom:.75rem;">
+        <div class="hm-sidebar-label">Quick Links</div>
+        <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
+        <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
+        <div class="hm-hist-item" onclick="location.href='news.html'"><span class="hm-hist-icon">&#128240;</span><span class="hm-hist-text">Industry News</span></div>
+        <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
+      </div>
+      <!-- Ad slot in left sidebar -->
+      <div style="font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.45rem;border-bottom:1px solid var(--border);margin-bottom:.5rem;">Sponsored</div>
+      <div style="background:rgba(200,165,80,.03);border:1px dashed rgba(200,165,80,.12);border-radius:6px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem;">
+        <div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement
+      </div>
+      <div style="text-align:center;">
+        <a href="pricing.html" style="font-family:'Space Mono',monospace;font-size:.56rem;color:rgba(200,165,80,.38);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a>
+      </div>
+    </div>
+
+    <!-- Chat history (shown after login) -->
+    <div id="hmSidebarHistory" style="display:none;margin-top:.75rem;">
+      <div class="hm-sidebar-label">Chat History</div>
+      <div id="hmHistoryList"></div>
+    </div>
+
+    <!-- Quick links (shown after login) -->
+    <div id="hmSidebarLinks" style="display:none;margin-top:.75rem;">
+      <div class="hm-sidebar-label">Quick Links</div>
+      <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
+      <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
+      <div class="hm-hist-item" onclick="location.href='news.html'"><span class="hm-hist-icon">&#128240;</span><span class="hm-hist-text">Industry News</span></div>
+      <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
+    </div>
+
+  </div>
+  <div class="hm-left-bottom"><button class="hm-logout-btn" id="hmLogoutBtn" onclick="doLogout()" style="display:none;">Sign Out</button></div>
+</div>
 
 <div class="hm-main-content">
 
+<div class="hm-prof-name" id="hmProfName"></div>
+        <div class="hm-prof-email" id="hmProfEmail"></div>
+        <span class="hm-prof-plan" id="hmProfPlan">Free</span>
+    <!-- Guest state: no login button - just quick links and ad -->
+    <div id="hmSidebarNoAuth">
+      <div style="margin-bottom:.75rem;">
+        <div class="hm-sidebar-label">Quick Links</div>
+        <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
+        <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
+        <div class="hm-hist-item" onclick="location.href='news.html'"><span class="hm-hist-icon">&#128240;</span><span class="hm-hist-text">Industry News</span></div>
+        <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
+      <!-- Ad slot in left sidebar -->
+      <div style="font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.45rem;border-bottom:1px solid var(--border);margin-bottom:.5rem;">Sponsored</div>
+      <div style="background:rgba(200,165,80,.03);border:1px dashed rgba(200,165,80,.12);border-radius:6px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem;">
+        <div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement
+      <div style="text-align:center;">
+        <a href="pricing.html" style="font-family:'Space Mono',monospace;font-size:.56rem;color:rgba(200,165,80,.38);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a>
+    <!-- Chat history (shown after login) -->
+    <div id="hmSidebarHistory" style="display:none;margin-top:.75rem;">
+      <div class="hm-sidebar-label">Chat History</div>
+      <div id="hmHistoryList"></div>
+    <!-- Quick links (shown after login) -->
+    <div id="hmSidebarLinks" style="display:none;margin-top:.75rem;">
+      <div class="hm-sidebar-label">Quick Links</div>
+      <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
+      <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
+      <div class="hm-hist-item" onclick="location.href='news.html'"><span class="hm-hist-icon">&#128240;</span><span class="hm-hist-text">Industry News</span></div>
+      <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
+  <div class="hm-left-bottom"><button class="hm-logout-btn" id="hmLogoutBtn" onclick="doLogout()" style="display:none;">Sign Out</button></div>
 <div class="page-header">
   <div class="container">
     <div class="breadcrumb"><a href="../index.html">Home</a> › Privacy Policy</div>
     <div class="eyebrow">Legal</div>
     <h1>Privacy <span class="text-gold">Policy</span></h1>
     <p style="color:var(--text2);margin-top:.75rem;">Effective date: March 2026 &nbsp;·&nbsp; HydroMind.AI &nbsp;·&nbsp; Abu Dhabi, UAE</p>
-  </div>
-</div>
 <section class="section section-dark">
   <div class="container" style="max-width:820px;">
     <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:2.5rem 3rem;line-height:1.9;color:var(--text2);">
@@ -137,9 +229,27 @@
       <h3 style="color:var(--gold);margin-bottom:.75rem;font-size:1rem;">7. Contact</h3>
       <p style="margin-bottom:0;">For privacy inquiries: <strong style="color:var(--gold);">support@hydromindai.com</strong><br>HydroMind.AI — Abu Dhabi, UAE</p>
       <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);font-family:'Space Mono',monospace;font-size:.65rem;color:var(--text3);">Last updated: March 2026</div>
-    </div>
-  </div>
 </section>
+<div id="hmNoAdBadge" style="display:none;background:rgba(61,214,140,.06);border:1px solid rgba(61,214,140,.2);border-radius:8px;padding:.75rem;text-align:center;margin-bottom:.55rem;"><div style="font-size:1.2rem;">&#127881;</div><p style="font-size:.68rem;color:#3dd68c;margin:.25rem 0 0;line-height:1.4;">Ad-free<br>Pro/Enterprise</p></div>
+  <div id="hmAd1" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:195px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:1rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement<br>200×195</div>
+  <div id="hmAd2" style="background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.11);border-radius:6px;padding:.65rem .6rem;text-align:center;margin-bottom:.55rem;"><div style="font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Partner</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:var(--cyan);margin:.15rem 0 .2rem;">Your Brand</div><div style="font-size:.65rem;color:var(--text2);line-height:1.4;">Reach hydraulic engineers worldwide.</div></div>
+  <div id="hmAd3" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128296;</div>Banner Ad<br>200×110</div>
+  <div id="hmAd4" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;"><div style="font-size:.85rem;opacity:.22;margin-bottom:3px;">&#128161;</div>Link Ad</div>
+  <div id="hmAd5" style="margin-top:auto;padding-top:.55rem;border-top:1px solid var(--border);text-align:center;"><a href="pricing.html" style="font-family:'JetBrains Mono',monospace;font-size:.57rem;color:rgba(0,212,255,.4);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a></div>
+
+</div><!-- end hm-main-content -->
+
+<div class="hm-right-sidebar" id="hmAdSidebar">
+  <div id="hmAdTitle" style="font-family:'JetBrains Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.5rem;border-bottom:1px solid var(--border);margin-bottom:.55rem;">Sponsored</div>
+  <div id="hmNoAdBadge" style="display:none;background:rgba(61,214,140,.06);border:1px solid rgba(61,214,140,.2);border-radius:8px;padding:.75rem;text-align:center;margin-bottom:.55rem;"><div style="font-size:1.2rem;">&#127881;</div><p style="font-size:.68rem;color:#3dd68c;margin:.25rem 0 0;line-height:1.4;">Ad-free<br>Pro/Enterprise</p></div>
+  <div id="hmAd1" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:195px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:1rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement<br>200×195</div>
+  <div id="hmAd2" style="background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.11);border-radius:6px;padding:.65rem .6rem;text-align:center;margin-bottom:.55rem;"><div style="font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Partner</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:var(--cyan);margin:.15rem 0 .2rem;">Your Brand</div><div style="font-size:.65rem;color:var(--text2);line-height:1.4;">Reach hydraulic engineers worldwide.</div></div>
+  <div id="hmAd3" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128296;</div>Banner Ad<br>200×110</div>
+  <div id="hmAd4" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;"><div style="font-size:.85rem;opacity:.22;margin-bottom:3px;">&#128161;</div>Link Ad</div>
+  <div id="hmAd5" style="margin-top:auto;padding-top:.55rem;border-top:1px solid var(--border);text-align:center;"><a href="pricing.html" style="font-family:'JetBrains Mono',monospace;font-size:.57rem;color:rgba(0,212,255,.4);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a></div>
+</div>
+
+</div><!-- end page-layout -->
 
 <footer class="footer">
     <div class="container">
