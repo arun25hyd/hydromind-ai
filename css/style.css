@@ -409,12 +409,14 @@ textarea.form-input { resize: vertical; min-height: 130px; }
 /* ================================================================
    RESPONSIVE
    ================================================================ */
-@media(max-width:1200px){ .hm-right-sidebar{display:none;} .hm-main-content{margin-right:0;} }
-@media(max-width:900px){
+@media(max-width:1100px){ .hm-right-sidebar{display:none;} .hm-main-content{margin-right:0;} }
+@media(max-width:860px){
   .hm-left-sidebar{display:none;}
   .hm-main-content{margin-left:0;margin-right:0;margin-top:72px;width:100%;}
   .page-layout{display:block;width:100%;}
   .hm-right-sidebar{display:none;}
+}
+@media(max-width:768px){
   .navbar-menu{display:none !important;}
   .navbar-toggle{display:flex !important;}
 }
