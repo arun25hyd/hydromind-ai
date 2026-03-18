@@ -356,13 +356,13 @@ p  { line-height: 1.82; font-size: 1rem; }
 /* ================================================================
    PRICING CARDS
    ================================================================ */
-.pricing-cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 1.5rem; margin-top: 2rem; }
-.pricing-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem 1.85rem; display: flex; flex-direction: column; transition: var(--tr); }
+.pricing-cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); gap: 1.5rem; margin-top: 2rem; }
+.pricing-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; display: flex; flex-direction: column; transition: var(--tr); min-width: 0; }
 .pricing-card:hover { border-color: rgba(200,165,80,.3); transform: translateY(-4px); box-shadow: var(--shadow); }
 .pricing-card.featured { border-color: rgba(200,165,80,.4); background: rgba(200,165,80,.04); position: relative; }
 .pricing-card.featured::before { content: 'Most Popular'; position: absolute; top: -13px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, var(--gold), var(--gold2)); color: #080c12; font-family: 'Space Mono', monospace; font-size: .66rem; padding: 3px 14px; border-radius: 100px; white-space: nowrap; font-weight: 700; }
 .plan-name { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800; color: var(--text1); margin-bottom: .4rem; }
-.plan-price { font-family: 'Syne', sans-serif; font-size: 3.2rem; font-weight: 800; color: var(--gold); line-height: 1; margin-bottom: .25rem; }
+.plan-price { font-family: 'Syne', sans-serif; font-size: 2.4rem; font-weight: 800; color: var(--gold); line-height: 1; margin-bottom: .25rem; }
 .plan-price span { font-size: 1.1rem; font-weight: 400; color: var(--text3); }
 .plan-desc { font-size: .9rem; color: var(--text2); margin-bottom: 1.5rem; line-height: 1.7; }
 .plan-features { list-style: none; display: flex; flex-direction: column; gap: .55rem; margin-bottom: 1.85rem; flex: 1; }
@@ -473,3 +473,6 @@ textarea.form-input { resize: vertical; min-height: 130px; }
 }
 .cat-pill:hover { border-color: rgba(200,165,80,.35); color: var(--gold); }
 .cat-pill input[type="checkbox"] { accent-color: var(--gold); }
+/* Form width fix for sidebar pages */
+.hm-main-content form { width: 100%; box-sizing: border-box; }
+.hm-main-content form > div { width: 100%; box-sizing: border-box; }
