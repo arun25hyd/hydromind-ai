@@ -514,9 +514,14 @@ window.addEventListener('hm:login',function(e){
 });
 document.addEventListener('DOMContentLoaded',function(){
   renderDynamicKB(); updateKBCount();
-  // Try multiple times to catch admin session
-  setTimeout(checkAdminPanel,300);
-  setTimeout(checkAdminPanel,800);
+  // Check immediately from localStorage
+  try {
+    var s = JSON.parse(localStorage.getItem('hm_session')||'{}');
+    if(s && (s.isAdmin || s.email === 'arun25hyd@gmail.com')) { showAdminPanel(); }
+  } catch(e){}
+  // Also try via hmGetSession with retries
+  setTimeout(checkAdminPanel,100);
+  setTimeout(checkAdminPanel,600);
   setTimeout(checkAdminPanel,1500);
 });
 </script>
