@@ -2,1110 +2,990 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 // ── CONSTANTS ──────────────────────────────────────────────
 const API = process.env.REACT_APP_BACKEND_URL || "https://hydromind-backend.onrender.com";
+
 const ADMIN_EMAILS = ["arun25hyd@proton.me", "arun25hyd@gmail.com"];
-const HM_SESSION  = "hm_session";
-const HM_USERS    = "hm_users";
-const HM_HISTORY  = "hm_history";
 
-// ── COLORS ─────────────────────────────────────────────────
-const C = {
-  navy:    "#020b18",
-  navy2:   "#041428",
-  steel:   "#0a2540",
-  blue:    "#0d4f8c",
-  cyan:    "#00d4ff",
-  gold:    "#c8a550",
-  goldY:   "#f5c842",
-  white:   "#e8f4ff",
-  muted:   "#6b8fa8",
-  text2:   "rgba(200,216,232,.65)",
-  text3:   "rgba(200,216,232,.38)",
-  border:  "rgba(0,212,255,.12)",
-  green:   "#3dd68c",
-  red:     "#e24b4a",
+const COLORS = {
+  navy:     "#020b18",
+  navy2:    "#041428",
+  steel:    "#0a2540",
+  blue:     "#0d4f8c",
+  cyan:     "#1a9fd4",
+  gold:     "#c8921a",
+  goldLt:   "#f0b429",
+  goldBrt:  "#ffd166",
+  white:    "#e8f4fd",
+  muted:    "#6b8fa8",
 };
 
-// ── STORAGE HELPERS ────────────────────────────────────────
-const getSession  = () => { try { return JSON.parse(localStorage.getItem(HM_SESSION)) || null; } catch { return null; } };
-const saveSession = (u) => localStorage.setItem(HM_SESSION, JSON.stringify(u));
-const clearSession= () => localStorage.removeItem(HM_SESSION);
-const getUsers    = () => { try { return JSON.parse(localStorage.getItem(HM_USERS)) || {}; } catch { return {}; } };
-const saveUser    = (e,d) => { const u = getUsers(); u[e] = d; localStorage.setItem(HM_USERS, JSON.stringify(u)); };
-const getHistory  = () => { try { return JSON.parse(localStorage.getItem(HM_HISTORY)) || []; } catch { return []; } };
-const addHistory  = (title, mode, messages) => {
-  const h = getHistory();
-  const id = Date.now();
-  h.unshift({ id, title: (title||"").slice(0,52), mode, date: new Date().toLocaleDateString(), messages: messages||[] });
-  if (h.length > 60) h.pop();
-  localStorage.setItem(HM_HISTORY, JSON.stringify(h));
-  return id;
+// ── GLOBAL STYLES injected once ──
+const GlobalStyle = () => {
+  useEffect(() => {
+    const id = "hydromind-global";
+    if (document.getElementById(id)) return;
+    const style = document.createElement("style");
+    style.id = id;
+    style.textContent = `
+      @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scroll-behavior: smooth; }
+      body { font-family: 'Rajdhani', sans-serif; background: #020b18; color: #e8f4fd; overflow-x: hidden; }
+      :root {
+        --navy:#020b18; --navy2:#041428; --steel:#0a2540; --blue:#0d4f8c;
+        --cyan:#1a9fd4; --gold:#c8921a; --gold-light:#f0b429; --gold-bright:#ffd166;
+        --white:#e8f4fd; --muted:#6b8fa8;
+        --border:rgba(200,146,26,0.25);
+        --glow:0 0 30px rgba(200,146,26,0.3);
+      }
+      @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+      @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.6)} }
+      @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+      @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+      @keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
+      .fadeUp-1{animation:fadeUp 0.8s 0.1s ease both}
+      .fadeUp-2{animation:fadeUp 0.8s 0.3s ease both}
+      .fadeUp-3{animation:fadeUp 0.8s 0.5s ease both}
+      .fadeUp-4{animation:fadeUp 0.8s 0.7s ease both}
+      .fadeUp-5{animation:fadeUp 0.8s 0.9s ease both}
+      .typing-cursor{display:inline-block;width:2px;height:1em;background:var(--cyan);margin-left:2px;animation:blink 1s infinite;vertical-align:text-bottom}
+      .badge-dot{width:6px;height:6px;background:var(--cyan);border-radius:50%;animation:pulse 2s infinite;display:inline-block}
+      .reveal{opacity:0;transform:translateY(30px);transition:opacity 0.7s ease,transform 0.7s ease}
+      .reveal.visible{opacity:1;transform:none}
+      .gold-divider{width:60px;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-light));margin:1.2rem 0}
+      ::-webkit-scrollbar{width:6px}
+      ::-webkit-scrollbar-track{background:#020b18}
+      ::-webkit-scrollbar-thumb{background:rgba(200,146,26,0.3);border-radius:3px}
+      textarea,input{background:rgba(255,255,255,0.04);border:1px solid rgba(26,159,212,0.2);color:#e8f4fd;outline:none;font-family:'Rajdhani',sans-serif}
+      textarea:focus,input:focus{border-color:rgba(200,146,26,0.5)}
+      .chat-msg-enter{animation:fadeUp 0.3s ease both}
+      @media(max-width:900px){
+        .hide-mobile{display:none!important}
+        .grid-2{grid-template-columns:1fr!important}
+        .grid-3{grid-template-columns:1fr 1fr!important}
+      }
+      @media(max-width:600px){
+        .grid-3{grid-template-columns:1fr!important}
+        .grid-5{grid-template-columns:1fr 1fr!important}
+      }
+    `;
+    document.head.appendChild(style);
+  }, []);
+  return null;
 };
-const updateHistory = (id, messages) => {
-  const h = getHistory();
-  const e = h.find(x => x.id === id);
-  if (e) { e.messages = messages; localStorage.setItem(HM_HISTORY, JSON.stringify(h)); }
-};
 
-// ── CALCULATOR HELPERS ─────────────────────────────────────
-const fmt = (n, dec=2) => (!isFinite(n)||isNaN(n)||n<=0) ? "—" : parseFloat(n.toFixed(dec)).toString();
-
-// ── CIRCUIT SVG BACKGROUND ─────────────────────────────────
-function CircuitBg() {
-  return (
-    <div style={{position:"fixed",inset:0,zIndex:0,pointerEvents:"none",overflow:"hidden"}}>
-      <svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice"
-        xmlns="http://www.w3.org/2000/svg" style={{width:"100%",height:"100%"}}>
-        <defs>
-          <radialGradient id="cbg" cx="50%" cy="55%" r="60%">
-            <stop offset="0%" stopColor="#001830"/>
-            <stop offset="100%" stopColor="#020b18"/>
-          </radialGradient>
-          <marker id="harr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
-            <path d="M2 1L8 5L2 9" fill="none" stroke="#00d4ff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </marker>
-        </defs>
-        <rect width="1400" height="900" fill="url(#cbg)"/>
-        <rect x="60" y="500" width="90" height="110" rx="4" fill="none" stroke="#00d4ff" strokeWidth="1" opacity=".28"/>
-        <rect x="60" y="555" width="90" height="55" fill="rgba(0,212,255,.04)"/>
-        <text fontFamily="monospace" fontSize="9" fill="#00d4ff" opacity=".3" x="105" y="516" textAnchor="middle">RESERVOIR</text>
-        <line x1="105" y1="500" x2="105" y2="420" stroke="#00d4ff" strokeWidth=".8" opacity=".12"/>
-        <line x1="105" y1="420" x2="240" y2="420" stroke="#00d4ff" strokeWidth=".8" opacity=".12"/>
-        <rect x="210" y="280" width="110" height="40" rx="5" fill="none" stroke="#00d4ff" strokeWidth=".9" opacity=".32"/>
-        <text fontFamily="monospace" fontSize="9" fill="#00d4ff" opacity=".32" x="265" y="296" textAnchor="middle">ELEC. MOTOR</text>
-        <text fontFamily="monospace" fontSize="9" fill="#00d4ff" opacity=".22" x="265" y="309" textAnchor="middle">45 kW  1500 rpm</text>
-        <circle cx="330" cy="380" r="46" fill="none" stroke="#00d4ff" strokeWidth="1.2" opacity=".45"/>
-        <circle cx="330" cy="380" r="40" fill="rgba(0,212,255,.03)"/>
-        <text fontFamily="monospace" fontSize="9" fill="#00d4ff" opacity=".38" x="330" y="440" textAnchor="middle">PUMP A4VG</text>
-        <line x1="376" y1="380" x2="620" y2="380" stroke="#00d4ff" strokeWidth=".8" opacity=".12"/>
-        <text fontFamily="monospace" fontSize="9" fill="#f5c842" opacity=".4" x="495" y="370" textAnchor="middle">HP  285 bar</text>
-        <rect x="620" y="356" width="118" height="48" rx="4" fill="none" stroke="#00d4ff" strokeWidth="1.1" opacity=".5"/>
-        <text fontFamily="monospace" fontSize="9" fill="#00d4ff" opacity=".38" x="679" y="418" textAnchor="middle">DCV 4/3 WE6</text>
-        <circle cx="900" cy="545" r="46" fill="none" stroke="#00d4ff" strokeWidth="1.2" opacity=".45"/>
-        <text fontFamily="monospace" fontSize="9" fill="#00d4ff" opacity=".35" x="900" y="604" textAnchor="middle">MOTOR A6VM</text>
-        <rect x="575" y="648" width="50" height="24" rx="3" fill="none" stroke="#00d4ff" strokeWidth=".9" opacity=".38"/>
-        <text fontFamily="monospace" fontSize="8" fill="#00d4ff" opacity=".35" x="600" y="640" textAnchor="middle">FILTER</text>
-        <rect x="760" y="648" width="62" height="24" rx="4" fill="none" stroke="#00d4ff" strokeWidth=".9" opacity=".38"/>
-        <text fontFamily="monospace" fontSize="8" fill="#00d4ff" opacity=".35" x="791" y="640" textAnchor="middle">COOLER</text>
-        <text fontFamily="monospace" fontSize="10" fill="#00d4ff" opacity=".06" x="700" y="840" textAnchor="middle" letterSpacing="3">HYDRAULIC CIRCUIT — ISO 1219-1 — HydroMind.AI</text>
-      </svg>
-    </div>
-  );
-}
-
-// ── NAVBAR ─────────────────────────────────────────────────
-function Navbar({ user, onLogin, onLogout, currentPage, setPage }) {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+// ── HYDRAULIC SCHEMATIC BACKGROUND ──────────────────────────
+const HydraulicBackground = () => {
+  const canvasRef = useRef(null);
+  const animRef   = useRef(null);
+  const mouseRef  = useRef({ x: 0.5, y: 0.5 });
 
   useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", h, { passive: true });
-    return () => window.removeEventListener("scroll", h);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+
+    function resize() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    const onMouse = (e) => {
+      mouseRef.current = { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight };
+    };
+    window.addEventListener("mousemove", onMouse);
+
+    const VW = 1400, VH = 900;
+    const sx = (x) => (x / VW) * canvas.width;
+    const sy = (y) => (y / VH) * canvas.height;
+    const ss = (s) => s * Math.min(canvas.width / VW, canvas.height / VH);
+
+    const C = {
+      gold:"#c8921a", goldLt:"#f0b429", goldLine:"rgba(200,146,26,0.55)",
+      goldDim:"rgba(200,146,26,0.18)", cyan:"#1a9fd4", cyanLine:"rgba(26,159,212,0.5)",
+      cyanDim:"rgba(26,159,212,0.15)", pipeFill:"rgba(26,159,212,0.07)",
+      red:"#e84040", redDim:"rgba(232,64,64,0.6)", muted:"rgba(107,143,168,0.7)",
+      white:"rgba(232,244,253,0.9)",
+    };
+
+    function polyLine(pts, color, width, dash) {
+      if (pts.length < 2) return;
+      ctx.save();
+      ctx.strokeStyle = color; ctx.lineWidth = ss(width || 1.5);
+      if (dash) ctx.setLineDash(dash);
+      ctx.lineJoin = "round"; ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(sx(pts[0][0]), sy(pts[0][1]));
+      for (let i = 1; i < pts.length; i++) ctx.lineTo(sx(pts[i][0]), sy(pts[i][1]));
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function circle(x, y, r, strokeC, fillC, lw) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(sx(x), sy(y), ss(r), 0, Math.PI * 2);
+      if (fillC) { ctx.fillStyle = fillC; ctx.fill(); }
+      if (strokeC) { ctx.strokeStyle = strokeC; ctx.lineWidth = ss(lw || 1.5); ctx.stroke(); }
+      ctx.restore();
+    }
+
+    function text(str, x, y, color, size, align) {
+      ctx.save();
+      ctx.font = `${ss(size || 10)}px 'Share Tech Mono',monospace`;
+      ctx.fillStyle = color; ctx.textAlign = align || "center";
+      ctx.fillText(str, sx(x), sy(y));
+      ctx.restore();
+    }
+
+    function drawPump(x, y, r, angle) {
+      circle(x, y, r, C.goldLine, C.cyanDim, 2);
+      ctx.save();
+      ctx.translate(sx(x), sy(y)); ctx.rotate(angle || 0);
+      ctx.fillStyle = C.goldLt;
+      ctx.beginPath();
+      ctx.moveTo(ss(-r * 0.55), ss(-r * 0.3));
+      ctx.lineTo(ss(r * 0.55), 0);
+      ctx.lineTo(ss(-r * 0.55), ss(r * 0.3));
+      ctx.closePath(); ctx.fill();
+      ctx.restore();
+    }
+
+    function drawGauge(x, y, r, pressure) {
+      circle(x, y, r, C.goldLine, "rgba(4,20,40,0.7)", 1.5);
+      for (let i = 0; i < 9; i++) {
+        const ang = -Math.PI * 0.8 + (i / 8) * Math.PI * 1.6;
+        ctx.save();
+        ctx.strokeStyle = i > 5 ? C.red : C.goldLt; ctx.lineWidth = ss(1);
+        ctx.beginPath();
+        ctx.moveTo(sx(x + Math.cos(ang) * r * 0.7), sy(y + Math.sin(ang) * r * 0.7));
+        ctx.lineTo(sx(x + Math.cos(ang) * r * 0.9), sy(y + Math.sin(ang) * r * 0.9));
+        ctx.stroke(); ctx.restore();
+      }
+      const nAng = -Math.PI * 0.8 + pressure * Math.PI * 1.6;
+      ctx.save();
+      ctx.strokeStyle = pressure > 0.7 ? C.red : C.goldLt;
+      ctx.lineWidth = ss(1.5); ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(sx(x), sy(y));
+      ctx.lineTo(sx(x + Math.cos(nAng) * r * 0.65), sy(y + Math.sin(nAng) * r * 0.65));
+      ctx.stroke(); ctx.restore();
+      circle(x, y, r * 0.12, C.gold, C.goldLt, 1);
+    }
+
+    const PIPES = [
+      { pts:[[190,750],[285,750],[285,615],[420,615],[560,615],[560,750]], color:C.cyanLine, w:3 },
+      { pts:[[560,750],[600,750],[740,750],[740,680],[760,680],[760,550],[740,550]], color:C.goldLine, w:3 },
+      { pts:[[460,735],[460,680],[380,680],[380,520],[460,520]], color:C.cyanLine, w:2.5 },
+      { pts:[[460,430],[460,370],[900,370],[900,820],[160,820],[160,750]], color:C.cyanLine, w:2 },
+      { pts:[[440,615],[440,820],[820,820]], color:C.redDim, w:1.5, dash:true },
+      { pts:[[950,300],[1250,300],[1250,700],[950,700],[950,300]], color:"rgba(200,146,26,0.12)", w:1.2 },
+      { pts:[[1100,300],[1100,700]], color:"rgba(26,159,212,0.10)", w:1 },
+      { pts:[[50,200],[50,600],[130,600],[130,200],[50,200]], color:"rgba(26,159,212,0.09)", w:1 },
+    ];
+
+    const PARTICLE_PIPES = [
+      { pts:[[190,750],[285,750],[285,615],[420,615],[560,615],[560,750]], color:C.cyan, r:3.5, speed:0.18 },
+      { pts:[[560,750],[740,750],[740,680],[760,680],[760,550],[740,550]], color:C.goldLt, r:3, speed:0.22 },
+      { pts:[[460,735],[460,680],[380,680],[380,520],[460,520]], color:C.cyan, r:2.5, speed:0.16 },
+      { pts:[[460,430],[460,370],[900,370],[900,820],[160,820],[160,750]], color:C.cyanLine, r:2, speed:0.12 },
+    ];
+
+    const particles = [];
+    PARTICLE_PIPES.forEach((pp) => {
+      const count = 5;
+      for (let i = 0; i < count; i++) {
+        particles.push({ pts:pp.pts, t:i/count, speed:pp.speed*(0.8+Math.random()*0.4), color:pp.color, r:pp.r*(0.6+Math.random()*0.7), tail:[] });
+      }
+    });
+
+    function pathPos(pts, t) {
+      const total = pts.reduce((acc, _, i) => {
+        if (i === 0) return 0;
+        const dx = pts[i][0]-pts[i-1][0], dy = pts[i][1]-pts[i-1][1];
+        return acc + Math.sqrt(dx*dx+dy*dy);
+      }, 0);
+      let target = t * total;
+      for (let i = 1; i < pts.length; i++) {
+        const dx = pts[i][0]-pts[i-1][0], dy = pts[i][1]-pts[i-1][1];
+        const seg = Math.sqrt(dx*dx+dy*dy);
+        if (target <= seg) return [pts[i-1][0]+dx*(target/seg), pts[i-1][1]+dy*(target/seg)];
+        target -= seg;
+      }
+      return pts[pts.length-1];
+    }
+
+    let t = 0;
+    function draw() {
+      animRef.current = requestAnimationFrame(draw);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const vg = ctx.createRadialGradient(canvas.width*0.5,canvas.height*0.5,canvas.height*0.1,canvas.width*0.5,canvas.height*0.5,canvas.height*0.9);
+      vg.addColorStop(0, "rgba(2,11,24,0)"); vg.addColorStop(1, "rgba(2,11,24,0.6)");
+      ctx.fillStyle = vg; ctx.fillRect(0,0,canvas.width,canvas.height);
+
+      const ox = (mouseRef.current.x - 0.5) * 8, oy = (mouseRef.current.y - 0.5) * 5;
+      ctx.save();
+      ctx.translate(sx(ox), sy(oy));
+
+      // Pipes
+      PIPES.forEach(p => {
+        polyLine(p.pts, p.color, p.w||1.5, p.dash ? [ss(5),ss(5)] : undefined);
+        if (!p.dash && p.w >= 2) polyLine(p.pts, C.pipeFill, (p.w||2)*2.5);
+      });
+
+      // Junctions
+      [[285,615],[560,615],[460,370],[900,370],[900,820],[160,820]].forEach(j => circle(j[0],j[1],4,null,C.goldLt));
+
+      // Symbols
+      drawPump(285, 750, 32, t * 1.2);
+      const p1 = 0.45 + Math.sin(t * 0.9) * 0.15;
+      const p2 = 0.60 + Math.sin(t * 0.7 + 1) * 0.18;
+      drawGauge(300, 615, 22, p1);
+      drawGauge(680, 615, 22, p2);
+
+      // Tank
+      ctx.save();
+      ctx.strokeStyle = C.goldLine; ctx.lineWidth = ss(2);
+      ctx.fillStyle = "rgba(26,159,212,0.1)";
+      ctx.strokeRect(sx(100),sy(710),ss(90),ss(80));
+      ctx.fillRect(sx(100),sy(710),ss(90),ss(80));
+      ctx.restore();
+      text("TANK", 145, 755, C.cyan, 9);
+
+      // Pressure readings
+      text(`${(180+Math.sin(t*0.9)*35).toFixed(0)} bar`, 300, 597, C.goldLt, 8);
+      text(`${(240+Math.sin(t*0.7+1)*50).toFixed(0)} bar`, 680, 597, p2>0.7?C.red:C.goldLt, 8);
+      text(p2 <= 0.78 ? "● SYSTEM OK" : "● OVER-PRESSURE", 700, 780, p2<=0.78?"rgba(40,202,65,0.7)":C.red, 9);
+
+      // Background labels
+      text("HP LINE", 420, 602, C.gold, 8);
+      text("RETURN", 650, 358, C.muted, 8);
+      text("SUCTION", 237, 762, C.cyan, 8);
+
+      // Particles
+      particles.forEach(p => {
+        p.t = (p.t + p.speed * 0.003) % 1;
+        const pos = pathPos(p.pts, p.t);
+        p.tail.push([...pos]);
+        if (p.tail.length > 6) p.tail.shift();
+        if (p.tail.length > 1) {
+          for (let i = 1; i < p.tail.length; i++) {
+            ctx.save(); ctx.globalAlpha = (i/p.tail.length)*0.35;
+            ctx.strokeStyle = p.color; ctx.lineWidth = ss(p.r*0.7); ctx.lineCap="round";
+            ctx.beginPath();
+            ctx.moveTo(sx(p.tail[i-1][0]),sy(p.tail[i-1][1]));
+            ctx.lineTo(sx(p.tail[i][0]),sy(p.tail[i][1]));
+            ctx.stroke(); ctx.restore();
+          }
+        }
+        circle(pos[0], pos[1], p.r, null, p.color);
+      });
+
+      // Piston animation
+      const pist = Math.sin(t * 0.9) * 20;
+      ctx.save();
+      ctx.strokeStyle = C.goldLt; ctx.lineWidth = ss(3); ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(sx(550),sy(480)); ctx.lineTo(sx(550+pist),sy(480));
+      ctx.stroke(); ctx.restore();
+      circle(550+pist, 480, 5, C.gold, C.goldLt, 1.5);
+
+      // Watermark
+      ctx.save(); ctx.globalAlpha = 0.04;
+      ctx.font = `bold ${ss(70)}px 'Orbitron',monospace`;
+      ctx.fillStyle = C.gold; ctx.textAlign = "center";
+      ctx.fillText("HYDRAULIC", sx(700), sy(460));
+      ctx.fillText("SCHEMATIC", sx(700), sy(550));
+      ctx.restore();
+
+      ctx.restore();
+      t += 0.012;
+    }
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animRef.current);
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("mousemove", onMouse);
+    };
   }, []);
 
-  const navLinks = [
-    { label: "Home", page: "home" },
-    { label: "AI Advisor", page: "advisor" },
-    { label: "⚙ System Design", page: "design" },
-    { label: "Knowledge Base", page: "knowledge" },
-    { label: "News", page: "news" },
-    { label: "⚡ Electrical", page: "electrical", gold: true },
-    { label: "Calculator", page: "calculator" },
-    { label: "Pricing", page: "pricing" },
-    { label: "Feedback", page: "feedback" },
-  ];
+  return (
+    <canvas ref={canvasRef} style={{ position:"fixed", top:0, left:0, width:"100%", height:"100%", zIndex:0, pointerEvents:"none" }} />
+  );
+};
+
+// ── GRID OVERLAY ──
+const GridOverlay = () => (
+  <div style={{
+    position:"fixed", top:0, left:0, width:"100%", height:"100%", zIndex:1, pointerEvents:"none",
+    backgroundImage:"linear-gradient(rgba(26,159,212,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(26,159,212,0.04) 1px,transparent 1px)",
+    backgroundSize:"60px 60px"
+  }} />
+);
+
+// ── NAV ──────────────────────────────────────────────────────
+const Nav = ({ onFeedback, onLaunch }) => {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 30);
+    window.addEventListener("scroll", fn);
+    return () => window.removeEventListener("scroll", fn);
+  }, []);
+
+  const scrollTo = (id) => { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior:"smooth" }); };
 
   return (
     <nav style={{
-      position:"fixed", top:0, left:0, right:0, zIndex:1000,
-      background: scrolled ? "rgba(2,11,24,.97)" : "rgba(2,11,24,.85)",
-      backdropFilter:"blur(12px)",
-      borderBottom:`1px solid ${C.border}`,
-      transition:"background .3s",
+      position:"fixed", top:0, left:0, right:0, zIndex:100,
+      display:"flex", alignItems:"center", justifyContent:"space-between",
+      padding:"0 5%", height:"70px",
+      background: scrolled ? "rgba(2,11,24,0.97)" : "rgba(2,11,24,0.85)",
+      backdropFilter:"blur(20px)",
+      borderBottom:"1px solid rgba(200,146,26,0.25)",
+      transition:"background 0.3s"
     }}>
-      <div style={{maxWidth:1400,margin:"0 auto",padding:"0 1.5rem",display:"flex",alignItems:"center",justifyContent:"space-between",height:60}}>
-        {/* Logo */}
-        <div style={{display:"flex",alignItems:"center",gap:".6rem",cursor:"pointer"}} onClick={() => setPage("home")}>
-          <div style={{width:34,height:34,borderRadius:"50%",border:`2px solid ${C.cyan}`,display:"flex",alignItems:"center",justifyContent:"center",position:"relative"}}>
-            <div style={{position:"absolute",inset:3,borderRadius:"50%",border:`1px solid rgba(0,212,255,.3)`}}/>
-            <span style={{fontFamily:"'Barlow Condensed',sans-serif",fontWeight:800,fontSize:"1rem",color:C.cyan}}>H</span>
-          </div>
-          <div>
-            <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontWeight:800,fontSize:".92rem",color:C.white,letterSpacing:".08em"}}>
-              HYDROMIND<span style={{color:C.cyan}}>.AI</span>
-            </div>
-            <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:".52rem",color:C.text3,letterSpacing:".1em",textTransform:"uppercase"}}>Hydraulic Intelligence</div>
-          </div>
-        </div>
-
-        {/* Desktop Links */}
-        <div style={{display:"flex",alignItems:"center",gap:".15rem",flexWrap:"wrap"}}>
-          {navLinks.map(l => (
-            <button key={l.page} onClick={() => setPage(l.page)} style={{
-              background:"none",border:"none",cursor:"pointer",padding:"6px 10px",
-              fontFamily:"'DM Sans',sans-serif",fontSize:".8rem",
-              color: currentPage===l.page ? C.cyan : l.gold ? C.goldY : C.text2,
-              borderBottom: currentPage===l.page ? `2px solid ${C.cyan}` : "2px solid transparent",
-              transition:"color .2s",
-            }}>{l.label}</button>
-          ))}
-        </div>
-
-        {/* Auth */}
-        <div style={{display:"flex",alignItems:"center",gap:".5rem"}}>
-          {user ? (
-            <div style={{display:"flex",alignItems:"center",gap:".5rem",background:"rgba(0,212,255,.06)",border:`1px solid rgba(0,212,255,.15)`,borderRadius:8,padding:"5px 10px",cursor:"pointer"}} onClick={onLogout}>
-              <div style={{width:28,height:28,borderRadius:"50%",background:"linear-gradient(135deg,#00d4ff,#0050aa)",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Barlow Condensed',sans-serif",fontWeight:700,fontSize:".78rem",color:"#fff"}}>
-                {(user.first||user.email).slice(0,2).toUpperCase()}
-              </div>
-              <span style={{fontSize:".82rem",color:C.white,maxWidth:80,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
-                {user.first||user.email.split("@")[0]}
-              </span>
-              <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:".62rem",padding:"2px 8px",borderRadius:100,background:"rgba(0,212,255,.1)",color:C.cyan}}>{user.plan}</span>
-            </div>
-          ) : (
-            <>
-              <button onClick={() => onLogin("login")} style={{background:"none",border:`1px solid rgba(0,212,255,.3)`,borderRadius:6,padding:"7px 16px",color:C.cyan,fontFamily:"'DM Sans',sans-serif",fontSize:".82rem",cursor:"pointer"}}>Login</button>
-              <button onClick={() => onLogin("register")} style={{background:"linear-gradient(135deg,#00d4ff,#0070cc)",border:"none",borderRadius:6,padding:"7px 16px",color:"#000",fontFamily:"'DM Sans',sans-serif",fontWeight:600,fontSize:".82rem",cursor:"pointer"}}>Register</button>
-            </>
-          )}
-        </div>
-      </div>
-    </nav>
-  );
-}
-
-// ── AUTH MODAL ─────────────────────────────────────────────
-function AuthModal({ tab: initialTab, onClose, onSuccess }) {
-  const [tab, setTab] = useState(initialTab || "login");
-  const [error, setError] = useState("");
-  const [forgotOk, setForgotOk] = useState("");
-  const [form, setForm] = useState({ email:"", pass:"", first:"", last:"", plan:"Free", forgotEmail:"" });
-
-  const set = (k,v) => setForm(f => ({...f,[k]:v}));
-
-  const doLogin = () => {
-    if (!form.email || !form.pass) { setError("Please fill in both fields."); return; }
-    const users = getUsers();
-    const email = form.email.trim().toLowerCase();
-    if (!users[email]) { setError("No account found. Please register first."); return; }
-    if (users[email].pass !== btoa(unescape(encodeURIComponent(form.pass)))) { setError("Incorrect password."); return; }
-    const user = { ...users[email], email };
-    saveSession(user);
-    onSuccess(user);
-  };
-
-  const doRegister = () => {
-    if (!form.first || !form.email || !form.pass) { setError("Please fill in all required fields."); return; }
-    if (form.pass.length < 6) { setError("Password must be at least 6 characters."); return; }
-    const email = form.email.trim().toLowerCase();
-    const users = getUsers();
-    if (users[email]) { setError("Account already exists. Please login."); return; }
-    const isAdmin = ADMIN_EMAILS.includes(email);
-    const plan = isAdmin ? "Admin" : form.plan;
-    const data = { first:form.first, last:form.last, email, pass:btoa(unescape(encodeURIComponent(form.pass))), plan, isAdmin, joined:new Date().toLocaleDateString() };
-    saveUser(email, data);
-    const user = { ...data };
-    saveSession(user);
-    onSuccess(user);
-  };
-
-  const doForgot = () => {
-    const email = form.forgotEmail.trim().toLowerCase();
-    if (!email) { setError("Please enter your email."); return; }
-    const users = getUsers();
-    setForgotOk(users[email] ? "✅ Reset link sent — check your inbox." : "⚠️ No account found with this email.");
-  };
-
-  return (
-    <div style={{position:"fixed",inset:0,background:"rgba(1,6,16,.92)",backdropFilter:"blur(12px)",zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center"}}
-      onClick={e => { if(e.target===e.currentTarget) onClose(); }}>
-      <div style={{background:"rgba(6,18,40,.98)",border:`1px solid rgba(0,212,255,.22)`,borderRadius:16,width:"100%",maxWidth:420,margin:"0 1.25rem",overflow:"hidden"}}>
-        {/* Tabs */}
-        <div style={{display:"flex",alignItems:"center",borderBottom:`1px solid ${C.border}`,padding:"0 1rem"}}>
-          {["login","register"].map(t => (
-            <button key={t} onClick={() => { setTab(t); setError(""); }} style={{
-              flex:1,background:"none",border:"none",borderBottom:`2px solid ${tab===t?C.cyan:"transparent"}`,
-              padding:"14px 0",fontFamily:"'DM Sans',sans-serif",fontWeight:600,fontSize:".88rem",
-              color:tab===t?C.cyan:"rgba(200,216,232,.35)",cursor:"pointer",textTransform:"capitalize",transition:".2s"
-            }}>{t}</button>
-          ))}
-          <button onClick={onClose} style={{background:"none",border:"none",color:C.text3,fontSize:"1.3rem",cursor:"pointer",padding:"0 .5rem"}}>×</button>
-        </div>
-
-        <div style={{padding:"1.5rem"}}>
-          {error && <div style={{background:"rgba(226,75,74,.08)",border:"1px solid rgba(226,75,74,.25)",borderRadius:7,padding:".7rem 1rem",fontSize:".82rem",color:C.red,marginBottom:".9rem"}}>{error}</div>}
-
-          {tab === "login" && (
-            <>
-              <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontWeight:700,fontSize:"1.4rem",color:C.white,marginBottom:".25rem"}}>Welcome Back</div>
-              <div style={{fontSize:".82rem",color:C.text2,marginBottom:"1.25rem"}}>Sign in to your HydroMind.AI account</div>
-              <AuthField label="Email Address" type="email" value={form.email} onChange={v=>set("email",v)} placeholder="your@email.com"/>
-              <AuthField label="Password" type="password" value={form.pass} onChange={v=>set("pass",v)} placeholder="Your password" onEnter={doLogin}/>
-              <button onClick={() => { setTab("forgot"); setError(""); }} style={{background:"none",border:"none",color:C.cyan,fontSize:".8rem",cursor:"pointer",marginBottom:"1rem",padding:0}}>Forgot password?</button>
-              <AuthBtn label="Sign In" onClick={doLogin}/>
-              <div style={{textAlign:"center",fontSize:".82rem",color:C.text3,marginTop:".75rem"}}>No account? <button onClick={() => setTab("register")} style={{background:"none",border:"none",color:C.cyan,cursor:"pointer",fontSize:".82rem"}}>Register free</button></div>
-            </>
-          )}
-
-          {tab === "register" && (
-            <>
-              <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontWeight:700,fontSize:"1.4rem",color:C.white,marginBottom:".25rem"}}>Create Account</div>
-              <div style={{fontSize:".82rem",color:C.text2,marginBottom:"1.25rem"}}>14-day free trial — no card required</div>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:".75rem"}}>
-                <AuthField label="First Name *" value={form.first} onChange={v=>set("first",v)} placeholder="Arun"/>
-                <AuthField label="Last Name" value={form.last} onChange={v=>set("last",v)} placeholder="Tiwari"/>
-              </div>
-              <AuthField label="Work Email *" type="email" value={form.email} onChange={v=>set("email",v)} placeholder="your@email.com"/>
-              <AuthField label="Password * (min 6)" type="password" value={form.pass} onChange={v=>set("pass",v)} placeholder="Min 6 characters" onEnter={doRegister}/>
-              <div style={{marginBottom:"1rem"}}>
-                <label style={{fontFamily:"'JetBrains Mono',monospace",fontSize:".63rem",textTransform:"uppercase",letterSpacing:".07em",color:C.text3,display:"block",marginBottom:5}}>Select Plan</label>
-                <select value={form.plan} onChange={e=>set("plan",e.target.value)} style={{width:"100%",background:"rgba(2,10,22,.85)",border:`1px solid rgba(0,212,255,.16)`,borderRadius:8,padding:"10px 13px",fontFamily:"'DM Sans',sans-serif",fontSize:".9rem",color:C.white,outline:"none",cursor:"pointer"}}>
-                  <option value="Free">Free — Basic access</option>
-                  <option value="Basic">Basic — $29/month</option>
-                  <option value="Pro">Pro — $79/month</option>
-                  <option value="Enterprise">Enterprise — $199/month</option>
-                </select>
-              </div>
-              <AuthBtn label="Create Account" onClick={doRegister}/>
-              <div style={{textAlign:"center",fontSize:".82rem",color:C.text3,marginTop:".75rem"}}>Have an account? <button onClick={() => setTab("login")} style={{background:"none",border:"none",color:C.cyan,cursor:"pointer",fontSize:".82rem"}}>Sign in</button></div>
-            </>
-          )}
-
-          {tab === "forgot" && (
-            <>
-              <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontWeight:700,fontSize:"1.4rem",color:C.white,marginBottom:".25rem"}}>Reset Password</div>
-              <div style={{fontSize:".82rem",color:C.text2,marginBottom:"1.25rem"}}>Enter your registered email address</div>
-              <AuthField label="Registered Email" type="email" value={form.forgotEmail} onChange={v=>set("forgotEmail",v)} placeholder="your@email.com"/>
-              {forgotOk && <div style={{background:"rgba(61,214,140,.07)",border:"1px solid rgba(61,214,140,.2)",borderRadius:7,padding:".7rem 1rem",fontSize:".82rem",color:C.green,marginBottom:".9rem"}}>{forgotOk}</div>}
-              <AuthBtn label="Send Reset Link" onClick={doForgot} cyan/>
-              <div style={{textAlign:"center",marginTop:".75rem"}}><button onClick={() => setTab("login")} style={{background:"none",border:"none",color:C.cyan,cursor:"pointer",fontSize:".82rem"}}>← Back to Login</button></div>
-            </>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function AuthField({ label, type="text", value, onChange, placeholder, onEnter }) {
-  return (
-    <div style={{marginBottom:".9rem"}}>
-      <label style={{fontFamily:"'JetBrains Mono',monospace",fontSize:".63rem",textTransform:"uppercase",letterSpacing:".07em",color:C.text3,display:"block",marginBottom:5}}>{label}</label>
-      <input type={type} value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder}
-        onKeyDown={e => e.key==="Enter" && onEnter && onEnter()}
-        style={{width:"100%",background:"rgba(2,10,22,.85)",border:`1px solid rgba(0,212,255,.16)`,borderRadius:8,padding:"10px 13px",fontFamily:"'DM Sans',sans-serif",fontSize:".9rem",color:C.white,outline:"none",boxSizing:"border-box"}}/>
-    </div>
-  );
-}
-
-function AuthBtn({ label, onClick, cyan }) {
-  return (
-    <button onClick={onClick} style={{width:"100%",background:cyan?"linear-gradient(135deg,#00d4ff,#0090cc)":"linear-gradient(135deg,#00d4ff,#0070cc)",border:"none",borderRadius:8,padding:12,color:"#000",fontFamily:"'DM Sans',sans-serif",fontWeight:600,fontSize:".92rem",cursor:"pointer"}}>
-      {label}
-    </button>
-  );
-}
-
-// ── LEFT SIDEBAR ───────────────────────────────────────────
-function LeftSidebar({ user, onLogin, onLogout, setPage }) {
-  const history = getHistory();
-  const modeIcons = { hyd:"⚙️", elec:"⚡", crane:"🏗️", fluid:"🛢️", calc:"📐" };
-
-  return (
-    <div style={{width:200,minWidth:200,background:"rgba(4,14,32,.92)",borderRight:`1px solid ${C.border}`,display:"flex",flexDirection:"column",padding:".75rem",height:"100vh",position:"sticky",top:60,overflowY:"auto"}}>
-      {user ? (
-        <>
-          <div style={{background:"rgba(0,212,255,.04)",border:`1px solid rgba(0,212,255,.12)`,borderRadius:10,padding:".85rem",marginBottom:".75rem",position:"relative"}}>
-            <div style={{width:36,height:36,borderRadius:"50%",background:"linear-gradient(135deg,#00d4ff,#0050aa)",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Barlow Condensed',sans-serif",fontWeight:700,fontSize:".9rem",color:"#fff",marginBottom:".4rem"}}>
-              {(user.first||user.email).slice(0,2).toUpperCase()}
-            </div>
-            <div style={{fontFamily:"'DM Sans',sans-serif",fontWeight:600,fontSize:".88rem",color:C.white}}>{[user.first,user.last].filter(Boolean).join(" ")||user.email.split("@")[0]}</div>
-            <div style={{fontSize:".72rem",color:C.text3,marginBottom:".35rem",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{user.email}</div>
-            <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:".6rem",padding:"2px 8px",borderRadius:100,background:user.isAdmin?"rgba(245,200,66,.12)":"rgba(0,212,255,.08)",color:user.isAdmin?C.goldY:C.cyan}}>{user.plan}</span>
-          </div>
-          <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:".6rem",textTransform:"uppercase",letterSpacing:".08em",color:C.text3,marginBottom:".4rem"}}>Chat History</div>
-          {history.length === 0
-            ? <div style={{fontSize:".72rem",color:C.text3,textAlign:"center",padding:".75rem"}}>No history yet</div>
-            : history.slice(0,10).map(h => (
-              <div key={h.id} style={{display:"flex",alignItems:"center",gap:".4rem",padding:".45rem .5rem",borderRadius:6,cursor:"pointer",marginBottom:2,transition:".15s"}}
-                onMouseEnter={e=>e.currentTarget.style.background="rgba(0,212,255,.06)"}
-                onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
-                <span style={{fontSize:".8rem"}}>{modeIcons[h.mode]||"💬"}</span>
-                <span style={{fontSize:".72rem",color:C.text2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{h.title}</span>
-              </div>
-            ))
-          }
-          <div style={{marginTop:".75rem"}}>
-            <SidebarLink label="AI Advisor" icon="🤖" onClick={() => setPage("advisor")}/>
-            <SidebarLink label="Knowledge Base" icon="📚" onClick={() => setPage("knowledge")}/>
-            <SidebarLink label="Industry News" icon="📰" onClick={() => setPage("news")}/>
-            <SidebarLink label="Upgrade Plan" icon="💳" onClick={() => setPage("pricing")}/>
-          </div>
-          <div style={{marginTop:"auto",paddingTop:".75rem"}}>
-            <button onClick={onLogout} style={{width:"100%",background:"rgba(226,75,74,.08)",border:"1px solid rgba(226,75,74,.2)",borderRadius:7,padding:"8px",color:C.red,fontFamily:"'DM Sans',sans-serif",fontSize:".8rem",cursor:"pointer"}}>Sign Out</button>
-          </div>
-        </>
-      ) : (
-        <>
-          <div style={{marginBottom:".75rem"}}>
-            <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:".6rem",textTransform:"uppercase",letterSpacing:".08em",color:C.text3,marginBottom:".5rem"}}>Quick Links</div>
-            <SidebarLink label="AI Advisor" icon="🤖" onClick={() => setPage("advisor")}/>
-            <SidebarLink label="Knowledge Base" icon="📚" onClick={() => setPage("knowledge")}/>
-            <SidebarLink label="Industry News" icon="📰" onClick={() => setPage("news")}/>
-            <SidebarLink label="Upgrade Plan" icon="💳" onClick={() => setPage("pricing")}/>
-          </div>
-          <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:".58rem",textTransform:"uppercase",letterSpacing:".1em",color:C.text3,paddingBottom:".45rem",borderBottom:`1px solid ${C.border}`,marginBottom:".5rem"}}>Sponsored</div>
-          <div style={{background:"rgba(200,165,80,.03)",border:"1px dashed rgba(200,165,80,.12)",borderRadius:6,minHeight:160,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",color:C.text3,fontFamily:"'JetBrains Mono',monospace",fontSize:".58rem",textTransform:"uppercase",letterSpacing:".04em",marginBottom:".5rem"}}>
-            <div style={{fontSize:".9rem",opacity:.22,marginBottom:4}}>📢</div>Advertisement
-          </div>
-          <div style={{marginTop:"1rem",display:"flex",flexDirection:"column",gap:".5rem"}}>
-            <button onClick={() => onLogin("login")} style={{background:"none",border:`1px solid rgba(0,212,255,.3)`,borderRadius:6,padding:"8px",color:C.cyan,fontFamily:"'DM Sans',sans-serif",fontSize:".8rem",cursor:"pointer"}}>Login</button>
-            <button onClick={() => onLogin("register")} style={{background:"linear-gradient(135deg,#00d4ff,#0070cc)",border:"none",borderRadius:6,padding:"8px",color:"#000",fontFamily:"'DM Sans',sans-serif",fontWeight:600,fontSize:".8rem",cursor:"pointer"}}>Register Free</button>
-          </div>
-        </>
-      )}
-    </div>
-  );
-}
-
-function SidebarLink({ label, icon, onClick }) {
-  return (
-    <div onClick={onClick} style={{display:"flex",alignItems:"center",gap:".4rem",padding:".45rem .5rem",borderRadius:6,cursor:"pointer",marginBottom:2,transition:".15s"}}
-      onMouseEnter={e=>e.currentTarget.style.background="rgba(0,212,255,.06)"}
-      onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
-      <span style={{fontSize:".8rem"}}>{icon}</span>
-      <span style={{fontSize:".78rem",color:C.text2}}>{label}</span>
-    </div>
-  );
-}
-
-// ── RIGHT AD SIDEBAR ───────────────────────────────────────
-function RightSidebar({ user }) {
-  const isPaid = user && (user.isAdmin || user.plan === "Pro" || user.plan === "Enterprise");
-  if (isPaid) {
-    return (
-      <div style={{width:200,minWidth:200,background:"rgba(4,14,32,.92)",borderLeft:`1px solid ${C.border}`,padding:".75rem",height:"100vh",position:"sticky",top:60,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
-        <div style={{background:"rgba(61,214,140,.06)",border:"1px solid rgba(61,214,140,.2)",borderRadius:8,padding:".75rem",textAlign:"center"}}>
-          <div style={{fontSize:"1.2rem"}}>🎉</div>
-          <p style={{fontSize:".68rem",color:C.green,margin:".25rem 0 0",lineHeight:1.4}}>Ad-free<br/>{user.plan}</p>
-        </div>
-      </div>
-    );
-  }
-  return (
-    <div style={{width:200,minWidth:200,background:"rgba(4,14,32,.92)",borderLeft:`1px solid ${C.border}`,padding:".75rem",height:"100vh",position:"sticky",top:60,overflowY:"auto",display:"flex",flexDirection:"column",gap:".55rem"}}>
-      <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:".58rem",textTransform:"uppercase",letterSpacing:".1em",color:C.text3,paddingBottom:".5rem",borderBottom:`1px solid ${C.border}`}}>Sponsored</div>
-      <AdBlock height={195} label="Advertisement" size="200×195"/>
-      <div style={{background:"rgba(0,212,255,.04)",border:`1px solid rgba(0,212,255,.11)`,borderRadius:6,padding:".65rem .6rem",textAlign:"center"}}>
-        <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:".56rem",color:C.text3,textTransform:"uppercase",letterSpacing:".06em"}}>Partner</div>
-        <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:".9rem",fontWeight:700,color:C.cyan,margin:".15rem 0 .2rem"}}>Your Brand</div>
-        <div style={{fontSize:".65rem",color:C.text2,lineHeight:1.4}}>Reach hydraulic engineers worldwide.</div>
-      </div>
-      <AdBlock height={110} label="Banner Ad" size="200×110"/>
-      <AdBlock height={62} label="Link Ad"/>
-      <div style={{marginTop:"auto",paddingTop:".55rem",borderTop:`1px solid ${C.border}`,textAlign:"center"}}>
-        <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:".57rem",color:"rgba(0,212,255,.4)",textTransform:"uppercase",letterSpacing:".05em",cursor:"pointer"}}>Advertise here →</span>
-      </div>
-    </div>
-  );
-}
-
-function AdBlock({ height, label, size }) {
-  return (
-    <div style={{background:"rgba(0,212,255,.03)",border:"1px dashed rgba(0,212,255,.14)",borderRadius:6,height,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",color:C.text3,fontFamily:"'JetBrains Mono',monospace",fontSize:".6rem",textTransform:"uppercase",letterSpacing:".04em"}}>
-      <div style={{fontSize:".9rem",opacity:.22,marginBottom:4}}>📢</div>
-      {label}{size && <><br/>{size}</>}
-    </div>
-  );
-}
-
-// ── HOME PAGE ──────────────────────────────────────────────
-function HomePage({ onLogin, setPage }) {
-  return (
-    <div>
-      {/* Hero */}
-      <section style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",position:"relative",padding:"100px 2rem 80px",textAlign:"center",overflow:"hidden"}}>
-        <div style={{position:"relative",zIndex:2,maxWidth:780,margin:"0 auto"}}>
-          <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:".82rem",color:C.goldY,letterSpacing:".12em",marginBottom:"1.4rem"}}>
-            ✦ AI-POWERED HYDRAULIC INTELLIGENCE PLATFORM ✦
-          </div>
-          <h1 style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"clamp(2.2rem,7vw,4.5rem)",fontWeight:800,lineHeight:1.05,color:C.white,marginBottom:"1.4rem"}}>
-            AI Intelligence for<br/><span style={{color:C.cyan}}>Hydraulic Systems</span>
-          </h1>
-          <p style={{fontSize:"1.05rem",color:C.text2,maxWidth:560,margin:"0 auto 2.5rem",lineHeight:1.85}}>
-            Expert AI advisor for hydraulic systems, offshore cranes, and HPUs — backed by 33+ indexed OEM manuals and real offshore field cases.
-          </p>
-          <div style={{display:"flex",gap:"1rem",justifyContent:"center",flexWrap:"wrap",marginBottom:"3rem"}}>
-            <button onClick={() => setPage("advisor")} style={{background:"linear-gradient(135deg,#00d4ff,#0070cc)",border:"none",borderRadius:8,padding:"14px 36px",fontSize:"1rem",color:"#000",fontFamily:"'DM Sans',sans-serif",fontWeight:700,cursor:"pointer"}}>Start Free Trial</button>
-            <button onClick={() => setPage("knowledge")} style={{background:"none",border:`1px solid rgba(0,212,255,.4)`,borderRadius:8,padding:"14px 32px",fontSize:"1rem",color:C.cyan,fontFamily:"'DM Sans',sans-serif",cursor:"pointer"}}>Knowledge Base</button>
-          </div>
-          {/* Social proof */}
-          <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:".85rem",flexWrap:"wrap"}}>
-            <div style={{display:"flex",alignItems:"center"}}>
-              {["AT","MR","SK","JA"].map((i,idx) => (
-                <div key={i} style={{width:34,height:34,borderRadius:"50%",background:`linear-gradient(135deg,${["#c026d3,#9333ea","#00d4ff,#0050aa","#3dd68c,#0a7a44","#f5c842,#c17d0a"][idx]})`,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Barlow Condensed',sans-serif",fontWeight:700,fontSize:".82rem",color:idx===3?"#000":"#fff",border:`2px solid ${C.navy}`,marginRight:idx<3?-7:0,zIndex:5-idx}}>
-                  {i}
-                </div>
-              ))}
-            </div>
-            <div>
-              <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"1.1rem",fontWeight:700,color:C.white}}>1,200+ Engineers</div>
-              <div style={{fontSize:".75rem",color:"rgba(200,216,232,.45)"}}>using HydroMind.AI</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Bar */}
-      <div style={{background:"rgba(4,14,32,.92)",borderTop:`1px solid ${C.border}`,borderBottom:`1px solid ${C.border}`,padding:"1.75rem 0"}}>
-        <div style={{maxWidth:1000,margin:"0 auto",padding:"0 2rem",display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"1rem",textAlign:"center"}}>
-          {[["33+","OEM Manuals"],["KB33","Knowledge Base"],["24/7","AI Available"],["v2.0","Latest Version"]].map(([val,lbl]) => (
-            <div key={lbl}>
-              <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"clamp(1.6rem,4vw,2.4rem)",fontWeight:800,color:C.cyan}}>{val}</div>
-              <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:".62rem",textTransform:"uppercase",letterSpacing:".1em",color:C.text3}}>{lbl}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Electrical Section */}
-      <section style={{padding:"5rem 2rem",background:"rgba(3,10,24,.6)"}} id="electrical">
-        <div style={{maxWidth:1100,margin:"0 auto"}}>
-          <div style={{textAlign:"center",maxWidth:620,margin:"0 auto 3rem"}}>
-            <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:".72rem",textTransform:"uppercase",letterSpacing:".12em",color:C.goldY,marginBottom:".75rem"}}>⚡ Electrical &amp; PLC Intelligence</div>
-            <h2 style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"clamp(1.4rem,4vw,2.2rem)",fontWeight:800,color:C.white}}>Electrical · PLC · Sensor · VFD<br/><span style={{color:C.goldY}}>Fault Diagnosis</span></h2>
-            <p style={{color:C.text2,marginTop:"1rem"}}>HydroMind covers the full electrical and PLC interface of hydraulic systems — solenoids, sensors, drives, and fieldbus networks.</p>
-          </div>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:"1.25rem"}}>
-            {[
-              {icon:"💻",title:"PLC Fault Codes",desc:"Siemens S7-300/400/1200, Allen Bradley ControlLogix, Omron CJ/CS. Fault code lookup, I/O diagnostics, ladder logic guidance."},
-              {icon:"⚡",title:"Solenoid Diagnostics",desc:"Coil resistance testing (20–40Ω for 24VDC), current draw measurement, manual override, wiring verification."},
-              {icon:"📈",title:"Pressure & Flow Sensors",desc:"4–20mA and 0–10V transducer calibration, zero/span adjustment, wiring checks, fault isolation."},
-              {icon:"⚙️",title:"VFD / Inverter Faults",desc:"Danfoss FC, ABB ACS, Siemens SINAMICS fault codes. Overcurrent, overvoltage, earth fault diagnosis."},
-              {icon:"🔗",title:"CAN Bus & Fieldbus",desc:"CANopen, Profibus, Modbus RTU/TCP diagnostics. Node fault isolation, communication timeout troubleshooting."},
-              {icon:"📄",title:"Upload Electrical Manuals",desc:"Upload PLC programs, electrical schematics, or VFD manuals and ask HydroMind AI to reference them in answers."},
-            ].map(({icon,title,desc}) => (
-              <div key={title} style={{background:"rgba(5,15,35,.8)",border:"1px solid rgba(245,200,66,.15)",borderRadius:12,padding:"1.5rem",cursor:"pointer",transition:".2s"}}
-                onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(245,200,66,.4)";e.currentTarget.style.transform="translateY(-2px)";}}
-                onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(245,200,66,.15)";e.currentTarget.style.transform="translateY(0)";}}>
-                <div style={{width:42,height:42,borderRadius:10,background:"rgba(245,200,66,.08)",border:"1px solid rgba(245,200,66,.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"1.1rem",marginBottom:"1rem"}}>{icon}</div>
-                <h3 style={{fontFamily:"'Barlow Condensed',sans-serif",fontWeight:700,fontSize:"1.1rem",color:C.white,marginBottom:".5rem"}}>{title}</h3>
-                <p style={{fontSize:".84rem",color:C.text2,lineHeight:1.6,marginBottom:"1rem"}}>{desc}</p>
-                <button onClick={() => setPage("advisor")} style={{background:"none",border:"none",color:C.goldY,fontSize:".82rem",cursor:"pointer",padding:0,fontFamily:"'DM Sans',sans-serif"}}>Ask AI →</button>
-              </div>
-            ))}
-          </div>
-          <div style={{textAlign:"center",marginTop:"2.5rem"}}>
-            <button onClick={() => setPage("advisor")} style={{background:"linear-gradient(135deg,#c49000,#f5c842)",border:"none",borderRadius:8,padding:"13px 32px",color:"#000",fontFamily:"'DM Sans',sans-serif",fontWeight:700,fontSize:"1rem",cursor:"pointer"}}>⚡ Open Electrical/PLC Advisor</button>
-          </div>
-        </div>
-      </section>
-
-      {/* Calculator Section */}
-      <section style={{padding:"5rem 2rem"}} id="calculator">
-        <div style={{maxWidth:950,margin:"0 auto"}}>
-          <div style={{textAlign:"center",maxWidth:600,margin:"0 auto 2.5rem"}}>
-            <div style={{fontFamily:"'JetBrains Mono',monospace",fontSize:".72rem",textTransform:"uppercase",letterSpacing:".12em",color:C.cyan,marginBottom:".75rem"}}>📐 Engineering Calculator</div>
-            <h2 style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:"clamp(1.4rem,4vw,2.2rem)",fontWeight:800,color:C.white}}>Hydraulic &amp; Electrical<br/><span style={{color:C.cyan}}>Engineering Calculator</span></h2>
-          </div>
-          <Calculator/>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer style={{background:"rgba(2,8,18,.98)",borderTop:`1px solid ${C.border}`,padding:"3rem 2rem 1.5rem"}}>
-        <div style={{maxWidth:1100,margin:"0 auto"}}>
-          <div style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr",gap:"2rem",marginBottom:"2rem",flexWrap:"wrap"}}>
-            <div>
-              <div style={{display:"flex",alignItems:"center",gap:".6rem",marginBottom:".75rem"}}>
-                <div style={{width:30,height:30,borderRadius:"50%",border:`2px solid ${C.cyan}`,display:"flex",alignItems:"center",justifyContent:"center"}}>
-                  <span style={{fontFamily:"'Barlow Condensed',sans-serif",fontWeight:800,fontSize:".9rem",color:C.cyan}}>H</span>
-                </div>
-                <span style={{fontFamily:"'Barlow Condensed',sans-serif",fontWeight:800,fontSize:".92rem",color:C.white}}>HYDROMIND<span style={{color:C.cyan}}>.AI</span></span>
-              </div>
-              <p style={{fontSize:".84rem",color:C.text2,lineHeight:1.6}}>AI-powered hydraulic intelligence for offshore crane supervisors and hydraulic technicians.</p>
-              <div style={{display:"inline-flex",alignItems:"center",gap:".4rem",background:"rgba(61,214,140,.06)",border:"1px solid rgba(61,214,140,.2)",borderRadius:100,padding:"4px 12px",marginTop:".75rem"}}>
-                <span style={{width:6,height:6,borderRadius:"50%",background:C.green,display:"inline-block"}}/>
-                <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:".62rem",color:C.green}}>AI Online — KB v2.0</span>
-              </div>
-            </div>
-            {[
-              {h:"Platform",links:[["AI Advisor","advisor"],["Knowledge Base","knowledge"],["Industry News","news"],["Calculator","calculator"]]},
-              {h:"Company",links:[["Pricing","pricing"],["Feedback","feedback"],["Privacy Policy","privacy"],["Disclaimer","disclaimer"]]},
-              {h:"Contact",links:[["arun25hyd@gmail.com",""],["Abu Dhabi, UAE",""]]}
-            ].map(({h,links}) => (
-              <div key={h}>
-                <h5 style={{fontFamily:"'Barlow Condensed',sans-serif",fontWeight:700,fontSize:".92rem",color:C.white,marginBottom:".75rem",letterSpacing:".05em"}}>{h}</h5>
-                <div style={{display:"flex",flexDirection:"column",gap:".4rem"}}>
-                  {links.map(([l]) => <span key={l} style={{fontSize:".84rem",color:C.text2,cursor:"pointer",transition:".15s"}}>{l}</span>)}
-                </div>
-              </div>
-            ))}
-          </div>
-          <div style={{borderTop:`1px solid ${C.border}`,paddingTop:"1.25rem",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:".5rem"}}>
-            <span style={{fontSize:".8rem",color:C.text3}}>© 2026 HydroMind.AI — All rights reserved</span>
-            <div style={{display:"flex",gap:"1rem"}}>
-              {["Privacy Policy","Disclaimer"].map(l => <span key={l} style={{fontSize:".8rem",color:C.text3,cursor:"pointer"}}>{l}</span>)}
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
-  );
-}
-
-// ── CALCULATOR ─────────────────────────────────────────────
-function Calculator() {
-  const [activeTab, setActiveTab] = useState("cylinder");
-  const [unit, setUnit] = useState("iso");
-  const [inputs, setInputs] = useState({});
-  const [results, setResults] = useState({});
-  const [elecMode, setElecMode] = useState("ohm");
-  const [elecPhase, setElecPhase] = useState(1);
-
-  const set = (k,v) => setInputs(p => ({...p,[k]:v}));
-  const gv = (k) => parseFloat(inputs[k])||0;
-  const setR = (obj) => setResults(p => ({...p,...obj}));
-
-  const tabs = [
-    {id:"cylinder",label:"⚙ Cylinder"},
-    {id:"pump",label:"⚙ Pump"},
-    {id:"motor",label:"⚙ Motor"},
-    {id:"pdrop",label:"⚙ Pressure Drop"},
-    {id:"piping",label:"⚙ Piping"},
-    {id:"elec",label:"⚡ Electrical",gold:true},
-  ];
-
-  const headers = {
-    cylinder:"// Cylinder Calculator — Force · Area · Speed · Volume",
-    pump:"// Pump Calculator — Flow Rate · Power · Torque",
-    motor:"// Motor Calculator — Torque · Speed · Power",
-    pdrop:"// Pressure Drop Calculator — Pipe",
-    piping:"// Piping Calculator — Velocity · Reynolds",
-    elec:"// Electrical Calculator — Ohm's Law · Power · Solenoid · 4-20mA",
-  };
-
-  const calc = useCallback(() => {
-    if (activeTab === "cylinder") {
-      let bore=gv("c_bore"), rod=gv("c_rod"), stroke=gv("c_stroke"), press=gv("c_press"), flow=gv("c_flow");
-      if(unit==="imp"){bore*=25.4;rod*=25.4;stroke*=25.4;press/=14.5038;flow/=0.26417;}
-      const Ab=Math.PI*(bore/2)**2/100, Ar=Math.PI*((bore/2)**2-(rod/2)**2)/100;
-      const Fext=press*Ab/10, Fret=press*Ar/10;
-      const vext=flow&&Ab?(flow/Ab)*10:0, vret=flow&&Ar?(flow/Ar)*10:0;
-      const Vext=Ab*stroke/1000, Vret=Ar*stroke/1000;
-      if(unit==="imp") setR({boreArea:fmt(Ab*0.155,3),rodArea:fmt(Ar*0.155,3),extForce:fmt(Fext*224.809,0),retForce:fmt(Fret*224.809,0),extSpd:fmt(vext*0.03937,2),retSpd:fmt(vret*0.03937,2),extVol:fmt(Vext*0.26417,3),retVol:fmt(Vret*0.26417,3)});
-      else setR({boreArea:fmt(Ab,2),rodArea:fmt(Ar,2),extForce:fmt(Fext,2),retForce:fmt(Fret,2),extSpd:fmt(vext,1),retSpd:fmt(vret,1),extVol:fmt(Vext,3),retVol:fmt(Vret,3)});
-    } else if (activeTab === "pump") {
-      const disp=gv("p_disp"),rpm=gv("p_rpm"),voleff=(gv("p_voleff")||95),press=gv("p_press"),meff=90;
-      const Q=(disp>0&&rpm>0)?(disp*rpm*(voleff/100))/1000:0;
-      const P=(Q>0&&press>0)?(press*Q)/600:0;
-      const T=(disp>0&&press>0)?(disp*press)/(20*Math.PI)/(meff/100):0;
-      setR({pumpFlow:fmt(unit==="imp"?Q*0.26417:Q,2),pumpHpow:fmt(unit==="imp"?P*1.34102:P,2),pumpIpow:fmt(unit==="imp"?P*1.34102/(meff/100):P/(meff/100),2),pumpTorq:fmt(unit==="imp"?T*0.73756:T,1)});
-    } else if (activeTab === "motor") {
-      let p=gv("m_press"),q=gv("m_flow");
-      const disp=gv("m_disp"),meff=(gv("m_meff")||90);
-      if(unit==="imp"){p/=14.5038;q/=0.26417;}
-      const T=(disp>0&&p>0)?(disp*p*(meff/100))/(20*Math.PI):0;
-      const n=(disp>0&&q>0)?(q*1000)/disp:0;
-      const P=(p>0&&q>0)?(p*q)/600:0;
-      setR({motTorq:fmt(unit==="imp"?T*0.73756:T,1),motRpm:fmt(n,0),motPow:fmt(unit==="imp"?P*1.34102:P,2),motEff:fmt(meff,0)});
-    } else if (activeTab === "pdrop") {
-      let flow=gv("pd_flow"),diam=gv("pd_diam");
-      const len=gv("pd_len"),visc=(gv("pd_visc")||46),dens=(gv("pd_dens")||870);
-      if(unit==="imp"){flow/=0.26417;diam*=25.4;}
-      const r=diam/2000,Q=flow/60000;
-      const v=r>0?Q/(Math.PI*r**2):0;
-      const mu=visc/1000000,Re=(dens*v*(diam/1000))/mu;
-      const f=Re>0&&Re<2300?64/Re:Re>=2300?0.316/Re**0.25:0;
-      const dP=(len>0&&r>0)?(f*len*(diam/1000)*dens*v**2)/(2*(diam/1000)*100000):0;
-      setR({pdVel:fmt(unit==="imp"?v*3.28084:v,2),pdRe:fmt(Re,0),pdBar:fmt(unit==="imp"?dP*14.5038:dP,3),pdFlow:fmt(flow,1)});
-    } else if (activeTab === "piping") {
-      let flow=gv("pp_flow"),diam=gv("pp_diam");
-      const visc=(gv("pp_visc")||46),dens=(gv("pp_dens")||870);
-      if(unit==="imp"){flow/=0.26417;diam*=25.4;}
-      const r=diam/2000,Q=flow/60000,A=r>0?Math.PI*r**2:0;
-      const v=A>0?Q/A:0,mu=visc/1000000;
-      const Re=(dens*v*(diam/1000))/mu;
-      const regime=Re<2300?"Laminar":Re<4000?"Transition":"Turbulent";
-      setR({ppVel:fmt(unit==="imp"?v*3.28084:v,2),ppArea:fmt(unit==="imp"?A*1550:A*10000,1),ppRe:fmt(Re,0),ppRegime:regime,ppRegimeColor:Re<2300?C.green:Re<4000?C.goldY:C.red});
-    } else if (activeTab === "elec") {
-      if(elecMode==="ohm"){
-        const V=gv("el_volt"),I=gv("el_curr"),R=gv("el_res");
-        let cV=V,cI=I,cR=R;
-        if(V>0&&I>0){cR=V/I;}else if(V>0&&R>0){cI=V/R;}else if(I>0&&R>0){cV=I*R;}
-        const cP=cV*cI;
-        setR({elR1:fmt(cV,2),elR2:fmt(cI,3),elR3:fmt(cR,2),elR4:fmt(cP,2)});
-      } else if(elecMode==="power"){
-        const V=gv("el_pvolt"),I=gv("el_pcurr"),pf=(gv("el_pf")||1);
-        if(V>0&&I>0){const f=elecPhase===3?Math.sqrt(3):1,S=V*I*f,P=S*Math.min(pf,1);setR({elR1:fmt(P,1),elR2:fmt(S,1),elR3:fmt(elecPhase===3?S/(Math.sqrt(3)*V):S/V,3),elR4:fmt(Math.min(pf,1),3)});}
-      } else if(elecMode==="sol"){
-        const V=(gv("el_svolt")||24),R=gv("el_sres");
-        if(R>0){const I=V/R,P=V*I;let status="— CHECK",col=C.goldY;
-          if(R<5){status="⚠ SHORTED";col=C.red;}else if(R>5000){status="✗ OPEN";col=C.red;}else if(R>=20&&R<=40&&V<=30){status="✓ OK 24VDC";col=C.green;}else if(R>=200&&R<=400&&V>30&&V<=130){status="✓ OK 110VAC";col=C.green;}
-          setR({elR1:fmt(I,3),elR2:fmt(P,2),elSolStatus:status,elSolColor:col,elSolRange:V<=30?"20–40 Ω":"200–400 Ω"});}
-      } else if(elecMode==="sensor"){
-        const min=gv("el_smin"),max=(gv("el_smax")||400),mA=gv("el_sma");
-        if(mA>=4&&mA<=20&&max>min){const pct=((mA-4)/16)*100,val=min+((mA-4)/16)*(max-min);setR({elR1:fmt(val,1),elR2:fmt(pct,1),elR3:fmt(min,0),elR4:fmt(max,0)});}
-      }
-    }
-  }, [activeTab, inputs, unit, elecMode, elecPhase]);
-
-  useEffect(() => { calc(); }, [calc]);
-
-  const iStyle = {width:"100%",background:"rgba(2,10,22,.85)",border:`1px solid rgba(0,212,255,.16)`,borderRadius:8,padding:"9px 12px",fontFamily:"'JetBrains Mono',monospace",fontSize:".85rem",color:C.white,outline:"none",boxSizing:"border-box"};
-  const lStyle = {fontFamily:"'JetBrains Mono',monospace",fontSize:".63rem",textTransform:"uppercase",letterSpacing:".07em",color:C.text3,display:"block",marginBottom:4};
-  const rCard = (label, val, unit2) => (
-    <div key={label} style={{background:"rgba(0,212,255,.04)",border:`1px solid rgba(0,212,255,.1)`,borderRadius:8,padding:".75rem",textAlign:"center"}}>
-      <div style={{fontSize:".68rem",color:C.text3,marginBottom:4,fontFamily:"'JetBrains Mono',monospace",textTransform:"uppercase",letterSpacing:".05em"}}>{label}</div>
-      <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontWeight:700,fontSize:"1.4rem",color:C.cyan}}>{val||"—"}</div>
-      <div style={{fontSize:".65rem",color:C.text3}}>{unit2}</div>
-    </div>
-  );
-
-  return (
-    <div style={{background:"rgba(5,15,35,.95)",border:`1px solid ${C.border}`,borderRadius:14,overflow:"hidden"}}>
-      {/* Header */}
-      <div style={{background:"rgba(3,10,24,.98)",borderBottom:`1px solid ${C.border}`,padding:".85rem 1.5rem",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:".6rem"}}>
-        <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:".72rem",textTransform:"uppercase",letterSpacing:".1em",color:C.cyan}}>{headers[activeTab]}</span>
-        <div style={{display:"flex",gap:".5rem"}}>
-          <div style={{display:"flex",background:"rgba(0,212,255,.06)",border:`1px solid rgba(0,212,255,.18)`,borderRadius:6,overflow:"hidden"}}>
-            {["iso","imp"].map(u => (
-              <button key={u} onClick={() => {setUnit(u);setInputs({});setResults({});}} style={{padding:"4px 13px",fontFamily:"'JetBrains Mono',monospace",fontSize:".68rem",border:"none",cursor:"pointer",transition:".2s",background:unit===u?"rgba(0,212,255,.15)":"transparent",color:unit===u?C.cyan:C.text3}}>{u.toUpperCase()}</button>
-            ))}
-          </div>
-          <button onClick={() => {setInputs({});setResults({});}} style={{fontFamily:"'JetBrains Mono',monospace",fontSize:".68rem",color:C.text3,background:"none",border:`1px solid ${C.border}`,borderRadius:5,padding:"4px 12px",cursor:"pointer"}}>Reset</button>
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <div style={{display:"flex",gap:".5rem",padding:".75rem 1.5rem",flexWrap:"wrap",borderBottom:`1px solid ${C.border}`}}>
-        {tabs.map(t => (
-          <button key={t.id} onClick={() => {setActiveTab(t.id);setInputs({});setResults({});}} style={{padding:"5px 14px",borderRadius:6,border:`1px solid ${activeTab===t.id?(t.gold?"rgba(245,200,66,.5)":"rgba(0,212,255,.4)"):C.border}`,background:activeTab===t.id?(t.gold?"rgba(245,200,66,.08)":"rgba(0,212,255,.08)"):"transparent",color:activeTab===t.id?(t.gold?C.goldY:C.cyan):C.text2,fontFamily:"'JetBrains Mono',monospace",fontSize:".7rem",cursor:"pointer",transition:".2s"}}>
-            {t.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Panel */}
-      <div style={{padding:"1.5rem"}}>
-        {activeTab === "cylinder" && (
-          <>
-            <CalcRow>
-              <CalcField><label style={lStyle}>Bore Diameter (mm)</label><input style={iStyle} type="number" placeholder="0" value={inputs.c_bore||""} onChange={e=>set("c_bore",e.target.value)}/></CalcField>
-              <CalcField><label style={lStyle}>Rod Diameter (mm)</label><input style={iStyle} type="number" placeholder="0" value={inputs.c_rod||""} onChange={e=>set("c_rod",e.target.value)}/></CalcField>
-            </CalcRow>
-            <CalcRow>
-              <CalcField><label style={lStyle}>Stroke (mm)</label><input style={iStyle} type="number" placeholder="0" value={inputs.c_stroke||""} onChange={e=>set("c_stroke",e.target.value)}/></CalcField>
-              <CalcField><label style={lStyle}>Working Pressure (bar)</label><input style={iStyle} type="number" placeholder="0" value={inputs.c_press||""} onChange={e=>set("c_press",e.target.value)}/></CalcField>
-            </CalcRow>
-            <CalcRow>
-              <CalcField><label style={lStyle}>Flow Rate (L/min)</label><input style={iStyle} type="number" placeholder="0" value={inputs.c_flow||""} onChange={e=>set("c_flow",e.target.value)}/></CalcField>
-              <CalcField/>
-            </CalcRow>
-            <div style={{height:1,background:C.border,margin:"1rem 0"}}/>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:".75rem"}}>
-              {rCard("Bore Area",results.boreArea,"cm²")}
-              {rCard("Rod Area",results.rodArea,"cm²")}
-              {rCard("Extend Force",results.extForce,"kN")}
-              {rCard("Retract Force",results.retForce,"kN")}
-              {rCard("Extend Speed",results.extSpd,"mm/s")}
-              {rCard("Retract Speed",results.retSpd,"mm/s")}
-              {rCard("Extend Vol.",results.extVol,"L")}
-              {rCard("Retract Vol.",results.retVol,"L")}
-            </div>
-          </>
-        )}
-
-        {activeTab === "pump" && (
-          <>
-            <CalcRow>
-              <CalcField><label style={lStyle}>Displacement (cc/rev)</label><input style={iStyle} type="number" placeholder="0" value={inputs.p_disp||""} onChange={e=>set("p_disp",e.target.value)}/></CalcField>
-              <CalcField><label style={lStyle}>Speed (rpm)</label><input style={iStyle} type="number" placeholder="1500" value={inputs.p_rpm||""} onChange={e=>set("p_rpm",e.target.value)}/></CalcField>
-            </CalcRow>
-            <CalcRow>
-              <CalcField><label style={lStyle}>Vol. Efficiency (%)</label><input style={iStyle} type="number" placeholder="95" value={inputs.p_voleff||""} onChange={e=>set("p_voleff",e.target.value)}/></CalcField>
-              <CalcField><label style={lStyle}>Pressure (bar)</label><input style={iStyle} type="number" placeholder="0" value={inputs.p_press||""} onChange={e=>set("p_press",e.target.value)}/></CalcField>
-            </CalcRow>
-            <div style={{height:1,background:C.border,margin:"1rem 0"}}/>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:".75rem"}}>
-              {rCard("Flow Rate",results.pumpFlow,"L/min")}
-              {rCard("Hyd. Power",results.pumpHpow,"kW")}
-              {rCard("Input Power",results.pumpIpow,"kW")}
-              {rCard("Shaft Torque",results.pumpTorq,"Nm")}
-            </div>
-          </>
-        )}
-
-        {activeTab === "motor" && (
-          <>
-            <CalcRow>
-              <CalcField><label style={lStyle}>Displacement (cc/rev)</label><input style={iStyle} type="number" placeholder="0" value={inputs.m_disp||""} onChange={e=>set("m_disp",e.target.value)}/></CalcField>
-              <CalcField><label style={lStyle}>Pressure (bar)</label><input style={iStyle} type="number" placeholder="0" value={inputs.m_press||""} onChange={e=>set("m_press",e.target.value)}/></CalcField>
-            </CalcRow>
-            <CalcRow>
-              <CalcField><label style={lStyle}>Flow Rate (L/min)</label><input style={iStyle} type="number" placeholder="0" value={inputs.m_flow||""} onChange={e=>set("m_flow",e.target.value)}/></CalcField>
-              <CalcField><label style={lStyle}>Mech. Efficiency (%)</label><input style={iStyle} type="number" placeholder="90" value={inputs.m_meff||""} onChange={e=>set("m_meff",e.target.value)}/></CalcField>
-            </CalcRow>
-            <div style={{height:1,background:C.border,margin:"1rem 0"}}/>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:".75rem"}}>
-              {rCard("Output Torque",results.motTorq,"Nm")}
-              {rCard("Speed",results.motRpm,"rpm")}
-              {rCard("Power",results.motPow,"kW")}
-              {rCard("Mech. Eff.",results.motEff,"%")}
-            </div>
-          </>
-        )}
-
-        {activeTab === "pdrop" && (
-          <>
-            <CalcRow>
-              <CalcField><label style={lStyle}>Flow Rate (L/min)</label><input style={iStyle} type="number" placeholder="0" value={inputs.pd_flow||""} onChange={e=>set("pd_flow",e.target.value)}/></CalcField>
-              <CalcField><label style={lStyle}>Pipe Diameter (mm)</label><input style={iStyle} type="number" placeholder="0" value={inputs.pd_diam||""} onChange={e=>set("pd_diam",e.target.value)}/></CalcField>
-            </CalcRow>
-            <CalcRow>
-              <CalcField><label style={lStyle}>Pipe Length (m)</label><input style={iStyle} type="number" placeholder="0" value={inputs.pd_len||""} onChange={e=>set("pd_len",e.target.value)}/></CalcField>
-              <CalcField><label style={lStyle}>Viscosity (cSt)</label><input style={iStyle} type="number" placeholder="46" value={inputs.pd_visc||""} onChange={e=>set("pd_visc",e.target.value)}/></CalcField>
-            </CalcRow>
-            <div style={{height:1,background:C.border,margin:"1rem 0"}}/>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:".75rem"}}>
-              {rCard("Velocity",results.pdVel,"m/s")}
-              {rCard("Reynolds No.",results.pdRe,"—")}
-              {rCard("Pressure Drop",results.pdBar,"bar")}
-              {rCard("Flow Input",results.pdFlow,"L/min")}
-            </div>
-          </>
-        )}
-
-        {activeTab === "piping" && (
-          <>
-            <CalcRow>
-              <CalcField><label style={lStyle}>Flow Rate (L/min)</label><input style={iStyle} type="number" placeholder="0" value={inputs.pp_flow||""} onChange={e=>set("pp_flow",e.target.value)}/></CalcField>
-              <CalcField><label style={lStyle}>Pipe Bore (mm)</label><input style={iStyle} type="number" placeholder="0" value={inputs.pp_diam||""} onChange={e=>set("pp_diam",e.target.value)}/></CalcField>
-            </CalcRow>
-            <CalcRow>
-              <CalcField><label style={lStyle}>Viscosity (cSt)</label><input style={iStyle} type="number" placeholder="46" value={inputs.pp_visc||""} onChange={e=>set("pp_visc",e.target.value)}/></CalcField>
-              <CalcField><label style={lStyle}>Fluid Density (kg/m³)</label><input style={iStyle} type="number" placeholder="870" value={inputs.pp_dens||""} onChange={e=>set("pp_dens",e.target.value)}/></CalcField>
-            </CalcRow>
-            <div style={{height:1,background:C.border,margin:"1rem 0"}}/>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:".75rem"}}>
-              {rCard("Velocity",results.ppVel,"m/s")}
-              {rCard("Pipe Area",results.ppArea,"mm²")}
-              {rCard("Reynolds No.",results.ppRe,"—")}
-              <div style={{background:"rgba(0,212,255,.04)",border:`1px solid rgba(0,212,255,.1)`,borderRadius:8,padding:".75rem",textAlign:"center"}}>
-                <div style={{fontSize:".68rem",color:C.text3,marginBottom:4,fontFamily:"'JetBrains Mono',monospace",textTransform:"uppercase",letterSpacing:".05em"}}>Flow Regime</div>
-                <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontWeight:700,fontSize:"1.2rem",color:results.ppRegimeColor||C.cyan}}>{results.ppRegime||"—"}</div>
-              </div>
-            </div>
-          </>
-        )}
-
-        {activeTab === "elec" && (
-          <>
-            <div style={{display:"flex",gap:".5rem",marginBottom:"1rem",flexWrap:"wrap"}}>
-              {["ohm","power","sol","sensor"].map(m => (
-                <button key={m} onClick={() => {setElecMode(m);setResults({});}} style={{padding:"5px 14px",borderRadius:6,border:`1px solid ${elecMode===m?"rgba(245,200,66,.4)":C.border}`,background:elecMode===m?"rgba(245,200,66,.08)":"transparent",color:elecMode===m?C.goldY:C.text2,fontFamily:"'JetBrains Mono',monospace",fontSize:".7rem",cursor:"pointer",transition:".2s"}}>
-                  {{ohm:"Ohm's Law",power:"Power",sol:"Solenoid",sensor:"4-20mA"}[m]}
-                </button>
-              ))}
-            </div>
-
-            {elecMode === "ohm" && (
-              <CalcRow>
-                <CalcField><label style={lStyle}>Voltage (V)</label><input style={iStyle} type="number" placeholder="0" value={inputs.el_volt||""} onChange={e=>set("el_volt",e.target.value)}/></CalcField>
-                <CalcField><label style={lStyle}>Current (A)</label><input style={iStyle} type="number" placeholder="0" value={inputs.el_curr||""} onChange={e=>set("el_curr",e.target.value)}/></CalcField>
-                <CalcField><label style={lStyle}>Resistance (Ω)</label><input style={iStyle} type="number" placeholder="0" value={inputs.el_res||""} onChange={e=>set("el_res",e.target.value)}/></CalcField>
-              </CalcRow>
-            )}
-
-            {elecMode === "power" && (
-              <>
-                <CalcRow>
-                  <CalcField><label style={lStyle}>Voltage (V)</label><input style={iStyle} type="number" placeholder="0" value={inputs.el_pvolt||""} onChange={e=>set("el_pvolt",e.target.value)}/></CalcField>
-                  <CalcField><label style={lStyle}>Current (A)</label><input style={iStyle} type="number" placeholder="0" value={inputs.el_pcurr||""} onChange={e=>set("el_pcurr",e.target.value)}/></CalcField>
-                  <CalcField><label style={lStyle}>Power Factor</label><input style={iStyle} type="number" placeholder="0.85" value={inputs.el_pf||""} onChange={e=>set("el_pf",e.target.value)}/></CalcField>
-                </CalcRow>
-                <div style={{display:"flex",gap:".5rem",marginBottom:"1rem"}}>
-                  {[1,3].map(ph => (
-                    <button key={ph} onClick={() => setElecPhase(ph)} style={{padding:"5px 14px",borderRadius:6,border:`1px solid ${elecPhase===ph?"rgba(0,212,255,.4)":C.border}`,background:elecPhase===ph?"rgba(0,212,255,.08)":"transparent",color:elecPhase===ph?C.cyan:C.text2,fontFamily:"'JetBrains Mono',monospace",fontSize:".7rem",cursor:"pointer"}}>
-                      {ph===1?"1φ Single":"3φ Three"}
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-
-            {elecMode === "sol" && (
-              <>
-                <div style={{background:"rgba(245,200,66,.05)",border:"1px solid rgba(245,200,66,.15)",borderRadius:7,padding:".8rem",marginBottom:"1rem",fontSize:".8rem",color:C.text2,lineHeight:1.6}}>
-                  ⚡ <strong style={{color:C.goldY}}>Solenoid coil check:</strong> 24VDC = 20–40Ω | 110VAC = 200–400Ω | Open circuit (&gt;5kΩ) = failed coil | Short (&lt;5Ω) = shorted
-                </div>
-                <CalcRow>
-                  <CalcField><label style={lStyle}>Supply Voltage (V)</label><input style={iStyle} type="number" placeholder="24" value={inputs.el_svolt||""} onChange={e=>set("el_svolt",e.target.value)}/></CalcField>
-                  <CalcField><label style={lStyle}>Measured Resistance (Ω)</label><input style={iStyle} type="number" placeholder="0" value={inputs.el_sres||""} onChange={e=>set("el_sres",e.target.value)}/></CalcField>
-                </CalcRow>
-              </>
-            )}
-
-            {elecMode === "sensor" && (
-              <CalcRow>
-                <CalcField><label style={lStyle}>Sensor Range Min (bar)</label><input style={iStyle} type="number" placeholder="0" value={inputs.el_smin||""} onChange={e=>set("el_smin",e.target.value)}/></CalcField>
-                <CalcField><label style={lStyle}>Sensor Range Max (bar)</label><input style={iStyle} type="number" placeholder="400" value={inputs.el_smax||""} onChange={e=>set("el_smax",e.target.value)}/></CalcField>
-                <CalcField><label style={lStyle}>Measured mA Signal</label><input style={iStyle} type="number" placeholder="12.0" value={inputs.el_sma||""} onChange={e=>set("el_sma",e.target.value)}/></CalcField>
-              </CalcRow>
-            )}
-
-            <div style={{height:1,background:C.border,margin:"1rem 0"}}/>
-            {elecMode === "sol" ? (
-              <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:".75rem"}}>
-                {rCard("Current",results.elR1,"A")}
-                {rCard("Power",results.elR2,"W")}
-                <div style={{background:"rgba(0,212,255,.04)",border:`1px solid rgba(0,212,255,.1)`,borderRadius:8,padding:".75rem",textAlign:"center"}}>
-                  <div style={{fontSize:".68rem",color:C.text3,marginBottom:4,fontFamily:"'JetBrains Mono',monospace",textTransform:"uppercase"}}>Status</div>
-                  <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontWeight:700,fontSize:"1rem",color:results.elSolColor||C.cyan}}>{results.elSolStatus||"—"}</div>
-                </div>
-                {rCard("Nominal Range",results.elSolRange,"")}
-              </div>
-            ) : (
-              <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:".75rem"}}>
-                {rCard(elecMode==="sensor"?"Calc. Value":elecMode==="power"?"Active Power (W)":"Voltage",results.elR1,elecMode==="sensor"?"bar":"V")}
-                {rCard(elecMode==="sensor"?"Scale (%)":elecMode==="power"?"Apparent (VA)":"Current",results.elR2,elecMode==="sensor"?"%":"A")}
-                {rCard(elecMode==="power"?"Current":"Resistance",results.elR3,elecMode==="power"?"A":"Ω")}
-                {rCard(elecMode==="sensor"?"Range Min":elecMode==="power"?"Power Factor":"Power",results.elR4,elecMode==="sensor"?"bar":elecMode==="power"?"cosφ":"W")}
-              </div>
-            )}
-          </>
-        )}
-      </div>
-
-      {/* Formula Footer */}
-      <div style={{padding:".75rem 1.5rem",borderTop:`1px solid ${C.border}`,background:"rgba(0,212,255,.02)"}}>
-        <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:".65rem",color:C.text3}}>
-          {{cylinder:"F = p × A  |  v = Q / A  |  A = π × d² / 4",pump:"Q = (Vg × n × ηv) / 1000  |  P = p × Q / 600",motor:"T = (Vg × p × ηm) / (20π)  |  n = Q × 1000 / Vg",pdrop:"ΔP = f × L/D × ρv²/2  |  Re = ρvD/μ",piping:"v = Q / A  |  Re = ρ × v × d / μ",elec:"V = I × R  |  P = V × I × cosφ  |  4-20mA: EU = EUmin + (mA-4)/16 × Range"}[activeTab]}
+      {/* Logo */}
+      <div style={{ display:"flex", alignItems:"center", gap:"12px", cursor:"pointer" }} onClick={() => window.scrollTo({top:0,behavior:"smooth"})}>
+        <svg viewBox="0 0 40 40" fill="none" width="36" height="36">
+          <circle cx="20" cy="20" r="18" stroke="#c8921a" strokeWidth="1.5" opacity="0.5"/>
+          <circle cx="20" cy="20" r="12" stroke="#1a9fd4" strokeWidth="1" opacity="0.6"/>
+          <path d="M12 20 C12 14 28 14 28 20 C28 26 12 26 12 20Z" fill="none" stroke="#c8921a" strokeWidth="1.5"/>
+          <circle cx="20" cy="20" r="3" fill="#f0b429"/>
+          <line x1="20" y1="2" x2="20" y2="8" stroke="#1a9fd4" strokeWidth="1.5"/>
+          <line x1="20" y1="32" x2="20" y2="38" stroke="#1a9fd4" strokeWidth="1.5"/>
+          <line x1="2" y1="20" x2="8" y2="20" stroke="#1a9fd4" strokeWidth="1.5"/>
+          <line x1="32" y1="20" x2="38" y2="20" stroke="#1a9fd4" strokeWidth="1.5"/>
+        </svg>
+        <span style={{ fontFamily:"'Orbitron',monospace", fontSize:"1.15rem", fontWeight:700, letterSpacing:"0.05em" }}>
+          Hydro<span style={{ color:"#f0b429" }}>Mind</span> AI
         </span>
       </div>
-    </div>
-  );
-}
 
-function CalcRow({ children }) {
-  return <div style={{display:"grid",gridTemplateColumns:`repeat(${children.length||2},1fr)`,gap:".75rem",marginBottom:".75rem"}}>{children}</div>;
-}
-function CalcField({ children }) {
-  return <div>{children}</div>;
-}
-
-// ── AI CHAT DASHBOARD ──────────────────────────────────────
-function ChatDashboard({ user }) {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [mode, setMode] = useState("hyd");
-  const [sessionId, setSessionId] = useState(null);
-  const endRef = useRef(null);
-
-  const modes = [
-    { id:"hyd",   label:"⚙ Hydraulic",  color:C.cyan   },
-    { id:"elec",  label:"⚡ Electrical", color:C.goldY  },
-    { id:"crane", label:"🏗 Crane",      color:C.green  },
-    { id:"fluid", label:"🛢 Fluid",      color:"#a78bfa"},
-    { id:"design",label:"📐 Design",     color:"#fb923c"},
-  ];
-
-  useEffect(() => { endRef.current?.scrollIntoView({ behavior:"smooth" }); }, [messages]);
-
-  const send = async () => {
-    if (!input.trim() || loading) return;
-    const userMsg = { role:"user", content:input.trim() };
-    const newMsgs = [...messages, userMsg];
-    setMessages(newMsgs);
-    setInput("");
-    setLoading(true);
-
-    try {
-      const res = await fetch(`${API}/chat`, {
-        method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify({ message:input.trim(), mode, history:messages.slice(-10), user_email: user?.email||"guest" }),
-      });
-      const data = await res.json();
-      const assistantMsg = { role:"assistant", content: data.response||data.answer||"No response received." };
-      const updated = [...newMsgs, assistantMsg];
-      setMessages(updated);
-      if (!sessionId) {
-        const id = addHistory(input.trim(), mode, updated);
-        setSessionId(id);
-      } else {
-        updateHistory(sessionId, updated);
-      }
-    } catch (err) {
-      setMessages(p => [...p, { role:"assistant", content:"⚠️ Connection error. Please check your network and try again." }]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div style={{display:"flex",flexDirection:"column",height:"calc(100vh - 60px)",background:"rgba(2,8,20,.98)"}}>
-      {/* Mode Selector */}
-      <div style={{background:"rgba(4,14,32,.95)",borderBottom:`1px solid ${C.border}`,padding:".6rem 1.5rem",display:"flex",gap:".5rem",alignItems:"center",flexWrap:"wrap"}}>
-        <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:".62rem",textTransform:"uppercase",letterSpacing:".1em",color:C.text3,marginRight:".25rem"}}>Mode:</span>
-        {modes.map(m => (
-          <button key={m.id} onClick={() => setMode(m.id)} style={{padding:"4px 14px",borderRadius:100,border:`1px solid ${mode===m.id?m.color:"rgba(0,212,255,.12)"}`,background:mode===m.id?`rgba(${m.color==="#00d4ff"?"0,212,255":m.color==="#f5c842"?"245,200,66":m.color==="#3dd68c"?"61,214,140":"161,139,251"},.08)`:"transparent",color:mode===m.id?m.color:C.text2,fontFamily:"'JetBrains Mono',monospace",fontSize:".7rem",cursor:"pointer",transition:".2s"}}>
-            {m.label}
-          </button>
+      {/* Links */}
+      <ul className="hide-mobile" style={{ display:"flex", alignItems:"center", gap:"2rem", listStyle:"none" }}>
+        {[["modes","How It Works"],["ai-advisor","AI Advisor"],["features","Features"],["calculators","Calculators"],["pricing","Pricing"]].map(([id,label]) => (
+          <li key={id}>
+            <button onClick={() => scrollTo(id)} style={{
+              background:"none", border:"none", cursor:"pointer",
+              fontFamily:"'Rajdhani',sans-serif", fontSize:"0.9rem", fontWeight:600,
+              letterSpacing:"0.08em", textTransform:"uppercase", color:"#6b8fa8",
+              transition:"color 0.3s", padding:0
+            }}
+              onMouseEnter={e=>e.target.style.color="#f0b429"}
+              onMouseLeave={e=>e.target.style.color="#6b8fa8"}
+            >{label}</button>
+          </li>
         ))}
-        <div style={{marginLeft:"auto",fontFamily:"'JetBrains Mono',monospace",fontSize:".62rem",color:C.text3}}>
-          {user ? `${user.first||user.email} · ${user.plan}` : "Guest Mode"}
+        <li>
+          <button onClick={onLaunch} style={{
+            fontFamily:"'Orbitron',monospace", fontSize:"0.72rem", fontWeight:600,
+            letterSpacing:"0.1em", textTransform:"uppercase", color:"#020b18",
+            background:"linear-gradient(135deg,#c8921a,#f0b429)",
+            padding:"8px 20px", borderRadius:"3px", border:"none", cursor:"pointer",
+            transition:"all 0.3s", boxShadow:"0 0 20px rgba(200,146,26,0.4)"
+          }}
+            onMouseEnter={e=>{e.target.style.boxShadow="0 0 35px rgba(200,146,26,0.7)";e.target.style.transform="translateY(-1px)"}}
+            onMouseLeave={e=>{e.target.style.boxShadow="0 0 20px rgba(200,146,26,0.4)";e.target.style.transform="none"}}
+          >Launch App</button>
+        </li>
+      </ul>
+    </nav>
+  );
+};
+
+// ── HERO ─────────────────────────────────────────────────────
+const Hero = ({ onLaunch }) => {
+  const scrollTo = (id) => { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior:"smooth" }); };
+  return (
+    <section style={{ position:"relative", zIndex:10, minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", padding:"70px 5% 0", textAlign:"center" }}>
+      <div style={{ maxWidth:"900px" }}>
+        <div className="fadeUp-1" style={{ display:"inline-flex", alignItems:"center", gap:"8px", fontFamily:"'Share Tech Mono',monospace", fontSize:"0.72rem", letterSpacing:"0.15em", textTransform:"uppercase", color:"#1a9fd4", border:"1px solid rgba(26,159,212,0.4)", padding:"6px 16px", borderRadius:"2px", marginBottom:"2rem", background:"rgba(26,159,212,0.05)" }}>
+          <span className="badge-dot"></span>
+          AI-Powered Hydraulic Intelligence Platform
+        </div>
+
+        <h1 className="fadeUp-2" style={{ fontFamily:"'Orbitron',monospace", fontSize:"clamp(2.4rem,5.5vw,4.8rem)", fontWeight:900, lineHeight:1.05, marginBottom:"1.5rem" }}>
+          <span style={{ color:"#e8f4fd" }}>Hydraulic AI Advisor</span><br/>
+          <span style={{ background:"linear-gradient(135deg,#c8921a 0%,#ffd166 50%,#1a9fd4 100%)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" }}>Design. Diagnose. Solve.</span>
+        </h1>
+
+        <p className="fadeUp-3" style={{ fontSize:"1.15rem", fontWeight:400, color:"#6b8fa8", lineHeight:1.7, maxWidth:"640px", margin:"0 auto 2.5rem" }}>
+          Built for <strong style={{color:"#1a9fd4"}}>hydraulic system designers</strong> and <strong style={{color:"#1a9fd4"}}>field troubleshooters</strong>. Ask HydroMind AI to design your complete hydraulic system — or diagnose any fault — using deep OEM knowledge, ISO schematics, and live web search.
+        </p>
+
+        <div className="fadeUp-4" style={{ display:"flex", gap:"1rem", justifyContent:"center", flexWrap:"wrap" }}>
+          <button onClick={() => scrollTo("modes")} style={{ fontFamily:"'Orbitron',monospace", fontSize:"0.78rem", fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", color:"#020b18", background:"linear-gradient(135deg,#c8921a,#f0b429)", padding:"14px 32px", borderRadius:"3px", border:"none", cursor:"pointer", transition:"all 0.3s", boxShadow:"0 0 30px rgba(200,146,26,0.4)" }}
+            onMouseEnter={e=>{e.target.style.transform="translateY(-2px)";e.target.style.boxShadow="0 0 50px rgba(200,146,26,0.7)"}}
+            onMouseLeave={e=>{e.target.style.transform="none";e.target.style.boxShadow="0 0 30px rgba(200,146,26,0.4)"}}>
+            See How It Works
+          </button>
+          <button onClick={onLaunch} style={{ fontFamily:"'Orbitron',monospace", fontSize:"0.78rem", fontWeight:600, letterSpacing:"0.12em", textTransform:"uppercase", color:"#1a9fd4", background:"transparent", padding:"14px 32px", borderRadius:"3px", border:"1px solid rgba(26,159,212,0.4)", cursor:"pointer", transition:"all 0.3s" }}
+            onMouseEnter={e=>{e.target.style.background="rgba(26,159,212,0.1)";e.target.style.borderColor="#1a9fd4";e.target.style.transform="translateY(-2px)"}}
+            onMouseLeave={e=>{e.target.style.background="transparent";e.target.style.borderColor="rgba(26,159,212,0.4)";e.target.style.transform="none"}}>
+            Launch AI Advisor
+          </button>
+        </div>
+
+        <div className="fadeUp-5" style={{ display:"flex", justifyContent:"center", gap:"3rem", marginTop:"4rem", paddingTop:"3rem", borderTop:"1px solid rgba(200,146,26,0.15)", flexWrap:"wrap" }}>
+          {[["2","Expert AI Modes"],["KB","+ Web Search"],["OEM","Grade Knowledge"],["24/7","AI Availability"]].map(([n,l]) => (
+            <div key={l} style={{ textAlign:"center" }}>
+              <span style={{ fontFamily:"'Orbitron',monospace", fontSize:"2rem", fontWeight:700, color:"#f0b429", display:"block", lineHeight:1 }}>{n}</span>
+              <span style={{ fontSize:"0.78rem", fontWeight:500, letterSpacing:"0.1em", textTransform:"uppercase", color:"#6b8fa8", marginTop:"0.4rem", display:"block" }}>{l}</span>
+            </div>
+          ))}
         </div>
       </div>
+    </section>
+  );
+};
 
-      {/* Messages */}
-      <div style={{flex:1,overflowY:"auto",padding:"1.5rem",display:"flex",flexDirection:"column",gap:"1rem"}}>
-        {messages.length === 0 && (
-          <div style={{textAlign:"center",margin:"auto",maxWidth:500}}>
-            <div style={{fontSize:"2.5rem",marginBottom:"1rem"}}>🤖</div>
-            <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontWeight:700,fontSize:"1.6rem",color:C.white,marginBottom:".5rem"}}>HydroMind AI Advisor</div>
-            <div style={{fontSize:".9rem",color:C.text2,lineHeight:1.7,marginBottom:"1.5rem"}}>Expert hydraulic systems AI backed by 33+ OEM manuals, offshore field cases, and real-time web search.</div>
-            <div style={{display:"flex",flexWrap:"wrap",gap:".5rem",justifyContent:"center"}}>
-              {["How do I adjust A4VG pump neutral pressure?","Why is my hoist speed slow?","Rexroth DCV solenoid not shifting","Case drain pressure limit for A6VM"].map(q => (
-                <button key={q} onClick={() => setInput(q)} style={{background:"rgba(0,212,255,.06)",border:`1px solid rgba(0,212,255,.2)`,borderRadius:8,padding:".6rem .9rem",color:C.cyan,fontFamily:"'DM Sans',sans-serif",fontSize:".82rem",cursor:"pointer",transition:".2s",textAlign:"left"}}>{q}</button>
+// ── HOW IT WORKS ─────────────────────────────────────────────
+const HowItWorks = () => {
+  const ref = useRef(null);
+  useEffect(() => {
+    const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add("visible"); }), {threshold:0.1});
+    if (ref.current) ref.current.querySelectorAll(".reveal").forEach(el => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <section id="modes" ref={ref} style={{ position:"relative", zIndex:10, background:"linear-gradient(180deg,transparent,rgba(4,20,40,0.7),transparent)" }}>
+      <div style={{ maxWidth:"1200px", margin:"0 auto", padding:"100px 5%" }}>
+        <div className="reveal" style={{ textAlign:"center", marginBottom:"3rem" }}>
+          <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:"0.7rem", letterSpacing:"0.2em", textTransform:"uppercase", color:"#c8921a", marginBottom:"1rem" }}>// HOW HYDROMIND AI WORKS</div>
+          <h2 style={{ fontFamily:"'Orbitron',monospace", fontSize:"clamp(1.8rem,3.5vw,2.8rem)", fontWeight:700, lineHeight:1.15 }}>Two Powerful AI Modes.<br/>One Platform.</h2>
+        </div>
+
+        <div className="reveal grid-2" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"2rem", marginBottom:"3rem" }}>
+          {/* Designer */}
+          <div style={{ background:"rgba(4,20,40,0.8)", border:"1px solid rgba(200,146,26,0.4)", borderRadius:"8px", padding:"2.5rem", position:"relative", overflow:"hidden" }}>
+            <div style={{ position:"absolute", top:0, left:0, width:"100%", height:"3px", background:"linear-gradient(90deg,#c8921a,#f0b429)" }}/>
+            <div style={{ fontSize:"2.5rem", marginBottom:"1rem" }}>🔩</div>
+            <div style={{ fontFamily:"'Orbitron',monospace", fontSize:"0.7rem", letterSpacing:"0.15em", color:"#c8921a", marginBottom:"0.5rem" }}>MODE 01</div>
+            <h3 style={{ fontFamily:"'Orbitron',monospace", fontSize:"1.2rem", fontWeight:700, color:"#f0b429", marginBottom:"1rem" }}>System Designer</h3>
+            <p style={{ fontSize:"0.95rem", color:"#6b8fa8", lineHeight:1.7, marginBottom:"1.5rem" }}>Enter your system parameters — load, pressure, flow, speed — and HydroMind AI designs your complete hydraulic circuit with preferred make selection.</p>
+            <div style={{ borderTop:"1px solid rgba(200,146,26,0.15)", paddingTop:"1.2rem" }}>
+              <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:"0.72rem", color:"#c8921a", marginBottom:"0.8rem" }}>AI SELECTS FOR YOU:</div>
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"0.4rem" }}>
+                {["Hydraulic Pump","Electric Motor","Pipeline Sizes","Oil Tank & Volume","Oil Filters","Control Valves","Heat Exchanger","Accumulators"].map(item => (
+                  <div key={item} style={{ fontSize:"0.85rem", color:"#e8f4fd", display:"flex", gap:"6px", alignItems:"center" }}>
+                    <span style={{ color:"#f0b429" }}>◆</span> {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div style={{ marginTop:"1.2rem", padding:"0.8rem", background:"rgba(200,146,26,0.06)", border:"1px solid rgba(200,146,26,0.2)", borderRadius:"4px" }}>
+              <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:"0.72rem", color:"#6b8fa8", lineHeight:1.6 }}>
+                📌 AI asks: <span style={{color:"#f0b429"}}>"Which make — Rexroth, Eaton, Parker, Bosch, Sauer Danfoss?"</span><br/>
+                KB first → web if not found → full BOM + specs<br/>
+                <span style={{color:"#c8921a"}}>📐 Then draws ISO hydraulic schematic — PDF/PNG export</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Troubleshooter */}
+          <div style={{ background:"rgba(4,20,40,0.8)", border:"1px solid rgba(26,159,212,0.4)", borderRadius:"8px", padding:"2.5rem", position:"relative", overflow:"hidden" }}>
+            <div style={{ position:"absolute", top:0, left:0, width:"100%", height:"3px", background:"linear-gradient(90deg,#1a9fd4,#5dd4f8)" }}/>
+            <div style={{ fontSize:"2.5rem", marginBottom:"1rem" }}>🔧</div>
+            <div style={{ fontFamily:"'Orbitron',monospace", fontSize:"0.7rem", letterSpacing:"0.15em", color:"#1a9fd4", marginBottom:"0.5rem" }}>MODE 02</div>
+            <h3 style={{ fontFamily:"'Orbitron',monospace", fontSize:"1.2rem", fontWeight:700, color:"#5dd4f8", marginBottom:"1rem" }}>Troubleshooter</h3>
+            <p style={{ fontSize:"0.95rem", color:"#6b8fa8", lineHeight:1.7, marginBottom:"1.5rem" }}>Ask any hydraulic fault, theory, or setting question. HydroMind AI searches KB first — and the web if needed — for precise, actionable answers.</p>
+            <div style={{ borderTop:"1px solid rgba(26,159,212,0.15)", paddingTop:"1.2rem" }}>
+              <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:"0.72rem", color:"#1a9fd4", marginBottom:"0.8rem" }}>EXAMPLE QUESTIONS:</div>
+              {["What is Pascal's Law and how does it apply?","How do I set a counterbalance valve (CBV)?","How do I check accumulator pre-charge pressure?","A4VG90 charge pressure low — causes?","Show me a closed-loop winch schematic from KB."].map(q => (
+                <div key={q} style={{ fontSize:"0.85rem", color:"#e8f4fd", display:"flex", gap:"8px", marginBottom:"0.5rem" }}>
+                  <span style={{color:"#1a9fd4",flexShrink:0}}>›</span><span>{q}</span>
+                </div>
               ))}
             </div>
-          </div>
-        )}
-        {messages.map((m, i) => (
-          <div key={i} style={{display:"flex",gap:".75rem",justifyContent:m.role==="user"?"flex-end":"flex-start"}}>
-            {m.role === "assistant" && (
-              <div style={{width:32,height:32,minWidth:32,borderRadius:"50%",background:"linear-gradient(135deg,#00d4ff,#0050aa)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".8rem"}}>🤖</div>
-            )}
-            <div style={{maxWidth:"75%",background:m.role==="user"?"linear-gradient(135deg,rgba(0,112,204,.4),rgba(0,80,170,.3))":"rgba(5,20,45,.9)",border:`1px solid ${m.role==="user"?"rgba(0,212,255,.25)":"rgba(0,212,255,.1)"}`,borderRadius:m.role==="user"?"12px 12px 4px 12px":"12px 12px 12px 4px",padding:".9rem 1rem",fontFamily:"'DM Sans',sans-serif",fontSize:".9rem",color:C.white,lineHeight:1.7,whiteSpace:"pre-wrap"}}>
-              {m.content}
-            </div>
-            {m.role === "user" && (
-              <div style={{width:32,height:32,minWidth:32,borderRadius:"50%",background:"linear-gradient(135deg,#c026d3,#9333ea)",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Barlow Condensed',sans-serif",fontWeight:700,fontSize:".8rem",color:"#fff"}}>
-                {user ? (user.first||user.email).slice(0,2).toUpperCase() : "U"}
+            <div style={{ marginTop:"1.2rem", padding:"0.8rem", background:"rgba(26,159,212,0.06)", border:"1px solid rgba(26,159,212,0.2)", borderRadius:"4px" }}>
+              <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:"0.72rem", color:"#6b8fa8", lineHeight:1.6 }}>
+                🔍 Priority: <span style={{color:"#5dd4f8"}}>KB (instant)</span> → <span style={{color:"#f0b429"}}>Web (if not in KB)</span> → Structured answer + source
               </div>
-            )}
+            </div>
+          </div>
+        </div>
+
+        {/* AI Logic Flow */}
+        <div className="reveal" style={{ padding:"2rem", background:"rgba(4,20,40,0.6)", border:"1px solid rgba(200,146,26,0.15)", borderRadius:"8px" }}>
+          <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:"0.7rem", color:"#c8921a", letterSpacing:"0.15em", marginBottom:"1.2rem", textAlign:"center" }}>// AI DECISION LOGIC</div>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:0, flexWrap:"wrap" }}>
+            {[
+              { icon:"💬", label:"USER QUERY", sub:"" },
+              { arrow:true },
+              { icon:"📚", label:"SEARCH KB", sub:"OEM Manuals\nSchematics\nTheory", color:"rgba(200,146,26,0.08)", border:"rgba(200,146,26,0.2)", textColor:"#f0b429" },
+              { arrow:true },
+              { icon:"🌐", label:"WEB SEARCH", sub:"If not in KB\nLatest specs\nNew products", color:"rgba(26,159,212,0.08)", border:"rgba(26,159,212,0.2)", textColor:"#1a9fd4" },
+              { arrow:true },
+              { icon:"📐", label:"DRAW SCHEMATIC", sub:"ISO standard\nAuto-generated\nPDF/PNG", color:"rgba(200,146,26,0.06)", border:"rgba(200,146,26,0.25)", textColor:"#f0b429" },
+              { arrow:true },
+              { icon:"✅", label:"ANSWER", sub:"Structured\nSourced\nActionable", color:"rgba(4,20,40,0.8)", border:"rgba(200,146,26,0.3)", textColor:"#f0b429" },
+            ].map((item, i) => item.arrow ? (
+              <div key={i} style={{ color:"#c8921a", fontSize:"1.2rem", padding:"0 0.5rem" }}>→</div>
+            ) : (
+              <div key={i} style={{ textAlign:"center", padding:"0.8rem 1rem", background:item.color||"transparent", border:item.border?`1px solid ${item.border}`:"none", borderRadius:"4px" }}>
+                <div style={{fontSize:"1.1rem"}}>{item.icon}</div>
+                <div style={{ fontFamily:"'Orbitron',monospace", fontSize:"0.6rem", color:item.textColor||"#e8f4fd", marginTop:"0.3rem" }}>{item.label}</div>
+                {item.sub && <div style={{ fontSize:"0.68rem", color:"#6b8fa8", marginTop:"0.2rem", whiteSpace:"pre-line" }}>{item.sub}</div>}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// ── AI ADVISOR DEMO ───────────────────────────────────────────
+const ChatDemo = ({ mode }) => {
+  const isDesigner = mode === "designer";
+  const msgs = isDesigner ? [
+    { role:"user", avatar:"SD", text:<>I need a hydraulic power unit. Load: <span style={{color:"#1a9fd4",fontFamily:"monospace"}}>5000 kg</span>, speed: <span style={{color:"#1a9fd4",fontFamily:"monospace"}}>0.05 m/s</span>, pressure: <span style={{color:"#1a9fd4",fontFamily:"monospace"}}>200 bar</span>, 2 cylinders double-acting.</> },
+    { role:"ai", avatar:"HM", text:<><span style={{color:"#f0b429",fontWeight:600}}>📐 Design parameters received.</span> Calculated:<br/>Flow: <span style={{color:"#1a9fd4",fontFamily:"monospace"}}>12.6 LPM</span> | Power: <span style={{color:"#1a9fd4",fontFamily:"monospace"}}>4.2 kW</span><br/><br/>Which make do you prefer?<br/><span style={{color:"#f0b429"}}>Rexroth / Eaton / Parker / Bosch / Sauer Danfoss</span></> },
+    { role:"user", avatar:"SD", text:"Rexroth preferred." },
+    { role:"ai", avatar:"HM", text:<><span style={{color:"#f0b429",fontWeight:600}}>✅ Rexroth BOM from KB:</span><br/>Pump: <span style={{color:"#1a9fd4",fontFamily:"monospace"}}>A10VO18</span> | Motor: <span style={{color:"#1a9fd4",fontFamily:"monospace"}}>5.5kW/1450rpm</span><br/>Tank: <span style={{color:"#1a9fd4",fontFamily:"monospace"}}>40L</span> | Filter: <span style={{color:"#1a9fd4",fontFamily:"monospace"}}>RFM BN/HC 110</span><br/>Lines: <span style={{color:"#1a9fd4",fontFamily:"monospace"}}>HP 12mm / Return 16mm</span><span className="typing-cursor"/></>, typing:true },
+  ] : [
+    { role:"user", avatar:"AT", text:"How do I check accumulator pre-charge pressure on a crane hydraulic system?" },
+    { role:"ai", avatar:"HM", text:<><span style={{color:"#f0b429",fontWeight:600}}>📚 Found in KB — Accumulator Procedure:</span><br/><br/>1. Isolate HPU, release system pressure to <span style={{color:"#1a9fd4",fontFamily:"monospace"}}>0 bar</span><br/>2. Remove gas valve cap (N₂ side)<br/>3. Connect nitrogen gauge — read pre-charge<br/>4. Typical: <span style={{color:"#1a9fd4",fontFamily:"monospace"}}>60–70%</span> of min. working pressure<br/>5. Top up with dry N₂ only — <span style={{color:"#e84040"}}>never oxygen</span></> },
+    { role:"user", avatar:"AT", text:"What is Pascal's Law?" },
+    { role:"ai", avatar:"HM", text:<><span style={{color:"#f0b429",fontWeight:600}}>📚 KB — Hydraulic Theory:</span> Pressure applied to a confined fluid transmits equally in all directions. Formula: <span style={{color:"#1a9fd4",fontFamily:"monospace"}}>P = F / A</span>. Basis of all hydraulic force multiplication.<span className="typing-cursor"/></>, typing:true },
+  ];
+
+  return (
+    <div style={{ background:"rgba(4,20,40,0.8)", border:`1px solid ${isDesigner?"rgba(200,146,26,0.4)":"rgba(26,159,212,0.4)"}`, borderRadius:"8px", overflow:"hidden", boxShadow:`0 0 30px ${isDesigner?"rgba(200,146,26,0.15)":"rgba(26,159,212,0.15)"}` }}>
+      <div style={{ background:"rgba(10,37,64,0.9)", padding:"12px 18px", display:"flex", alignItems:"center", gap:"10px", borderBottom:`1px solid ${isDesigner?"rgba(200,146,26,0.25)":"rgba(26,159,212,0.25)"}`, borderLeft:`3px solid ${isDesigner?"#c8921a":"#1a9fd4"}` }}>
+        <div style={{display:"flex",gap:"5px"}}>
+          {["#ff5f57","#ffbd2e","#28ca41"].map(c=><span key={c} style={{width:"10px",height:"10px",borderRadius:"50%",background:c,display:"inline-block"}}/>)}
+        </div>
+        <span style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:"0.72rem", color:"#6b8fa8" }}>{isDesigner?"🔩 SYSTEM DESIGNER MODE":"🔧 TROUBLESHOOTER MODE"}</span>
+      </div>
+      <div style={{ padding:"18px", minHeight:"300px", display:"flex", flexDirection:"column", gap:"14px" }}>
+        {msgs.map((m,i) => (
+          <div key={i} style={{ display:"flex", gap:"10px", alignItems:"flex-start", flexDirection: m.role==="user"?"row":"row" }}>
+            <div style={{ width:"30px", height:"30px", borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"0.65rem", fontWeight:700, flexShrink:0, fontFamily:"'Orbitron',monospace", background: m.role==="user"?"linear-gradient(135deg,#0d4f8c,#1a9fd4)":"linear-gradient(135deg,#c8921a,#f0b429)", color: m.role==="user"?"white":"#020b18" }}>{m.avatar}</div>
+            <div style={{ background: m.role==="user"?"rgba(13,79,140,0.3)":"rgba(200,146,26,0.1)", border:`1px solid ${m.role==="user"?"rgba(26,159,212,0.2)":"rgba(200,146,26,0.2)"}`, borderRadius: m.role==="user"?"2px 8px 8px 8px":"8px 2px 8px 8px", padding:"10px 14px", fontSize:"0.88rem", lineHeight:1.6, color:"#e8f4fd", maxWidth:"88%" }}>{m.text}</div>
           </div>
         ))}
-        {loading && (
-          <div style={{display:"flex",gap:".75rem",alignItems:"center"}}>
-            <div style={{width:32,height:32,minWidth:32,borderRadius:"50%",background:"linear-gradient(135deg,#00d4ff,#0050aa)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:".8rem"}}>🤖</div>
-            <div style={{background:"rgba(5,20,45,.9)",border:`1px solid rgba(0,212,255,.1)`,borderRadius:"12px 12px 12px 4px",padding:".9rem 1.2rem"}}>
-              <div style={{display:"flex",gap:4}}>
-                {[0,1,2].map(i => <div key={i} style={{width:7,height:7,borderRadius:"50%",background:C.cyan,animation:"pulse 1.4s ease-in-out infinite",animationDelay:`${i*0.2}s`,opacity:.6}}/>)}
-              </div>
+      </div>
+      <div style={{ padding:"12px 18px", borderTop:`1px solid ${isDesigner?"rgba(200,146,26,0.2)":"rgba(26,159,212,0.2)"}`, display:"flex", gap:"10px" }}>
+        <div style={{ flex:1, background:"rgba(255,255,255,0.05)", border:"1px solid rgba(26,159,212,0.2)", borderRadius:"4px", padding:"8px 14px", fontSize:"0.88rem", color:"#6b8fa8" }}>{isDesigner?"Describe your hydraulic system...":"Ask any hydraulic question..."}</div>
+        <button style={{ background:"linear-gradient(135deg,#c8921a,#f0b429)", border:"none", borderRadius:"4px", padding:"8px 16px", color:"#020b18", fontFamily:"'Orbitron',monospace", fontSize:"0.68rem", fontWeight:700, cursor:"pointer" }}>{isDesigner?"DESIGN":"ASK"}</button>
+      </div>
+    </div>
+  );
+};
+
+const AiAdvisor = () => {
+  const ref = useRef(null);
+  useEffect(() => {
+    const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add("visible"); }), {threshold:0.1});
+    if (ref.current) ref.current.querySelectorAll(".reveal").forEach(el => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <section id="ai-advisor" ref={ref} style={{ position:"relative", zIndex:10 }}>
+      <div style={{ maxWidth:"1200px", margin:"0 auto", padding:"100px 5%" }}>
+        <div className="reveal" style={{ textAlign:"center", marginBottom:"3rem" }}>
+          <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:"0.7rem", letterSpacing:"0.2em", textTransform:"uppercase", color:"#c8921a", marginBottom:"1rem" }}>// AI ADVISOR IN ACTION</div>
+          <h2 style={{ fontFamily:"'Orbitron',monospace", fontSize:"clamp(1.8rem,3.5vw,2.8rem)", fontWeight:700 }}>See HydroMind AI at Work</h2>
+        </div>
+
+        <div className="reveal grid-2" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"2rem", marginBottom:"2rem" }}>
+          <ChatDemo mode="designer"/>
+          <ChatDemo mode="troubleshooter"/>
+        </div>
+
+        {/* KB info bar */}
+        <div className="reveal grid-5" style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:"1rem" }}>
+          {[["📖","OEM MANUALS","Rexroth, Eaton,\nLiebherr, Favco"],["📐","ISO SCHEMATICS","Open/closed loop,\ncrane circuits"],["⚗️","THEORY & LAWS","Pascal, Bernoulli,\nvalve theory"],["🔍","FAULT LIBRARY","Symptoms, causes,\nremedies"],["✏️","AI SCHEMATIC","AI draws circuit\nPDF / PNG export",true]].map(([icon,label,sub,highlight])=>(
+            <div key={label} style={{ padding:"1rem", background:"rgba(4,20,40,0.7)", border:`1px solid ${highlight?"rgba(200,146,26,0.4)":"rgba(200,146,26,0.2)"}`, borderRadius:"6px", textAlign:"center", boxShadow:highlight?"0 0 20px rgba(200,146,26,0.1)":"none" }}>
+              <div style={{fontSize:"1.4rem",marginBottom:"0.4rem"}}>{icon}</div>
+              <div style={{fontFamily:"'Orbitron',monospace",fontSize:"0.62rem",color:"#f0b429",letterSpacing:"0.08em"}}>{label}</div>
+              <div style={{fontSize:"0.75rem",color:"#6b8fa8",marginTop:"0.3rem",whiteSpace:"pre-line"}}>{sub}</div>
             </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// ── FEATURES ─────────────────────────────────────────────────
+const Features = () => {
+  const ref = useRef(null);
+  useEffect(() => {
+    const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add("visible"); }), {threshold:0.1});
+    if (ref.current) ref.current.querySelectorAll(".reveal").forEach(el => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
+
+  const features = [
+    ["🔩","System Designer AI","Input your parameters — AI designs the complete hydraulic circuit with pump, motor, tank, filters, pipelines and valves. Preferred make selection included."],
+    ["🔧","Fault Troubleshooter","Ask any fault question — AI searches KB first, then web. Covers Liebherr LiDAT, Favco, Rexroth, Eaton, Sauer Danfoss systems."],
+    ["📐","AI Schematic Drawing","AI generates complete ISO hydraulic schematics — open loop, closed loop, crane circuits. Downloadable as PDF or PNG with correct symbols."],
+    ["📚","Knowledge Base (KB)","OEM manuals, ISO schematic examples, hydraulic theory, CBV/accumulator/relief valve procedures — all searchable by AI."],
+    ["🌐","Live Web Search","When KB doesn't have the answer — AI searches the web for latest component specs, datasheets, and technical bulletins automatically."],
+    ["🔢","9 Engineering Calculators","Flow rate, pressure drop, pump power, cylinder force, heat load, relief valve sizing — SI and Imperial dual-unit support."],
+    ["⚡","Electrical & PLC Advisor","Proportional valve amplifier card setup, Rexroth / Eaton / Sauer Danfoss parameters, PLC fault logic and LiDAT support."],
+    ["📋","Maintenance Reports","Auto-generate professional DPR and maintenance reports. Export-ready for site supervisors and asset managers."],
+    ["📡","Industry News Feed","Latest hydraulic engineering innovations, offshore crane updates, and technology news — curated and summarised by AI."],
+  ];
+
+  return (
+    <section id="features" ref={ref} style={{ position:"relative", zIndex:10 }}>
+      <div style={{ maxWidth:"1200px", margin:"0 auto", padding:"100px 5%" }}>
+        <div className="reveal" style={{ textAlign:"center", marginBottom:"4rem" }}>
+          <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:"0.7rem", letterSpacing:"0.2em", textTransform:"uppercase", color:"#c8921a", marginBottom:"1rem" }}>// PLATFORM CAPABILITIES</div>
+          <h2 style={{ fontFamily:"'Orbitron',monospace", fontSize:"clamp(1.8rem,3.5vw,2.8rem)", fontWeight:700 }}>Everything a Hydraulic Engineer Needs</h2>
+        </div>
+        <div className="reveal grid-3" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"1.5rem" }}>
+          {features.map(([icon,title,desc]) => (
+            <div key={title} className="reveal" style={{ background:"rgba(4,20,40,0.6)", border:"1px solid rgba(200,146,26,0.15)", borderRadius:"6px", padding:"2rem", position:"relative", overflow:"hidden", transition:"all 0.4s", cursor:"default" }}
+              onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(200,146,26,0.4)";e.currentTarget.style.transform="translateY(-4px)";e.currentTarget.style.boxShadow="0 20px 60px rgba(0,0,0,0.4)"}}
+              onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(200,146,26,0.15)";e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="none"}}>
+              <div style={{position:"absolute",top:0,left:0,width:"100%",height:"2px",background:"linear-gradient(90deg,transparent,#c8921a,transparent)",opacity:0,transition:"opacity 0.4s"}} className="card-top-line"/>
+              <span style={{fontSize:"2rem",display:"block",marginBottom:"1.2rem"}}>{icon}</span>
+              <div style={{fontFamily:"'Orbitron',monospace",fontSize:"0.88rem",fontWeight:700,letterSpacing:"0.05em",color:"#f0b429",marginBottom:"0.8rem"}}>{title}</div>
+              <div style={{fontSize:"0.92rem",color:"#6b8fa8",lineHeight:1.65}}>{desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// ── CALCULATORS ───────────────────────────────────────────────
+const Calculators = () => {
+  const ref = useRef(null);
+  useEffect(() => {
+    const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add("visible"); }), {threshold:0.1});
+    if (ref.current) ref.current.querySelectorAll(".reveal").forEach(el => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
+
+  const calcs = [["01","Flow Rate","LPM / GPM converter"],["02","Pressure Drop","Line loss calculator"],["03","Cylinder Force","Bore & rod sizing"],["04","Pump Power","kW / HP output"],["05","Heat Load","Cooler sizing"],["06","Relief Valve","Cracking pressure"],["07","Pipe Velocity","Flow velocity check"],["08","Oil Volume","Tank sizing"],["09","Motor Torque","Nm / lb-ft output"]];
+
+  return (
+    <section id="calculators" ref={ref} style={{ position:"relative", zIndex:10, background:"linear-gradient(180deg,transparent,rgba(13,79,140,0.08),transparent)" }}>
+      <div style={{ maxWidth:"1200px", margin:"0 auto", padding:"100px 5%" }}>
+        <div className="grid-2" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"4rem", alignItems:"center" }}>
+          <div className="reveal">
+            <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:"0.7rem", letterSpacing:"0.2em", textTransform:"uppercase", color:"#c8921a", marginBottom:"1rem" }}>// ENGINEERING CALCULATORS</div>
+            <h2 style={{ fontFamily:"'Orbitron',monospace", fontSize:"clamp(1.8rem,3.5vw,2.6rem)", fontWeight:700, lineHeight:1.15 }}>Precision Calculations.<br/>Field-Ready Results.</h2>
+            <div style={{width:"60px",height:"3px",background:"linear-gradient(90deg,#c8921a,#f0b429)",margin:"1.5rem 0"}}/>
+            <p style={{fontSize:"1.1rem",color:"#6b8fa8",lineHeight:1.7}}>9 dedicated hydraulic engineering calculators — built for real site conditions. All results in SI and Imperial units simultaneously.</p>
+          </div>
+          <div className="reveal" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"0.9rem" }}>
+            {calcs.map(([num,name,detail]) => (
+              <div key={num} style={{ background:"rgba(4,20,40,0.7)", border:"1px solid rgba(26,159,212,0.15)", borderRadius:"6px", padding:"1rem 1.2rem", display:"flex", alignItems:"center", gap:"1rem", transition:"all 0.3s", cursor:"default" }}
+                onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(26,159,212,0.5)";e.currentTarget.style.background="rgba(13,79,140,0.2)";e.currentTarget.style.transform="translateX(4px)"}}
+                onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(26,159,212,0.15)";e.currentTarget.style.background="rgba(4,20,40,0.7)";e.currentTarget.style.transform="none"}}>
+                <div style={{fontFamily:"'Orbitron',monospace",fontSize:"1.2rem",fontWeight:900,color:"rgba(200,146,26,0.3)",minWidth:"32px"}}>{num}</div>
+                <div>
+                  <div style={{fontFamily:"'Rajdhani',sans-serif",fontSize:"0.95rem",fontWeight:600,color:"#e8f4fd"}}>{name}</div>
+                  <div style={{fontSize:"0.78rem",color:"#6b8fa8"}}>{detail}</div>
+                </div>
+                <span style={{color:"#1a9fd4",marginLeft:"auto",opacity:0,transition:"opacity 0.3s"}} className="calc-arrow">→</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// ── PRICING ───────────────────────────────────────────────────
+const Pricing = ({ onLaunch }) => {
+  const ref = useRef(null);
+  useEffect(() => {
+    const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add("visible"); }), {threshold:0.1});
+    if (ref.current) ref.current.querySelectorAll(".reveal").forEach(el => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <section id="pricing" ref={ref} style={{ position:"relative", zIndex:10 }}>
+      <div style={{ maxWidth:"1200px", margin:"0 auto", padding:"100px 5%" }}>
+        <div className="reveal" style={{ textAlign:"center", marginBottom:"3rem" }}>
+          <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:"0.7rem", letterSpacing:"0.2em", textTransform:"uppercase", color:"#c8921a", marginBottom:"1rem" }}>// ACCESS PLANS</div>
+          <h2 style={{ fontFamily:"'Orbitron',monospace", fontSize:"clamp(1.8rem,3.5vw,2.8rem)", fontWeight:700 }}>Simple, Transparent Pricing</h2>
+        </div>
+        <div className="reveal grid-2" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"2rem", maxWidth:"800px", margin:"0 auto" }}>
+          {/* Free */}
+          <div style={{ background:"rgba(4,20,40,0.7)", border:"1px solid rgba(200,146,26,0.2)", borderRadius:"8px", padding:"2.5rem", textAlign:"center" }}>
+            <div style={{fontFamily:"'Orbitron',monospace",fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",color:"#6b8fa8",marginBottom:"1rem"}}>Free Access</div>
+            <div style={{fontFamily:"'Orbitron',monospace",fontSize:"3rem",fontWeight:900,color:"#f0b429",lineHeight:1}}><sup style={{fontSize:"1.2rem"}}>$</sup>0</div>
+            <div style={{fontSize:"0.85rem",color:"#6b8fa8",margin:"0.3rem 0 2rem"}}>Forever free</div>
+            <ul style={{listStyle:"none",textAlign:"left",marginBottom:"2rem"}}>
+              {["3 AI queries/day (both modes)","Troubleshooter — KB search","Basic hydraulic calculators","Industry news feed",].map(f=>(
+                <li key={f} style={{fontSize:"0.92rem",color:"#e8f4fd",padding:"6px 0",display:"flex",alignItems:"center",gap:"8px",borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
+                  <span style={{color:"#c8921a",fontSize:"0.5rem"}}>◆</span>{f}
+                </li>
+              ))}
+              {["System Designer AI","Web search fallback","AI Schematic Drawing","Full schematic library"].map(f=>(
+                <li key={f} style={{fontSize:"0.92rem",color:"#6b8fa8",padding:"6px 0",display:"flex",alignItems:"center",gap:"8px",borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
+                  <span style={{color:"#6b8fa8",fontSize:"0.5rem"}}>◆</span>{f}
+                </li>
+              ))}
+            </ul>
+            <button onClick={onLaunch} style={{display:"block",width:"100%",padding:"12px",fontFamily:"'Orbitron',monospace",fontSize:"0.72rem",fontWeight:600,letterSpacing:"0.1em",textTransform:"uppercase",color:"#1a9fd4",background:"transparent",border:"1px solid rgba(26,159,212,0.4)",borderRadius:"3px",cursor:"pointer",transition:"all 0.3s"}}
+              onMouseEnter={e=>{e.target.style.background="rgba(26,159,212,0.1)";e.target.style.borderColor="#1a9fd4"}}
+              onMouseLeave={e=>{e.target.style.background="transparent";e.target.style.borderColor="rgba(26,159,212,0.4)"}}>
+              Get Started Free
+            </button>
+          </div>
+          {/* Premium */}
+          <div style={{ background:"rgba(4,20,40,0.7)", border:"1px solid #c8921a", borderRadius:"8px", padding:"2.5rem", textAlign:"center", position:"relative", overflow:"hidden", boxShadow:"0 0 30px rgba(200,146,26,0.3)" }}>
+            <div style={{position:"absolute",top:"14px",right:"-24px",background:"linear-gradient(135deg,#c8921a,#f0b429)",color:"#020b18",fontFamily:"'Orbitron',monospace",fontSize:"0.5rem",fontWeight:700,letterSpacing:"0.1em",padding:"4px 30px",transform:"rotate(35deg)",transformOrigin:"center"}}>MOST POPULAR</div>
+            <div style={{fontFamily:"'Orbitron',monospace",fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.15em",textTransform:"uppercase",color:"#6b8fa8",marginBottom:"1rem"}}>Premium Access</div>
+            <div style={{fontFamily:"'Orbitron',monospace",fontSize:"3rem",fontWeight:900,color:"#f0b429",lineHeight:1}}><sup style={{fontSize:"1.2rem"}}>$</sup>59</div>
+            <div style={{fontSize:"0.85rem",color:"#6b8fa8",margin:"0.3rem 0 2rem"}}>One-time payment — lifetime access</div>
+            <ul style={{listStyle:"none",textAlign:"left",marginBottom:"2rem"}}>
+              {["Unlimited AI queries — both modes","System Designer AI — full BOM output","AI Hydraulic Schematic Drawing","Troubleshooter — KB + web search","All 9 engineering calculators","Full ISO schematic library (KB)","Electrical & PLC advisor","Maintenance report generation","Priority feature updates"].map(f=>(
+                <li key={f} style={{fontSize:"0.92rem",color:"#e8f4fd",padding:"6px 0",display:"flex",alignItems:"center",gap:"8px",borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
+                  <span style={{color:"#c8921a",fontSize:"0.5rem"}}>◆</span>{f}
+                </li>
+              ))}
+            </ul>
+            <button onClick={onLaunch} style={{display:"block",width:"100%",padding:"12px",fontFamily:"'Orbitron',monospace",fontSize:"0.72rem",fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",color:"#020b18",background:"linear-gradient(135deg,#c8921a,#f0b429)",border:"none",borderRadius:"3px",cursor:"pointer",transition:"all 0.3s",boxShadow:"0 0 20px rgba(200,146,26,0.3)"}}
+              onMouseEnter={e=>{e.target.style.boxShadow="0 0 40px rgba(200,146,26,0.6)";e.target.style.transform="translateY(-2px)"}}
+              onMouseLeave={e=>{e.target.style.boxShadow="0 0 20px rgba(200,146,26,0.3)";e.target.style.transform="none"}}>
+              Unlock Premium
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// ── FEEDBACK MODAL ────────────────────────────────────────────
+const FeedbackModal = ({ onClose }) => {
+  const [rating, setRating]   = useState(0);
+  const [category, setCat]    = useState("");
+  const [message, setMsg]     = useState("");
+  const [email, setEmail]     = useState("");
+  const [success, setSuccess] = useState(false);
+  const [error, setError]     = useState(false);
+
+  const submit = () => {
+    if (!message.trim()) { setError(true); return; }
+    setError(false);
+    setSuccess(true);
+    setTimeout(() => { onClose(); setSuccess(false); setRating(0); setCat(""); setMsg(""); setEmail(""); }, 2200);
+  };
+
+  const ratings = [["★","Poor"],["★★","Fair"],["★★★","Good"],["★★★★","Great"],["★★★★★","Excellent"]];
+  const cats    = ["AI Accuracy","Feature Request","Bug Report","KB Content","General"];
+
+  return (
+    <div onClick={e => { if(e.target===e.currentTarget) onClose(); }} style={{ position:"fixed",top:0,left:0,width:"100%",height:"100%",zIndex:999,background:"rgba(2,11,24,0.85)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center" }}>
+      <div style={{ background:"rgba(4,20,40,0.97)",border:"1px solid rgba(200,146,26,0.25)",borderRadius:"10px",padding:"2.5rem",maxWidth:"500px",width:"90%",position:"relative",boxShadow:"0 0 60px rgba(200,146,26,0.2)" }}>
+        <div style={{position:"absolute",top:0,left:0,width:"100%",height:"3px",background:"linear-gradient(90deg,#c8921a,#f0b429,#1a9fd4)",borderRadius:"10px 10px 0 0"}}/>
+        <button onClick={onClose} style={{position:"absolute",top:"14px",right:"16px",background:"none",border:"none",color:"#6b8fa8",fontSize:"1.3rem",cursor:"pointer"}}>✕</button>
+
+        <div style={{fontFamily:"'Orbitron',monospace",fontSize:"0.65rem",letterSpacing:"0.2em",color:"#c8921a",marginBottom:"0.5rem"}}>// USER FEEDBACK</div>
+        <h3 style={{fontFamily:"'Orbitron',monospace",fontSize:"1.1rem",fontWeight:700,color:"#e8f4fd",marginBottom:"0.4rem"}}>Share Your Feedback</h3>
+        <p style={{fontSize:"0.88rem",color:"#6b8fa8",marginBottom:"1.5rem",lineHeight:1.6}}>Help us improve HydroMind AI. Your input shapes the next version.</p>
+
+        {/* Rating */}
+        <div style={{marginBottom:"1.2rem"}}>
+          <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:"0.7rem",color:"#6b8fa8",letterSpacing:"0.1em",marginBottom:"0.6rem"}}>HOW WOULD YOU RATE HYDROMIND AI?</div>
+          <div style={{display:"flex",gap:"0.5rem"}}>
+            {ratings.map(([stars,label],i) => (
+              <button key={i} onClick={()=>setRating(i+1)} style={{ flex:1,padding:"8px 4px",background:rating===i+1?"rgba(200,146,26,0.2)":"rgba(200,146,26,0.06)",border:`1px solid ${rating===i+1?"#c8921a":"rgba(200,146,26,0.2)"}`,borderRadius:"4px",color:rating===i+1?"#f0b429":"#6b8fa8",fontFamily:"'Orbitron',monospace",fontSize:"0.6rem",cursor:"pointer",transition:"all 0.2s" }}>
+                {stars}<br/>{label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Category */}
+        <div style={{marginBottom:"1.2rem"}}>
+          <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:"0.7rem",color:"#6b8fa8",letterSpacing:"0.1em",marginBottom:"0.6rem"}}>FEEDBACK TYPE</div>
+          <div style={{display:"flex",gap:"0.5rem",flexWrap:"wrap"}}>
+            {cats.map(c => (
+              <button key={c} onClick={()=>setCat(c)} style={{ padding:"6px 14px",background:category===c?"rgba(26,159,212,0.15)":"rgba(26,159,212,0.06)",border:`1px solid ${category===c?"#1a9fd4":"rgba(26,159,212,0.2)"}`,borderRadius:"3px",color:category===c?"#1a9fd4":"#6b8fa8",fontFamily:"'Rajdhani',sans-serif",fontSize:"0.85rem",fontWeight:600,cursor:"pointer",transition:"all 0.2s" }}>{c}</button>
+            ))}
+          </div>
+        </div>
+
+        {/* Message */}
+        <div style={{marginBottom:"1.2rem"}}>
+          <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:"0.7rem",color:"#6b8fa8",letterSpacing:"0.1em",marginBottom:"0.6rem"}}>YOUR MESSAGE</div>
+          <textarea value={message} onChange={e=>{setMsg(e.target.value);setError(false)}} placeholder="Describe your experience, suggestion or issue..." style={{ width:"100%",minHeight:"90px",background:"rgba(255,255,255,0.04)",border:`1px solid ${error?"rgba(232,64,64,0.6)":"rgba(26,159,212,0.2)"}`,borderRadius:"4px",padding:"10px 12px",color:"#e8f4fd",fontSize:"0.9rem",lineHeight:1.5,resize:"vertical" }}/>
+          {error && <div style={{fontSize:"0.78rem",color:"#e84040",marginTop:"4px"}}>Message is required.</div>}
+        </div>
+
+        {/* Email */}
+        <div style={{marginBottom:"1.5rem"}}>
+          <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:"0.7rem",color:"#6b8fa8",letterSpacing:"0.1em",marginBottom:"0.6rem"}}>EMAIL (OPTIONAL)</div>
+          <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="your@email.com — for follow-up only" style={{ width:"100%",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(26,159,212,0.2)",borderRadius:"4px",padding:"9px 12px",color:"#e8f4fd",fontSize:"0.9rem" }}/>
+        </div>
+
+        <button onClick={submit} style={{ width:"100%",padding:"13px",background:"linear-gradient(135deg,#c8921a,#f0b429)",border:"none",borderRadius:"4px",color:"#020b18",fontFamily:"'Orbitron',monospace",fontSize:"0.78rem",fontWeight:700,letterSpacing:"0.1em",cursor:"pointer",transition:"all 0.3s",boxShadow:"0 0 20px rgba(200,146,26,0.3)" }}
+          onMouseEnter={e=>e.target.style.boxShadow="0 0 40px rgba(200,146,26,0.6)"}
+          onMouseLeave={e=>e.target.style.boxShadow="0 0 20px rgba(200,146,26,0.3)"}>
+          SUBMIT FEEDBACK
+        </button>
+
+        {success && (
+          <div style={{marginTop:"1rem",padding:"0.8rem",background:"rgba(40,202,65,0.1)",border:"1px solid rgba(40,202,65,0.3)",borderRadius:"4px",textAlign:"center",fontFamily:"'Share Tech Mono',monospace",fontSize:"0.8rem",color:"#28ca41",letterSpacing:"0.08em"}}>
+            ✅ THANK YOU — FEEDBACK RECEIVED
           </div>
         )}
-        <div ref={endRef}/>
-      </div>
-
-      {/* Input */}
-      <div style={{padding:"1rem 1.5rem",borderTop:`1px solid ${C.border}`,background:"rgba(4,14,32,.95)"}}>
-        <div style={{display:"flex",gap:".75rem",alignItems:"flex-end",maxWidth:900,margin:"0 auto"}}>
-          <textarea
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={e => { if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}}}
-            placeholder="Ask about hydraulic systems, cranes, HPUs, fault diagnosis..."
-            rows={1}
-            style={{flex:1,background:"rgba(2,10,22,.9)",border:`1px solid rgba(0,212,255,.2)`,borderRadius:10,padding:"12px 16px",fontFamily:"'DM Sans',sans-serif",fontSize:".92rem",color:C.white,outline:"none",resize:"none",lineHeight:1.5,maxHeight:120,overflowY:"auto"}}
-          />
-          <button onClick={send} disabled={!input.trim()||loading} style={{background:input.trim()&&!loading?"linear-gradient(135deg,#00d4ff,#0070cc)":"rgba(0,212,255,.1)",border:`1px solid rgba(0,212,255,.2)`,borderRadius:10,padding:"12px 20px",color:input.trim()&&!loading?"#000":C.text3,fontFamily:"'DM Sans',sans-serif",fontWeight:700,fontSize:".9rem",cursor:input.trim()&&!loading?"pointer":"not-allowed",transition:".2s",whiteSpace:"nowrap"}}>
-            {loading ? "..." : "Send →"}
-          </button>
-        </div>
-        <div style={{textAlign:"center",marginTop:".5rem",fontFamily:"'JetBrains Mono',monospace",fontSize:".6rem",color:C.text3}}>
-          Press Enter to send · Shift+Enter for new line · Backed by 33+ OEM manuals
-        </div>
-      </div>
-
-      <style>{`@keyframes pulse{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.4);opacity:1}}`}</style>
-    </div>
-  );
-}
-
-// ── PLACEHOLDER PAGES ──────────────────────────────────────
-function PlaceholderPage({ title, icon, desc }) {
-  return (
-    <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"calc(100vh - 60px)",padding:"2rem",textAlign:"center"}}>
-      <div>
-        <div style={{fontSize:"3rem",marginBottom:"1rem"}}>{icon}</div>
-        <h1 style={{fontFamily:"'Barlow Condensed',sans-serif",fontWeight:800,fontSize:"2rem",color:C.white,marginBottom:".5rem"}}>{title}</h1>
-        <p style={{color:C.text2,fontSize:"1rem"}}>{desc}</p>
       </div>
     </div>
   );
-}
+};
 
-// ── MAIN APP ───────────────────────────────────────────────
-export default function App() {
-  const [user, setUser] = useState(() => getSession());
-  const [page, setPage] = useState("home");
-  const [authModal, setAuthModal] = useState(null);
+// ── FOOTER ────────────────────────────────────────────────────
+const Footer = ({ onFeedback }) => (
+  <footer style={{ position:"relative",zIndex:10,borderTop:"1px solid rgba(200,146,26,0.25)",padding:"3rem 5%",background:"rgba(2,11,24,0.9)" }}>
+    <div style={{ maxWidth:"1200px",margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:"1.5rem" }}>
+      <div style={{fontSize:"0.85rem",color:"#6b8fa8"}}>
+        © 2026 <strong style={{color:"#f0b429"}}>HydroMind AI</strong> — hydromindai.com<br/>
+        <span style={{fontSize:"0.78rem"}}>Hydraulic AI Advisor — Design & Troubleshoot, powered by KB + Web Intelligence</span>
+      </div>
+      <ul style={{display:"flex",gap:"2rem",listStyle:"none"}}>
+        {[["Privacy","#"],["Terms","#"]].map(([label,href])=>(
+          <li key={label}><a href={href} style={{fontSize:"0.85rem",color:"#6b8fa8",textDecoration:"none",transition:"color 0.3s",letterSpacing:"0.05em"}} onMouseEnter={e=>e.target.style.color="#f0b429"} onMouseLeave={e=>e.target.style.color="#6b8fa8"}>{label}</a></li>
+        ))}
+        <li>
+          <button onClick={onFeedback} style={{background:"none",border:"none",fontSize:"0.85rem",color:"#f0b429",cursor:"pointer",letterSpacing:"0.05em",fontFamily:"'Rajdhani',sans-serif",fontWeight:600}}>💬 Feedback</button>
+        </li>
+      </ul>
+    </div>
+  </footer>
+);
 
-  const handleLogin = (tab) => setAuthModal(tab);
-  const handleLogout = () => {
-    if (window.confirm("Sign out of HydroMind.AI?")) {
-      clearSession();
-      setUser(null);
-    }
+// ── LAUNCH APP MODAL (Login / Register) ──────────────────────
+const LaunchModal = ({ onClose }) => {
+  const [view, setView]       = useState("login"); // login | register | forgot
+  const [name, setName]       = useState("");
+  const [email, setEmail]     = useState("");
+  const [password, setPass]   = useState("");
+  const [loading, setLoading] = useState(false);
+  const [msg, setMsg]         = useState({ text:"", type:"" });
+
+  const reset = () => { setMsg({text:"",type:""}); };
+
+  const handleLogin = async () => {
+    if (!email || !password) { setMsg({text:"Email and password required.",type:"error"}); return; }
+    setLoading(true); reset();
+    try {
+      const res = await fetch(`${API}/api/auth/login`, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ email, password }) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Login failed");
+      setMsg({ text:`✅ Welcome back${data.user?.name ? ", "+data.user.name : ""}! Redirecting...`, type:"success" });
+      setTimeout(() => { onClose(); window.location.href = `${API.replace("/api","")}`; }, 1500);
+    } catch(e) { setMsg({text:e.message,type:"error"}); }
+    setLoading(false);
   };
-  const handleAuthSuccess = (u) => {
-    setUser(u);
-    setAuthModal(null);
+
+  const handleRegister = async () => {
+    if (!name || !email || !password) { setMsg({text:"All fields required.",type:"error"}); return; }
+    setLoading(true); reset();
+    try {
+      const res = await fetch(`${API}/api/auth/register`, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ name, email, password }) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Registration failed");
+      setMsg({ text:"✅ Account created! You can now sign in.", type:"success" });
+      setTimeout(() => setView("login"), 1600);
+    } catch(e) { setMsg({text:e.message,type:"error"}); }
+    setLoading(false);
   };
 
-  const renderPage = () => {
-    switch (page) {
-      case "home":      return <HomePage onLogin={handleLogin} setPage={setPage}/>;
-      case "advisor":   return <ChatDashboard user={user}/>;
-      case "design":    return <ChatDashboard user={user}/>;
-      case "calculator":return <div style={{padding:"100px 2rem 2rem",maxWidth:950,margin:"0 auto"}}><Calculator/></div>;
-      case "knowledge": return <PlaceholderPage title="Knowledge Base" icon="📚" desc="33+ indexed OEM manuals — Rexroth, Danfoss, Parker and more."/>;
-      case "news":      return <PlaceholderPage title="Industry News" icon="📰" desc="Latest hydraulic systems and offshore crane industry news."/>;
-      case "pricing":   return <PlaceholderPage title="Pricing Plans" icon="💳" desc="Free, Basic, Pro and Enterprise plans available."/>;
-      case "feedback":  return <PlaceholderPage title="Feedback" icon="💬" desc="Help us improve HydroMind AI — your feedback matters."/>;
-      case "electrical":return <ChatDashboard user={user}/>;
-      default:          return <HomePage onLogin={handleLogin} setPage={setPage}/>;
-    }
+  const handleForgot = async () => {
+    if (!email) { setMsg({text:"Email required.",type:"error"}); return; }
+    setLoading(true); reset();
+    try {
+      const res = await fetch(`${API}/api/auth/forgot-password`, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ email }) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Request failed");
+      setMsg({ text:"✅ Reset link sent! Check your inbox.", type:"success" });
+    } catch(e) { setMsg({text:e.message,type:"error"}); }
+    setLoading(false);
   };
 
-  const showSidebars = page !== "advisor" && page !== "design" && page !== "electrical";
+  const inputStyle = { width:"100%",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(26,159,212,0.25)",borderRadius:"4px",padding:"11px 14px",color:"#e8f4fd",fontSize:"0.95rem",marginBottom:"1rem",outline:"none" };
+  const btnStyle   = { width:"100%",padding:"13px",background:"linear-gradient(135deg,#c8921a,#f0b429)",border:"none",borderRadius:"4px",color:"#020b18",fontFamily:"'Orbitron',monospace",fontSize:"0.78rem",fontWeight:700,letterSpacing:"0.1em",cursor:"pointer",marginTop:"0.5rem",opacity:loading?0.7:1 };
+  const linkStyle  = { background:"none",border:"none",color:"#1a9fd4",cursor:"pointer",fontFamily:"'Rajdhani',sans-serif",fontSize:"0.9rem",textDecoration:"underline",padding:0 };
 
   return (
-    <div style={{minHeight:"100vh",background:C.navy,color:C.white,position:"relative"}}>
-      <CircuitBg/>
+    <div onClick={e=>{if(e.target===e.currentTarget)onClose()}} style={{position:"fixed",top:0,left:0,width:"100%",height:"100%",zIndex:999,background:"rgba(2,11,24,0.88)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+      <div style={{background:"rgba(4,20,40,0.97)",border:"1px solid rgba(200,146,26,0.3)",borderRadius:"10px",padding:"2.5rem",maxWidth:"420px",width:"90%",position:"relative",boxShadow:"0 0 60px rgba(200,146,26,0.2)"}}>
+        <div style={{position:"absolute",top:0,left:0,width:"100%",height:"3px",background:"linear-gradient(90deg,#c8921a,#f0b429,#1a9fd4)",borderRadius:"10px 10px 0 0"}}/>
+        <button onClick={onClose} style={{position:"absolute",top:"14px",right:"16px",background:"none",border:"none",color:"#6b8fa8",fontSize:"1.3rem",cursor:"pointer"}}>✕</button>
 
-      <Navbar user={user} onLogin={handleLogin} onLogout={handleLogout} currentPage={page} setPage={setPage}/>
+        {/* Logo */}
+        <div style={{textAlign:"center",marginBottom:"1.8rem"}}>
+          <div style={{fontFamily:"'Orbitron',monospace",fontSize:"1.2rem",fontWeight:700}}>Hydro<span style={{color:"#f0b429"}}>Mind</span> AI</div>
+          <div style={{fontSize:"0.8rem",color:"#6b8fa8",marginTop:"0.3rem"}}>
+            {view==="login"?"Sign in to your account":view==="register"?"Create your account":"Reset your password"}
+          </div>
+        </div>
 
-      <div style={{paddingTop:60,display:"flex",position:"relative",zIndex:1}}>
-        {showSidebars && (
-          <LeftSidebar user={user} onLogin={handleLogin} onLogout={handleLogout} setPage={setPage}/>
+        {view==="register" && <input value={name} onChange={e=>setName(e.target.value)} placeholder="Full Name" style={inputStyle}/>}
+        <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email address" type="email" style={inputStyle}/>
+        {(view==="login"||view==="register") && <input value={password} onChange={e=>setPass(e.target.value)} placeholder="Password" type="password" style={inputStyle}/>}
+
+        {msg.text && (
+          <div style={{padding:"0.7rem",borderRadius:"4px",marginBottom:"1rem",fontSize:"0.88rem",background:msg.type==="success"?"rgba(40,202,65,0.1)":"rgba(232,64,64,0.1)",border:`1px solid ${msg.type==="success"?"rgba(40,202,65,0.3)":"rgba(232,64,64,0.3)"}`,color:msg.type==="success"?"#28ca41":"#e84040"}}>{msg.text}</div>
         )}
 
-        <main style={{flex:1,minWidth:0,overflowX:"hidden"}}>
-          {renderPage()}
-        </main>
+        <button onClick={view==="login"?handleLogin:view==="register"?handleRegister:handleForgot} style={btnStyle} disabled={loading}>
+          {loading?"PROCESSING...":(view==="login"?"SIGN IN":view==="register"?"CREATE ACCOUNT":"SEND RESET LINK")}
+        </button>
 
-        {showSidebars && <RightSidebar user={user}/>}
+        <div style={{marginTop:"1.2rem",textAlign:"center",fontSize:"0.9rem",color:"#6b8fa8"}}>
+          {view==="login" && <>
+            <button style={linkStyle} onClick={()=>{setView("forgot");reset();}}>Forgot password?</button>
+            <span style={{margin:"0 0.5rem"}}>·</span>
+            <button style={linkStyle} onClick={()=>{setView("register");reset();}}>Create account</button>
+          </>}
+          {view==="register" && <button style={linkStyle} onClick={()=>{setView("login");reset();}}>Already have an account? Sign in</button>}
+          {view==="forgot"   && <button style={linkStyle} onClick={()=>{setView("login");reset();}}>← Back to sign in</button>}
+        </div>
       </div>
-
-      {authModal && (
-        <AuthModal tab={authModal} onClose={() => setAuthModal(null)} onSuccess={handleAuthSuccess}/>
-      )}
-
-      <style>{`
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #020b18; color: #e8f4ff; }
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,.2); }
-        ::-webkit-scrollbar-thumb { background: rgba(0,212,255,.2); border-radius: 3px; }
-        input::placeholder, textarea::placeholder { color: rgba(200,216,232,.25); }
-        select option { background: #041428; color: #e8f4ff; }
-      `}</style>
     </div>
+  );
+};
+
+// ── ROOT APP ──────────────────────────────────────────────────
+export default function App() {
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [showLaunch,   setShowLaunch]   = useState(false);
+
+  // Check URL for password reset token
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("reset")) setShowLaunch(true);
+  }, []);
+
+  return (
+    <>
+      <GlobalStyle/>
+      <HydraulicBackground/>
+      <GridOverlay/>
+
+      <Nav onFeedback={() => setShowFeedback(true)} onLaunch={() => setShowLaunch(true)}/>
+      <Hero onLaunch={() => setShowLaunch(true)}/>
+      <HowItWorks/>
+      <AiAdvisor/>
+      <Features/>
+      <Calculators/>
+      <Pricing onLaunch={() => setShowLaunch(true)}/>
+      <Footer onFeedback={() => setShowFeedback(true)}/>
+
+      {showFeedback && <FeedbackModal onClose={() => setShowFeedback(false)}/>}
+      {showLaunch   && <LaunchModal   onClose={() => setShowLaunch(false)}/>}
+    </>
   );
 }
