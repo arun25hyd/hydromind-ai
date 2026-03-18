@@ -62,7 +62,9 @@
       <button onclick="openAuthModal('register')" class="btn-primary" style="flex:1;padding:8px;font-size:.85rem;">Register</button>
     </div>
   </div>
-</nav><div class="page-layout">
+</nav>
+
+<div class="page-layout">
 
 <div class="hm-left-sidebar" id="hmLeftSidebar">
     <div class="hm-left-inner">
@@ -117,20 +119,9 @@
 
 <div class="hm-main-content">
 
-
-<div class="hm-left-sidebar" id="hmLeftSidebar">
-    <div class="hm-left-inner">
-
-    <!-- Profile card (shown after login) -->
-    <div id="hmSidebarProfile" style="display:none;">
-      <div class="hm-profile-card">
-        <div class="hm-prof-av" id="hmProfAvatar">--</div>
-        <div class="hm-prof-name" id="hmProfName"></div>
+<div class="hm-prof-name" id="hmProfName"></div>
         <div class="hm-prof-email" id="hmProfEmail"></div>
         <span class="hm-prof-plan" id="hmProfPlan">Free</span>
-      </div>
-    </div>
-
     <!-- Guest state: no login button - just quick links and ad -->
     <div id="hmSidebarNoAuth">
       <div style="margin-bottom:.75rem;">
@@ -139,23 +130,16 @@
         <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
         <div class="hm-hist-item" onclick="location.href='news.html'"><span class="hm-hist-icon">&#128240;</span><span class="hm-hist-text">Industry News</span></div>
         <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
-      </div>
       <!-- Ad slot in left sidebar -->
       <div style="font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.45rem;border-bottom:1px solid var(--border);margin-bottom:.5rem;">Sponsored</div>
       <div style="background:rgba(200,165,80,.03);border:1px dashed rgba(200,165,80,.12);border-radius:6px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem;">
         <div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement
-      </div>
       <div style="text-align:center;">
         <a href="pricing.html" style="font-family:'Space Mono',monospace;font-size:.56rem;color:rgba(200,165,80,.38);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a>
-      </div>
-    </div>
-
     <!-- Chat history (shown after login) -->
     <div id="hmSidebarHistory" style="display:none;margin-top:.75rem;">
       <div class="hm-sidebar-label">Chat History</div>
       <div id="hmHistoryList"></div>
-    </div>
-
     <!-- Quick links (shown after login) -->
     <div id="hmSidebarLinks" style="display:none;margin-top:.75rem;">
       <div class="hm-sidebar-label">Quick Links</div>
@@ -163,27 +147,42 @@
       <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
       <div class="hm-hist-item" onclick="location.href='news.html'"><span class="hm-hist-icon">&#128240;</span><span class="hm-hist-text">Industry News</span></div>
       <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
-    </div>
-
-  </div>
   <div class="hm-left-bottom"><button class="hm-logout-btn" id="hmLogoutBtn" onclick="doLogout()" style="display:none;">Sign Out</button></div>
-</div>
-
-<div class="hm-main-content">
-
-
-
-
-
-<div class="hm-main-content">
-
+<div class="hm-prof-name" id="hmProfName"></div>
+        <div class="hm-prof-email" id="hmProfEmail"></div>
+        <span class="hm-prof-plan" id="hmProfPlan">Free</span>
+    <!-- Guest state: no login button - just quick links and ad -->
+    <div id="hmSidebarNoAuth">
+      <div style="margin-bottom:.75rem;">
+        <div class="hm-sidebar-label">Quick Links</div>
+        <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
+        <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
+        <div class="hm-hist-item" onclick="location.href='news.html'"><span class="hm-hist-icon">&#128240;</span><span class="hm-hist-text">Industry News</span></div>
+        <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
+      <!-- Ad slot in left sidebar -->
+      <div style="font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.45rem;border-bottom:1px solid var(--border);margin-bottom:.5rem;">Sponsored</div>
+      <div style="background:rgba(200,165,80,.03);border:1px dashed rgba(200,165,80,.12);border-radius:6px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem;">
+        <div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement
+      <div style="text-align:center;">
+        <a href="pricing.html" style="font-family:'Space Mono',monospace;font-size:.56rem;color:rgba(200,165,80,.38);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a>
+    <!-- Chat history (shown after login) -->
+    <div id="hmSidebarHistory" style="display:none;margin-top:.75rem;">
+      <div class="hm-sidebar-label">Chat History</div>
+      <div id="hmHistoryList"></div>
+    <!-- Quick links (shown after login) -->
+    <div id="hmSidebarLinks" style="display:none;margin-top:.75rem;">
+      <div class="hm-sidebar-label">Quick Links</div>
+      <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
+      <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
+      <div class="hm-hist-item" onclick="location.href='news.html'"><span class="hm-hist-icon">&#128240;</span><span class="hm-hist-text">Industry News</span></div>
+      <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
+  <div class="hm-left-bottom"><button class="hm-logout-btn" id="hmLogoutBtn" onclick="doLogout()" style="display:none;">Sign Out</button></div>
 <!-- Hero -->
 <section class="section" style="padding:5rem 0 3rem;background:var(--bg-dark);">
   <div class="container">
     <div class="eyebrow">Knowledge Base</div>
     <h1 class="section-title">Technical Document Library</h1>
     <p class="section-subtitle">OEM manuals, field cases, hydraulic system documentation and troubleshooting guides — indexed and searchable via AI Advisor.</p>
-  </div>
 </section>
 
 <!-- Stats -->
@@ -193,21 +192,15 @@
       <div class="card" style="text-align:center;padding:1.25rem;">
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;color:var(--gold);" id="kbTotalCount">4</div>
         <div style="font-size:.8rem;color:var(--text3);margin-top:2px;">Documents</div>
-      </div>
       <div class="card" style="text-align:center;padding:1.25rem;">
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;color:var(--cyan);">3</div>
         <div style="font-size:.8rem;color:var(--text3);margin-top:2px;">OEM Brands</div>
-      </div>
       <div class="card" style="text-align:center;padding:1.25rem;">
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;color:var(--gold);">v2.0</div>
         <div style="font-size:.8rem;color:var(--text3);margin-top:2px;">KB Version</div>
-      </div>
       <div class="card" style="text-align:center;padding:1.25rem;">
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;color:var(--cyan);">AI</div>
         <div style="font-size:.8rem;color:var(--text3);margin-top:2px;">Powered Search</div>
-      </div>
-    </div>
-  </div>
 </section>
 
 <!-- Built-in KB Documents -->
@@ -221,43 +214,29 @@
           <span style="font-size:1.1rem;">⚙️</span>
           <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text1);">Rexroth A4VG Series 40 — Variable Displacement Axial Piston Pump</div>
           <span style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--gold);padding:2px 8px;border:1px solid rgba(200,165,80,.2);border-radius:100px;white-space:nowrap;margin-left:auto;">KB01</span>
-        </div>
         <p style="font-size:.88rem;color:var(--text2);margin-bottom:.5rem;">Closed-loop pump reference: charge pressure specs, servo control, variable displacement diagnostics, fault isolation for A4VG028–180 variants.</p>
         <div style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text3);">// OEM Pump Documentation · Bosch Rexroth</div>
-      </div>
-
       <div class="card" style="padding:1.25rem 1.5rem;">
         <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;">
           <span style="font-size:1.1rem;">⚙️</span>
           <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text1);">Rexroth A2FO / A7VO — Fixed & Variable Displacement Open Circuit Pumps</div>
           <span style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--gold);padding:2px 8px;border:1px solid rgba(200,165,80,.2);border-radius:100px;white-space:nowrap;margin-left:auto;">KB02-03</span>
-        </div>
         <p style="font-size:.88rem;color:var(--text2);margin-bottom:.5rem;">Open-circuit pump selection guide, pressure/flow sizing, shaft options, port identifications, commissioning procedure and case drain limits.</p>
         <div style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text3);">// OEM Pump Documentation · Bosch Rexroth</div>
-      </div>
-
       <div class="card" style="padding:1.25rem 1.5rem;">
         <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;">
           <span style="font-size:1.1rem;">⚙️</span>
           <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text1);">Danfoss Series 90 — Closed-Loop Pump Full Reference</div>
           <span style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--gold);padding:2px 8px;border:1px solid rgba(200,165,80,.2);border-radius:100px;white-space:nowrap;margin-left:auto;">KB04</span>
-        </div>
         <p style="font-size:.88rem;color:var(--text2);margin-bottom:.5rem;">S90 pump/motor integration: charge circuit, servo pressure, EDC/HDC control, brake valve settings and fault diagnostic flow charts.</p>
         <div style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text3);">// OEM Pump Documentation · Danfoss Power Solutions</div>
-      </div>
-
       <div class="card" style="padding:1.25rem 1.5rem;">
         <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;">
           <span style="font-size:1.1rem;">🛢️</span>
           <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text1);">Favelle Favco Field Case — Rig Al-Hail ADNOC Drilling Jan 2026</div>
           <span style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--gold);padding:2px 8px;border:1px solid rgba(200,165,80,.2);border-radius:100px;white-space:nowrap;margin-left:auto;">KB30</span>
-        </div>
         <p style="font-size:.88rem;color:var(--text2);margin-bottom:.5rem;">Offshore field case: main hoist HPU low charge pressure fault, root cause analysis, corrective actions and preventive maintenance recommendations.</p>
         <div style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text3);">// Offshore Field Case · Favelle Favco · ADNOC Drilling</div>
-      </div>
-
-    </div>
-  </div>
 </section>
 
 <!-- Dynamic KB entries (admin added) -->
@@ -265,7 +244,6 @@
   <div class="container">
     <div class="eyebrow" style="margin-bottom:1rem;" id="dynamicKBLabel"></div>
     <div id="dynamicKBGrid" style="display:flex;flex-direction:column;gap:1rem;"></div>
-  </div>
 </section>
 
 <!-- AI Advisor link -->
@@ -276,8 +254,6 @@
       <h3 style="margin-bottom:.75rem;">Ask the AI Advisor</h3>
       <p style="font-size:.9rem;color:var(--text2);margin-bottom:1rem;">Access the full Knowledge Base through the AI Advisor — ask any question and the AI searches KB automatically.</p>
       <a href="advisor.html" class="btn-primary">Open AI Advisor</a>
-    </div>
-  </div>
 </section>
 
 <!-- ═══ ADMIN KB UPLOAD PANEL ═══ -->
@@ -288,8 +264,6 @@
     <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem;">
       <div style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;background:rgba(200,165,80,.1);padding:4px 12px;border-radius:100px;border:1px solid rgba(200,165,80,.2);">⚙ Admin Panel</div>
       <h3 style="margin:0;font-size:1.1rem;">Knowledge Base Manager</h3>
-    </div>
-
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
 
       <!-- LEFT: Add new document form -->
@@ -300,7 +274,6 @@
           <div>
             <label class="form-label">KB Number</label>
             <input type="text" id="kbNum" class="form-input" placeholder="e.g. KB05">
-          </div>
           <div>
             <label class="form-label">Category</label>
             <select id="kbCat" class="form-input" style="cursor:pointer;">
@@ -314,24 +287,15 @@
               <option value="fluid">Fluid &amp; Filtration</option>
               <option value="technical">Technical</option>
             </select>
-          </div>
-        </div>
-
         <div style="margin-bottom:.75rem;">
           <label class="form-label">Document Title</label>
           <input type="text" id="kbTitle" class="form-input" placeholder="e.g. Parker F11/F12 Motor — Service Manual">
-        </div>
-
         <div style="margin-bottom:.75rem;">
           <label class="form-label">Description</label>
           <textarea id="kbDesc" class="form-input" rows="3" style="resize:vertical;min-height:75px;line-height:1.6;" placeholder="Brief description of what this document covers..."></textarea>
-        </div>
-
         <div style="margin-bottom:.75rem;">
           <label class="form-label">Document URL (optional)</label>
           <input type="text" id="kbUrl" class="form-input" placeholder="https://drive.google.com/... or manufacturer link">
-        </div>
-
         <!-- File attachment -->
         <div style="margin-bottom:1rem;">
           <label class="form-label">📎 Attach File (PDF / Word / Image)</label>
@@ -343,29 +307,30 @@
           <div id="kbFilePreview" style="display:none;margin-top:.4rem;background:rgba(200,165,80,.06);border:1px solid rgba(200,165,80,.2);border-radius:6px;padding:.5rem .85rem;display:none;align-items:center;justify-content:space-between;">
             <span id="kbFileInfo" style="font-size:.8rem;color:var(--gold);font-family:'Space Mono',monospace;"></span>
             <button type="button" onclick="clearFile()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:.85rem;padding:2px 6px;">✕</button>
-          </div>
-        </div>
-
         <div id="kbAddMsg" style="display:none;margin-bottom:.75rem;border-radius:8px;padding:.7rem 1rem;font-size:.85rem;"></div>
 
         <div style="display:flex;gap:.6rem;">
           <button type="button" onclick="addKBEntry()" class="btn-primary" style="padding:10px 24px;">+ Add to KB</button>
           <button type="button" onclick="clearKBForm()" class="btn-outline" style="padding:10px 18px;">Clear</button>
-        </div>
-      </div>
-
       <!-- RIGHT: Full document list -->
       <div>
         <div style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem;">All KB Documents</div>
         <div id="adminKBList" style="display:flex;flex-direction:column;gap:.4rem;max-height:520px;overflow-y:auto;padding-right:4px;"></div>
-      </div>
-
-    </div>
-  </div>
 </section>
+<div id="hmNoAdBadge" style="display:none;background:rgba(61,214,140,.06);border:1px solid rgba(61,214,140,.2);border-radius:8px;padding:.75rem;text-align:center;margin-bottom:.55rem;"><div style="font-size:1.2rem;">&#127881;</div><p style="font-size:.68rem;color:#3dd68c;margin:.25rem 0 0;line-height:1.4;">Ad-free<br>Pro/Enterprise</p></div>
+  <div id="hmAd1" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:195px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:1rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement<br>200×195</div>
+  <div id="hmAd2" style="background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.11);border-radius:6px;padding:.65rem .6rem;text-align:center;margin-bottom:.55rem;"><div style="font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Partner</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:var(--cyan);margin:.15rem 0 .2rem;">Your Brand</div><div style="font-size:.65rem;color:var(--text2);line-height:1.4;">Reach hydraulic engineers worldwide.</div></div>
+  <div id="hmAd3" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128296;</div>Banner Ad<br>200×110</div>
+  <div id="hmAd4" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;"><div style="font-size:.85rem;opacity:.22;margin-bottom:3px;">&#128161;</div>Link Ad</div>
+  <div id="hmAd5" style="margin-top:auto;padding-top:.55rem;border-top:1px solid var(--border);text-align:center;"><a href="pricing.html" style="font-family:'JetBrains Mono',monospace;font-size:.57rem;color:rgba(0,212,255,.4);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a></div>
+<div id="hmNoAdBadge" style="display:none;background:rgba(61,214,140,.06);border:1px solid rgba(61,214,140,.2);border-radius:8px;padding:.75rem;text-align:center;margin-bottom:.55rem;"><div style="font-size:1.2rem;">&#127881;</div><p style="font-size:.68rem;color:#3dd68c;margin:.25rem 0 0;line-height:1.4;">Ad-free<br>Pro/Enterprise</p></div>
+  <div id="hmAd1" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:195px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:1rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement<br>200×195</div>
+  <div id="hmAd2" style="background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.11);border-radius:6px;padding:.65rem .6rem;text-align:center;margin-bottom:.55rem;"><div style="font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Partner</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:var(--cyan);margin:.15rem 0 .2rem;">Your Brand</div><div style="font-size:.65rem;color:var(--text2);line-height:1.4;">Reach hydraulic engineers worldwide.</div></div>
+  <div id="hmAd3" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128296;</div>Banner Ad<br>200×110</div>
+  <div id="hmAd4" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;"><div style="font-size:.85rem;opacity:.22;margin-bottom:3px;">&#128161;</div>Link Ad</div>
+  <div id="hmAd5" style="margin-top:auto;padding-top:.55rem;border-top:1px solid var(--border);text-align:center;"><a href="pricing.html" style="font-family:'JetBrains Mono',monospace;font-size:.57rem;color:rgba(0,212,255,.4);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a></div>
 
-
-</div>
+</div><!-- end hm-main-content -->
 
 <div class="hm-right-sidebar" id="hmAdSidebar">
   <div id="hmAdTitle" style="font-family:'JetBrains Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.5rem;border-bottom:1px solid var(--border);margin-bottom:.55rem;">Sponsored</div>
@@ -377,20 +342,7 @@
   <div id="hmAd5" style="margin-top:auto;padding-top:.55rem;border-top:1px solid var(--border);text-align:center;"><a href="pricing.html" style="font-family:'JetBrains Mono',monospace;font-size:.57rem;color:rgba(0,212,255,.4);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a></div>
 </div>
 
-
-
-</div>
-
-<div class="hm-right-sidebar" id="hmAdSidebar">
-  <div id="hmAdTitle" style="font-family:'JetBrains Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.5rem;border-bottom:1px solid var(--border);margin-bottom:.55rem;">Sponsored</div>
-  <div id="hmNoAdBadge" style="display:none;background:rgba(61,214,140,.06);border:1px solid rgba(61,214,140,.2);border-radius:8px;padding:.75rem;text-align:center;margin-bottom:.55rem;"><div style="font-size:1.2rem;">&#127881;</div><p style="font-size:.68rem;color:#3dd68c;margin:.25rem 0 0;line-height:1.4;">Ad-free<br>Pro/Enterprise</p></div>
-  <div id="hmAd1" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:195px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:1rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement<br>200×195</div>
-  <div id="hmAd2" style="background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.11);border-radius:6px;padding:.65rem .6rem;text-align:center;margin-bottom:.55rem;"><div style="font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Partner</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:var(--cyan);margin:.15rem 0 .2rem;">Your Brand</div><div style="font-size:.65rem;color:var(--text2);line-height:1.4;">Reach hydraulic engineers worldwide.</div></div>
-  <div id="hmAd3" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128296;</div>Banner Ad<br>200×110</div>
-  <div id="hmAd4" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;"><div style="font-size:.85rem;opacity:.22;margin-bottom:3px;">&#128161;</div>Link Ad</div>
-  <div id="hmAd5" style="margin-top:auto;padding-top:.55rem;border-top:1px solid var(--border);text-align:center;"><a href="pricing.html" style="font-family:'JetBrains Mono',monospace;font-size:.57rem;color:rgba(0,212,255,.4);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a></div>
-</div>
-</div>
+</div><!-- end page-layout -->
 
 <footer class="footer">
   <div class="container">
