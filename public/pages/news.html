@@ -156,6 +156,7 @@
       <span class="s-pill on"  onclick="hf('src','all',this)">All Sources</span>
       <span class="s-pill"     onclick="hf('src','hp',this)">H&amp;P Magazine</span>
       <span class="s-pill"     onclick="hf('src','fpw',this)">Fluid Power World</span>
+      <span class="s-pill"     onclick="hf('src','fpj',this)">Fluid Power Journal</span>
       <span class="s-pill"     onclick="hf('src','ifpe',this)">IFPE / NFPA</span>
       <span class="s-pill"     onclick="hf('src','rexroth',this)">Bosch Rexroth</span>
       <span class="s-pill"     onclick="hf('src','parker',this)">Parker</span>
@@ -239,6 +240,18 @@ var NM_DATA = [
    t:'Thermal Management in Hydraulic Systems — Rising Power Densities Demand Better Cooling Solutions',
    p:'H&P examines how thermal management has become central to hydraulic system performance as higher power densities raise operating temperatures. The article covers heat generation calculation using Q_heat = P_input x (1-eta), oil cooler sizing methodology, thermostatically controlled bypass valve settings, and selection criteria between air-blast and water-cooled exchangers for offshore and hot-climate applications.',
    u:'https://www.hpmag.co.uk'}
+  ,{ft:0,src:'fpj',cat:'tech',ic:'📰',s:'Fluid Power Journal',d:'Mar 2026',
+   t:'Understanding Hydraulic Contamination Control — ISO Cleanliness Codes and Filtration Best Practices',
+   p:'Fluid Power Journal covers how contamination remains the leading cause of hydraulic system failure, responsible for over 70% of all faults. The article details ISO 4406 cleanliness code interpretation, target cleanliness levels for different component types, and correct filter sizing methodology. Beta ratio selection, bypass valve settings, and offline filtration loops for critical crane and HPU applications are also covered.',
+   u:'https://www.fluidpowerjournal.com'},
+  {ft:0,src:'fpj',cat:'tech',ic:'🔧',s:'Fluid Power Journal',d:'Feb 2026',
+   t:'Proportional Valve Control Systems — Amplifier Card Tuning and Signal Calibration for Mobile Cranes',
+   p:'Fluid Power Journal examines proportional directional control valve systems used in mobile and offshore crane applications. Topics include amplifier card parameter setting for Rexroth, Eaton, and Sauer Danfoss systems, 4-20mA command signal calibration, ramp time adjustment for smooth crane motion, and diagnosing common faults including deadband issues and hysteresis errors.',
+   u:'https://www.fluidpowerjournal.com'},
+  {ft:0,src:'fpj',cat:'market',ic:'📊',s:'Fluid Power Journal',d:'Jan 2026',
+   t:'Offshore Crane Hydraulic Systems — Trends in HPU Design, Load Sensing and Energy Recovery',
+   p:'Fluid Power Journal reports on offshore crane hydraulic system developments including variable displacement pump load-sensing circuits, pressure-compensated flow dividers for simultaneous motion control, and energy recovery systems reducing HPU power consumption by up to 25%. Case studies from North Sea crane operators highlight improvements in response time and reduced maintenance intervals through predictive condition monitoring.',
+   u:'https://www.fluidpowerjournal.com'}
 ];
 
 function hf(type, val, el) {
