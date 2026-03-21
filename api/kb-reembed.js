@@ -1,4 +1,7 @@
-// /api/kb-reembed.js — Re-embed existing chunks with NULL embedding
+// /api/kb-reembed.js — Re-embed existing chunks (synchronous — Vercel compatible)
+// NOTE: Vercel kills background tasks. This runs fully synchronous.
+// For 75 chunks it takes ~20 seconds — within Vercel's 60s limit.
+
 import { createClient } from '@supabase/supabase-js';
 
 function getSupabase() {
@@ -13,7 +16,9 @@ async function verifyUser(req) {
   const auth = req.headers.authorization || '';
   let email = auth.startsWith('Email ') ? auth.replace('Email ', '').trim() : req.body?.userEmail;
   if (!email) return null;
-  const { data } = await getSupabase().from('users').select('id, is_premium').eq('email', email.toLowerCase()).maybeSingle();
+  const { data } = await getSupabase()
+    .from('users').select('id, is_premium')
+    .eq('email', email.toLowerCase()).maybeSingle();
   return data?.is_premium ? data : null;
 }
 
@@ -26,34 +31,73 @@ export default async function handler(req, res) {
   if (!user) return res.status(401).json({ error: 'Premium account required' });
 
   const supabase = getSupabase();
-  const { data: chunks, error } = await supabase.from('kb_chunks').select('id, content').is('embedding', null);
+
+  // Fetch all chunks with no embedding
+  const { data: chunks, error } = await supabase
+    .from('kb_chunks').select('id, content')
+    .is('embedding', null);
+
   if (error) return res.status(500).json({ error: error.message });
   if (!chunks || chunks.length === 0) {
     return res.status(200).json({ success: true, message: 'All chunks already embedded.', count: 0 });
   }
 
-  res.status(200).json({ success: true, message: `Re-embedding ${chunks.length} chunks in background (~30 seconds).`, count: chunks.length });
+  // Run SYNCHRONOUSLY — Vercel serverless requires this
+  try {
+    const BATCH = 100;
+    let done = 0;
 
-  (async () => {
-    try {
-      const BATCH = 100;
-      for (let i = 0; i < chunks.length; i += BATCH) {
-        const batch = chunks.slice(i, i + BATCH);
-        const texts = batch.map(c => c.content.replace(/\n/g, ' '));
-        const embResp = await fetch('https://api.openai.com/v1/embeddings', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}` },
-          body: JSON.stringify({ model: 'text-embedding-3-small', input: texts, dimensions: 1536 })
-        });
-        if (!embResp.ok) continue;
-        const embData = await embResp.json();
-        const sorted = embData.data.sort((a, b) => a.index - b.index);
-        for (let j = 0; j < batch.length; j++) {
-          await supabase.from('kb_chunks').update({ embedding: `[${sorted[j].embedding.join(',')}]` }).eq('id', batch[j].id);
-        }
-        if (i + BATCH < chunks.length) await new Promise(r => setTimeout(r, 300));
+    for (let i = 0; i < chunks.length; i += BATCH) {
+      const batch = chunks.slice(i, i + BATCH);
+      const texts = batch.map(c => c.content.replace(/\n/g, ' '));
+
+      const embResp = await fetch('https://api.openai.com/v1/embeddings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+        },
+        body: JSON.stringify({ model: 'text-embedding-3-small', input: texts, dimensions: 1536 })
+      });
+
+      if (!embResp.ok) {
+        const e = await embResp.json();
+        return res.status(500).json({ error: 'OpenAI error: ' + (e.error?.message || embResp.status) });
       }
-      console.log('[kb-reembed] Complete');
-    } catch (err) { console.error('[kb-reembed]', err.message); }
-  })();
+
+      const embData = await embResp.json();
+      const sorted = embData.data.sort((a, b) => a.index - b.index);
+
+      // Update each chunk
+      for (let j = 0; j < batch.length; j++) {
+        const vectorStr = `[${sorted[j].embedding.join(',')}]`;
+        const { error: upErr } = await supabase
+          .from('kb_chunks')
+          .update({ embedding: vectorStr })
+          .eq('id', batch[j].id);
+        if (!upErr) done++;
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `Successfully embedded ${done} of ${chunks.length} chunks.`,
+      done,
+      total: chunks.length
+    });
+
+  } catch (err) {
+    console.error('[kb-reembed]', err.message);
+    return res.status(500).json({ error: err.message });
+  }
 }
+
+// Extend Vercel timeout to 60 seconds for this function
+export const config = {
+  api: {
+    bodyParser: { sizeLimit: '1mb' },
+    responseLimit: false,
+    externalResolver: true
+  },
+  maxDuration: 60
+};
