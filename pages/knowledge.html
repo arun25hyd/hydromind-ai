@@ -25,7 +25,7 @@
         <div class="hm-logo-sub">Hydraulic Intelligence</div>
       </div>
     </a>
-        <div class="navbar-menu">
+    <div class="navbar-menu">
       <a href="../index.html" class="navbar-link">Home</a>
       <a href="advisor.html" class="navbar-link">AI Advisor</a>
       <a href="system-design.html" class="navbar-link">&#9881; System Design</a>
@@ -67,9 +67,7 @@
 <div class="page-layout">
 
 <div class="hm-left-sidebar" id="hmLeftSidebar">
-    <div class="hm-left-inner">
-
-    <!-- Profile card (shown after login) -->
+  <div class="hm-left-inner">
     <div id="hmSidebarProfile" style="display:none;">
       <div class="hm-profile-card">
         <div class="hm-prof-av" id="hmProfAvatar">--</div>
@@ -78,8 +76,6 @@
         <span class="hm-prof-plan" id="hmProfPlan">Free</span>
       </div>
     </div>
-
-    <!-- Guest state: no login button - just quick links and ad -->
     <div id="hmSidebarNoAuth">
       <div style="margin-bottom:.75rem;">
         <div class="hm-sidebar-label">Quick Links</div>
@@ -88,7 +84,6 @@
         <div class="hm-hist-item" onclick="location.href='news.html'"><span class="hm-hist-icon">&#128240;</span><span class="hm-hist-text">Industry News</span></div>
         <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
       </div>
-      <!-- Ad slot in left sidebar -->
       <div style="font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.45rem;border-bottom:1px solid var(--border);margin-bottom:.5rem;">Sponsored</div>
       <div style="background:rgba(200,165,80,.03);border:1px dashed rgba(200,165,80,.12);border-radius:6px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem;">
         <div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement
@@ -97,14 +92,10 @@
         <a href="pricing.html" style="font-family:'Space Mono',monospace;font-size:.56rem;color:rgba(200,165,80,.38);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a>
       </div>
     </div>
-
-    <!-- Chat history (shown after login) -->
     <div id="hmSidebarHistory" style="display:none;margin-top:.75rem;">
       <div class="hm-sidebar-label">Chat History</div>
       <div id="hmHistoryList"></div>
     </div>
-
-    <!-- Quick links (shown after login) -->
     <div id="hmSidebarLinks" style="display:none;margin-top:.75rem;">
       <div class="hm-sidebar-label">Quick Links</div>
       <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
@@ -112,7 +103,6 @@
       <div class="hm-hist-item" onclick="location.href='news.html'"><span class="hm-hist-icon">&#128240;</span><span class="hm-hist-text">Industry News</span></div>
       <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
     </div>
-
   </div>
   <div class="hm-left-bottom"><button class="hm-logout-btn" id="hmLogoutBtn" onclick="doLogout()" style="display:none;">Sign Out</button></div>
 </div>
@@ -228,19 +218,12 @@
 <!-- ADMIN UPLOAD PANEL -->
 <section class="section section-dark" id="adminKBPanel" style="display:none;border-top:2px solid rgba(200,165,80,.25);padding-top:2.5rem;padding-bottom:2.5rem;">
   <div class="container">
-
-    <!-- Header -->
     <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem;">
       <div style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;background:rgba(200,165,80,.1);padding:4px 14px;border-radius:100px;border:1px solid rgba(200,165,80,.25);">⚙ Admin — Upload Document</div>
       <h3 style="margin:0;font-size:1.1rem;color:var(--text1);">Add to Knowledge Base</h3>
     </div>
-
     <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:2rem;align-items:start;">
-
-      <!-- LEFT: Upload Form -->
       <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.75rem;">
-        
-        <!-- File drop zone -->
         <div id="kbDropZone" onclick="document.getElementById('kbFile').click()"
           style="border:2px dashed rgba(200,165,80,.3);border-radius:10px;padding:2rem;text-align:center;cursor:pointer;margin-bottom:1.25rem;transition:.2s;background:rgba(200,165,80,.03);"
           onmouseover="this.style.borderColor='rgba(200,165,80,.6)';this.style.background='rgba(200,165,80,.06)'"
@@ -250,14 +233,10 @@
           <div style="font-size:.78rem;color:var(--text3);">or drag and drop here</div>
           <input type="file" id="kbFile" accept=".pdf,.doc,.docx,.txt,.png,.jpg" style="display:none;" onchange="onFileChosen(this)">
         </div>
-
-        <!-- File preview -->
-        <div id="kbFilePreview" style="display:none;background:rgba(200,165,80,.06);border:1px solid rgba(200,165,80,.2);border-radius:8px;padding:.6rem 1rem;margin-bottom:1rem;display:none;align-items:center;justify-content:space-between;">
+        <div id="kbFilePreview" style="display:none;background:rgba(200,165,80,.06);border:1px solid rgba(200,165,80,.2);border-radius:8px;padding:.6rem 1rem;margin-bottom:1rem;align-items:center;justify-content:space-between;">
           <span id="kbFileInfo" style="font-size:.82rem;color:var(--gold);font-family:'Space Mono',monospace;"></span>
           <button onclick="clearFile()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:1rem;padding:0 4px;">✕</button>
         </div>
-
-        <!-- Form fields -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:.85rem;">
           <div>
             <label style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:.3rem;">KB Number</label>
@@ -273,46 +252,60 @@
               <option value="hpu">HPU / Circuit Design</option>
               <option value="field">Offshore Field Case</option>
               <option value="electrical">Electrical / PLC</option>
-              <option value="fluid">Fluid & Filtration</option>
+              <option value="fluid">Fluid &amp; Filtration</option>
               <option value="technical">Technical</option>
             </select>
           </div>
         </div>
-
         <div style="margin-bottom:.85rem;">
           <label style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:.3rem;">Document Title *</label>
           <input id="kbTitle" type="text" placeholder="e.g. Rexroth A10VO Series — Variable Pump Manual" style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:.55rem .8rem;color:var(--text1);font-size:.85rem;box-sizing:border-box;">
         </div>
-
         <div style="margin-bottom:.85rem;">
           <label style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:.3rem;">Description *</label>
           <textarea id="kbDesc" rows="3" placeholder="Brief description of what this document covers..." style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:.55rem .8rem;color:var(--text1);font-size:.85rem;resize:vertical;box-sizing:border-box;font-family:inherit;"></textarea>
         </div>
-
         <div style="margin-bottom:1.25rem;">
           <label style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:.3rem;">External URL (optional)</label>
           <input id="kbUrl" type="url" placeholder="https://..." style="width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:.55rem .8rem;color:var(--text1);font-size:.85rem;box-sizing:border-box;">
         </div>
-
-        <!-- Message area -->
         <div id="kbAddMsg" style="display:none;margin-bottom:.75rem;"></div>
-
         <button onclick="addKBEntry()"
           style="width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#080c12;border:none;border-radius:9px;padding:.8rem;font-family:'Syne',sans-serif;font-weight:800;font-size:.95rem;cursor:pointer;transition:.2s;"
           onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
           📎 Upload to Knowledge Base
         </button>
       </div>
-
-      <!-- RIGHT: Current KB List -->
       <div>
         <div style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem;">Current Documents</div>
         <div id="adminKBList" style="display:flex;flex-direction:column;gap:.4rem;max-height:480px;overflow-y:auto;"></div>
       </div>
-
     </div>
   </div>
 </section>
+
+<!-- ✅ FOOTER INSIDE hm-main-content — fixes left margin alignment -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="hm-logo-wrap" style="margin-bottom:.85rem;">
+          <div class="hm-logo-icon"><div class="hm-logo-ring"></div><div class="hm-logo-h">H</div></div>
+          <div class="hm-logo-text"><div class="hm-logo-name">HYDROMIND<span>.AI</span></div><div class="hm-logo-sub">Hydraulic Intelligence</div></div>
+        </div>
+        <p>Expert AI advisor for hydraulic systems and offshore crane operations. Built by engineers, for engineers.</p>
+        <span class="badge-pill">&#128994; AI Online — KB v2.0</span>
+      </div>
+      <div class="footer-col"><h5>Platform</h5><div class="footer-links"><a href="advisor.html">AI Advisor</a><a href="system-design.html">System Design</a><a href="knowledge.html">Knowledge Base</a><a href="news.html">Industry News</a></div></div>
+      <div class="footer-col"><h5>Account</h5><div class="footer-links"><a href="pricing.html">Pricing &amp; Plans</a><a href="feedback.html">Feedback</a><a href="privacy.html">Privacy Policy</a><a href="disclaimer.html">Disclaimer</a></div></div>
+      <div class="footer-col"><h5>Contact</h5><div class="footer-links"><a href="mailto:support@hydromindai.com">support@hydromindai.com</a><a href="#">Abu Dhabi, UAE</a><a href="#">Response: 24hrs (Pro: 4hrs)</a></div></div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 HydroMind.AI — All rights reserved</span>
+      <div class="footer-bottom-links"><a href="privacy.html">Privacy</a><a href="disclaimer.html">Disclaimer</a></div>
+    </div>
+  </div>
+</footer>
 
 </div><!-- end hm-main-content -->
 
@@ -328,28 +321,6 @@
 
 </div><!-- end page-layout -->
 
-<footer class="footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <div class="hm-logo-wrap" style="margin-bottom:.85rem;">
-            <div class="hm-logo-icon"><div class="hm-logo-ring"></div><div class="hm-logo-h">H</div></div>
-            <div class="hm-logo-text"><div class="hm-logo-name">HYDROMIND<span>.AI</span></div><div class="hm-logo-sub">Hydraulic Intelligence</div></div>
-          </div>
-          <p>Expert AI advisor for hydraulic systems and offshore crane operations. Built by engineers, for engineers.</p>
-          <span class="badge-pill">&#128994; AI Online — KB v2.0</span>
-        </div>
-        <div class="footer-col"><h5>Platform</h5><div class="footer-links"><a href="advisor.html">AI Advisor</a><a href="system-design.html">System Design</a><a href="knowledge.html">Knowledge Base</a><a href="news.html">Industry News</a></div></div>
-        <div class="footer-col"><h5>Account</h5><div class="footer-links"><a href="pricing.html">Pricing & Plans</a><a href="feedback.html">Feedback</a><a href="privacy.html">Privacy Policy</a><a href="disclaimer.html">Disclaimer</a></div></div>
-        <div class="footer-col"><h5>Contact</h5><div class="footer-links"><a href="mailto:support@hydromindai.com">support@hydromindai.com</a><a href="#">Abu Dhabi, UAE</a><a href="#">Response: 24hrs (Pro: 4hrs)</a></div></div>
-      </div>
-      <div class="footer-bottom">
-        <span>© 2026 HydroMind.AI — All rights reserved</span>
-        <div class="footer-bottom-links"><a href="privacy.html">Privacy</a><a href="disclaimer.html">Disclaimer</a></div>
-      </div>
-    </div>
-  </footer>
-</div><!-- /hm-main-content -->
 <script src="../js/main.js"></script>
 <script src="../js/auth.js"></script>
 <script>
@@ -479,11 +450,9 @@ function renderAdminList(){
 function updateKBCount(){
   var el=document.getElementById('kbTotalCount'); if(el) el.textContent=KB_STATIC.length+getKBEntries().length;
 }
-// Run immediately when script loads
 renderDynamicKB();
 updateKBCount();
 checkAdmin();
-// Also on DOMContentLoaded and hm:login
 document.addEventListener('DOMContentLoaded',function(){
   renderDynamicKB(); updateKBCount(); checkAdmin();
   setTimeout(checkAdmin,500);
