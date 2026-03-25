@@ -68,7 +68,7 @@
     <div class="hm-auth-tabs"><button class="hm-auth-tab active" id="hmTab_login" onclick="switchAuthTab('login')">Login</button><button class="hm-auth-tab" id="hmTab_register" onclick="switchAuthTab('register')">Register</button><button class="hm-auth-close" onclick="closeAuthModal()">&#215;</button></div>
     <div class="hm-auth-error" id="hmAuthError"></div>
     <div class="hm-auth-panel" id="hmPanel_login"><div class="hm-auth-title">Welcome Back</div><div class="hm-auth-sub">Sign in to HydroMind.AI</div><div class="hm-auth-field"><label>Email</label><input type="email" id="hmLoginEmail" class="hm-auth-input" placeholder="your@email.com"></div><div class="hm-auth-field"><label>Password</label><input type="password" id="hmLoginPass" class="hm-auth-input" onkeydown="if(event.key==='Enter')doLogin()"></div><div class="hm-auth-forgot"><button class="hm-auth-link" onclick="switchAuthTab('forgot')">Forgot password?</button></div><button class="hm-auth-btn" onclick="doLogin()">Sign In</button><div class="hm-auth-footer">No account? <button class="hm-auth-link" onclick="switchAuthTab('register')">Register free</button></div></div>
-    <div class="hm-auth-panel" id="hmPanel_register" style="display:none;"><div class="hm-auth-title">Create Account</div><div class="hm-auth-row"><div class="hm-auth-field"><label>First Name *</label><input type="text" id="hmRegFirst" class="hm-auth-input"></div><div class="hm-auth-field"><label>Last Name</label><input type="text" id="hmRegLast" class="hm-auth-input"></div></div><div class="hm-auth-field"><label>Email *</label><input type="email" id="hmRegEmail" class="hm-auth-input"></div><div class="hm-auth-field"><label>Password *</label><input type="password" id="hmRegPass" class="hm-auth-input" onkeydown="if(event.key==='Enter')doRegister()"></div><div class="hm-auth-field"><label>Select Plan</label><select id="hmRegPlan" class="hm-auth-input"><option value="Basic">Basic — $29/month</option><option value="Pro" selected>Pro — $79/month</option><option value="Enterprise">Enterprise — $199/month</option></select></div><button class="hm-auth-btn" onclick="doRegister()">Create Account</button><div class="hm-auth-footer">Have account? <button class="hm-auth-link" onclick="switchAuthTab('login')">Sign in</button></div></div>
+    <div class="hm-auth-panel" id="hmPanel_register" style="display:none;"><div class="hm-auth-title">Create Account</div><div class="hm-auth-row"><div class="hm-auth-field"><label>First Name *</label><input type="text" id="hmRegFirst" class="hm-auth-input"></div><div class="hm-auth-field"><label>Last Name</label><input type="text" id="hmRegLast" class="hm-auth-input"></div></div><div class="hm-auth-field"><label>Email *</label><input type="email" id="hmRegEmail" class="hm-auth-input"></div><div class="hm-auth-field"><label>Password *</label><input type="password" id="hmRegPass" class="hm-auth-input" onkeydown="if(event.key==='Enter')doRegister()"></div><div class="hm-auth-field"><label>Select Plan</label><select id="hmRegPlan" class="hm-auth-input"><option value="Basic">Basic — $29/month</option><option value="Pro" selected>Pro — $69/month</option><option value="Enterprise">Enterprise — $189/month</option></select></div><button class="hm-auth-btn" onclick="doRegister()">Create Account</button><div class="hm-auth-footer">Have account? <button class="hm-auth-link" onclick="switchAuthTab('login')">Sign in</button></div></div>
     <div class="hm-auth-panel" id="hmPanel_forgot" style="display:none;"><div class="hm-auth-title">Reset Password</div><div class="hm-auth-field"><label>Email</label><input type="email" id="hmForgotEmail" class="hm-auth-input"></div><div class="hm-auth-ok" id="hmForgotOk"></div><button class="hm-auth-btn cyan" onclick="doForgot()">Send Reset Link</button><div class="hm-auth-footer"><button class="hm-auth-link" onclick="switchAuthTab('login')">&#8592; Back</button></div></div>
   </div>
 </div>
@@ -153,7 +153,7 @@
           <!-- PRO (FEATURED) -->
           <div class="pricing-card featured reveal">
             <div class="plan-name">Pro</div>
-            <div class="plan-price">$79<span>/month</span></div>
+            <div class="plan-price">$69<span>/month</span></div>
             <div class="plan-desc">For working hydraulic technicians and crane supervisors requiring full AI advisor capability.</div>
             <ul class="plan-features">
               <li>Unlimited AI Advisor queries</li>
@@ -165,13 +165,13 @@
               <li>Priority email support (4hr response)</li>
               <li>Ad-free experience</li>
             </ul>
-            <button class="plan-btn featured-btn" onclick="selectPlan('Pro')">Get Pro — $79/mo ⭐</button>
+            <button class="plan-btn featured-btn" onclick="selectPlan('Pro')">Get Pro — $69/mo ⭐</button>
           </div>
 
           <!-- ENTERPRISE -->
           <div class="pricing-card reveal">
             <div class="plan-name">Enterprise</div>
-            <div class="plan-price">$199<span>/month</span></div>
+            <div class="plan-price">$189<span>/month</span></div>
             <div class="plan-desc">For maintenance teams, crane companies, and offshore operations requiring full platform access.</div>
             <ul class="plan-features">
               <li>Everything in Pro</li>
@@ -183,7 +183,7 @@
               <li>SLA — 2hr response time</li>
               <li>Onboarding &amp; training session</li>
             </ul>
-            <button class="plan-btn" onclick="selectPlan('Enterprise')">Get Enterprise — $199/mo</button>
+            <button class="plan-btn" onclick="selectPlan('Enterprise')">Get Enterprise — $189/mo</button>
           </div>
 
         </div>
