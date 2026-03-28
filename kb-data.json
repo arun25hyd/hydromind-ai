@@ -1,0 +1,80 @@
+{
+  "version": "v2.4",
+  "lastUpdated": "Mar 2026",
+  "maintainer": "Arun Tiwari — Crane Supervisor / Hydraulic Systems Specialist",
+  "oemBrands": ["Bosch Rexroth", "Danfoss Power Solutions", "Favelle Favco", "SeaTrax Inc.", "National Oilwell Varco", "Parker Hannifin"],
+  "entries": [
+    {
+      "num": "KB01",
+      "title": "Rexroth A4VG Series 40 — Variable Displacement Axial Piston Pump",
+      "desc": "Closed-loop pump reference: charge pressure specs, servo control, variable displacement diagnostics, fault isolation for A4VG028–180 variants.",
+      "cat": "pump",
+      "brand": "Bosch Rexroth",
+      "icon": "⚙️",
+      "url": ""
+    },
+    {
+      "num": "KB02-03",
+      "title": "Rexroth A2FO / A7VO — Fixed & Variable Displacement Open Circuit Pumps",
+      "desc": "Open-circuit pump selection guide, pressure/flow sizing, shaft options, port identifications, commissioning procedure and case drain limits.",
+      "cat": "pump",
+      "brand": "Bosch Rexroth",
+      "icon": "⚙️",
+      "url": ""
+    },
+    {
+      "num": "KB04",
+      "title": "Danfoss Series 90 — Closed-Loop Pump Full Reference",
+      "desc": "S90 pump/motor integration: charge circuit, servo pressure, EDC/HDC control, brake valve settings and fault diagnostic flow charts.",
+      "cat": "pump",
+      "brand": "Danfoss Power Solutions",
+      "icon": "⚙️",
+      "url": ""
+    },
+    {
+      "num": "KB30",
+      "title": "Favelle Favco Field Case — Rig Al-Hail ADNOC Drilling Jan 2026",
+      "desc": "Offshore field case: main hoist HPU low charge pressure fault, root cause analysis, corrective actions and preventive maintenance recommendations.",
+      "cat": "field",
+      "brand": "Favelle Favco",
+      "icon": "🛢️",
+      "url": ""
+    },
+    {
+      "num": "KB34",
+      "title": "Rexroth A10VO / A10VSO — Variable Displacement Open Circuit Pump",
+      "desc": "DR/DRG/EP control types, case drain limits (1 bar abs max), EP signal 350–1000 mA, filtration requirements, fault table and cross-reference to equivalent pumps.",
+      "cat": "pump",
+      "brand": "Bosch Rexroth",
+      "icon": "⚙️",
+      "url": ""
+    },
+    {
+      "num": "KB35",
+      "title": "Danfoss Series 90 — Closed-Circuit Axial Piston Pump/Motor (75cc Frame)",
+      "desc": "EDC neutral 12 mA reference, charge pressure thresholds (min 17 bar), case drain rebuild limits per frame size, loop flushing valve fault guide.",
+      "cat": "pump",
+      "brand": "Danfoss Power Solutions",
+      "icon": "⚙️",
+      "url": ""
+    },
+    {
+      "num": "KB36",
+      "title": "SeaTrax Marine Hydraulic Crane — Model 4228",
+      "desc": "Open-circuit LS system, pilot pressure 400–600 psi critical range, CBV luffing circuit settings, LMI fault guide and maintenance intervals.",
+      "cat": "crane",
+      "brand": "SeaTrax Inc.",
+      "icon": "🏗️",
+      "url": ""
+    },
+    {
+      "num": "KB37",
+      "title": "NOV AHC Knuckle Boom Crane — T6047-Z-MA-001",
+      "desc": "Active heave compensation system, servo valve response requirements, accumulator N₂ pre-charge data, ISO 16/14/11 cleanliness mandate, AHC heat load guide.",
+      "cat": "crane",
+      "brand": "National Oilwell Varco",
+      "icon": "🏗️",
+      "url": ""
+    }
+  ]
+}
