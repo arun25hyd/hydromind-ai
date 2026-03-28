@@ -174,7 +174,7 @@
 
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;">
       <div style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text3);" id="nStat">Loading...</div>
-      <button onclick="nmRender()" class="btn-outline" style="padding:6px 16px;font-size:.74rem;font-family:'Space Mono',monospace;">&#8635; Refresh</button>
+      <button onclick="doRefresh(this)" class="btn-outline" style="padding:6px 16px;font-size:.74rem;font-family:'Space Mono',monospace;">&#8635; Refresh</button>
     </div>
 
     <div id="nGrid" class="news-grid"></div>
@@ -297,8 +297,23 @@ function nmRender() {
   }
   grid.innerHTML = html;
 }
-
-// Fire immediately - no template literals, no DOMContentLoaded dependency
+function doRefresh(btn) {
+  btn.textContent = '⏳ Refreshing...';
+  btn.disabled = true;
+  setTimeout(function() {
+    nmRender();
+    btn.innerHTML = '&#8635; Refreshed ✓';
+    btn.style.color = 'var(--green)';
+    btn.style.borderColor = 'var(--green)';
+    setTimeout(function() {
+      btn.innerHTML = '&#8635; Refresh';
+      btn.style.color = '';
+      btn.style.borderColor = '';
+      btn.disabled = false;
+    }, 2000);
+  }, 600);
+}
+// Fire immediately
 nmRender();
 </script>
 </body>
