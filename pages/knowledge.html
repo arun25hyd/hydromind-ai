@@ -1,69 +1,178 @@
-
-
-H
-HYDROMIND.AI
-Hydraulic Intelligence
-Home AI Advisor ⚙ System Design Knowledge Base News ⚡ Electrical Calculator Pricing Feedback
-Login Register
-Home AI Advisor ⚙ System Design Knowledge Base News ⚡ Electrical Calculator Pricing Feedback
-Login
-Register
-Quick Links
-🤖AI Advisor
-📚Knowledge Base
-📰Industry News
-💳Upgrade Plan
-
-Knowledge Base
-Technical Document Library
-OEM manuals, field cases, hydraulic system documentation and troubleshooting guides — indexed and searchable via AI Advisor.
-—
-Documents
-—
-OEM Brands
-—
-KB Version
-AI
-Powered Search
-ALL
-PUMPS
-MOTORS
-VALVES
-CRANES
-FIELD CASES
-FLUID
-HPU
-Built-in Documents
-⏳ Loading knowledge base...
-AI-Powered Search
-Ask the AI Advisor
-Access the full Knowledge Base through the AI Advisor — ask any question and the AI searches KB automatically.
-Open AI Advisor
-
-H
-HYDROMIND.AI
-Hydraulic Intelligence
-Expert AI advisor for hydraulic systems and offshore crane operations. Built by engineers, for engineers.
-🟢 AI Online — KB v2.4
-Platform
-AI AdvisorSystem DesignKnowledge BaseIndustry News
-Account
-Pricing & PlansFeedbackPrivacy PolicyDisclaimer
-Contact
-support@hydromindai.comAbu Dhabi, UAEResponse: 24hrs (Pro: 4hrs)
-© 2026 HydroMind.AI — All rights reserved
-PrivacyDisclaimer
-SPONSORED
-📢
-ADVERTISEMENT
-200×195
-PARTNER
-Your Brand
-Reach hydraulic engineers worldwide.
-🔨
-BANNER AD
-200×110
-💡
-LINK AD
-ADVERTISE HERE →
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Knowledge Base — HydroMind.AI</title>
+<link rel="icon" href="../favicon.ico">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Outfit:wght@300;400;500;600&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;500&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+.kb-filter-btn{background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.2);border-radius:100px;color:var(--text2);font-family:'Space Mono',monospace;font-size:.65rem;padding:5px 14px;cursor:pointer;transition:.2s;text-transform:uppercase;letter-spacing:.05em}
+.kb-filter-btn:hover{background:rgba(0,212,255,.12);color:var(--cyan)}
+.kb-filter-active{background:rgba(0,212,255,.15)!important;border-color:var(--cyan)!important;color:var(--cyan)!important}
+.kb-card-hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="circuit-bg"><svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><g stroke="rgba(0,212,255,0.04)" stroke-width="1" fill="none"><line x1="0" y1="200" x2="1400" y2="200"/><line x1="0" y1="400" x2="1400" y2="400"/><line x1="0" y1="600" x2="1400" y2="600"/><line x1="200" y1="0" x2="200" y2="900"/><line x1="500" y1="0" x2="500" y2="900"/><line x1="800" y1="0" x2="800" y2="900"/><line x1="1100" y1="0" x2="1100" y2="900"/></g></svg></div>
+<nav class="navbar" id="navbar">
+  <div class="navbar-inner">
+    <a href="../index.html" class="hm-logo-wrap">
+      <div class="hm-logo-icon"><div class="hm-logo-ring"></div><div class="hm-logo-h">H</div></div>
+      <div class="hm-logo-text"><div class="hm-logo-name">HYDROMIND<span>.AI</span></div><div class="hm-logo-sub">Hydraulic Intelligence</div></div>
+    </a>
+    <div class="navbar-menu">
+      <a href="../index.html" class="navbar-link">Home</a>
+      <a href="advisor.html" class="navbar-link">AI Advisor</a>
+      <a href="system-design.html" class="navbar-link">&#9881; System Design</a>
+      <a href="knowledge.html" class="navbar-link active">Knowledge Base</a>
+      <a href="news.html" class="navbar-link">News</a>
+      <a href="../index.html#electrical" class="navbar-link" style="color:#f5c842;">&#9889; Electrical</a>
+      <a href="../index.html#calculator" class="navbar-link">Calculator</a>
+      <a href="pricing.html" class="navbar-link">Pricing</a>
+      <a href="feedback.html" class="navbar-link">Feedback</a>
+    </div>
+    <div class="navbar-cta" id="hmNavCta">
+      <button onclick="openAuthModal('login')" class="btn-outline" style="padding:8px 18px;font-size:.82rem;" id="hmNavLogin">Login</button>
+      <button onclick="openAuthModal('register')" class="btn-primary" style="padding:8px 18px;font-size:.82rem;" id="hmNavRegister">Register</button>
+      <div id="hmNavUser" style="display:none;align-items:center;gap:.5rem;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);border-radius:8px;padding:5px 10px;cursor:pointer;" onclick="doLogout()">
+        <div id="hmNavAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#0050aa);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;color:#fff;"></div>
+        <span id="hmNavName" style="font-size:.82rem;color:#e8f4ff;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+        <span id="hmNavPlan" style="font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:2px 8px;border-radius:100px;background:rgba(0,212,255,.1);color:var(--cyan);"></span>
+      </div>
+    </div>
+    <button class="navbar-toggle" id="navToggle"><span></span><span></span><span></span></button>
+  </div>
+</nav><div class="page-layout">
+<div class="hm-left-sidebar" id="hmLeftSidebar">
+  <div class="hm-left-inner">
+    <div id="hmSidebarProfile" style="display:none;"><div class="hm-profile-card"><div class="hm-prof-av" id="hmProfAvatar">--</div><div class="hm-prof-name" id="hmProfName"></div><div class="hm-prof-email" id="hmProfEmail"></div><span class="hm-prof-plan" id="hmProfPlan">Free</span></div></div>
+    <div id="hmSidebarNoAuth">
+      <div style="margin-bottom:.75rem;"><div class="hm-sidebar-label">Quick Links</div>
+        <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
+        <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
+        <div class="hm-hist-item" onclick="location.href='news.html'"><span class="hm-hist-icon">&#128240;</span><span class="hm-hist-text">Industry News</span></div>
+        <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
+      </div>
+    </div>
+    <div id="hmSidebarHistory" style="display:none;margin-top:.75rem;"><div class="hm-sidebar-label">Chat History</div><div id="hmHistoryList"></div></div>
+    <div id="hmSidebarLinks" style="display:none;margin-top:.75rem;"><div class="hm-sidebar-label">Quick Links</div>
+      <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
+      <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
+      <div class="hm-hist-item" onclick="location.href='news.html'"><span class="hm-hist-icon">&#128240;</span><span class="hm-hist-text">Industry News</span></div>
+      <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
+    </div>
+  </div>
+  <div class="hm-left-bottom"><button class="hm-logout-btn" id="hmLogoutBtn" onclick="doLogout()" style="display:none;">Sign Out</button></div>
+</div>
+<div class="hm-main-content">
+<section class="section" style="padding:5rem 0 3rem;background:var(--bg-dark);">
+  <div class="container"><div class="eyebrow">Knowledge Base</div><h1 class="section-title">Technical Document Library</h1><p class="section-subtitle">OEM manuals, field cases, hydraulic system documentation and troubleshooting guides — indexed and searchable via AI Advisor.</p></div>
+</section>
+<section class="section section-dark" style="padding:2rem 0;">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;">
+      <div class="card" style="text-align:center;padding:1.25rem;"><div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;color:var(--gold);">8</div><div style="font-size:.8rem;color:var(--text3);">Documents</div></div>
+      <div class="card" style="text-align:center;padding:1.25rem;"><div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;color:var(--cyan);">6</div><div style="font-size:.8rem;color:var(--text3);">OEM Brands</div></div>
+      <div class="card" style="text-align:center;padding:1.25rem;"><div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;color:var(--gold);">v2.4</div><div style="font-size:.8rem;color:var(--text3);">KB Version</div></div>
+      <div class="card" style="text-align:center;padding:1.25rem;"><div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;color:var(--cyan);">AI</div><div style="font-size:.8rem;color:var(--text3);">Powered Search</div></div>
+    </div>
+  </div>
+</section>
+<section class="section section-dark" style="padding:1rem 0 0;">
+  <div class="container">
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+      <button onclick="filterKB('all')" id="fAll" class="kb-filter-btn kb-filter-active">All</button>
+      <button onclick="filterKB('pump')" id="fPump" class="kb-filter-btn">Pumps</button>
+      <button onclick="filterKB('motor')" id="fMotor" class="kb-filter-btn">Motors</button>
+      <button onclick="filterKB('valve')" id="fValve" class="kb-filter-btn">Valves</button>
+      <button onclick="filterKB('crane')" id="fCrane" class="kb-filter-btn">Cranes</button>
+      <button onclick="filterKB('field')" id="fField" class="kb-filter-btn">Field Cases</button>
+      <button onclick="filterKB('fluid')" id="fFluid" class="kb-filter-btn">Fluid</button>
+      <button onclick="filterKB('hpu')" id="fHpu" class="kb-filter-btn">HPU</button>
+    </div>
+  </div>
+</section>
+<section class="section section-dark" style="padding-top:.5rem;">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;"><div class="eyebrow">Built-in Documents</div></div>
+    <div id="kbGrid" style="display:flex;flex-direction:column;gap:1rem;"></div>
+  </div>
+</section>
+<section class="section section-dark" style="padding:2rem 0 3rem;">
+  <div class="container">
+    <div class="card" style="text-align:center;padding:2.5rem;">
+      <div class="eyebrow" style="margin-bottom:.75rem;">AI-Powered Search</div>
+      <h3 style="margin-bottom:.75rem;">Ask the AI Advisor</h3>
+      <p style="font-size:.9rem;color:var(--text2);margin-bottom:1rem;">Access the full Knowledge Base through the AI Advisor — ask any question and the AI searches KB automatically.</p>
+      <a href="advisor.html" class="btn-primary">Open AI Advisor</a>
+    </div>
+  </div>
+</section><footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="hm-logo-wrap" style="margin-bottom:.85rem;"><div class="hm-logo-icon"><div class="hm-logo-ring"></div><div class="hm-logo-h">H</div></div><div class="hm-logo-text"><div class="hm-logo-name">HYDROMIND<span>.AI</span></div><div class="hm-logo-sub">Hydraulic Intelligence</div></div></div>
+        <p>Expert AI advisor for hydraulic systems and offshore crane operations. Built by engineers, for engineers.</p>
+        <span class="badge-pill">&#128994; AI Online &#8212; KB v2.4</span>
+      </div>
+      <div class="footer-col"><h5>Platform</h5><div class="footer-links"><a href="advisor.html">AI Advisor</a><a href="system-design.html">System Design</a><a href="knowledge.html">Knowledge Base</a><a href="news.html">Industry News</a></div></div>
+      <div class="footer-col"><h5>Account</h5><div class="footer-links"><a href="pricing.html">Pricing &amp; Plans</a><a href="feedback.html">Feedback</a><a href="privacy.html">Privacy Policy</a><a href="disclaimer.html">Disclaimer</a></div></div>
+      <div class="footer-col"><h5>Contact</h5><div class="footer-links"><a href="mailto:support@hydromindai.com">support@hydromindai.com</a><a href="#">Abu Dhabi, UAE</a><a href="#">Response: 24hrs (Pro: 4hrs)</a></div></div>
+    </div>
+    <div class="footer-bottom"><span>&#169; 2026 HydroMind.AI &#8212; All rights reserved</span><div class="footer-bottom-links"><a href="privacy.html">Privacy</a><a href="disclaimer.html">Disclaimer</a></div></div>
+  </div>
+</footer>
+</div>
+<div class="hm-right-sidebar" id="hmAdSidebar">
+  <div style="font-family:'JetBrains Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.5rem;border-bottom:1px solid var(--border);margin-bottom:.55rem;">Sponsored</div>
+  <div style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:195px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:1rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement</div>
+  <div style="background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.11);border-radius:6px;padding:.65rem .6rem;text-align:center;margin-bottom:.55rem;"><div style="font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Partner</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:var(--cyan);margin:.15rem 0 .2rem;">Your Brand</div><div style="font-size:.65rem;color:var(--text2);line-height:1.4;">Reach hydraulic engineers worldwide.</div></div>
+  <div style="margin-top:auto;padding-top:.55rem;border-top:1px solid var(--border);text-align:center;"><a href="pricing.html" style="font-family:'JetBrains Mono',monospace;font-size:.57rem;color:rgba(0,212,255,.4);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a></div>
+</div>
+</div>
+<script src="../js/main.js"></script>
+<script src="../js/auth.js"></script>
+<script>
+var KB_ENTRIES=[
+{num:"KB01",title:"Rexroth A4VG Series 40 — Variable Displacement Axial Piston Pump",desc:"Closed-loop pump reference: charge pressure specs, servo control, variable displacement diagnostics, fault isolation for A4VG028-180 variants.",cat:"pump",brand:"Bosch Rexroth",icon:"&#9881;"},
+{num:"KB02-03",title:"Rexroth A2FO / A7VO — Fixed and Variable Displacement Open Circuit Pumps",desc:"Open-circuit pump selection guide, pressure/flow sizing, shaft options, port identifications, commissioning procedure and case drain limits.",cat:"pump",brand:"Bosch Rexroth",icon:"&#9881;"},
+{num:"KB04",title:"Danfoss Series 90 — Closed-Loop Pump Full Reference",desc:"S90 pump/motor integration: charge circuit, servo pressure, EDC/HDC control, brake valve settings and fault diagnostic flow charts.",cat:"pump",brand:"Danfoss Power Solutions",icon:"&#9881;"},
+{num:"KB30",title:"Favelle Favco Field Case — Rig Al-Hail ADNOC Drilling Jan 2026",desc:"Offshore field case: hoist pump neutral pressure fault, brake band wear, motor shaft seal failure — root cause analysis and corrective actions.",cat:"field",brand:"Favelle Favco",icon:"&#128738;"},
+{num:"KB34",title:"Rexroth A10VO / A10VSO — Variable Displacement Open Circuit Pump",desc:"DR/DRG/EP control types, case drain limits 1 bar abs max, EP signal 350-1000 mA, filtration requirements, fault table and cross-reference.",cat:"pump",brand:"Bosch Rexroth",icon:"&#9881;"},
+{num:"KB35",title:"Danfoss Series 90 — Closed-Circuit Axial Piston Pump Motor 75cc Frame",desc:"EDC neutral 12 mA reference, charge pressure thresholds min 17 bar, case drain rebuild limits per frame size, loop flushing valve fault guide.",cat:"pump",brand:"Danfoss Power Solutions",icon:"&#9881;"},
+{num:"KB36",title:"SeaTrax Marine Hydraulic Crane — Model 4228",desc:"Open-circuit LS system, pilot pressure 400-600 psi critical range, CBV luffing circuit settings, LMI fault guide and maintenance intervals.",cat:"crane",brand:"SeaTrax Inc.",icon:"&#127959;"},
+{num:"KB37",title:"NOV AHC Knuckle Boom Crane — T6047-Z-MA-001",desc:"Active heave compensation system, servo valve response requirements, accumulator N2 pre-charge data, ISO 16/14/11 cleanliness mandate.",cat:"crane",brand:"National Oilwell Varco",icon:"&#127959;"}
+];
+var CAT_LABELS={pump:"Pump Documentation",motor:"Motor Documentation",valve:"Valve / DCV",crane:"Crane Systems",hpu:"HPU / Circuit Design",field:"Offshore Field Case",electrical:"Electrical / PLC",fluid:"Fluid and Filtration",technical:"Technical"};
+function renderKB(){
+  var html="";
+  KB_ENTRIES.forEach(function(e){
+    html+='<div class="card kb-card" data-cat="'+e.cat+'" style="padding:1.25rem 1.5rem;">';
+    html+='<div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;">';
+    html+='<span style="font-size:1.1rem;">'+e.icon+'</span>';
+    html+='<div style="font-family:Syne,sans-serif;font-weight:700;font-size:1rem;color:var(--text1);">'+e.title+'</div>';
+    html+='<span style="font-family:monospace;font-size:.62rem;color:var(--gold);padding:2px 8px;border:1px solid rgba(200,165,80,.2);border-radius:100px;white-space:nowrap;margin-left:auto;">'+e.num+'</span>';
+    html+='</div>';
+    html+='<p style="font-size:.88rem;color:var(--text2);margin-bottom:.5rem;">'+e.desc+'</p>';
+    html+='<div style="font-family:monospace;font-size:.68rem;color:var(--text3);">// '+(CAT_LABELS[e.cat]||e.cat)+' · '+e.brand+'</div>';
+    html+='</div>';
+  });
+  document.getElementById("kbGrid").innerHTML=html;
+}
+function filterKB(cat){
+  document.querySelectorAll(".kb-filter-btn").forEach(function(b){b.classList.remove("kb-filter-active");});
+  var map={all:"fAll",pump:"fPump",motor:"fMotor",valve:"fValve",crane:"fCrane",field:"fField",fluid:"fFluid",hpu:"fHpu"};
+  var btn=document.getElementById(map[cat]);
+  if(btn) btn.classList.add("kb-filter-active");
+  document.querySelectorAll(".kb-card").forEach(function(c){
+    c.classList.toggle("kb-card-hidden",cat!=="all"&&c.getAttribute("data-cat")!==cat);
+  });
+}
+renderKB();
+document.addEventListener("DOMContentLoaded",function(){renderKB();});
+</script>
+</body>
+</html>
