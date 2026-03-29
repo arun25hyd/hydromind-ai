@@ -56,6 +56,16 @@
 .schematic-tap{padding:4px;font-size:.58rem;color:rgba(110,168,200,.5);text-align:center;}
 /* KB badge in msg-tag */
 .kb-badge{font-size:.58rem;color:#c8a550;margin-left:6px;opacity:.75;}
+
+/* ── Schematic Page Grid (visual mode) ───────────── */
+.schematic-grid{margin-top:12px;border:1px solid rgba(0,180,255,.25);border-radius:10px;overflow:hidden;background:rgba(0,18,40,.4);}
+.schematic-grid-header{padding:8px 14px;font-size:.68rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#00b4ff;background:rgba(0,180,255,.07);border-bottom:1px solid rgba(0,180,255,.15);}
+.schematic-grid-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;padding:12px;}
+.schematic-page-card{border:1px solid rgba(0,180,255,.18);border-radius:8px;overflow:hidden;background:rgba(8,18,32,.8);text-decoration:none;display:block;transition:border-color .2s,transform .15s;}
+.schematic-page-card:hover{border-color:rgba(0,180,255,.55);transform:translateY(-2px);}
+.schematic-page-num{padding:5px 8px;font-family:"Space Mono",monospace;font-size:.6rem;color:#00b4ff;background:rgba(0,180,255,.08);border-bottom:1px solid rgba(0,180,255,.1);}
+.schematic-page-img{width:100%;height:150px;object-fit:contain;background:#fff;display:block;}
+.schematic-page-doc{padding:5px 8px;font-size:.6rem;color:rgba(110,168,200,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 </style>
 </head>
 <body>
@@ -347,19 +357,52 @@ function appendUser(text){
   div.innerHTML=`<div class="msg-av usr">${initials}</div><div><div class="msg-tag">You</div><div class="msg-bubble">${esc(text)}</div></div>`;
   msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
 }
-function appendAI(text,source,schematics=[],kbUsed=false){
-  const msgs=document.getElementById('advMessages');
-  const div=document.createElement('div');div.className='msg-row';
-  const fmt=text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
-  const src=source?`<div style="font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text3);margin-top:4px;">Source: <span style="color:rgba(0,212,255,.5);">${source}</span></div>`:'';
-  let schHtml = '';
-  if(schematics && schematics.length > 0){
-    schHtml = '<div class="schematic-strip"><div class="schematic-strip-header">🗂 ' + schematics.length + ' Schematic' + (schematics.length>1?'s':'') + ' from KB</div><div class="schematic-scroll">' +
-      schematics.slice(0,6).map((s,i) => `<a href="${s.url}" target="_blank" class="schematic-card"><div class="schematic-card-label">#${i+1} ${(s.doc||'').substring(0,35)}</div><img src="${s.url}" alt="schematic" class="schematic-img" loading="lazy" onerror="this.closest('.schematic-card').style.display='none'"/><div class="schematic-tap">Click to view full size</div></a>`).join('') +
-    '</div></div>';
+function buildSchematicHtml(schematics, mode) {
+  if (!schematics || schematics.length === 0) return '';
+  if (mode === 'visual') {
+    // Full page grid — schematic IS the answer
+    let cards = schematics.map((s,i) =>
+      '<a href="' + s.url + '" target="_blank" class="schematic-page-card">' +
+      '<div class="schematic-page-num">Page ' + (i+1) + '</div>' +
+      '<img src="' + s.url + '" alt="p' + (i+1) + '" class="schematic-page-img" loading="lazy" onerror="this.closest('.schematic-page-card').style.display='none'"/>' +
+      '<div class="schematic-page-doc">' + (s.doc||'').substring(0,40) + '</div>' +
+      '</a>'
+    ).join('');
+    return '<div class="schematic-grid"><div class="schematic-grid-header">📐 ' +
+      schematics.length + ' Page' + (schematics.length>1?'s':'') + ' — click any to open full size' +
+      '</div><div class="schematic-grid-body">' + cards + '</div></div>';
+  } else {
+    // Horizontal strip — supporting reference only
+    let cards = schematics.map((s,i) =>
+      '<a href="' + s.url + '" target="_blank" class="schematic-card">' +
+      '<div class="schematic-card-label">#' + (i+1) + ' ' + (s.doc||'').substring(0,35) + '</div>' +
+      '<img src="' + s.url + '" alt="schematic" class="schematic-img" loading="lazy" onerror="this.closest('.schematic-card').style.display='none'"/>' +
+      '<div class="schematic-tap">Click to open full size ↗</div>' +
+      '</a>'
+    ).join('');
+    return '<div class="schematic-strip"><div class="schematic-strip-header">🗂 ' +
+      schematics.length + ' Reference Schematic' + (schematics.length>1?'s':'') +
+      '</div><div class="schematic-scroll">' + cards + '</div></div>';
   }
-  div.innerHTML=`<div class="msg-av ai">HM</div><div><div class="msg-tag">HydroMind AI · ${currentMode.toUpperCase()}${kbUsed?' · 📚 KB':''}</div><div class="msg-bubble">${fmt}${src}</div>${schHtml}</div>`;
-  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+
+function appendAI(text, source, schematics, kbUsed, schematicMode) {
+  schematics = schematics || [];
+  kbUsed = kbUsed || false;
+  schematicMode = schematicMode || 'text';
+  const msgs = document.getElementById('advMessages');
+  const div  = document.createElement('div');
+  div.className = 'msg-row';
+  const fmt = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  const src = source ? '<div style="font-family:\'JetBrains Mono\',monospace;font-size:.6rem;color:var(--text3);margin-top:4px;">Source: <span style="color:rgba(0,212,255,.5);">' + source + '</span></div>' : '';
+  const schHtml = buildSchematicHtml(schematics, schematicMode);
+  const badge = schematicMode === 'visual' ? ' · 📐 Schematic' : (kbUsed ? ' · 📚 KB' : '');
+  div.innerHTML = '<div class="msg-av ai">HM</div><div>' +
+    '<div class="msg-tag">HydroMind AI · ' + currentMode.toUpperCase() + badge + '</div>' +
+    '<div class="msg-bubble">' + fmt + src + '</div>' +
+    schHtml + '</div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
 }
 function showTyping(){const msgs=document.getElementById('advMessages');const div=document.createElement('div');div.className='msg-row';div.id='typingRow';div.innerHTML=`<div class="msg-av ai">HM</div><div><div class="msg-tag">HydroMind AI</div><div class="typing-ind"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>`;msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;}
 function hideTyping(){const el=document.getElementById('typingRow');if(el)el.remove();}
@@ -420,7 +463,8 @@ async function sendMessage(){
       if(!reply) reply = '⚠️ Unexpected response. Please try again.';
       conversationHistory.push({role:'assistant', content:reply});
       const schematics = Array.isArray(data.schematics) ? data.schematics : [];
-      appendAI(reply, 'HydroMind KB v2.0', schematics, !!data.kbUsed);
+      const schMode = data.schematicMode || 'text';
+      appendAI(reply, 'HydroMind KB v2.0', schematics, !!data.kbUsed, schMode);
     }
     
   } catch(err) {
