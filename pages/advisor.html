@@ -23,6 +23,12 @@
 .msg-bubble{background:rgba(8,22,40,.92);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;font-size:.875rem;color:var(--text2);line-height:1.75;}
 .msg-row.user .msg-bubble{background:rgba(192,38,211,.07);border-color:rgba(192,38,211,.18);color:#e8f4ff;}
 .msg-bubble strong{color:#e8f4ff;}
+.feedback-row{display:flex;align-items:center;gap:6px;margin-top:8px;padding-top:6px;border-top:1px solid rgba(255,255,255,.05);}
+.fb-btn{background:none;border:1px solid transparent;border-radius:6px;cursor:pointer;font-size:.85rem;padding:3px 8px;transition:.15s;color:var(--text3);line-height:1;}
+.fb-btn:hover{border-color:var(--border);background:rgba(255,255,255,.05);transform:scale(1.15);}
+.fb-btn.selected-up{color:#3dd68c;border-color:#3dd68c;background:rgba(61,214,140,.1);}
+.fb-btn.selected-down{color:#f87171;border-color:#f87171;background:rgba(248,113,113,.1);}
+.fb-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text3);}
 .typing-ind{display:flex;gap:4px;padding:9px 13px;background:rgba(8,22,40,.92);border:1px solid var(--border);border-radius:10px;width:fit-content;}
 .typing-dot{width:6px;height:6px;border-radius:50%;background:rgba(0,212,255,.5);animation:tbounce .8s ease-in-out infinite;}
 .typing-dot:nth-child(2){animation-delay:.15s;}.typing-dot:nth-child(3){animation-delay:.3s;}
@@ -379,6 +385,34 @@ function handleKey(e){
     sendMessage();
   }
 }
+function submitFeedback(msgId, vote, btn) {
+  // Toggle off if already selected
+  const row = document.getElementById('fb-' + msgId);
+  const label = document.getElementById('fbl-' + msgId);
+  if (!row) return;
+  const btns = row.querySelectorAll('.fb-btn');
+  const alreadySelected = btn.classList.contains(vote === 1 ? 'selected-up' : 'selected-down');
+  btns.forEach(b => b.classList.remove('selected-up','selected-down'));
+  if (alreadySelected) { label.textContent = ''; return; }
+  btn.classList.add(vote === 1 ? 'selected-up' : 'selected-down');
+  label.textContent = vote === 1 ? 'Thanks!' : 'Got it';
+
+  // Send to backend (fire and forget)
+  const data = (window._feedbackData || {})[msgId] || {};
+  fetch('https://hydromind-backend.onrender.com/api/feedback', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','Origin':'https://hydromindai.com'},
+    body: JSON.stringify({
+      msg_id: msgId,
+      vote: vote,
+      question: data.q || '',
+      answer: (data.a || '').substring(0, 500),
+      mode: currentMode,
+      timestamp: data.ts || new Date().toISOString()
+    })
+  }).catch(() => {}); // silent fail — feedback is non-critical
+}
+
 function newChat(){conversationHistory=[];isFirstMessage=true;window._currentChatId=null;document.getElementById('advMessages').innerHTML='';appendAI('New chat started. Select a mode and ask your question.');}
 function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
@@ -415,12 +449,22 @@ function appendAI(text, source, schematics, kbUsed, schematicMode) {
   })(text);
   const src = source ? '<div style="font-family:\'JetBrains Mono\',monospace;font-size:.6rem;color:var(--text3);margin-top:4px;">Source: <span style="color:rgba(0,212,255,.5);">' + source + '</span></div>' : '';
   const badge = kbUsed ? ' · <a href="../pages/knowledge.html" style="color:rgba(0,212,255,.5);text-decoration:none;font-size:.65rem;" title="View full manuals in Knowledge Base">&#128218; KB v3.0</a>' : '';
-  div.innerHTML = '<div class="msg-av ai">HM</div><div>' +
+  const msgId = 'msg-' + Date.now();
+  div.innerHTML = '<div class="msg-av ai">HM</div><div style="width:100%">' +
     '<div class="msg-tag">HydroMind AI · ' + currentMode.toUpperCase() + badge + '</div>' +
     '<div class="msg-bubble">' + fmt + src + '</div>' +
+    '<div class="feedback-row" id="fb-' + msgId + '">' +
+      '<button class="fb-btn" title="Helpful" onclick="submitFeedback(\'' + msgId + '\',1,this)">&#128077;</button>' +
+      '<button class="fb-btn" title="Not helpful" onclick="submitFeedback(\'' + msgId + '\',-1,this)">&#128078;</button>' +
+      '<span class="fb-label" id="fbl-' + msgId + '"></span>' +
+    '</div>' +
     '</div>';
   msgs.appendChild(div);
   msgs.scrollTop = msgs.scrollHeight;
+  // Store question/answer for feedback
+  window._lastMsgId = msgId;
+  window._feedbackData = window._feedbackData || {};
+  window._feedbackData[msgId] = { q: conversationHistory.slice(-2)[0]?.content || '', a: text, ts: new Date().toISOString() };
 }
 function showTyping(){const msgs=document.getElementById('advMessages');const div=document.createElement('div');div.className='msg-row';div.id='typingRow';div.innerHTML=`<div class="msg-av ai">HM</div><div><div class="msg-tag">HydroMind AI</div><div class="typing-ind"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>`;msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;}
 function hideTyping(){const el=document.getElementById('typingRow');if(el)el.remove();}
