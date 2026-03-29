@@ -42,6 +42,20 @@
 
 
 
+
+/* ── Schematic Strip ────────────────────────────────── */
+.schematic-strip{margin-top:12px;border:1px solid rgba(245,166,35,.25);border-radius:10px;overflow:hidden;background:rgba(245,166,35,.03);}
+.schematic-strip-header{padding:7px 14px;font-size:.68rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#c8a550;background:rgba(245,166,35,.07);border-bottom:1px solid rgba(245,166,35,.15);}
+.schematic-scroll{display:flex;gap:10px;overflow-x:auto;padding:10px 12px;scrollbar-width:thin;scrollbar-color:rgba(200,165,80,.2) transparent;}
+.schematic-scroll::-webkit-scrollbar{height:4px;}
+.schematic-scroll::-webkit-scrollbar-thumb{background:rgba(200,165,80,.2);border-radius:2px;}
+.schematic-card{flex:0 0 200px;border:1px solid rgba(0,180,255,.18);border-radius:8px;overflow:hidden;background:rgba(10,20,40,.7);text-decoration:none;display:block;transition:border-color .2s,transform .15s;}
+.schematic-card:hover{border-color:rgba(0,180,255,.5);transform:translateY(-2px);}
+.schematic-card-label{padding:6px 8px;font-size:.62rem;color:#6ea8c8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:rgba(8,18,32,.6);border-bottom:1px solid rgba(0,180,255,.1);}
+.schematic-img{width:100%;height:130px;object-fit:contain;background:#fff;display:block;}
+.schematic-tap{padding:4px;font-size:.58rem;color:rgba(110,168,200,.5);text-align:center;}
+/* KB badge in msg-tag */
+.kb-badge{font-size:.58rem;color:#c8a550;margin-left:6px;opacity:.75;}
 </style>
 </head>
 <body>
@@ -333,12 +347,18 @@ function appendUser(text){
   div.innerHTML=`<div class="msg-av usr">${initials}</div><div><div class="msg-tag">You</div><div class="msg-bubble">${esc(text)}</div></div>`;
   msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
 }
-function appendAI(text,source){
+function appendAI(text,source,schematics=[],kbUsed=false){
   const msgs=document.getElementById('advMessages');
   const div=document.createElement('div');div.className='msg-row';
   const fmt=text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
   const src=source?`<div style="font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text3);margin-top:4px;">Source: <span style="color:rgba(0,212,255,.5);">${source}</span></div>`:'';
-  div.innerHTML=`<div class="msg-av ai">HM</div><div><div class="msg-tag">HydroMind AI · ${currentMode.toUpperCase()}</div><div class="msg-bubble">${fmt}${src}</div></div>`;
+  let schHtml = '';
+  if(schematics && schematics.length > 0){
+    schHtml = '<div class="schematic-strip"><div class="schematic-strip-header">🗂 ' + schematics.length + ' Schematic' + (schematics.length>1?'s':'') + ' from KB</div><div class="schematic-scroll">' +
+      schematics.slice(0,6).map((s,i) => `<a href="${s.url}" target="_blank" class="schematic-card"><div class="schematic-card-label">#${i+1} ${(s.doc||'').substring(0,35)}</div><img src="${s.url}" alt="schematic" class="schematic-img" loading="lazy" onerror="this.closest('.schematic-card').style.display='none'"/><div class="schematic-tap">Click to view full size</div></a>`).join('') +
+    '</div></div>';
+  }
+  div.innerHTML=`<div class="msg-av ai">HM</div><div><div class="msg-tag">HydroMind AI · ${currentMode.toUpperCase()}${kbUsed?' · 📚 KB':''}</div><div class="msg-bubble">${fmt}${src}</div>${schHtml}</div>`;
   msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
 }
 function showTyping(){const msgs=document.getElementById('advMessages');const div=document.createElement('div');div.className='msg-row';div.id='typingRow';div.innerHTML=`<div class="msg-av ai">HM</div><div><div class="msg-tag">HydroMind AI</div><div class="typing-ind"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>`;msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;}
@@ -370,14 +390,14 @@ async function sendMessage(){
   
   // API call wrapped in try/catch
   try {
-    const resp = await fetch('/api/chat', {
+    // Use KB chat endpoint — returns text + schematics from knowledge base
+    const resp = await fetch('https://hydromind-backend.onrender.com/api/kb/chat', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2000,
-        system: SYSTEM_PROMPT,
-        messages: conversationHistory
+        question: text,
+        history: conversationHistory.slice(-6).map(m => ({role:m.role, content:m.content})),
+        system: SYSTEM_PROMPT
       })
     });
     
@@ -388,15 +408,19 @@ async function sendMessage(){
     const data = await resp.json();
     hideTyping();
     
-    if(data.content && data.content[0] && data.content[0].text){
-      const reply = data.content[0].text;
-      conversationHistory.push({role:'assistant', content:reply});
-      appendAI(reply, 'HydroMind KB v2.0');
-    } else if(data.error){
+    if(data.error){
       appendAI('⚠️ API Error: ' + (data.error.message || JSON.stringify(data.error)), 'Error');
     } else {
-      appendAI('⚠️ Unexpected response. Please try again.', 'Error');
-      console.error('Unexpected API response:', data);
+      // Extract text from Anthropic content blocks
+      let reply = '';
+      if(Array.isArray(data.content)){
+        for(const block of data.content){ if(block.type==='text') reply += block.text; }
+      }
+      if(!reply) reply = data.reply || data.response || '';
+      if(!reply) reply = '⚠️ Unexpected response. Please try again.';
+      conversationHistory.push({role:'assistant', content:reply});
+      const schematics = Array.isArray(data.schematics) ? data.schematics : [];
+      appendAI(reply, 'HydroMind KB v2.0', schematics, !!data.kbUsed);
     }
     
   } catch(err) {
