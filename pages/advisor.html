@@ -367,29 +367,29 @@ function buildSchematicHtml(schematics, mode) {
   mode = mode || 'text';
   if (!schematics || schematics.length === 0) return '';
   if (mode === 'visual') {
-    // Full page grid — schematic IS the answer
-    let cards = schematics.map((s,i) =>
-      '<a href="' + s.url + '" target="_blank" class="schematic-page-card">' +
-      '<div class="schematic-page-num">Page ' + (i+1) + '</div>' +
-      '<img src="' + s.url + '" alt="p' + (i+1) + '" class="schematic-page-img" loading="lazy" onerror="this.closest('.schematic-page-card').style.display='none'"/>' +
-      '<div class="schematic-page-doc">' + (s.doc||'').substring(0,40) + '</div>' +
-      '</a>'
-    ).join('');
-    return '<div class="schematic-grid"><div class="schematic-grid-header">📐 ' +
-      schematics.length + ' Page' + (schematics.length>1?'s':'') + ' — click any to open full size' +
-      '</div><div class="schematic-grid-body">' + cards + '</div></div>';
+    var cards = schematics.map(function(s, i) {
+      return '<a href="' + s.url + '" target="_blank" class="schematic-page-card">'
+        + '<div class="schematic-page-num">Page ' + (i + 1) + '</div>'
+        + '<img src="' + s.url + '" class="schematic-page-img" loading="lazy" />'
+        + '<div class="schematic-page-doc">' + (s.doc || '').substring(0, 40) + '</div>'
+        + '</a>';
+    }).join('');
+    return '<div class="schematic-grid">'
+      + '<div class="schematic-grid-header">&#128208; ' + schematics.length + ' Page' + (schematics.length > 1 ? 's' : '') + ' &#8212; click any to open full size</div>'
+      + '<div class="schematic-grid-body">' + cards + '</div>'
+      + '</div>';
   } else {
-    // Horizontal strip — supporting reference only
-    let cards = schematics.map((s,i) =>
-      '<a href="' + s.url + '" target="_blank" class="schematic-card">' +
-      '<div class="schematic-card-label">#' + (i+1) + ' ' + (s.doc||'').substring(0,35) + '</div>' +
-      '<img src="' + s.url + '" alt="schematic" class="schematic-img" loading="lazy" onerror="this.closest('.schematic-card').style.display='none'"/>' +
-      '<div class="schematic-tap">Click to open full size ↗</div>' +
-      '</a>'
-    ).join('');
-    return '<div class="schematic-strip"><div class="schematic-strip-header">🗂 ' +
-      schematics.length + ' Reference Schematic' + (schematics.length>1?'s':'') +
-      '</div><div class="schematic-scroll">' + cards + '</div></div>';
+    var cards = schematics.map(function(s, i) {
+      return '<a href="' + s.url + '" target="_blank" class="schematic-card">'
+        + '<div class="schematic-card-label">#' + (i + 1) + ' ' + (s.doc || '').substring(0, 35) + '</div>'
+        + '<img src="' + s.url + '" class="schematic-img" loading="lazy" />'
+        + '<div class="schematic-tap">Click to open full size &#8599;</div>'
+        + '</a>';
+    }).join('');
+    return '<div class="schematic-strip">'
+      + '<div class="schematic-strip-header">&#128194; ' + schematics.length + ' Reference Schematic' + (schematics.length > 1 ? 's' : '') + '</div>'
+      + '<div class="schematic-scroll">' + cards + '</div>'
+      + '</div>';
   }
 }
 
