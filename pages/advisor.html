@@ -231,8 +231,15 @@
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;color:#e8f4ff;">HydroMind AI Advisor</div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text3);">Hydraulic · Electrical · PLC · Crane</div>
       </div>
-      <div style="display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#3dd68c;">
-        <div class="status-dot"></div>AI Online — KB v2.0
+      <div style="display:flex;align-items:center;gap:.75rem;">
+        <div style="display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#3dd68c;">
+          <div class="status-dot"></div>AI Online — KB v3.0
+        </div>
+        <button onclick="newChat()" title="New Chat"
+          style="display:flex;align-items:center;gap:5px;background:rgba(200,165,80,.1);border:1px solid rgba(200,165,80,.3);border-radius:8px;padding:5px 12px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--gold);transition:.18s;"
+          onmouseover="this.style.background='rgba(200,165,80,.2)'" onmouseout="this.style.background='rgba(200,165,80,.1)'">
+          <span style="font-size:.9rem;line-height:1;">+</span> New Chat
+        </button>
       </div>
     </div>
     <div style="display:flex;gap:.45rem;padding:.65rem 1.25rem 0;flex-wrap:wrap;flex-shrink:0;">
@@ -241,7 +248,6 @@
       <div class="mode-pill"        id="mode-crane" onclick="setMode('crane',this)">&#127959;&#65039; Crane</div>
       <div class="mode-pill"        id="mode-fluid" onclick="setMode('fluid',this)">&#128722; Fluid/Oil</div>
       <div class="mode-pill"        id="mode-calc"  onclick="setMode('calc',this)">&#128210; Calculations</div>
-
     </div>
     <div class="adv-messages" id="advMessages">
       <div class="msg-row">
@@ -358,6 +364,7 @@ function appendUser(text){
   msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
 }
 function buildSchematicHtml(schematics, mode) {
+  mode = mode || 'text';
   if (!schematics || schematics.length === 0) return '';
   if (mode === 'visual') {
     // Full page grid — schematic IS the answer
@@ -393,7 +400,30 @@ function appendAI(text, source, schematics, kbUsed, schematicMode) {
   const msgs = document.getElementById('advMessages');
   const div  = document.createElement('div');
   div.className = 'msg-row';
-  const fmt = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  const fmt = (function(t){
+    if(!t) return '';
+    // Escape HTML first
+    t = t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    // Headers
+    t = t.replace(/^### (.+)$/gm,'<h4 style="color:#e8f4ff;font-size:.9rem;margin:.6rem 0 .2rem;font-weight:700;">$1</h4>');
+    t = t.replace(/^## (.+)$/gm,'<h3 style="color:#e8f4ff;font-size:.95rem;margin:.7rem 0 .25rem;font-weight:700;">$1</h3>');
+    t = t.replace(/^# (.+)$/gm,'<h2 style="color:#c8a550;font-size:1rem;margin:.5rem 0 .35rem;font-weight:800;border-bottom:1px solid rgba(200,165,80,.2);padding-bottom:.2rem;">$1</h2>');
+    // Bold and italic
+    t = t.replace(/\*\*(.+?)\*\*/g,'<strong style="color:#e8f4ff;">$1</strong>');
+    t = t.replace(/\*(.+?)\*/g,'<em>$1</em>');
+    // Inline code
+    t = t.replace(/`([^`]+)`/g,'<code style="font-family:JetBrains Mono,monospace;font-size:.82em;background:rgba(0,180,255,.1);padding:1px 5px;border-radius:3px;color:#00e5d4;">$1</code>');
+    // Numbered lists
+    t = t.replace(/^\d+\.\s+(.+)$/gm,'<div style="padding:.15rem 0 .15rem 1.1rem;position:relative;"><span style="position:absolute;left:0;color:#c8a550;">•</span>$1</div>');
+    // Bullet lists
+    t = t.replace(/^[-*]\s+(.+)$/gm,'<div style="padding:.15rem 0 .15rem 1.1rem;position:relative;"><span style="position:absolute;left:0;color:rgba(0,180,255,.7);">›</span>$1</div>');
+    // Horizontal rule
+    t = t.replace(/^---+$/gm,'<hr style="border:none;border-top:1px solid var(--border);margin:.5rem 0;">');
+    // Newlines to <br> (but not after block elements)
+    t = t.replace(/\n{2,}/g,'<br><br>');
+    t = t.replace(/\n/g,'<br>');
+    return t;
+  })(text);
   const src = source ? '<div style="font-family:\'JetBrains Mono\',monospace;font-size:.6rem;color:var(--text3);margin-top:4px;">Source: <span style="color:rgba(0,212,255,.5);">' + source + '</span></div>' : '';
   const schHtml = buildSchematicHtml(schematics, schematicMode);
   const badge = schematicMode === 'visual' ? ' · 📐 Schematic' : (kbUsed ? ' · 📚 KB' : '');
