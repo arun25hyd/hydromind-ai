@@ -206,8 +206,8 @@
 <script src="../js/main.js"></script>
 <script src="../js/auth.js"></script>
 <script>
-var NM_SRC = 'all', NM_CAT = 'all';
-var NM_DATA = [
+// Static data removed — now loaded live from backend
+var _NM_UNUSED = [
   {ft:1,src:'fpw',cat:'event',ic:'🏗',s:'Fluid Power World',d:'Mar 2026',
    t:'CONEXPO 2026: Bosch Rexroth and HydraForce Showcase Compact Hydraulic Solutions in Las Vegas',
    p:'Bosch Rexroth and subsidiary HydraForce exhibited compact hydraulic solutions at CONEXPO/CON-AGG 2026, Las Vegas, March 3-7. Highlights included the HydraForce hybrid hydraulic system combining cartridge valves and compact directional valves, and the new Rexroth EDG-OBE piloted directional valve for high-precision mobile applications. Both companies demonstrated combined OEM design-to-production capability.',
@@ -254,12 +254,27 @@ var NM_DATA = [
    u:'https://www.fluidpowerjournal.com'}
 ];
 
+// ── LIVE NEWS ENGINE ──────────────────────────────────
+var BACKEND = 'https://hydromind-backend.onrender.com';
+var NM_LIVE = [];   // live articles from backend
+var NM_SRC_F = 'all';
+var NM_CAT_F = 'all';
+
+var CAT_MAP = {
+  hydraulics: 'Hydraulics', cranes: 'Cranes & Lifting',
+  offshore: 'Offshore', oilgas: 'Oil & Gas', engineering: 'Engineering'
+};
+var CAT_ICON = {
+  hydraulics: '🔧', cranes: '🏗️', offshore: '🛢️',
+  oilgas: '⚙️', engineering: '📐'
+};
+
 function hf(type, val, el) {
   if (type === 'src') {
-    NM_SRC = val;
+    NM_SRC_F = val;
     document.querySelectorAll('#srcBar .s-pill').forEach(function(p){p.classList.remove('on');});
   } else {
-    NM_CAT = val;
+    NM_CAT_F = val;
     document.querySelectorAll('#catBar .c-btn').forEach(function(b){b.classList.remove('on');});
   }
   el.classList.add('on');
@@ -267,54 +282,114 @@ function hf(type, val, el) {
 }
 
 function nmRender() {
-  var list = NM_DATA.filter(function(a) {
-    return (NM_SRC === 'all' || a.src === NM_SRC) &&
-           (NM_CAT === 'all' || a.cat === NM_CAT);
-  });
-  var stat = document.getElementById('nStat');
   var grid = document.getElementById('nGrid');
+  var stat = document.getElementById('nStat');
   if (!grid) return;
-  stat.textContent = list.length + ' articles — real industry sources — verified publisher links';
+
+  var list = NM_LIVE.filter(function(a) {
+    var catMatch = NM_CAT_F === 'all' || a.cat === NM_CAT_F;
+    return catMatch;
+  });
+
+  if (!list.length && NM_LIVE.length === 0) return; // still loading
+
+  stat.textContent = list.length + ' articles — live industry sources — updated now';
+
   if (!list.length) {
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text3);">No articles match the selected filters.</div>';
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text3);">No articles match the selected filter.</div>';
     return;
   }
+
   var html = '';
   for (var i = 0; i < list.length; i++) {
     var a = list[i];
-    var cat = a.cat.charAt(0).toUpperCase() + a.cat.slice(1);
-    html += '<div class="news-card' + (a.ft ? ' featured' : '') + '">';
-    html += '<div class="n-thumb">' + a.ic + '</div>';
+    var catLabel = CAT_MAP[a.cat] || a.cat;
+    var ic = CAT_ICON[a.cat] || '📰';
+    var safeUrl = a.url && a.url.startsWith('http') ? a.url : '#';
+    html += '<div class="news-card' + (i === 0 ? ' featured' : '') + '">';
+    html += '<div class="n-thumb">' + ic + '</div>';
     html += '<div class="n-body">';
-    html += '<div class="n-src">' + a.s + '</div>';
-    html += '<div class="n-title">' + a.t + '</div>';
-    html += '<div class="n-desc">' + a.p + '</div>';
+    html += '<div class="n-src">' + esc(a.source) + '</div>';
+    html += '<div class="n-title">' + esc(a.title) + '</div>';
+    html += '<div class="n-desc">' + esc(a.summary) + '</div>';
     html += '<div class="n-foot">';
-    html += '<span class="n-date">' + a.d + '</span>';
-    html += '<span class="n-cat">' + cat + '</span>';
-    html += '<a href="' + a.u + '" target="_blank" rel="noopener noreferrer" class="n-link">Read Article &rarr;</a>';
+    html += '<span class="n-date">' + esc(a.date) + '</span>';
+    html += '<span class="n-cat">' + esc(catLabel) + '</span>';
+    if (safeUrl !== '#') {
+      html += '<a href="' + safeUrl + '" target="_blank" rel="noopener noreferrer" class="n-link">Read Article &rarr;</a>';
+    }
     html += '</div></div></div>';
   }
   grid.innerHTML = html;
 }
-function doRefresh(btn) {
-  btn.textContent = '⏳ Refreshing...';
-  btn.disabled = true;
-  setTimeout(function() {
-    nmRender();
-    btn.innerHTML = '&#8635; Refreshed ✓';
-    btn.style.color = 'var(--green)';
-    btn.style.borderColor = 'var(--green)';
-    setTimeout(function() {
-      btn.innerHTML = '&#8635; Refresh';
-      btn.style.color = '';
-      btn.style.borderColor = '';
-      btn.disabled = false;
-    }, 2000);
-  }, 600);
+
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-// Fire immediately
-nmRender();
+
+function showLoading() {
+  var grid = document.getElementById('nGrid');
+  var stat = document.getElementById('nStat');
+  if (stat) stat.textContent = 'Fetching live industry news via AI…';
+  if (!grid) return;
+  var sk = '';
+  for (var i = 0; i < 4; i++) {
+    sk += '<div class="news-card" style="opacity:.5;">';
+    sk += '<div class="n-thumb" style="background:rgba(200,165,80,.04);">⏳</div>';
+    sk += '<div class="n-body"><div class="n-src" style="background:rgba(200,165,80,.08);height:8px;width:60%;border-radius:4px;"></div>';
+    sk += '<div class="n-title" style="background:rgba(200,165,80,.06);height:14px;width:90%;border-radius:4px;margin-top:6px;"></div>';
+    sk += '<div class="n-desc" style="background:rgba(200,165,80,.04);height:10px;width:80%;border-radius:4px;margin-top:8px;"></div></div></div>';
+  }
+  grid.innerHTML = sk;
+}
+
+function showError(msg) {
+  var grid = document.getElementById('nGrid');
+  var stat = document.getElementById('nStat');
+  if (stat) stat.textContent = 'Could not load news — try refreshing';
+  if (grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text3);">' +
+    '<div style="font-size:2rem;margin-bottom:1rem;">📡</div>' +
+    '<div style="color:#e57;margin-bottom:.5rem;font-weight:600;">News feed unavailable</div>' +
+    '<div style="font-size:.8rem;">' + esc(msg) + '</div></div>';
+}
+
+function loadNews() {
+  showLoading();
+  fetch(BACKEND + '/api/news', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({})
+  })
+  .then(function(r) {
+    if (!r.ok) throw new Error('Server error ' + r.status);
+    return r.json();
+  })
+  .then(function(data) {
+    if (!data.articles || !data.articles.length) throw new Error('No articles returned');
+    NM_LIVE = data.articles;
+    nmRender();
+    var stat = document.getElementById('nStat');
+    var ts = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+    if (stat) stat.textContent = NM_LIVE.length + ' live articles — updated at ' + ts;
+  })
+  .catch(function(err) {
+    showError(err.message);
+  });
+}
+
+function doRefresh(btn) {
+  btn.innerHTML = '⏳ Refreshing...';
+  btn.disabled = true;
+  NM_LIVE = [];
+  loadNews();
+  setTimeout(function() {
+    btn.innerHTML = '&#8635; Refresh';
+    btn.disabled = false;
+  }, 8000);
+}
+
+// Auto-load on page open
+loadNews();
 </script>
 </body>
 </html>
