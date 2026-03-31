@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crane Diagnostic Agent — HydroMind AI</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <style>
+    /* ── Variables ────────────────────────────────────────── */
+    :root {
+      --bg:          #0a0e13;
+      --surface:     #111720;
+      --border:      #1e2a38;
+      --accent:      #00b4d8;
+      --accent2:     #f97316;
+      --text:        #e2e8f0;
+      --text-muted:  #64748b;
+      --pass:        #22c55e;
+      --fail:        #ef4444;
+      --warn:        #f59e0b;
+      --sidebar-w:   220px;
+      --font-mono:   'Courier New', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 14px;
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ──────────────────────────────────────────── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+
+    .sidebar-logo {
+      padding: 18px 16px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-logo .brand {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar-logo .sub {
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .nav-section {
+      padding: 12px 0 4px;
+    }
+
+    .nav-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0 16px 6px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      color: var(--text-muted);
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+
+    .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+    .nav-item.active { color: var(--accent); background: rgba(0,180,216,0.08); border-right: 2px solid var(--accent); }
+    .nav-item .icon { width: 16px; text-align: center; font-size: 14px; }
+
+    /* ── State Progress Panel ─────────────────────────────── */
+    .state-panel {
+      margin: 12px 12px 0;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+    }
+
+    .state-panel-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .state-step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 0;
+      font-size: 11px;
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+
+    .state-step.done { color: var(--pass); }
+    .state-step.active { color: var(--accent); font-weight: 600; }
+    .state-step.fail { color: var(--fail); }
+
+    .state-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--border);
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    .state-step.done  .state-dot { background: var(--pass); }
+    .state-step.active .state-dot { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+    .state-step.fail  .state-dot { background: var(--fail); }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .mode-badge {
+      display: inline-block;
+      background: rgba(249,115,22,0.15);
+      color: var(--accent2);
+      border: 1px solid rgba(249,115,22,0.3);
+      border-radius: 4px;
+      font-size: 10px;
+      padding: 2px 7px;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    /* ── Main Area ────────────────────────────────────────── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Top Bar ──────────────────────────────────────────── */
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .topbar-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .topbar-title h1 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(34,197,94,0.1);
+      border: 1px solid rgba(34,197,94,0.25);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 11px;
+      color: var(--pass);
+    }
+
+    .status-pill .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--pass);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      padding: 6px 14px;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+      font-weight: 600;
+    }
+    .btn-primary:hover { background: #00cef0; }
+
+    .btn-danger {
+      background: rgba(239,68,68,0.15);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: var(--fail);
+    }
+    .btn-danger:hover { background: rgba(239,68,68,0.25); }
+
+    /* ── Chat Window ──────────────────────────────────────── */
+    .chat-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      scroll-behavior: smooth;
+    }
+
+    .chat-container::-webkit-scrollbar { width: 4px; }
+    .chat-container::-webkit-scrollbar-track { background: transparent; }
+    .chat-container::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* Welcome screen */
+    .welcome {
+      max-width: 560px;
+      margin: 40px auto 0;
+      text-align: center;
+    }
+
+    .welcome-icon {
+      font-size: 40px;
+      margin-bottom: 16px;
+    }
+
+    .welcome h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .welcome p {
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+
+    .start-btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #000;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 10px 28px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+      letter-spacing: 0.3px;
+    }
+    .start-btn:hover { background: #00cef0; transform: translateY(-1px); }
+
+    .info-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-top: 28px;
+      text-align: left;
+    }
+
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .info-card .card-icon { font-size: 18px; margin-bottom: 8px; }
+    .info-card .card-title { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .info-card .card-desc { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+
+    /* Messages */
+    .messages { display: flex; flex-direction: column; gap: 16px; max-width: 820px; margin: 0 auto; }
+
+    .msg {
+      display: flex;
+      gap: 12px;
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+    .msg-avatar {
+      width: 32px; height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .msg.agent .msg-avatar { background: rgba(0,180,216,0.15); border: 1px solid rgba(0,180,216,0.25); }
+    .msg.user  .msg-avatar { background: rgba(249,115,22,0.15); border: 1px solid rgba(249,115,22,0.25); }
+
+    .msg-body { flex: 1; }
+
+    .msg-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .msg-name { font-size: 12px; font-weight: 600; }
+    .msg.agent .msg-name { color: var(--accent); }
+    .msg.user  .msg-name { color: var(--accent2); }
+
+    .msg-time { font-size: 10px; color: var(--text-muted); }
+
+    .msg-content {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 0 8px 8px 8px;
+      padding: 12px 14px;
+      line-height: 1.7;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .msg.user .msg-content {
+      background: rgba(249,115,22,0.06);
+      border-color: rgba(249,115,22,0.15);
+      border-radius: 8px 0 8px 8px;
+    }
+
+    .msg-content strong { color: var(--accent); font-weight: 600; }
+    .msg-content code {
+      background: rgba(0,180,216,0.1);
+      border: 1px solid rgba(0,180,216,0.2);
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    /* Fault Report Styling */
+    .report-block {
+      background: rgba(34,197,94,0.05);
+      border: 1px solid rgba(34,197,94,0.2);
+      border-radius: 6px;
+      padding: 14px;
+      margin-top: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.8;
+      white-space: pre-wrap;
+      color: #a7f3d0;
+    }
+
+    /* Typing indicator */
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      padding: 8px 0;
+    }
+
+    .typing-indicator span {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: bounce 1.2s infinite;
+    }
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-5px); opacity: 1; }
+    }
+
+    /* ── Input Bar ────────────────────────────────────────── */
+    .input-bar {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 14px 20px;
+      flex-shrink: 0;
+    }
+
+    .input-wrap {
+      max-width: 820px;
+      margin: 0 auto;
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    #userInput {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-size: 13px;
+      font-family: inherit;
+      resize: none;
+      outline: none;
+      line-height: 1.5;
+      max-height: 120px;
+      transition: border-color 0.2s;
+    }
+
+    #userInput:focus { border-color: var(--accent); }
+    #userInput::placeholder { color: var(--text-muted); }
+
+    #sendBtn {
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      width: 40px; height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #000;
+      font-size: 16px;
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+    #sendBtn:hover { background: #00cef0; }
+    #sendBtn:disabled { background: var(--border); cursor: not-allowed; color: var(--text-muted); }
+
+    .input-hint {
+      max-width: 820px;
+      margin: 6px auto 0;
+      font-size: 10px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* ── Responsive ───────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .info-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Sidebar ──────────────────────────────────────────────── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">⚙ HydroMind AI</div>
+    <div class="sub">Diagnostic Agent</div>
+  </div>
+
+  <nav class="nav-section">
+    <div class="nav-label">Navigation</div>
+    <a href="/" class="nav-item">
+      <span class="icon">🏠</span> Home
+    </a>
+    <a href="/ai-advisor.html" class="nav-item">
+      <span class="icon">🤖</span> AI Advisor
+    </a>
+    <a href="/crane-diagnostic.html" class="nav-item active">
+      <span class="icon">🏗</span> Crane Diagnostic
+    </a>
+    <a href="/calculator.html" class="nav-item">
+      <span class="icon">🔢</span> Calculator
+    </a>
+    <a href="/knowledge.html" class="nav-item">
+      <span class="icon">📚</span> Knowledge Base
+    </a>
+  </nav>
+
+  <!-- State Progress Panel -->
+  <div class="state-panel" id="statePanel" style="display:none;">
+    <div class="state-panel-title">📋 Session Progress</div>
+    <div class="state-step" id="st-intake">
+      <div class="state-dot"></div> Intake
+    </div>
+    <div class="state-step" id="st-power">
+      <div class="state-dot"></div> Power / Enable
+    </div>
+    <div class="state-step" id="st-charge">
+      <div class="state-dot"></div> Charge Pressure
+    </div>
+    <div class="state-step" id="st-brake">
+      <div class="state-dot"></div> Brake Feed
+    </div>
+    <div class="state-step" id="st-signal">
+      <div class="state-dot"></div> Joystick Signal
+    </div>
+    <div class="state-step" id="st-amp">
+      <div class="state-dot"></div> Amplifier Card
+    </div>
+    <div class="state-step" id="st-valve">
+      <div class="state-dot"></div> Prop Valve
+    </div>
+    <div class="state-step" id="st-pump">
+      <div class="state-dot"></div> Pump Swash
+    </div>
+    <div class="state-step" id="st-motor">
+      <div class="state-dot"></div> Motor Response
+    </div>
+    <div class="state-step" id="st-final">
+      <div class="state-dot"></div> Motion Quality
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="mode-badge">DIAGNOSTIC MODE</div>
+    <div>Session stored locally.<br>Export report after session.</div>
+  </div>
+</aside>
+
+<!-- ── Main ─────────────────────────────────────────────────── -->
+<div class="main">
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="topbar-title">
+      <h1>🏗 Crane Diagnostic Agent</h1>
+      <div class="status-pill" id="statusPill">
+        <span class="dot"></span> Ready
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" id="exportBtn" onclick="exportReport()" style="display:none;">
+        📄 Export Report
+      </button>
+      <button class="btn btn-danger" id="resetBtn" onclick="resetSession()" style="display:none;">
+        ↺ New Session
+      </button>
+    </div>
+  </div>
+
+  <!-- Chat Window -->
+  <div class="chat-container" id="chatContainer">
+
+    <!-- Welcome Screen -->
+    <div class="welcome" id="welcomeScreen">
+      <div class="welcome-icon">🏗</div>
+      <h2>Crane Diagnostic Agent</h2>
+      <p>
+        A structured fault isolation session modelled on PLC ladder logic.<br>
+        The agent walks through a 10-state check sequence — one question at a time —<br>
+        and generates a DPR-ready fault report on completion.
+      </p>
+      <button class="start-btn" onclick="startSession()">▶ Start Diagnostic Session</button>
+
+      <div class="info-cards">
+        <div class="info-card">
+          <div class="card-icon">⚡</div>
+          <div class="card-title">Electronic Closed Loop</div>
+          <div class="card-desc">PLC → Amplifier → Prop Valve → Pump Swash → Motor A/B Direct</div>
+        </div>
+        <div class="info-card">
+          <div class="card-icon">🔧</div>
+          <div class="card-title">Hydraulic Closed Loop</div>
+          <div class="card-desc">Joystick Pilot Pressure → Pump Servo → Motor Direct — No Electronics</div>
+        </div>
+        <div class="info-card">
+          <div class="card-icon">🔄</div>
+          <div class="card-title">Open Loop + DCV</div>
+          <div class="card-desc">Constant Flow Pump → Pilot Operated DCV → Motor/Cylinder → Tank Return</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Messages Container (hidden until session starts) -->
+    <div class="messages" id="messagesContainer" style="display:none;"></div>
+
+  </div>
+
+  <!-- Input Bar -->
+  <div class="input-bar" id="inputBar" style="display:none;">
+    <div class="input-wrap">
+      <textarea
+        id="userInput"
+        rows="1"
+        placeholder="Type your answer or measurement reading..."
+        onkeydown="handleKey(event)"
+        oninput="autoResize(this)"
+      ></textarea>
+      <button id="sendBtn" onclick="sendMessage()">➤</button>
+    </div>
+    <div class="input-hint">
+      <span>Enter to send &nbsp;·&nbsp; Shift+Enter for new line</span>
+      <span id="sessionInfo">Session active</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Scripts ───────────────────────────────────────────────── -->
+<script>
+  // ── Config ──────────────────────────────────────────────────
+  const API_URL = 'https://hydromind-backend.onrender.com/api/chat';
+  const MODE    = 'crane-diagnostic';
+
+  // ── State ───────────────────────────────────────────────────
+  let messages     = [];     // full conversation history
+  let sessionActive = false;
+  let turnCount    = 0;
+  let sessionStart = null;
+
+  // State machine step tracking (visual only — agent tracks actual state)
+  const STATE_STEPS = ['intake','power','charge','brake','signal','amp','valve','pump','motor','final'];
+  let currentStep  = 0;
+
+  // ── Session Control ─────────────────────────────────────────
+  function startSession() {
+    document.getElementById('welcomeScreen').style.display    = 'none';
+    document.getElementById('messagesContainer').style.display = 'flex';
+    document.getElementById('inputBar').style.display          = 'block';
+    document.getElementById('statePanel').style.display        = 'block';
+    document.getElementById('resetBtn').style.display          = 'inline-block';
+    sessionActive = true;
+    sessionStart  = new Date();
+    updateStatus('Active', true);
+    setActiveStep(0);
+
+    // Trigger agent opening question
+    agentInit();
+  }
+
+  function resetSession() {
+    if (!confirm('Start a new diagnostic session? Current session will be cleared.')) return;
+    messages      = [];
+    sessionActive = false;
+    turnCount     = 0;
+    currentStep   = 0;
+
+    document.getElementById('messagesContainer').innerHTML     = '';
+    document.getElementById('messagesContainer').style.display = 'none';
+    document.getElementById('welcomeScreen').style.display     = 'block';
+    document.getElementById('inputBar').style.display          = 'none';
+    document.getElementById('statePanel').style.display        = 'none';
+    document.getElementById('resetBtn').style.display          = 'none';
+    document.getElementById('exportBtn').style.display         = 'none';
+    STATE_STEPS.forEach(s => setStepStatus(s, ''));
+    updateStatus('Ready', false);
+  }
+
+  // ── Agent Init — First Message ───────────────────────────────
+  async function agentInit() {
+    const initPrompt = 'START_DIAGNOSTIC_SESSION';
+    messages.push({ role: 'user', content: initPrompt });
+    showTyping();
+    const reply = await callAPI();
+    removeTyping();
+    if (reply) {
+      appendMessage('agent', reply);
+      messages.push({ role: 'assistant', content: reply });
+      setActiveStep(0); // INTAKE
+    }
+  }
+
+  // ── Send Message ─────────────────────────────────────────────
+  async function sendMessage() {
+    const input = document.getElementById('userInput');
+    const text  = input.value.trim();
+    if (!text || !sessionActive) return;
+
+    input.value = '';
+    autoResize(input);
+    document.getElementById('sendBtn').disabled = true;
+
+    appendMessage('user', text);
+    messages.push({ role: 'user', content: text });
+    turnCount++;
+
+    document.getElementById('sessionInfo').textContent = `Turn ${turnCount} · ${elapsedTime()}`;
+
+    showTyping();
+    const reply = await callAPI();
+    removeTyping();
+
+    document.getElementById('sendBtn').disabled = false;
+
+    if (reply) {
+      appendMessage('agent', reply);
+      messages.push({ role: 'assistant', content: reply });
+      advanceStep(reply);
+      checkForReport(reply);
+    }
+  }
+
+  // ── API Call ─────────────────────────────────────────────────
+  async function callAPI() {
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages, mode: MODE })
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      return data.content?.[0]?.text || 'No response received.';
+    } catch (err) {
+      console.error('API error:', err);
+      return `⚠ Connection error: ${err.message}. Check backend status.`;
+    }
+  }
+
+  // ── DOM Helpers ──────────────────────────────────────────────
+  function appendMessage(role, text) {
+    const container = document.getElementById('messagesContainer');
+    const isAgent   = role === 'agent';
+    const now       = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+    const isReport  = text.includes('HYDROMIND CRANE DIAGNOSTIC REPORT');
+
+    const div = document.createElement('div');
+    div.className = `msg ${role}`;
+    div.innerHTML = `
+      <div class="msg-avatar">${isAgent ? '⚙' : '👷'}</div>
+      <div class="msg-body">
+        <div class="msg-header">
+          <span class="msg-name">${isAgent ? 'Diagnostic Agent' : 'Technician'}</span>
+          <span class="msg-time">${now}</span>
+        </div>
+        <div class="msg-content">
+          ${isReport ? renderReport(text) : formatText(text)}
+        </div>
+      </div>`;
+    container.appendChild(div);
+    scrollToBottom();
+  }
+
+  function formatText(text) {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/`(.*?)`/g, '<code>$1</code>')
+      .replace(/\n/g, '<br>');
+  }
+
+  function renderReport(text) {
+    const lines = text.split('\n');
+    const reportLines = lines.map(l => {
+      if (l.startsWith('---')) return '<hr style="border-color:rgba(34,197,94,0.2);margin:8px 0;">';
+      if (l.startsWith('**')) return `<strong style="color:var(--pass)">${l.replace(/\*\*/g,'')}</strong>`;
+      return l;
+    }).join('\n');
+    return `<div class="report-block">${reportLines}</div>`;
+  }
+
+  function showTyping() {
+    const container = document.getElementById('messagesContainer');
+    const div = document.createElement('div');
+    div.id = 'typingIndicator';
+    div.className = 'msg agent';
+    div.innerHTML = `
+      <div class="msg-avatar">⚙</div>
+      <div class="msg-body">
+        <div class="msg-header">
+          <span class="msg-name">Diagnostic Agent</span>
+        </div>
+        <div class="msg-content">
+          <div class="typing-indicator">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>`;
+    container.appendChild(div);
+    scrollToBottom();
+  }
+
+  function removeTyping() {
+    const el = document.getElementById('typingIndicator');
+    if (el) el.remove();
+  }
+
+  function scrollToBottom() {
+    const c = document.getElementById('chatContainer');
+    c.scrollTop = c.scrollHeight;
+  }
+
+  // ── State Progress Tracker ───────────────────────────────────
+  // Keywords in agent reply used to detect state advancement
+  const STEP_KEYWORDS = [
+    ['intake','make','model','symptom','architecture'],            // 0 intake
+    ['e-stop','plc','run mode','24vdc','control supply'],         // 1 power
+    ['charge pressure','ps2','25','35 bar','boost'],              // 2 charge
+    ['brake','ps1','pilot pressure','brake feed'],                // 3 brake
+    ['joystick signal','analog','4-20','0-10v','plc input'],      // 4 signal
+    ['amplifier card','enable','led','24vdc supply','card'],      // 5 amp
+    ['solenoid current','ma output','coil resistance','prop'],    // 6 valve
+    ['pump','port a','port b','swash','case drain'],              // 7 pump
+    ['motor shaft','rotating','case drain pressure','motor'],     // 8 motor
+    ['motion','speed','jerk','normal operation','resolved']       // 9 final
+  ];
+
+  function advanceStep(reply) {
+    const lower = reply.toLowerCase();
+    for (let i = currentStep; i < STEP_KEYWORDS.length; i++) {
+      if (STEP_KEYWORDS[i].some(kw => lower.includes(kw))) {
+        // Mark previous steps as done
+        for (let j = 0; j < i; j++) setStepStatus(STATE_STEPS[j], 'done');
+        setActiveStep(i);
+        currentStep = i;
+        break;
+      }
+    }
+  }
+
+  function setActiveStep(idx) {
+    STATE_STEPS.forEach((s, i) => {
+      if (i < idx)       setStepStatus(s, 'done');
+      else if (i === idx) setStepStatus(s, 'active');
+    });
+  }
+
+  function setStepStatus(stepId, status) {
+    const el = document.getElementById(`st-${stepId}`);
+    if (!el) return;
+    el.className = `state-step ${status}`;
+  }
+
+  function checkForReport(reply) {
+    if (reply.includes('HYDROMIND CRANE DIAGNOSTIC REPORT')) {
+      // Mark all steps done
+      STATE_STEPS.forEach(s => setStepStatus(s, 'done'));
+      document.getElementById('exportBtn').style.display = 'inline-block';
+      updateStatus('Resolved', false);
+      sessionActive = false;
+    }
+  }
+
+  // ── Export Report ────────────────────────────────────────────
+  function exportReport() {
+    const timestamp = new Date().toISOString().slice(0,19).replace('T',' ');
+    let reportText  = `HYDROMIND CRANE DIAGNOSTIC SESSION\nExported: ${timestamp}\n\n`;
+
+    messages.forEach(m => {
+      const label = m.role === 'user' ? 'TECHNICIAN' : 'AGENT';
+      reportText += `[${label}]\n${m.content}\n\n`;
+    });
+
+    const blob = new Blob([reportText], { type: 'text/plain' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = `hydromind-diagnostic-${Date.now()}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // ── Utility ──────────────────────────────────────────────────
+  function updateStatus(text, active) {
+    const pill = document.getElementById('statusPill');
+    pill.innerHTML = `<span class="dot"></span> ${text}`;
+    pill.style.background = active
+      ? 'rgba(34,197,94,0.1)'
+      : 'rgba(100,116,139,0.1)';
+    pill.style.borderColor = active
+      ? 'rgba(34,197,94,0.25)'
+      : 'rgba(100,116,139,0.25)';
+    pill.style.color = active ? 'var(--pass)' : 'var(--text-muted)';
+  }
+
+  function elapsedTime() {
+    if (!sessionStart) return '';
+    const sec = Math.floor((Date.now() - sessionStart) / 1000);
+    const m   = Math.floor(sec / 60);
+    const s   = sec % 60;
+    return `${m}m ${s}s`;
+  }
+
+  function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  }
+
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  }
+</script>
+
+</body>
+</html>
