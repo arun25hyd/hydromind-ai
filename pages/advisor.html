@@ -70,7 +70,18 @@
 
 .schematic-page-card:hover{border-color:rgba(0,180,255,.55);transform:translateY(-2px);}
 
-
+/* ── Navbar size override: taller bar + larger link font ── */
+.navbar { height: 72px !important; }
+.navbar-inner { height: 72px !important; min-height: 72px !important; }
+.navbar-link {
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+  padding: 6px 10px !important;
+}
+.navbar-menu { gap: 2px !important; align-items: center !important; }
+.hm-logo-name { font-size: 1.05rem !important; }
+.hm-logo-sub  { font-size: 0.62rem !important; }
 
 </style>
 </head>
@@ -193,6 +204,7 @@
         <div class="navbar-menu">
       <a href="../index.html" class="navbar-link">Home</a>
       <a href="advisor.html" class="navbar-link">AI Advisor</a>
+      <a href="../crane-diagnostic.html" class="navbar-link" style="color:#22c55e;">🏗 Crane Diag</a>
       <a href="system-design.html" class="navbar-link">&#9881; System Design</a>
       <a href="knowledge.html" class="navbar-link">Knowledge Base</a>
       
@@ -215,10 +227,11 @@
   <div class="navbar-mobile" id="navMobile">
     <a href="../index.html">Home</a>
     <a href="../pages/advisor.html">AI Advisor</a>
+    <a href="../crane-diagnostic.html" style="color:#22c55e;">🏗 Crane Diagnostic</a>
     <a href="../pages/system-design.html">&#9881; System Design</a>
     <a href="../pages/knowledge.html">Knowledge Base</a>
     
-    <a href="../pages/advisor.html">&#9889; Electrical</a>
+    <a href="../index.html#electrical" style="color:#f5c842;">&#9889; Electrical</a>
     <a href="../index.html#calculator">Calculator</a>
     <a href="../pages/pricing.html">Pricing</a>
     <a href="../pages/feedback.html">Feedback</a>
