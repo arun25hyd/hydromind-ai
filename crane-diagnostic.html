@@ -6,33 +6,20 @@
 <title>Crane Diagnostic Agent — HydroMind.AI</title>
 <link rel="stylesheet" href="css/style.css">
 <style>
-/* ── Diagnostic Page Layout ── */
-.diag-wrap{
-  display:flex;height:calc(100vh - 72px);
-  margin-top:72px;margin-left:220px;margin-right:200px;
-  position:relative;z-index:1;background:rgba(2,8,18,.97);
-}
+.diag-wrap{display:flex;height:calc(100vh - 72px);margin-top:72px;margin-left:220px;margin-right:200px;position:relative;z-index:1;background:rgba(2,8,18,.97);}
 @media(max-width:1280px){.diag-wrap{margin-right:0;}}
 @media(max-width:1100px){.diag-wrap{margin-left:180px;}}
 @media(max-width:900px){.diag-wrap{margin-left:0;}}
-
-/* ── State Progress Panel (injected into left sidebar) ── */
 .state-panel{margin:10px 8px 0;background:rgba(0,0,0,.3);border:1px solid rgba(0,212,255,.12);border-radius:6px;padding:10px;}
 .state-panel-title{font-family:'Space Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(0,212,255,.5);margin-bottom:8px;}
 .state-step{display:flex;align-items:center;gap:7px;padding:3px 0;font-size:.75rem;color:var(--text3);transition:color .2s;}
-.state-step.done{color:#3dd68c;}
-.state-step.active{color:#00d4ff;font-weight:600;}
-.state-step.fail{color:#f87171;}
+.state-step.done{color:#3dd68c;}.state-step.active{color:#00d4ff;font-weight:600;}.state-step.fail{color:#f87171;}
 .state-dot{width:6px;height:6px;border-radius:50%;background:var(--border);flex-shrink:0;}
 .state-step.done .state-dot{background:#3dd68c;}
 .state-step.active .state-dot{background:#00d4ff;box-shadow:0 0 6px #00d4ff;}
 .state-step.fail .state-dot{background:#f87171;}
 .mode-badge{display:inline-block;background:rgba(249,115,22,.12);color:#f97316;border:1px solid rgba(249,115,22,.25);border-radius:4px;font-size:.58rem;padding:2px 7px;letter-spacing:.5px;font-weight:600;font-family:'Space Mono',monospace;margin-bottom:4px;}
-
-/* ── Main chat area ── */
 .diag-main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-
-/* ── Top bar ── */
 .diag-topbar{flex-shrink:0;border-bottom:1px solid var(--border);background:rgba(3,10,24,.98);padding:0 1.25rem;height:52px;display:flex;align-items:center;justify-content:space-between;}
 .diag-topbar h1{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;color:#e8f4ff;letter-spacing:.03em;}
 .status-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(61,214,140,.08);border:1px solid rgba(61,214,140,.22);border-radius:20px;padding:3px 10px;font-family:'JetBrains Mono',monospace;font-size:.65rem;color:#3dd68c;}
@@ -42,27 +29,20 @@
 .tbtn-ghost{background:transparent;border:1px solid var(--border);color:var(--text3);}
 .tbtn-ghost:hover{border-color:rgba(0,212,255,.4);color:#00d4ff;}
 .tbtn-danger{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:#f87171;}
-.tbtn-danger:hover{background:rgba(239,68,68,.2);}
-
-/* ── Chat container ── */
 .diag-chat{flex:1;overflow-y:auto;padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:.9rem;}
 .diag-chat::-webkit-scrollbar{width:4px;}
 .diag-chat::-webkit-scrollbar-thumb{background:rgba(200,165,80,.15);border-radius:2px;}
-
-/* ── Welcome screen ── */
 .diag-welcome{max-width:540px;margin:3rem auto 0;text-align:center;}
 .diag-welcome .icon{font-size:3rem;margin-bottom:1rem;}
 .diag-welcome h2{font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:700;color:#e8f4ff;margin-bottom:.6rem;}
 .diag-welcome p{font-size:.88rem;color:var(--text2);line-height:1.7;margin-bottom:1.5rem;}
-.diag-start-btn{display:inline-block;background:linear-gradient(135deg,#00b4d8,#0077aa);color:#fff;font-weight:700;font-size:.9rem;padding:11px 28px;border-radius:7px;cursor:pointer;border:none;transition:all .15s;letter-spacing:.02em;}
+.diag-start-btn{display:inline-block;background:linear-gradient(135deg,#00b4d8,#0077aa);color:#fff;font-weight:700;font-size:.9rem;padding:11px 28px;border-radius:7px;cursor:pointer;border:none;transition:all .15s;}
 .diag-start-btn:hover{opacity:.88;transform:translateY(-1px);}
 .arch-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-top:1.75rem;text-align:left;}
 .arch-card{background:rgba(8,22,40,.9);border:1px solid var(--border);border-radius:8px;padding:1rem;}
 .arch-card .ac-icon{font-size:1.1rem;margin-bottom:.5rem;}
-.arch-card .ac-title{font-size:.82rem;font-weight:600;color:#e8f4ff;margin-bottom:.3rem;font-family:'Barlow Condensed',sans-serif;letter-spacing:.02em;}
+.arch-card .ac-title{font-size:.82rem;font-weight:600;color:#e8f4ff;margin-bottom:.3rem;font-family:'Barlow Condensed',sans-serif;}
 .arch-card .ac-desc{font-size:.72rem;color:var(--text3);line-height:1.5;}
-
-/* ── Messages ── */
 .msg-row{display:flex;gap:.7rem;max-width:90%;}
 .msg-row.user{flex-direction:row-reverse;align-self:flex-end;}
 .msg-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.8rem;}
@@ -72,16 +52,11 @@
 .msg-bubble{background:rgba(8,22,40,.92);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;font-size:.875rem;color:var(--text2);line-height:1.75;}
 .msg-row.user .msg-bubble{background:rgba(249,115,22,.07);border-color:rgba(249,115,22,.18);color:#e8f4ff;}
 .msg-bubble strong{color:#e8f4ff;}
-.msg-bubble code{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.15);border-radius:3px;padding:1px 5px;font-family:'Space Mono',monospace;font-size:.78rem;}
 .report-block{background:rgba(61,214,140,.04);border:1px solid rgba(61,214,140,.18);border-radius:6px;padding:1rem;margin-top:.5rem;font-family:'Space Mono',monospace;font-size:.72rem;line-height:1.8;white-space:pre-wrap;color:#a7f3d0;}
-
-/* ── Typing indicator ── */
 .typing-ind{display:flex;gap:4px;padding:9px 13px;background:rgba(8,22,40,.92);border:1px solid var(--border);border-radius:10px;width:fit-content;}
 .typing-dot{width:6px;height:6px;border-radius:50%;background:rgba(0,212,255,.5);animation:tbounce .8s ease-in-out infinite;}
 .typing-dot:nth-child(2){animation-delay:.15s;}.typing-dot:nth-child(3){animation-delay:.3s;}
 @keyframes tbounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
-
-/* ── Input area ── */
 .diag-input-area{flex-shrink:0;border-top:1px solid var(--border);background:rgba(3,10,24,.98);padding:.85rem 1.25rem;}
 .diag-input-row{display:flex;gap:.55rem;align-items:flex-end;max-width:900px;}
 .diag-textarea{flex:1;background:rgba(2,11,24,.88);border:1px solid var(--border);border-radius:8px;padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:.88rem;color:#e8f4ff;resize:none;outline:none;min-height:42px;max-height:110px;transition:.18s;line-height:1.5;}
@@ -90,14 +65,13 @@
 .diag-send-btn:hover{opacity:.85;transform:translateY(-1px);}
 .diag-send-btn:disabled{background:var(--border);cursor:not-allowed;}
 .diag-hint{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text3);margin-top:.4rem;display:flex;justify-content:space-between;max-width:900px;}
-
 @media(max-width:600px){.arch-cards{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 
 <!-- Circuit BG -->
-<div class="circuit-bg"><svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="cbg" cx="50%" cy="50%" r="55%"><stop offset="0%" stop-color="#001830"/><stop offset="100%" stop-color="#020b18"/></radialGradient></defs><rect width="1400" height="900" fill="url(#cbg)"/><line class="c-trace" x1="0" y1="450" x2="300" y2="450" stroke="#00d4ff" stroke-width=".7" opacity=".1" fill="none"/><line class="c-trace-r" x1="1400" y1="450" x2="1100" y2="450" stroke="#00d4ff" stroke-width=".7" opacity=".1" fill="none"/></svg></div>
+<div class="circuit-bg"><svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="cbg" cx="50%" cy="50%" r="55%"><stop offset="0%" stop-color="#001830"/><stop offset="100%" stop-color="#020b18"/></radialGradient></defs><rect width="1400" height="900" fill="url(#cbg)"/></svg></div>
 
 <!-- LEFT SIDEBAR -->
 <div class="hm-left-sidebar" id="hmLeftSidebar">
@@ -114,12 +88,10 @@
       <div style="margin-bottom:.75rem;">
         <div class="hm-sidebar-label">Quick Links</div>
         <div class="hm-hist-item" onclick="location.href='pages/advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
-        <div class="hm-hist-item" onclick="location.href='crane-diagnostic.html'" style="color:#3dd68c;"><span class="hm-hist-icon">🏗</span><span class="hm-hist-text" style="color:#3dd68c;">Crane Diagnostic</span></div>
+        <div class="hm-hist-item" onclick="location.href='crane-diagnostic.html'"><span class="hm-hist-icon">&#127959;</span><span class="hm-hist-text" style="color:#3dd68c;">Crane Diagnostic</span></div>
         <div class="hm-hist-item" onclick="location.href='pages/knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
         <div class="hm-hist-item" onclick="location.href='pages/pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
       </div>
-      <div style="font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.45rem;border-bottom:1px solid var(--border);margin-bottom:.5rem;">Sponsored</div>
-      <div style="background:rgba(200,165,80,.03);border:1px dashed rgba(200,165,80,.12);border-radius:6px;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;margin-bottom:.5rem;"><div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement</div>
     </div>
     <div id="hmSidebarHistory" style="display:none;margin-top:.75rem;">
       <div class="hm-sidebar-label">Chat History</div>
@@ -128,13 +100,12 @@
     <div id="hmSidebarLinks" style="display:none;margin-top:.75rem;">
       <div class="hm-sidebar-label">Quick Links</div>
       <div class="hm-hist-item" onclick="location.href='pages/advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
-      <div class="hm-hist-item" onclick="location.href='crane-diagnostic.html'" style="color:#3dd68c;"><span class="hm-hist-icon">🏗</span><span class="hm-hist-text" style="color:#3dd68c;">Crane Diagnostic</span></div>
+      <div class="hm-hist-item" onclick="location.href='crane-diagnostic.html'"><span class="hm-hist-icon">&#127959;</span><span class="hm-hist-text" style="color:#3dd68c;">Crane Diagnostic</span></div>
       <div class="hm-hist-item" onclick="location.href='pages/knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
       <div class="hm-hist-item" onclick="location.href='pages/pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
     </div>
-    <!-- State progress panel — shown when session active -->
     <div class="state-panel" id="statePanel" style="display:none;margin-top:.75rem;">
-      <div class="state-panel-title">&#128203; Session Progress</div>
+      <div class="state-panel-title">Session Progress</div>
       <div class="state-step" id="st-intake"><div class="state-dot"></div> Intake</div>
       <div class="state-step" id="st-power"><div class="state-dot"></div> Power / Enable</div>
       <div class="state-step" id="st-charge"><div class="state-dot"></div> Charge Pressure</div>
@@ -156,9 +127,8 @@
 <!-- RIGHT SIDEBAR -->
 <div class="hm-right-sidebar" id="hmAdSidebar">
   <div style="font-family:'JetBrains Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.5rem;border-bottom:1px solid var(--border);margin-bottom:.55rem;">Sponsored</div>
-  <div id="hmNoAdBadge" style="display:none;background:rgba(61,214,140,.06);border:1px solid rgba(61,214,140,.2);border-radius:8px;padding:.75rem;text-align:center;margin-bottom:.55rem;"><div style="font-size:1.2rem;">&#127881;</div><p style="font-size:.68rem;color:#3dd68c;margin:.25rem 0 0;line-height:1.4;">Ad-free<br>Pro/Enterprise</p></div>
-  <div style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:195px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:1rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement</div>
-  <div style="margin-top:auto;padding-top:.55rem;border-top:1px solid var(--border);text-align:center;"><a href="pages/pricing.html" style="font-family:'JetBrains Mono',monospace;font-size:.57rem;color:rgba(0,212,255,.4);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a></div>
+  <div id="hmNoAdBadge" style="display:none;background:rgba(61,214,140,.06);border:1px solid rgba(61,214,140,.2);border-radius:8px;padding:.75rem;text-align:center;"><div style="font-size:1.2rem;">&#127881;</div><p style="font-size:.68rem;color:#3dd68c;margin:.25rem 0 0;">Ad-free Pro</p></div>
+  <div style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:195px;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;"><div>&#128226;<br>Advertisement</div></div>
 </div>
 
 <!-- AUTH MODAL -->
@@ -171,27 +141,27 @@
     </div>
     <div class="hm-auth-error" id="hmAuthError"></div>
     <div class="hm-auth-panel" id="hmPanel_login">
-      <div class="hm-auth-title">Welcome Back</div><div class="hm-auth-sub">Sign in to HydroMind.AI</div>
+      <div class="hm-auth-title">Welcome Back</div>
       <div class="hm-auth-field"><label>Email</label><input type="email" id="hmLoginEmail" class="hm-auth-input" placeholder="your@email.com"></div>
-      <div class="hm-auth-field"><label>Password</label><input type="password" id="hmLoginPass" class="hm-auth-input" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div class="hm-auth-field"><label>Password</label><input type="password" id="hmLoginPass" class="hm-auth-input" onkeydown="if(event.key==='Enter')doLogin()"></div>
       <div class="hm-auth-forgot"><button class="hm-auth-link" onclick="switchAuthTab('forgot')">Forgot password?</button></div>
       <button class="hm-auth-btn" onclick="doLogin()">Sign In</button>
       <div class="hm-auth-footer">No account? <button class="hm-auth-link" onclick="switchAuthTab('register')">Register free</button></div>
     </div>
     <div class="hm-auth-panel" id="hmPanel_register" style="display:none;">
-      <div class="hm-auth-title">Create Account</div><div class="hm-auth-sub">14-day free trial</div>
-      <div class="hm-auth-row"><div class="hm-auth-field"><label>First Name *</label><input type="text" id="hmRegFirst" class="hm-auth-input" placeholder="Arun"></div><div class="hm-auth-field"><label>Last Name</label><input type="text" id="hmRegLast" class="hm-auth-input" placeholder="Tiwari"></div></div>
-      <div class="hm-auth-field"><label>Email *</label><input type="email" id="hmRegEmail" class="hm-auth-input" placeholder="your@email.com"></div>
-      <div class="hm-auth-field"><label>Password *</label><input type="password" id="hmRegPass" class="hm-auth-input" placeholder="Min 6 chars" onkeydown="if(event.key==='Enter')doRegister()"></div>
+      <div class="hm-auth-title">Create Account</div>
+      <div class="hm-auth-row"><div class="hm-auth-field"><label>First Name</label><input type="text" id="hmRegFirst" class="hm-auth-input"></div><div class="hm-auth-field"><label>Last Name</label><input type="text" id="hmRegLast" class="hm-auth-input"></div></div>
+      <div class="hm-auth-field"><label>Email</label><input type="email" id="hmRegEmail" class="hm-auth-input"></div>
+      <div class="hm-auth-field"><label>Password</label><input type="password" id="hmRegPass" class="hm-auth-input" onkeydown="if(event.key==='Enter')doRegister()"></div>
       <button class="hm-auth-btn" onclick="doRegister()">Create Account</button>
       <div class="hm-auth-footer">Have account? <button class="hm-auth-link" onclick="switchAuthTab('login')">Sign in</button></div>
     </div>
     <div class="hm-auth-panel" id="hmPanel_forgot" style="display:none;">
       <div class="hm-auth-title">Reset Password</div>
-      <div class="hm-auth-field"><label>Email</label><input type="email" id="hmForgotEmail" class="hm-auth-input" placeholder="your@email.com"></div>
+      <div class="hm-auth-field"><label>Email</label><input type="email" id="hmForgotEmail" class="hm-auth-input"></div>
       <div class="hm-auth-ok" id="hmForgotOk"></div>
       <button class="hm-auth-btn cyan" onclick="doForgot()">Send Reset Link</button>
-      <div class="hm-auth-footer"><button class="hm-auth-link" onclick="switchAuthTab('login')">&#8592; Back</button></div>
+      <div class="hm-auth-footer"><button class="hm-auth-link" onclick="switchAuthTab('login')">Back</button></div>
     </div>
   </div>
 </div>
@@ -206,7 +176,7 @@
     <div class="navbar-menu">
       <a href="index.html" class="navbar-link">Home</a>
       <a href="pages/advisor.html" class="navbar-link">AI Advisor</a>
-      <a href="crane-diagnostic.html" class="navbar-link active" style="color:#3dd68c;">🏗 Crane Diag</a>
+      <a href="crane-diagnostic.html" class="navbar-link active" style="color:#3dd68c;">&#127959; Crane Diag</a>
       <a href="pages/system-design.html" class="navbar-link">&#9881; System Design</a>
       <a href="pages/knowledge.html" class="navbar-link">Knowledge Base</a>
       <a href="index.html#electrical" class="navbar-link" style="color:#f5c842;">&#9889; Electrical</a>
@@ -217,7 +187,7 @@
       <button onclick="openAuthModal('login')" class="btn-outline" style="padding:8px 18px;font-size:.82rem;" id="hmNavLogin">Login</button>
       <button onclick="openAuthModal('register')" class="btn-primary" style="padding:8px 18px;font-size:.82rem;" id="hmNavRegister">Register</button>
       <div id="hmNavUser" style="display:none;align-items:center;gap:.5rem;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);border-radius:8px;padding:5px 10px;cursor:pointer;" onclick="doLogout()">
-        <div id="hmNavAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#0050aa);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;color:#fff;"></div>
+        <div id="hmNavAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#0050aa);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.78rem;color:#fff;"></div>
         <span id="hmNavName" style="font-size:.82rem;color:#e8f4ff;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
         <span id="hmNavPlan" style="font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:2px 8px;border-radius:100px;background:rgba(0,212,255,.1);color:var(--cyan);"></span>
       </div>
@@ -227,8 +197,7 @@
   <div class="navbar-mobile" id="navMobile">
     <a href="index.html">Home</a>
     <a href="pages/advisor.html">AI Advisor</a>
-    <a href="crane-diagnostic.html" style="color:#3dd68c;">🏗 Crane Diagnostic</a>
-    <a href="pages/system-design.html">&#9881; System Design</a>
+    <a href="crane-diagnostic.html" style="color:#3dd68c;">&#127959; Crane Diagnostic</a>
     <a href="pages/knowledge.html">Knowledge Base</a>
     <a href="index.html#calculator">Calculator</a>
     <a href="pages/pricing.html">Pricing</a>
@@ -239,112 +208,108 @@
   </div>
 </nav>
 
-<!-- MAIN DIAGNOSTIC AREA -->
+<!-- MAIN AREA -->
 <div class="diag-wrap">
   <div class="diag-main">
-
-    <!-- Top bar -->
     <div class="diag-topbar">
       <div style="display:flex;align-items:center;gap:.75rem;">
-        <h1>🏗 Crane Diagnostic Agent</h1>
+        <h1>&#127959; Crane Diagnostic Agent</h1>
         <div class="status-pill" id="statusPill"><span class="dot"></span> Ready</div>
       </div>
       <div class="topbar-btns">
-        <button class="tbtn tbtn-ghost" id="exportBtn" onclick="exportReport()" style="display:none;">📄 Export Report</button>
-        <button class="tbtn tbtn-danger" id="resetBtn" onclick="resetSession()" style="display:none;">↺ New Session</button>
+        <button class="tbtn tbtn-ghost" id="exportBtn" onclick="exportReport()" style="display:none;">Export Report</button>
+        <button class="tbtn tbtn-danger" id="resetBtn" onclick="resetSession()" style="display:none;">New Session</button>
       </div>
     </div>
-
-    <!-- Chat -->
     <div class="diag-chat" id="diagChat">
-
-      <!-- Welcome -->
       <div class="diag-welcome" id="welcomeScreen">
-        <div class="icon">🏗</div>
+        <div class="icon">&#127959;</div>
         <h2>Crane Diagnostic Agent</h2>
         <p>Structured fault isolation modelled on PLC ladder logic.<br>
-        10-state sequential check sequence — one question at a time.<br>
+        10-state sequential check — one question at a time.<br>
         Generates a DPR-ready fault report on completion.</p>
-        <button class="diag-start-btn" onclick="startSession()">▶ Start Diagnostic Session</button>
+        <button class="diag-start-btn" id="startBtn">&#9654; Start Diagnostic Session</button>
         <div class="arch-cards">
           <div class="arch-card">
-            <div class="ac-icon">⚡</div>
+            <div class="ac-icon">&#9889;</div>
             <div class="ac-title">Electronic Closed Loop</div>
-            <div class="ac-desc">PLC → Amplifier → Prop Valve → Pump Swash → Motor A/B Direct</div>
+            <div class="ac-desc">PLC - Amplifier - Prop Valve - Pump Swash - Motor A/B Direct</div>
           </div>
           <div class="arch-card">
-            <div class="ac-icon">🔧</div>
+            <div class="ac-icon">&#128295;</div>
             <div class="ac-title">Hydraulic Closed Loop</div>
-            <div class="ac-desc">Joystick Pilot Pressure → Pump Servo → Motor Direct</div>
+            <div class="ac-desc">Joystick Pilot Pressure - Pump Servo - Motor Direct</div>
           </div>
           <div class="arch-card">
-            <div class="ac-icon">🔄</div>
+            <div class="ac-icon">&#128260;</div>
             <div class="ac-title">Open Loop + DCV</div>
-            <div class="ac-desc">Constant Flow Pump → Pilot DCV → Motor/Cylinder → Tank</div>
+            <div class="ac-desc">Constant Flow Pump - Pilot DCV - Motor/Cylinder - Tank</div>
           </div>
         </div>
       </div>
-
-      <!-- Messages injected here by JS -->
       <div id="messagesContainer" style="display:none;flex-direction:column;gap:.9rem;"></div>
-
     </div>
-
-    <!-- Input -->
     <div class="diag-input-area" id="inputArea" style="display:none;">
       <div class="diag-input-row">
-        <textarea id="userInput" class="diag-textarea" rows="1"
-          placeholder="Type your answer or measurement reading..."
-          onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
-        <button id="sendBtn" class="diag-send-btn" onclick="sendMessage()">➤</button>
+        <textarea id="userInput" class="diag-textarea" rows="1" placeholder="Type your answer or measurement reading..."></textarea>
+        <button id="sendBtn" class="diag-send-btn">&#10148;</button>
       </div>
       <div class="diag-hint">
-        <span>Enter to send · Shift+Enter for new line</span>
+        <span>Enter to send &middot; Shift+Enter for new line</span>
         <span id="sessionInfo">Session active</span>
       </div>
     </div>
-
   </div>
 </div>
 
-<script>
-const API_URL = 'https://hydromind-backend.onrender.com/api/chat';
-const CRANE_SYSTEM = `You are HydroMind Crane Diagnostic Agent — structured fault isolation specialist modelled on PLC ladder logic.
-RULES: Ask ONE question per turn. Follow 10-state sequence. On FAIL trigger correct branch tree. Include expected values (bar, mA, VDC, Ohm) in every question. End with DPR Fault Report when resolved.
+<script type="text/javascript">
+// ── HydroMind Crane Diagnostic Agent ──
+// All strings use single quotes. No template literals. No backticks in data.
 
-STATE MACHINE Path A (Electronic Closed Loop - default):
-STATE 0 INTAKE: Collect crane make/model, function affected, symptom, architecture (A=Electronic closed loop/B=Hydraulic closed loop/C=Open loop DCV), loaded/unloaded — ask all in ONE message.
-STATE 1 POWER: E-stop reset? PLC RUN? 24VDC confirmed? FAIL→POWER branch.
-STATE 2 CHARGE PRESSURE: Reading on gauge/HMI? Expected 25–35 bar. FAIL<25bar→CHARGE branch.
-STATE 3 BRAKE FEED: Brake pilot pressure? Expected 25–45 bar. FAIL→BRAKE branch.
-STATE 4 JOYSTICK SIGNAL: Signal at PLC AI at full stroke — 4–20mA or 0–10V? FAIL→SIGNAL branch.
-STATE 5 AMPLIFIER: Enable LED active? 24VDC on card? FAIL→AMPLIFIER branch.
-STATE 6 PROP VALVE: mA output 200–800mA? Coil resistance Rexroth 30–45Ω Eaton 20–35Ω SD 25–40Ω? FAIL→PROPVALVE branch.
-STATE 7 PUMP: Pressure on Port A or B? Case drain warm? FAIL→PUMP branch.
-STATE 8 MOTOR: Shaft rotating? Case drain ≤3 bar? FAIL→MOTOR branch.
-STATE 9 BRAKE MECH: Brake DCV energised? Release pressure 25–45 bar? No drag/heat? FAIL→BRAKE_MECH branch.
-STATE 10 MOTION: Speed normal? Jerk→CONTROL_QUALITY. Slow→SPEED_LOSS. Normal→GENERATE REPORT.
+var API_URL = 'https://hydromind-backend.onrender.com/api/chat';
 
-Path B (Hydraulic Joystick): Pilot at joystick inlet→servo→charge→pump ports→motor→brake.
-Path C (Open Loop): Pump outlet pressure→DCV shifting/manual override→CBV vs load pressure.
+// System prompt built with string concatenation — no backticks, no special chars in JS
+var CRANE_SYSTEM = 'You are HydroMind Crane Diagnostic Agent — a structured fault isolation specialist.' +
+  ' Ask ONE question per turn. Follow the 10-state sequence below. On FAIL trigger the correct branch tree.' +
+  ' Include expected values (bar, mA, VDC, Ohm) in every question.' +
+  ' End every resolved session with the HYDROMIND CRANE DIAGNOSTIC REPORT block.\n\n' +
+  'STATE 0 INTAKE: Collect crane make and model, function affected (hoist/luff/slew/aux),' +
+  ' symptom (no movement/slow/jerky/alarm), architecture' +
+  ' (A=Electronic joystick closed loop, B=Hydraulic joystick closed loop, C=Open loop DCV),' +
+  ' and loaded or unloaded condition. Ask all in ONE message.\n' +
+  'STATE 1 POWER: Is E-stop reset and PLC in RUN mode? 24VDC control supply confirmed? FAIL go to POWER branch.\n' +
+  'STATE 2 CHARGE PRESSURE: What is charge pressure on gauge or HMI? Expected 25 to 35 bar. FAIL go to CHARGE branch.\n' +
+  'STATE 3 BRAKE FEED: Brake release pilot pressure? Expected 25 to 45 bar. FAIL go to BRAKE branch.\n' +
+  'STATE 4 JOYSTICK SIGNAL: Signal at PLC AI at full stroke — 4 to 20mA or 0 to 10V? FAIL go to SIGNAL branch.\n' +
+  'STATE 5 AMPLIFIER: Enable LED active? 24VDC on card terminals? FAIL go to AMPLIFIER branch.\n' +
+  'STATE 6 PROP VALVE: mA output 200 to 800mA? Coil resistance — Rexroth 30 to 45 Ohm, Eaton 20 to 35 Ohm, Sauer Danfoss 25 to 40 Ohm? FAIL go to PROPVALVE branch.\n' +
+  'STATE 7 PUMP: Any pressure on Port A or Port B? Case drain line warm? FAIL go to PUMP branch.\n' +
+  'STATE 8 MOTOR: Shaft rotating? Case drain pressure max 3 bar? FAIL go to MOTOR branch.\n' +
+  'STATE 9 BRAKE MECH: Brake DCV solenoid energised? Release pressure 25 to 45 bar? No heat or drag at disc? FAIL go to BRAKE_MECH branch.\n' +
+  'STATE 10 MOTION QUALITY: Speed and response normal? Jerk or unstable go to CONTROL_QUALITY branch. Slow speed go to SPEED_LOSS branch. Normal — generate REPORT.\n\n' +
+  'PATH B Hydraulic Joystick: Pilot pressure at joystick inlet, then servo control port, then charge pressure, then pump port A or B, then motor, then brake.\n' +
+  'PATH C Open Loop DCV: Pump outlet pressure, then DCV shifting or manual override test, then CBV setting vs load-induced pressure.\n\n' +
+  'BRANCH TREES: For each fail condition give 4 to 5 specific checks with expected values. Ask if resolved after each branch.\n\n' +
+  'FAULT REPORT FORMAT when resolved — use exactly this:\n' +
+  '---HYDROMIND CRANE DIAGNOSTIC REPORT---\n' +
+  'Date: [today] | Crane: [make and model] | Function: [affected function] | Architecture: [type]\n' +
+  'Root Cause: [confirmed fault] | Branch Path: [states checked and branch entered]\n' +
+  'Corrective Action: [steps performed]\n' +
+  'Readings Recorded: [all pressure, current, resistance values from session]\n' +
+  'Safety Notes: LOTO before opening any hydraulic connection. Lower load before working on hoist circuit. Bleed pressure. Hot oil hazard above 60 degrees C. Confirm PTW with OIM before isolating crane systems.\n' +
+  'STATUS: RESOLVED or ESCALATE TO OEM';
 
-BRANCH TREES: For each fail give 4–5 specific checks with expected values. Ask if resolved after each branch.
+var messages = [];
+var sessionActive = false;
+var turnCount = 0;
+var sessionStart = null;
+var currentStep = 0;
 
-FAULT REPORT when resolved (use exactly this format):
----HYDROMIND CRANE DIAGNOSTIC REPORT---
-Date: [today] | Crane: [make/model] | Function: [affected] | Architecture: [type]
-Root Cause: [confirmed] | Branch Path: [states+branch]
-Corrective Action: [steps taken]
-Readings Recorded: [all values from session]
-Safety Notes: LOTO before opening connections. Lower load. Bleed pressure. Hot oil hazard. Confirm PTW with OIM.
-STATUS: RESOLVED / ESCALATE TO OEM`;
-
-let messages=[], sessionActive=false, turnCount=0, sessionStart=null, currentStep=0;
-const STEPS=['intake','power','charge','brake','signal','amp','valve','pump','motor','final'];
-const STEP_KW=[
+var STEPS = ['intake','power','charge','brake','signal','amp','valve','pump','motor','final'];
+var STEP_KW = [
   ['make','model','symptom','architecture','function','crane'],
   ['e-stop','plc','run mode','24vdc','control supply'],
-  ['charge pressure','ps2','25','35 bar','boost'],
+  ['charge pressure','ps2','35 bar','boost'],
   ['brake feed','ps1','pilot pressure','brake release'],
   ['joystick signal','analog','4-20','0-10v','plc input'],
   ['amplifier','enable','led','24vdc supply','card'],
@@ -354,133 +319,255 @@ const STEP_KW=[
   ['motion','speed','jerk','resolved','report']
 ];
 
-function startSession(){
-  document.getElementById('welcomeScreen').style.display='none';
-  document.getElementById('messagesContainer').style.display='flex';
-  document.getElementById('inputArea').style.display='block';
-  document.getElementById('statePanel').style.display='block';
-  document.getElementById('modeBadge').style.display='inline-block';
-  document.getElementById('resetBtn').style.display='inline-block';
-  sessionActive=true; sessionStart=new Date();
-  updateStatus('Active',true); setActiveStep(0);
-  messages.push({role:'user',content:'START_DIAGNOSTIC_SESSION'});
-  showTyping(); callAPI().then(r=>{removeTyping();const reply=r||'No response.';appendMsg('agent',reply);messages.push({role:'assistant',content:reply});}).catch(e=>{removeTyping();appendMsg('agent','Connection error: '+e.message);});
-}
-
-function resetSession(){
-  if(!confirm('Start new session? Current session will be cleared.'))return;
-  messages=[];sessionActive=false;turnCount=0;currentStep=0;
-  document.getElementById('messagesContainer').innerHTML='';
-  document.getElementById('messagesContainer').style.display='none';
-  document.getElementById('welcomeScreen').style.display='block';
-  document.getElementById('inputArea').style.display='none';
-  document.getElementById('statePanel').style.display='none';
-  document.getElementById('modeBadge').style.display='none';
-  document.getElementById('resetBtn').style.display='none';
-  document.getElementById('exportBtn').style.display='none';
-  STEPS.forEach(s=>setStepStatus(s,''));
-  updateStatus('Ready',false);
-}
-
-async function sendMessage(){
-  const inp=document.getElementById('userInput');
-  const text=inp.value.trim();
-  if(!text||!sessionActive)return;
-  inp.value=''; autoResize(inp);
-  document.getElementById('sendBtn').disabled=true;
-  appendMsg('user',text); messages.push({role:'user',content:text}); turnCount++;
-  document.getElementById('sessionInfo').textContent=`Turn ${turnCount} · ${elapsed()}`;
+// ── Session control ──
+function startSession() {
+  document.getElementById('welcomeScreen').style.display = 'none';
+  document.getElementById('messagesContainer').style.display = 'flex';
+  document.getElementById('inputArea').style.display = 'block';
+  document.getElementById('statePanel').style.display = 'block';
+  document.getElementById('modeBadge').style.display = 'inline-block';
+  document.getElementById('resetBtn').style.display = 'inline-block';
+  sessionActive = true;
+  sessionStart = new Date();
+  updateStatus('Active', true);
+  setActiveStep(0);
+  messages.push({role: 'user', content: 'START DIAGNOSTIC SESSION'});
   showTyping();
-  const r=await callAPI(); removeTyping();
-  document.getElementById('sendBtn').disabled=false;
-  if(r){appendMsg('agent',r);messages.push({role:'assistant',content:r});advanceStep(r);checkReport(r);}
+  callAPI(function(reply) {
+    removeTyping();
+    appendMsg('agent', reply);
+    messages.push({role: 'assistant', content: reply});
+  });
 }
 
-async function callAPI(){
-  try{
-    const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({system:CRANE_SYSTEM,messages,model:'claude-sonnet-4-5',max_tokens:1000})});
-    if(!res.ok)throw new Error(`HTTP ${res.status}`);
-    const d=await res.json(); const txt=(d&&d.content&&d.content[0]&&d.content[0].text)||''; return txt||'No response.';
-  }catch(e){return `⚠ Connection error: ${e.message}`;}
+function resetSession() {
+  if (!confirm('Start new session? Current session will be cleared.')) return;
+  messages = []; sessionActive = false; turnCount = 0; currentStep = 0;
+  document.getElementById('messagesContainer').innerHTML = '';
+  document.getElementById('messagesContainer').style.display = 'none';
+  document.getElementById('welcomeScreen').style.display = 'block';
+  document.getElementById('inputArea').style.display = 'none';
+  document.getElementById('statePanel').style.display = 'none';
+  document.getElementById('modeBadge').style.display = 'none';
+  document.getElementById('resetBtn').style.display = 'none';
+  document.getElementById('exportBtn').style.display = 'none';
+  for (var i = 0; i < STEPS.length; i++) { setStepStatus(STEPS[i], ''); }
+  updateStatus('Ready', false);
 }
 
-function appendMsg(role,text){
-  const c=document.getElementById('messagesContainer');
-  const now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-  text=text||'';const isRep=text.includes('HYDROMIND CRANE DIAGNOSTIC REPORT');
-  const d=document.createElement('div');
-  d.className=`msg-row ${role==='agent'?'':'user'}`;
-  var bubbleContent = isRep ? '<div class="report-block">'+text+'</div>' : fmt(text);
-  d.innerHTML='<div class="msg-av '+(role==='agent'?'ai':'usr')+'">'+(role==='agent'?'⚙':'👷')+'</div>'
-    +'<div style="flex:1">'
-    +'<div class="msg-tag">'+(role==='agent'?'DIAGNOSTIC AGENT':'TECHNICIAN')+' · '+now+'</div>'
-    +'<div class="msg-bubble">'+bubbleContent+'</div>'
-    +'</div>';
+function sendMessage() {
+  var inp = document.getElementById('userInput');
+  var text = inp.value.replace(/^\s+|\s+$/g, '');
+  if (!text || !sessionActive) return;
+  inp.value = '';
+  inp.style.height = 'auto';
+  document.getElementById('sendBtn').disabled = true;
+  turnCount++;
+  document.getElementById('sessionInfo').textContent = 'Turn ' + turnCount + ' - ' + elapsed();
+  appendMsg('user', text);
+  messages.push({role: 'user', content: text});
+  showTyping();
+  callAPI(function(reply) {
+    removeTyping();
+    document.getElementById('sendBtn').disabled = false;
+    appendMsg('agent', reply);
+    messages.push({role: 'assistant', content: reply});
+    advanceStep(reply);
+    checkReport(reply);
+  });
+}
+
+// ── API call — uses XMLHttpRequest for maximum browser compatibility ──
+function callAPI(callback) {
+  var payload = JSON.stringify({
+    system: CRANE_SYSTEM,
+    messages: messages,
+    model: 'claude-sonnet-4-5',
+    max_tokens: 1000
+  });
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', API_URL, true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState !== 4) return;
+    if (xhr.status === 200) {
+      try {
+        var data = JSON.parse(xhr.responseText);
+        var text = '';
+        if (data && data.content && data.content.length > 0 && data.content[0].text) {
+          text = data.content[0].text;
+        }
+        callback(text || 'No response received. Please try again.');
+      } catch (e) {
+        callback('Response parse error: ' + e.message);
+      }
+    } else {
+      callback('Server error: HTTP ' + xhr.status + '. Please refresh and try again.');
+    }
+  };
+  xhr.onerror = function() {
+    removeTyping();
+    callback('Connection error. Check your internet and try again.');
+  };
+  xhr.send(payload);
+}
+
+// ── Message rendering — plain DOM, no template literals ──
+function appendMsg(role, text) {
+  var c = document.getElementById('messagesContainer');
+  if (!text) text = '';
+  var now = new Date().toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'});
+  var isReport = text.indexOf('HYDROMIND CRANE DIAGNOSTIC REPORT') !== -1;
+
+  var row = document.createElement('div');
+  row.className = role === 'agent' ? 'msg-row' : 'msg-row user';
+
+  var av = document.createElement('div');
+  av.className = role === 'agent' ? 'msg-av ai' : 'msg-av usr';
+  av.textContent = role === 'agent' ? 'A' : 'T';
+
+  var body = document.createElement('div');
+  body.style.flex = '1';
+
+  var tag = document.createElement('div');
+  tag.className = 'msg-tag';
+  tag.textContent = (role === 'agent' ? 'DIAGNOSTIC AGENT' : 'TECHNICIAN') + ' - ' + now;
+
+  var bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+
+  if (isReport) {
+    var pre = document.createElement('div');
+    pre.className = 'report-block';
+    pre.textContent = text;
+    bubble.appendChild(pre);
+  } else {
+    bubble.innerHTML = formatText(text);
+  }
+
+  body.appendChild(tag);
+  body.appendChild(bubble);
+  row.appendChild(av);
+  row.appendChild(body);
+  c.appendChild(row);
+
+  var chat = document.getElementById('diagChat');
+  chat.scrollTop = chat.scrollHeight;
+}
+
+// ── Safe text formatter — no regex on backticks ──
+function formatText(text) {
+  if (!text || typeof text !== 'string') return '';
+  // Escape HTML first
+  var safe = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  // Bold: **text**
+  safe = safe.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  // Newlines
+  safe = safe.replace(/\n/g, '<br>');
+  return safe;
+}
+
+// ── Typing indicator ──
+function showTyping() {
+  var c = document.getElementById('messagesContainer');
+  var d = document.createElement('div');
+  d.id = 'typi';
+  d.className = 'msg-row';
+  d.innerHTML = '<div class="msg-av ai">A</div><div class="msg-bubble"><div class="typing-ind"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>';
   c.appendChild(d);
-  document.getElementById('diagChat').scrollTop=99999;
+  document.getElementById('diagChat').scrollTop = 99999;
+}
+function removeTyping() {
+  var e = document.getElementById('typi');
+  if (e) e.parentNode.removeChild(e);
 }
 
-function fmt(t){
-  if(!t||typeof t!=='string')return '';
-  // Remove triple backtick code blocks entirely (replace with plain text content)
-  t=t.replace(/```[\w]*\n?([\s\S]*?)```/g,'<pre style="background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);border-radius:4px;padding:8px;font-family:monospace;font-size:.78rem;white-space:pre-wrap;margin:4px 0;">$1</pre>');
-  // Bold
-  t=t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
-  // Single backtick inline code (safe now — triple backticks already handled)
-  t=t.replace(/`([^`]+)`/g,'<code>$1</code>');
-  // Markdown headers
-  t=t.replace(/^#{1,3}\s+(.+)$/gm,'<strong style="color:#00d4ff">$1</strong>');
-  // Newlines to <br>
-  t=t.replace(/\n/g,'<br>');
-  return t;
-}
-
-function showTyping(){
-  const c=document.getElementById('messagesContainer');
-  const d=document.createElement('div');d.id='typi';d.className='msg-row';
-  d.innerHTML='<div class="msg-av ai">⚙</div><div class="msg-bubble"><div class="typing-ind"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>';
-  c.appendChild(d);document.getElementById('diagChat').scrollTop=99999;
-}
-function removeTyping(){const e=document.getElementById('typi');if(e)e.remove();}
-
-function advanceStep(r){
-  const low=r.toLowerCase();
-  for(let i=currentStep;i<STEP_KW.length;i++){
-    if(STEP_KW[i].some(k=>low.includes(k))){
-      for(let j=0;j<i;j++)setStepStatus(STEPS[j],'done');
-      setActiveStep(i);currentStep=i;break;
+// ── Step tracker ──
+function advanceStep(reply) {
+  var low = reply.toLowerCase();
+  for (var i = currentStep; i < STEP_KW.length; i++) {
+    var found = false;
+    for (var j = 0; j < STEP_KW[i].length; j++) {
+      if (low.indexOf(STEP_KW[i][j]) !== -1) { found = true; break; }
+    }
+    if (found) {
+      for (var k = 0; k < i; k++) { setStepStatus(STEPS[k], 'done'); }
+      setActiveStep(i); currentStep = i; break;
     }
   }
 }
-function setActiveStep(idx){STEPS.forEach((s,i)=>setStepStatus(s,i<idx?'done':i===idx?'active':''));}
-function setStepStatus(id,st){const e=document.getElementById(`st-${id}`);if(e)e.className=`state-step ${st}`;}
+function setActiveStep(idx) {
+  for (var i = 0; i < STEPS.length; i++) {
+    setStepStatus(STEPS[i], i < idx ? 'done' : i === idx ? 'active' : '');
+  }
+}
+function setStepStatus(id, st) {
+  var e = document.getElementById('st-' + id);
+  if (e) e.className = 'state-step' + (st ? ' ' + st : '');
+}
 
-function checkReport(r){
-  if(r.includes('HYDROMIND CRANE DIAGNOSTIC REPORT')){
-    STEPS.forEach(s=>setStepStatus(s,'done'));
-    document.getElementById('exportBtn').style.display='inline-block';
-    updateStatus('Resolved',false); sessionActive=false;
+// ── Report detection ──
+function checkReport(r) {
+  if (r.indexOf('HYDROMIND CRANE DIAGNOSTIC REPORT') !== -1) {
+    for (var i = 0; i < STEPS.length; i++) { setStepStatus(STEPS[i], 'done'); }
+    document.getElementById('exportBtn').style.display = 'inline-block';
+    updateStatus('Resolved', false);
+    sessionActive = false;
   }
 }
 
-function updateStatus(text,active){
-  const p=document.getElementById('statusPill');
-  p.innerHTML=`<span class="dot"></span> ${text}`;
-  p.style.cssText=active?'background:rgba(61,214,140,.08);border-color:rgba(61,214,140,.22);color:#3dd68c;':'background:rgba(100,116,139,.08);border-color:rgba(100,116,139,.22);color:var(--text3);';
+// ── Status pill ──
+function updateStatus(text, active) {
+  var p = document.getElementById('statusPill');
+  p.innerHTML = '<span class="dot"></span> ' + text;
+  if (active) {
+    p.style.background = 'rgba(61,214,140,.08)';
+    p.style.borderColor = 'rgba(61,214,140,.22)';
+    p.style.color = '#3dd68c';
+  } else {
+    p.style.background = 'rgba(100,116,139,.08)';
+    p.style.borderColor = 'rgba(100,116,139,.22)';
+    p.style.color = 'var(--text3)';
+  }
 }
 
-function exportReport(){
-  let out=`HYDROMIND CRANE DIAGNOSTIC SESSION\nExported: ${new Date().toLocaleString()}\n\n`;
-  messages.forEach(m=>{out+=`[${m.role.toUpperCase()}]\n${m.content}\n\n`;});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([out],{type:'text/plain'}));
-  a.download=`hydromind-diagnostic-${Date.now()}.txt`;a.click();
+// ── Export ──
+function exportReport() {
+  var out = 'HYDROMIND CRANE DIAGNOSTIC SESSION\nExported: ' + new Date().toLocaleString() + '\n\n';
+  for (var i = 0; i < messages.length; i++) {
+    out += '[' + messages[i].role.toUpperCase() + ']\n' + messages[i].content + '\n\n';
+  }
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([out], {type: 'text/plain'}));
+  a.download = 'hydromind-diagnostic-' + Date.now() + '.txt';
+  a.click();
 }
 
-function elapsed(){if(!sessionStart)return'';const s=Math.floor((Date.now()-sessionStart)/1000);return`${Math.floor(s/60)}m ${s%60}s`;}
-function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
-function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
+// ── Utilities ──
+function elapsed() {
+  if (!sessionStart) return '';
+  var s = Math.floor((Date.now() - sessionStart) / 1000);
+  return Math.floor(s / 60) + 'm ' + (s % 60) + 's';
+}
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 110) + 'px';
+}
+
+// ── Event listeners — attached after DOM ready ──
+window.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('startBtn').addEventListener('click', startSession);
+  document.getElementById('sendBtn').addEventListener('click', sendMessage);
+  document.getElementById('userInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
+  document.getElementById('userInput').addEventListener('input', function() {
+    autoResize(this);
+  });
+});
 </script>
 
 <script src="js/main.js"></script>
