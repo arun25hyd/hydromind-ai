@@ -4,6 +4,20 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Pricing & Plans — HydroMind.AI</title>
 <link rel="stylesheet" href="../css/style.css">
+<style>
+/* ── Navbar size override: taller bar + larger link font ── */
+.navbar { height: 72px !important; }
+.navbar-inner { height: 72px !important; min-height: 72px !important; }
+.navbar-link {
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+  padding: 6px 10px !important;
+}
+.navbar-menu { gap: 2px !important; align-items: center !important; }
+.hm-logo-name { font-size: 1.05rem !important; }
+.hm-logo-sub  { font-size: 0.62rem !important; }
+</style>
 </head>
 <body>
 <div class="circuit-bg"><svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="pbg" cx="50%" cy="50%" r="55%"><stop offset="0%" stop-color="#0d1220"/><stop offset="100%" stop-color="#080c12"/></radialGradient></defs><rect width="1400" height="900" fill="url(#pbg)"/><line class="c-trace" x1="0" y1="450" x2="300" y2="450" stroke="#c8a550" stroke-width=".5" opacity=".06" fill="none"/><line class="c-trace-r" x1="1400" y1="450" x2="1100" y2="450" stroke="#c8a550" stroke-width=".5" opacity=".06" fill="none"/></svg></div>
@@ -78,6 +92,8 @@
     <div class="navbar-menu">
       <a href="../index.html" class="navbar-link">Home</a>
       <a href="advisor.html" class="navbar-link">AI Advisor</a>
+    <a href="../crane-diagnostic.html" style="color:#22c55e;">🏗 Crane Diagnostic</a>
+      <a href="../crane-diagnostic.html" class="navbar-link" style="color:#22c55e;">🏗 Crane Diag</a>
       <a href="system-design.html" class="navbar-link">&#9881; System Design</a>
       <a href="knowledge.html" class="navbar-link">Knowledge Base</a>
       
@@ -214,7 +230,7 @@
 
           <button type="button" onclick="submitFeedback()" class="btn-primary" style="align-self:flex-start;padding:14px 40px;">Submit Feedback ↗</button>
           <div style="margin-top:.75rem;font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text3);line-height:1.7;">
-            &#128274; Your feedback is sent to <span style="color:var(--gold);">support@hydromindai.com</span><br>
+            &#128274; Your feedback is sent to <span style="color:var(--gold);"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="24575154544b5650644c5d40564b494d4a40454d0a474b49">[email&#160;protected]</a></span><br>
             We respond within 24 hours (Pro/Enterprise: within 4 hours)
           </div>
         </form>
@@ -273,7 +289,7 @@
         </div>
         <div class="footer-col"><h5>Platform</h5><div class="footer-links"><a href="advisor.html">AI Advisor</a><a href="system-design.html">System Design</a><a href="knowledge.html">Knowledge Base</a></div></div>
         <div class="footer-col"><h5>Account</h5><div class="footer-links"><a href="pricing.html">Pricing & Plans</a><a href="feedback.html">Feedback</a><a href="privacy.html">Privacy Policy</a><a href="disclaimer.html">Disclaimer</a></div></div>
-        <div class="footer-col"><h5>Contact</h5><div class="footer-links"><a href="mailto:support@hydromindai.com">support@hydromindai.com</a><a href="#">Abu Dhabi, UAE</a><a href="#">Response: 24hrs (Pro: 4hrs)</a></div></div>
+        <div class="footer-col"><h5>Contact</h5><div class="footer-links"><a href="/cdn-cgi/l/email-protection#5e2d2b2e2e312c2a1e36273a2c313337303a3f37703d3133"><span class="__cf_email__" data-cfemail="8dfef8fdfde2fff9cde5f4e9ffe2e0e4e3e9ece4a3eee2e0">[email&#160;protected]</span></a><a href="#">Abu Dhabi, UAE</a><a href="#">Response: 24hrs (Pro: 4hrs)</a></div></div>
       </div>
       <div class="footer-bottom">
         <span>© 2026 HydroMind.AI — All rights reserved</span>
@@ -284,7 +300,7 @@
 
 </div><!-- /hm-main-content -->
 
-<script src="../js/main.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="../js/main.js"></script>
 <script src="../js/auth.js"></script>
 <script>
 // Star rating interaction
@@ -344,11 +360,4 @@ function submitFeedback() {
   );
   window.location.href = 'mailto:support@hydromindai.com?subject=' + subject + '&body=' + body;
 
-  msg.style.cssText = 'display:block;background:rgba(76,175,130,.07);border:1px solid rgba(76,175,130,.2);border-radius:8px;padding:.85rem 1rem;font-size:.88rem;color:var(--green);margin-top:.75rem;';
-  msg.textContent = '✓ Opening your email client to send feedback to support@hydromindai.com';
-  document.getElementById('feedbackForm').reset();
-  document.querySelectorAll('label[for^="s"]').forEach(l => l.style.color = 'rgba(200,165,80,.25)');
-}
-</script>
-</body>
-</html>
+  msg.style.cssText = 'display:block;background:rgba(76,175,130,.07);border:1px solid rgba(76,175,13

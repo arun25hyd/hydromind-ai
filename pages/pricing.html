@@ -8,6 +8,20 @@
 <link rel="stylesheet" href="../css/style.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Outfit:wght@300;400;500;600&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;500&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* ── Navbar size override: taller bar + larger link font ── */
+.navbar { height: 72px !important; }
+.navbar-inner { height: 72px !important; min-height: 72px !important; }
+.navbar-link {
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+  padding: 6px 10px !important;
+}
+.navbar-menu { gap: 2px !important; align-items: center !important; }
+.hm-logo-name { font-size: 1.05rem !important; }
+.hm-logo-sub  { font-size: 0.62rem !important; }
+</style>
 </head>
 <body>
 
@@ -26,6 +40,7 @@
     <div class="navbar-menu">
       <a href="../index.html" class="navbar-link">Home</a>
       <a href="advisor.html" class="navbar-link">AI Advisor</a>
+      <a href="../crane-diagnostic.html" class="navbar-link" style="color:#22c55e;">🏗 Crane Diag</a>
       <a href="system-design.html" class="navbar-link">&#9881; System Design</a>
       <a href="knowledge.html" class="navbar-link">Knowledge Base</a>
       
@@ -48,6 +63,7 @@
   <div class="navbar-mobile" id="navMobile">
     <a href="../index.html">Home</a>
     <a href="advisor.html">AI Advisor</a>
+    <a href="../crane-diagnostic.html" style="color:#22c55e;">🏗 Crane Diagnostic</a>
     <a href="system-design.html">&#9881; System Design</a>
     <a href="knowledge.html">Knowledge Base</a>
     
@@ -283,7 +299,7 @@
           </div>
           <div class="footer-col"><h5>Platform</h5><div class="footer-links"><a href="advisor.html">AI Advisor</a><a href="system-design.html">System Design</a><a href="knowledge.html">Knowledge Base</a></div></div>
           <div class="footer-col"><h5>Account</h5><div class="footer-links"><a href="pricing.html">Pricing &amp; Plans</a><a href="feedback.html">Feedback</a><a href="privacy.html">Privacy Policy</a><a href="disclaimer.html">Disclaimer</a></div></div>
-          <div class="footer-col"><h5>Contact</h5><div class="footer-links"><a href="mailto:support@hydromindai.com">support@hydromindai.com</a><a href="#">Abu Dhabi, UAE</a><a href="#">Response: 24hrs (Pro: 4hrs)</a></div></div>
+          <div class="footer-col"><h5>Contact</h5><div class="footer-links"><a href="/cdn-cgi/l/email-protection#cdbeb8bdbda2bfb98da5b4a9bfa2a0a4a3a9aca4e3aea2a0"><span class="__cf_email__" data-cfemail="ef9c9a9f9f809d9baf87968b9d808286818b8e86c18c8082">[email&#160;protected]</span></a><a href="#">Abu Dhabi, UAE</a><a href="#">Response: 24hrs (Pro: 4hrs)</a></div></div>
         </div>
         <div class="footer-bottom">
           <span>© 2026 HydroMind.AI — All rights reserved</span>
@@ -307,7 +323,7 @@
 
 </div><!-- end page-layout -->
 
-<script src="../js/main.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="../js/main.js"></script>
 <script src="../js/auth.js"></script>
 <script>
 function selectPlan(plan) {
@@ -327,12 +343,4 @@ function showPlanToast(msg) {
   var t = document.getElementById('hmToast');
   if (!t) {
     t = document.createElement('div'); t.id = 'hmToast';
-    t.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:9999;padding:13px 28px;border-radius:10px;font-size:.88rem;font-family:"Outfit",sans-serif;background:rgba(8,18,36,.97);border:1px solid rgba(200,165,80,.35);color:rgba(220,210,195,.9);box-shadow:0 8px 32px rgba(0,0,0,.4);max-width:480px;text-align:center;';
-    document.body.appendChild(t);
-  }
-  t.textContent = msg; t.style.display = 'block';
-  setTimeout(function(){ t.style.display = 'none'; }, 5000);
-}
-</script>
-</body>
-</html>
+    t.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:9999;padding:13px 28px;border-radius:10px;font-size:.88rem;font-family:"Outfit",sans-serif;background:rgba(8,18,36,.97);border:1px solid rgba(200,165,80,.35);color:rgba(220,210,195,.9);
