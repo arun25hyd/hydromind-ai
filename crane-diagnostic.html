@@ -420,7 +420,20 @@ function appendMsg(role,text){
   document.getElementById('diagChat').scrollTop=99999;
 }
 
-function fmt(t){if(!t||typeof t!=='string')return '';return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/`(.*?)`/g,'<code>$1</code>').replace(/\n/g,'<br>');}
+function fmt(t){
+  if(!t||typeof t!=='string')return '';
+  // Remove triple backtick code blocks entirely (replace with plain text content)
+  t=t.replace(/```[\w]*\n?([\s\S]*?)```/g,'<pre style="background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);border-radius:4px;padding:8px;font-family:monospace;font-size:.78rem;white-space:pre-wrap;margin:4px 0;">$1</pre>');
+  // Bold
+  t=t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+  // Single backtick inline code (safe now — triple backticks already handled)
+  t=t.replace(/`([^`]+)`/g,'<code>$1</code>');
+  // Markdown headers
+  t=t.replace(/^#{1,3}\s+(.+)$/gm,'<strong style="color:#00d4ff">$1</strong>');
+  // Newlines to <br>
+  t=t.replace(/\n/g,'<br>');
+  return t;
+}
 
 function showTyping(){
   const c=document.getElementById('messagesContainer');
