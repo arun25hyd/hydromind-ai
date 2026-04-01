@@ -411,11 +411,12 @@ function appendMsg(role,text){
   text=text||'';const isRep=text.includes('HYDROMIND CRANE DIAGNOSTIC REPORT');
   const d=document.createElement('div');
   d.className=`msg-row ${role==='agent'?'':'user'}`;
-  d.innerHTML=`<div class="msg-av ${role==='agent'?'ai':'usr'}">${role==='agent'?'⚙':'👷'}</div>
-    <div style="flex:1">
-      <div class="msg-tag">${role==='agent'?'DIAGNOSTIC AGENT':'TECHNICIAN'} · ${now}</div>
-      <div class="msg-bubble">${isRep?`<div class="report-block">${text}</div>`:fmt(text)}</div>
-    </div>`;
+  var bubbleContent = isRep ? '<div class="report-block">'+text+'</div>' : fmt(text);
+  d.innerHTML='<div class="msg-av '+(role==='agent'?'ai':'usr')+'">'+(role==='agent'?'⚙':'👷')+'</div>'
+    +'<div style="flex:1">'
+    +'<div class="msg-tag">'+(role==='agent'?'DIAGNOSTIC AGENT':'TECHNICIAN')+' · '+now+'</div>'
+    +'<div class="msg-bubble">'+bubbleContent+'</div>'
+    +'</div>';
   c.appendChild(d);
   document.getElementById('diagChat').scrollTop=99999;
 }
