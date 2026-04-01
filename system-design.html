@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>System Design — HydroMind.AI</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.sd-wrap{display:flex;flex-direction:column;height:calc(100vh - 72px);margin-top:72px;margin-left:220px;margin-right:200px;position:relative;z-index:1;background:rgba(4,8,18,.97);}
+@media(max-width:1200px){.sd-wrap{margin-right:0;}}
+@media(max-width:1024px){.sd-wrap{margin-left:160px;}}
+@media(max-width:860px){.sd-wrap{margin-left:0;}}
+.sd-header{padding:.85rem 1.5rem;border-bottom:1px solid var(--border);background:rgba(8,12,22,.98);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.sd-title{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;color:var(--text1);}
+.sd-subtitle{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);margin-top:2px;}
+.sd-status{display:flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:.66rem;color:var(--gold);}
+.sd-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:node-pulse 2s infinite;}
+
+/* Phase progress */
+.sd-phases{display:flex;align-items:center;gap:.4rem;padding:.6rem 1.5rem;border-bottom:1px solid var(--border);background:rgba(6,10,20,.95);flex-shrink:0;flex-wrap:wrap;}
+.sd-phase{padding:4px 12px;border-radius:100px;font-family:'Space Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.07em;border:1px solid rgba(200,165,80,.1);color:var(--text3);white-space:nowrap;transition:.3s;}
+.sd-phase.active{color:var(--gold);border-color:rgba(200,165,80,.4);background:rgba(200,165,80,.07);}
+.sd-phase.done{color:var(--green);border-color:rgba(76,175,130,.3);background:rgba(76,175,130,.05);}
+.sd-arrow-ph{font-size:.6rem;color:rgba(200,190,175,.18);}
+.sd-track{height:3px;background:rgba(200,165,80,.08);border-radius:2px;overflow:hidden;margin-top:.5rem;width:100%;}
+.sd-track-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:2px;transition:width .5s ease;width:5%;}
+
+/* Chat body */
+.sd-body{flex:1;overflow-y:auto;padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:.85rem;}
+
+/* Messages */
+.msg-ai{display:flex;gap:.65rem;max-width:85%;}
+.msg-user{display:flex;gap:.65rem;max-width:80%;align-self:flex-end;flex-direction:row-reverse;}
+.msg-av{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.75rem;}
+.av-ai{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#080c12;}
+.av-usr{background:rgba(200,165,80,.12);border:1px solid rgba(200,165,80,.2);color:var(--gold);}
+.msg-tag{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--text3);margin-bottom:3px;}
+.bubble-ai{background:rgba(200,165,80,.05);border:1px solid rgba(200,165,80,.12);border-radius:10px 10px 10px 3px;padding:.85rem 1.05rem;font-size:.9rem;color:var(--text2);line-height:1.8;}
+.bubble-ai strong{color:var(--text1);}
+.bubble-ai ol{padding-left:1.25rem;margin:.5rem 0;display:flex;flex-direction:column;gap:.35rem;}
+.bubble-ai li{font-size:.88rem;color:var(--text2);line-height:1.65;}
+.bubble-user{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px 10px 3px 10px;padding:.85rem 1.05rem;font-size:.9rem;color:rgba(220,210,195,.75);line-height:1.7;}
+
+/* Typing */
+.typing-row{display:flex;gap:.65rem;}
+.typing-ind{display:flex;gap:4px;padding:9px 13px;background:rgba(200,165,80,.05);border:1px solid rgba(200,165,80,.1);border-radius:10px;}
+.typing-dot{width:6px;height:6px;border-radius:50%;background:rgba(200,165,80,.5);animation:tbounce .8s ease-in-out infinite;}
+.typing-dot:nth-child(2){animation-delay:.15s;}.typing-dot:nth-child(3){animation-delay:.3s;}
+@keyframes tbounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+
+/* Component selection cards */
+.comp-section{margin:.5rem 0;}
+.comp-title{font-family:'Space Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:.65rem;}
+.comp-cards{display:flex;flex-direction:column;gap:.5rem;}
+.comp-card{background:rgba(8,14,26,.9);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:.85rem;}
+.comp-card:hover{border-color:rgba(200,165,80,.35);background:rgba(200,165,80,.04);}
+.comp-card.selected{border-color:var(--gold);background:rgba(200,165,80,.08);}
+.comp-card-rank{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text3);min-width:60px;}
+.comp-card-rank.best{color:var(--green);}
+.comp-card-rank.mid{color:var(--gold);}
+.comp-card-rank.budget{color:rgba(200,190,175,.4);}
+.comp-card-body{flex:1;}
+.comp-card-name{font-family:'Syne',sans-serif;font-weight:700;font-size:.92rem;color:var(--text1);margin-bottom:.2rem;}
+.comp-card-specs{font-size:.78rem;color:var(--text2);line-height:1.5;}
+.comp-card-price{font-family:'Space Mono',monospace;font-size:.72rem;color:var(--gold);text-align:right;min-width:70px;}
+.comp-select-btn{margin-top:.85rem;display:flex;gap:.65rem;flex-wrap:wrap;}
+
+/* Report tabs */
+.report-tabs{display:flex;gap:.5rem;margin-bottom:.85rem;flex-wrap:wrap;}
+.report-tab{padding:6px 16px;border-radius:6px;font-family:'Space Mono',monospace;font-size:.66rem;text-transform:uppercase;letter-spacing:.07em;border:1px solid var(--border);color:var(--text3);background:transparent;cursor:pointer;transition:.2s;}
+.report-tab:hover{border-color:rgba(200,165,80,.3);color:var(--text2);}
+.report-tab.active{border-color:var(--gold);color:var(--gold);background:rgba(200,165,80,.07);}
+.report-panel{display:none;font-size:.88rem;color:var(--text2);line-height:1.88;}
+.report-panel.active{display:block;}
+
+/* BOM table */
+.bom-wrap{overflow-x:auto;}
+.bom-table{width:100%;border-collapse:collapse;font-size:.82rem;}
+.bom-table th{font-family:'Space Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);padding:.6rem .85rem;text-align:left;border-bottom:1px solid var(--border);background:rgba(200,165,80,.04);white-space:nowrap;}
+.bom-table td{padding:.6rem .85rem;color:var(--text2);border-bottom:1px solid rgba(200,165,80,.05);}
+.bom-table tr:hover td{background:rgba(200,165,80,.03);}
+.bom-total{font-family:'Space Mono',monospace;font-size:.72rem;color:var(--gold);padding:.75rem .85rem;border-top:1px solid rgba(200,165,80,.15);text-align:right;}
+
+/* Schematic box */
+.schematic-box{background:rgba(8,14,26,.9);border:1px solid rgba(200,165,80,.15);border-radius:10px;padding:1.25rem;margin-top:.5rem;}
+.schematic-svg{width:100%;overflow:auto;}
+
+/* Input area */
+.sd-input-wrap{flex-shrink:0;border-top:1px solid var(--border);background:rgba(6,10,20,.98);padding:.85rem 1.5rem;}
+.sd-row{display:flex;gap:.6rem;align-items:flex-end;}
+.sd-textarea{flex:1;background:rgba(4,8,16,.88);border:1px solid var(--border);border-radius:8px;padding:11px 14px;font-family:'Outfit',sans-serif;font-size:.92rem;color:var(--text1);resize:none;outline:none;min-height:44px;max-height:120px;transition:.2s;line-height:1.5;}
+.sd-textarea:focus{border-color:rgba(200,165,80,.4);}
+.sd-send{width:42px;height:42px;flex-shrink:0;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#080c12;font-size:.95rem;transition:.2s;align-self:flex-end;}
+.sd-send:hover{opacity:.88;transform:translateY(-1px);}
+.sd-send:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+.sd-hint{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--text3);margin-top:.45rem;}
+
+@media(max-width:1024px){.sd-wrap{margin-left:160px;}}
+@media(max-width:860px){
+  .sd-input-wrap{position:sticky;bottom:0;background:rgba(6,10,20,.98);padding:.65rem 1rem;z-index:100;}
+  .sd-textarea{font-size:16px !important;min-height:44px;}
+  .sd-send{min-width:44px;min-height:44px;}
+  .sd-hint{display:none;}
+}
+
+/* ── Navbar size override: taller bar + larger link font ── */
+.navbar { height: 72px !important; }
+.navbar-inner { height: 72px !important; min-height: 72px !important; }
+.navbar-link {
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+  padding: 6px 10px !important;
+}
+.navbar-menu { gap: 2px !important; align-items: center !important; }
+.hm-logo-name { font-size: 1.05rem !important; }
+.hm-logo-sub  { font-size: 0.62rem !important; }
+
+</style>
+</head>
+<body>
+<div class="circuit-bg"><svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="sdbg" cx="50%" cy="50%" r="55%"><stop offset="0%" stop-color="#0d1018"/><stop offset="100%" stop-color="#080c12"/></radialGradient></defs><rect width="1400" height="900" fill="url(#sdbg)"/></svg></div>
+
+<!-- LEFT SIDEBAR -->
+<div class="hm-left-sidebar" id="hmLeftSidebar">
+  <div class="hm-left-inner">
+    <div id="hmSidebarNoAuth">
+      <div style="margin-bottom:.75rem;">
+        <div class="hm-sidebar-label">Quick Links</div>
+        <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
+        <div class="hm-hist-item" onclick="location.href='system-design.html'" style="background:rgba(200,165,80,.07);"><span class="hm-hist-icon">&#9881;</span><span class="hm-hist-text" style="color:var(--gold);">System Design</span></div>
+        <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
+        
+        <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
+      </div>
+      <div style="font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.45rem;border-bottom:1px solid var(--border);margin-bottom:.5rem;">Sponsored</div>
+      <div style="background:rgba(200,165,80,.03);border:1px dashed rgba(200,165,80,.12);border-radius:6px;min-height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;margin-bottom:.5rem;"><div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement</div>
+      <div style="text-align:center;"><a href="pricing.html" style="font-family:'Space Mono',monospace;font-size:.56rem;color:rgba(200,165,80,.38);text-transform:uppercase;text-decoration:none;">Advertise here &#8594;</a></div>
+    </div>
+    <div id="hmSidebarProfile" style="display:none;">
+      <div class="hm-profile-card">
+        <div class="hm-prof-av" id="hmProfAvatar">--</div>
+        <div class="hm-prof-name" id="hmProfName"></div>
+        <div class="hm-prof-email" id="hmProfEmail"></div>
+        <span class="hm-prof-plan" id="hmProfPlan">Free</span>
+      </div>
+    </div>
+    <div id="hmSidebarHistory" style="display:none;margin-top:.75rem;">
+      <div class="hm-sidebar-label">Chat History</div>
+      <div id="hmHistoryList"></div>
+    </div>
+    <div id="hmSidebarLinks" style="display:none;margin-top:.75rem;">
+      <div class="hm-sidebar-label">Quick Links</div>
+      <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
+      <div class="hm-hist-item" onclick="location.href='system-design.html'" style="background:rgba(200,165,80,.07);"><span class="hm-hist-icon">&#9881;</span><span class="hm-hist-text" style="color:var(--gold);">System Design</span></div>
+      <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
+    </div>
+  </div>
+  <div class="hm-left-bottom"><button class="hm-logout-btn" id="hmLogoutBtn" onclick="doLogout()" style="display:none;">Sign Out</button></div>
+</div>
+
+<!-- RIGHT SIDEBAR -->
+<div class="hm-right-sidebar" id="hmAdSidebar">
+  <div id="hmAdTitle" style="font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.5rem;border-bottom:1px solid var(--border);margin-bottom:.55rem;">Sponsored</div>
+  <div id="hmNoAdBadge" style="display:none;background:rgba(76,175,130,.06);border:1px solid rgba(76,175,130,.2);border-radius:8px;padding:.75rem;text-align:center;margin-bottom:.55rem;"><div style="font-size:1.2rem;">&#127881;</div><p style="font-size:.68rem;color:var(--green);margin:.25rem 0 0;line-height:1.4;">Ad-free<br>Pro/Enterprise</p></div>
+  <div id="hmAd1" style="background:rgba(200,165,80,.03);border:1px dashed rgba(200,165,80,.12);border-radius:6px;height:195px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'Space Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:1rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement</div>
+  <div id="hmAd2" style="background:rgba(200,165,80,.04);border:1px solid rgba(200,165,80,.1);border-radius:6px;padding:.65rem .6rem;text-align:center;margin-bottom:.55rem;"><div style="font-family:'Space Mono',monospace;font-size:.56rem;color:var(--text3);text-transform:uppercase;">Partner</div><div style="font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;color:var(--gold);margin:.15rem 0 .2rem;">Your Brand</div><div style="font-size:.65rem;color:var(--text2);line-height:1.4;">Reach hydraulic engineers worldwide.</div></div>
+  <div id="hmAd5" style="margin-top:auto;padding-top:.55rem;border-top:1px solid var(--border);text-align:center;"><a href="pricing.html" style="font-family:'Space Mono',monospace;font-size:.57rem;color:rgba(200,165,80,.4);text-transform:uppercase;text-decoration:none;">Advertise here &#8594;</a></div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="hm-auth-overlay" id="hmAuthOverlay">
+  <div class="hm-auth-box">
+    <div class="hm-auth-tabs"><button class="hm-auth-tab active" id="hmTab_login" onclick="switchAuthTab('login')">Login</button><button class="hm-auth-tab" id="hmTab_register" onclick="switchAuthTab('register')">Register</button><button class="hm-auth-close" onclick="closeAuthModal()">&#215;</button></div>
+    <div class="hm-auth-error" id="hmAuthError"></div>
+    <div class="hm-auth-panel" id="hmPanel_login"><div class="hm-auth-title">Welcome Back</div><div class="hm-auth-sub">Sign in to HydroMind.AI</div><div class="hm-auth-field"><label>Email</label><input type="email" id="hmLoginEmail" class="hm-auth-input" placeholder="your@email.com"></div><div class="hm-auth-field"><label>Password</label><input type="password" id="hmLoginPass" class="hm-auth-input" onkeydown="if(event.key==='Enter')doLogin()"></div><div class="hm-auth-forgot"><button class="hm-auth-link" onclick="switchAuthTab('forgot')">Forgot password?</button></div><button class="hm-auth-btn" onclick="doLogin()">Sign In</button><div class="hm-auth-footer">No account? <button class="hm-auth-link" onclick="switchAuthTab('register')">Register free</button></div></div>
+    <div class="hm-auth-panel" id="hmPanel_register" style="display:none;"><div class="hm-auth-title">Create Account</div><div class="hm-auth-row"><div class="hm-auth-field"><label>First Name *</label><input type="text" id="hmRegFirst" class="hm-auth-input"></div><div class="hm-auth-field"><label>Last Name</label><input type="text" id="hmRegLast" class="hm-auth-input"></div></div><div class="hm-auth-field"><label>Email *</label><input type="email" id="hmRegEmail" class="hm-auth-input"></div><div class="hm-auth-field"><label>Password *</label><input type="password" id="hmRegPass" class="hm-auth-input" onkeydown="if(event.key==='Enter')doRegister()"></div><div class="hm-auth-field"><label>Select Plan</label><select id="hmRegPlan" class="hm-auth-input" style="cursor:pointer;"><option value="Free">Free — Basic access</option><option value="Basic">Basic — $29/month</option><option value="Pro" selected>Pro — $79/month</option><option value="Enterprise">Enterprise — $199/month</option></select></div><button class="hm-auth-btn" onclick="doRegister()">Create Account</button><div class="hm-auth-footer">Have account? <button class="hm-auth-link" onclick="switchAuthTab('login')">Sign in</button></div></div>
+    <div class="hm-auth-panel" id="hmPanel_forgot" style="display:none;"><div class="hm-auth-title">Reset Password</div><div class="hm-auth-field"><label>Email</label><input type="email" id="hmForgotEmail" class="hm-auth-input"></div><div class="hm-auth-ok" id="hmForgotOk"></div><button class="hm-auth-btn cyan" onclick="doForgot()">Send Reset Link</button><div class="hm-auth-footer"><button class="hm-auth-link" onclick="switchAuthTab('login')">&#8592; Back</button></div></div>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="navbar-inner">
+    <a href="../index.html" class="hm-logo-wrap">
+      <div class="hm-logo-icon"><div class="hm-logo-ring"></div><div class="hm-logo-h">H</div></div>
+      <div class="hm-logo-text"><div class="hm-logo-name">HYDROMIND<span>.AI</span></div><div class="hm-logo-sub">Hydraulic Intelligence</div></div>
+    </a>
+    <div class="navbar-menu">
+      <a href="../index.html" class="navbar-link">Home</a>
+      <a href="advisor.html" class="navbar-link">AI Advisor</a>
+      <a href="../crane-diagnostic.html" class="navbar-link" style="color:#22c55e;">🏗 Crane Diag</a>
+      <a href="system-design.html" class="navbar-link">&#9881; System Design</a>
+      <a href="knowledge.html" class="navbar-link">Knowledge Base</a>
+      
+      <a href="../index.html#electrical" class="navbar-link" style="color:#f5c842;">&#9889; Electrical</a>
+      <a href="../index.html#calculator" class="navbar-link">Calculator</a>
+      <a href="pricing.html" class="navbar-link">Pricing</a>
+      <a href="feedback.html" class="navbar-link">Feedback</a>
+    </div>
+    <div class="navbar-cta" id="hmNavCta">
+      <button onclick="openAuthModal('login')" class="btn-outline" style="padding:8px 18px;font-size:.82rem;" id="hmNavLogin">Login</button>
+      <button onclick="openAuthModal('register')" class="btn-primary" style="padding:8px 18px;font-size:.82rem;" id="hmNavRegister">Register</button>
+      <div id="hmNavUser" style="display:none;align-items:center;gap:.5rem;background:rgba(200,165,80,.06);border:1px solid rgba(200,165,80,.15);border-radius:8px;padding:5px 10px;cursor:pointer;" onclick="doLogout()">
+        <div id="hmNavAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.78rem;color:#080c12;"></div>
+        <span id="hmNavName" style="font-size:.82rem;color:var(--text1);"></span>
+        <span id="hmNavPlan" style="font-family:'Space Mono',monospace;font-size:.62rem;padding:2px 8px;border-radius:100px;background:rgba(200,165,80,.1);color:var(--gold);"></span>
+      </div>
+    </div>
+    <button class="navbar-toggle" id="navToggle"><span></span><span></span><span></span></button>
+  </div>
+  <div class="navbar-mobile" id="navMobile">
+    <a href="../index.html">Home</a>
+    <a href="../pages/advisor.html">AI Advisor</a>
+    <a href="../crane-diagnostic.html" style="color:#22c55e;">🏗 Crane Diagnostic</a>
+    <a href="../pages/system-design.html">&#9881; System Design</a>
+    <a href="../pages/knowledge.html">Knowledge Base</a>
+    
+    <a href="../index.html#electrical" style="color:#f5c842;">&#9889; Electrical</a>
+    <a href="../index.html#calculator">Calculator</a>
+    <a href="../pages/pricing.html">Pricing</a>
+    <a href="../pages/feedback.html">Feedback</a>
+    <div class="navbar-mobile-auth" style="display:flex;gap:.5rem;margin-top:.5rem;padding-top:.75rem;border-top:1px solid var(--border);">
+      <button onclick="openAuthModal('login')" class="btn-outline" style="flex:1;padding:8px;font-size:.85rem;">Login</button>
+      <button onclick="openAuthModal('register')" class="btn-primary" style="flex:1;padding:8px;font-size:.85rem;">Register</button>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN WINDOW -->
+<div class="sd-wrap">
+  <div class="sd-header">
+    <div>
+      <div class="sd-title">&#9881; New Hydraulic System Design</div>
+      <div class="sd-subtitle">Conversational AI Design &nbsp;·&nbsp; Calculations &nbsp;·&nbsp; 3 Manufacturers &nbsp;·&nbsp; Schematic &nbsp;·&nbsp; BOM</div>
+    </div>
+    <div class="sd-status"><div class="sd-dot"></div><span id="sdStatus">Ready — Describe your system</span></div>
+  </div>
+
+  <div class="sd-phases">
+    <div class="sd-phase active" id="sdph0">1: User Brief</div>
+    <div class="sd-arrow-ph">→</div>
+    <div class="sd-phase" id="sdph1">2: AI Questions</div>
+    <div class="sd-arrow-ph">→</div>
+    <div class="sd-phase" id="sdph2">3: Calculations</div>
+    <div class="sd-arrow-ph">→</div>
+    <div class="sd-phase" id="sdph3">4: Select Components</div>
+    <div class="sd-arrow-ph">→</div>
+    <div class="sd-phase" id="sdph4">5: Schematic + BOM</div>
+    <div class="sd-track"><div class="sd-track-fill" id="sdTrack"></div></div>
+  </div>
+
+  <div class="sd-body" id="sdBody"></div>
+
+  <div class="sd-input-wrap" id="sdInputWrap">
+    <div class="sd-row">
+      <textarea class="sd-textarea" id="sdInput" rows="1"
+        placeholder="Describe your system — e.g. I want to design a 50 ton hydraulic press with electric drive..."
+        oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sdSend();}"></textarea>
+      <button class="sd-send" id="sdSendBtn" onclick="sdSend()">&#8599;</button>
+    </div>
+    <div class="sd-hint">Enter to send &nbsp;·&nbsp; Shift+Enter for new line &nbsp;·&nbsp; <span id="sdHintText">Describe your hydraulic system requirement to begin</span></div>
+  </div>
+</div>
+
+<script src="../js/main.js"></script>
+<script src="../js/auth.js"></script>
+<script>
+/* ================================================================
+   SYSTEM DESIGN — Conversational AI workflow
+   Flow: User describes system → AI asks clarifying questions →
+         AI calculates & selects 3 manufacturers → User selects →
+         AI generates schematic SVG + BOM
+   ================================================================ */
+
+const SD_SYSTEM_PROMPT = `You are HydroMind AI — a senior hydraulic systems design engineer with 25+ years of offshore and industrial experience.
+
+WORKFLOW — Follow this exact sequence:
+
+PHASE 1 — USER BRIEF:
+When the user describes their system requirement, respond with:
+"I have a few questions before planning your new design:"
+Then ask ONLY the questions relevant to their specific system. Base your questions on:
+1. Environmental conditions (Dusty / Muddy / Snow / Sea moisture / ATEX / Indoor / Outdoor)
+2. Distance from HPU to actuator — for piping arrangement and pressure drop calculation
+3. Ambient temperature range (Min °C / Max °C) — for fluid viscosity grade selection
+4. Electrical supply: Single phase or three phase? 50Hz or 60Hz? Available kW?
+5. Hydraulic oil cooler requirement — based on heat generation and environment
+6. Any other questions specific to their application (stroke, force, speed, duty cycle, standards)
+
+Keep questions numbered and clear. Do NOT ask all 9 standard intake questions — only ask what is relevant.
+
+PHASE 2 — CALCULATIONS:
+After user answers, perform and SHOW ALL calculations:
+- Force/pressure calculation: F(kN) = p(bar) × A(cm²) / 10
+- Cylinder bore: d(mm) = √(F×10×4 / p×π)
+- Flow rate: Q(L/min) = A(cm²) × v(mm/s) × 60 / 10000
+- Pump displacement: Vg(cc/rev) = Q×1000 / n(RPM)
+- Motor power: P(kW) = p×Q / 600, with efficiency η=0.85
+- Pipe bore: d(mm) = √(Q×21.22 / v) where v=pressure line 4m/s, return 2m/s
+- Tank volume: V(L) = Q × 3 (industrial), Q × 2 (mobile/offshore)
+- Heat generation: Q_heat(kW) = P_input × (1-η)
+- Cooler sizing: Q_cooler = Q_heat × 1.25
+
+Show each formula with actual calculated values.
+
+PHASE 3 — COMPONENT SELECTION (3 MANUFACTURERS):
+For EACH major component, select exactly 3 options from different manufacturers:
+Format as JSON inside a code block tagged COMPONENTS_JSON:
+
+\`\`\`COMPONENTS_JSON
+{
+  "components": [
+    {
+      "category": "Main Pump",
+      "options": [
+        {"rank":"Premium","make":"Rexroth","model":"A10VSO28DFR/31R","specs":"28cc/rev, 250bar, 1800RPM","price_usd":2800},
+        {"rank":"Mid-Range","make":"Parker","model":"PVS25EH140","specs":"25cc/rev, 250bar, 1800RPM","price_usd":1900},
+        {"rank":"Budget","make":"Vickers","model":"V20-1P5P-1C20","specs":"24cc/rev, 210bar, 1800RPM","price_usd":1200}
+      ]
+    }
+  ]
+}
+\`\`\`
+
+PHASE 4 — SCHEMATIC:
+After user selects components, generate a hydraulic schematic description as SVG-ready text tagged SCHEMATIC_DESC — describe the circuit flow as ISO 1219 symbols list so the UI can render it.
+
+PHASE 5 — BOM:
+Generate complete BOM as pipe-delimited table tagged BOM_TABLE:
+ITEM|COMPONENT|MAKE|MODEL|QTY|UNIT|SPEC|EST_USD
+1|Hydraulic Pump|Rexroth|A10VSO28|1|EA|28cc 250bar|2800
+...
+TOTAL|||||||XXXXX
+
+RULES:
+- Use KB knowledge base first for component selection
+- Always show calculations with formula + values
+- Always provide exactly 3 manufacturer options per component
+- Ask ONE clarifying question at a time if something is unclear during design
+- Reference ISO 4413, relevant standards for the application`;
+
+let messages = [];
+let phase = 1;
+let selectedComponents = {};
+let pendingComponents = null;
+
+function setPhase(p) {
+  phase = p;
+  const labels = ['sdph0','sdph1','sdph2','sdph3','sdph4'];
+  labels.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.className = 'sd-phase' + (i+1 < p ? ' done' : i+1 === p ? ' active' : '');
+  });
+  const pct = [5, 25, 50, 75, 100][p-1] || 5;
+  document.getElementById('sdTrack').style.width = pct + '%';
+  const hints = [
+    'Describe your hydraulic system requirement to begin',
+    'Answer the AI questions to continue',
+    'Reviewing calculations...',
+    'Select your preferred manufacturer for each component',
+    'Design complete — review schematic and BOM'
+  ];
+  document.getElementById('sdHintText').textContent = hints[p-1] || '';
+  const statuses = ['Ready','Answering questions','Calculating...','Selecting components','Design complete'];
+  document.getElementById('sdStatus').textContent = statuses[p-1] || 'Working...';
+}
+
+function scroll() { const b = document.getElementById('sdBody'); b.scrollTop = b.scrollHeight; }
+
+function addAI(html) {
+  const b = document.getElementById('sdBody');
+  const d = document.createElement('div');
+  d.className = 'msg-ai';
+  d.innerHTML = `<div class="msg-av av-ai">H</div><div><div class="msg-tag">HydroMind AI · System Design</div><div class="bubble-ai">${html}</div></div>`;
+  b.appendChild(d); scroll();
+}
+
+function addUser(text) {
+  const b = document.getElementById('sdBody');
+  const d = document.createElement('div');
+  d.className = 'msg-user';
+  d.innerHTML = `<div class="msg-av av-usr">&#128100;</div><div><div class="msg-tag" style="text-align:right;">You</div><div class="bubble-user">${text.replace(/\n/g,'<br>')}</div></div>`;
+  b.appendChild(d); scroll();
+}
+
+function showTyping() {
+  const b = document.getElementById('sdBody');
+  const d = document.createElement('div');
+  d.className = 'typing-row'; d.id = 'sdTyping';
+  d.innerHTML = `<div class="msg-av av-ai">H</div><div><div class="typing-ind"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>`;
+  b.appendChild(d); scroll();
+}
+function hideTyping() { const el = document.getElementById('sdTyping'); if(el) el.remove(); }
+
+function formatAIText(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^### (.*?)$/gm, '<div style="font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;color:var(--text1);margin:.75rem 0 .35rem;">$1</div>')
+    .replace(/^## (.*?)$/gm, '<div style="font-family:Syne,sans-serif;font-weight:800;font-size:1rem;color:var(--gold);margin:.75rem 0 .35rem;">$1</div>')
+    .replace(/^(\d+)\. (.*?)$/gm, '<div style="display:flex;gap:.5rem;margin:.2rem 0;"><span style="color:var(--gold);font-family:Space Mono,monospace;font-size:.75rem;min-width:18px;">$1.</span><span>$2</span></div>')
+    .replace(/^- (.*?)$/gm, '<div style="display:flex;gap:.5rem;margin:.15rem 0;"><span style="color:rgba(200,165,80,.5);">·</span><span>$1</span></div>')
+    .replace(/`([^`]+)`/g, '<code style="font-family:Space Mono,monospace;font-size:.82rem;background:rgba(200,165,80,.08);padding:1px 6px;border-radius:4px;color:var(--gold);">$1</code>')
+    .replace(/\n\n/g, '<br><br>')
+    .replace(/\n/g, '<br>');
+}
+
+function renderComponents(jsonStr) {
+  try {
+    const data = JSON.parse(jsonStr);
+    const comps = data.components || [];
+    pendingComponents = comps;
+
+    const b = document.getElementById('sdBody');
+    const wrap = document.createElement('div');
+    wrap.className = 'msg-ai';
+    wrap.style.maxWidth = '100%';
+
+    let html = `<div class="msg-av av-ai">H</div><div style="flex:1;min-width:0;"><div class="msg-tag">HydroMind AI · Component Selection — Choose your preferred manufacturer</div><div class="bubble-ai" style="max-width:100%;">`;
+
+    comps.forEach((comp, ci) => {
+      html += `<div class="comp-section">
+        <div class="comp-title">&#9881; ${comp.category}</div>
+        <div class="comp-cards" id="compCards_${ci}">`;
+      comp.options.forEach((opt, oi) => {
+        const rankClass = oi===0?'best':oi===1?'mid':'budget';
+        const rankLabel = oi===0?'Premium':oi===1?'Mid-Range':'Budget';
+        html += `<div class="comp-card" id="card_${ci}_${oi}" onclick="selectComp(${ci},${oi},'${comp.category}','${opt.make}','${opt.model}')">
+          <div class="comp-card-rank ${rankClass}">${rankLabel}</div>
+          <div class="comp-card-body">
+            <div class="comp-card-name">${opt.make} ${opt.model}</div>
+            <div class="comp-card-specs">${opt.specs}</div>
+          </div>
+          <div class="comp-card-price">~$${opt.price_usd?.toLocaleString()||'—'}</div>
+        </div>`;
+      });
+      html += `</div></div>`;
+    });
+
+    html += `<div class="comp-select-btn">
+      <button onclick="confirmComponents()" style="padding:11px 26px;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:8px;color:#080c12;font-weight:700;font-size:.88rem;cursor:pointer;">✓ Confirm Selection — Generate Schematic & BOM</button>
+      <button onclick="autoSelect()" style="padding:11px 20px;background:transparent;border:1px solid rgba(200,165,80,.2);border-radius:8px;color:rgba(200,190,175,.5);font-size:.85rem;cursor:pointer;">Auto-select Premium</button>
+    </div>`;
+    html += `</div></div>`;
+    wrap.innerHTML = html;
+    b.appendChild(wrap);
+    scroll();
+    setPhase(4);
+  } catch(e) {
+    console.error('Component JSON parse error:', e);
+  }
+}
+
+function selectComp(ci, oi, category, make, model) {
+  // Deselect all cards in this component group
+  document.querySelectorAll(`#compCards_${ci} .comp-card`).forEach(c => c.classList.remove('selected'));
+  document.getElementById(`card_${ci}_${oi}`).classList.add('selected');
+  selectedComponents[category] = {make, model, rank: oi===0?'Premium':oi===1?'Mid-Range':'Budget'};
+}
+
+function autoSelect() {
+  if (!pendingComponents) return;
+  pendingComponents.forEach((comp, ci) => {
+    document.querySelectorAll(`#compCards_${ci} .comp-card`).forEach(c => c.classList.remove('selected'));
+    document.getElementById(`card_${ci}_0`)?.classList.add('selected');
+    const opt = comp.options[0];
+    selectedComponents[comp.category] = {make: opt.make, model: opt.model, rank: 'Premium'};
+  });
+}
+
+function confirmComponents() {
+  if (!pendingComponents) return;
+  // Auto-select any unselected components (first option)
+  pendingComponents.forEach((comp, ci) => {
+    if (!selectedComponents[comp.category]) {
+      const opt = comp.options[0];
+      selectedComponents[comp.category] = {make: opt.make, model: opt.model, rank: 'Premium'};
+      document.getElementById(`card_${ci}_0`)?.classList.add('selected');
+    }
+  });
+
+  const selectionText = Object.entries(selectedComponents)
+    .map(([cat, sel]) => `${cat}: ${sel.make} ${sel.model} (${sel.rank})`)
+    .join('\n');
+
+  addUser(`Selected components:\n${selectionText}\n\nPlease generate the hydraulic schematic and complete BOM.`);
+  messages.push({role:'user', content:`User selected these components:\n${selectionText}\n\nNow generate: 1) A hydraulic circuit schematic description as SCHEMATIC_DESC, 2) Complete BOM as BOM_TABLE with all components and estimated costs.`});
+  sdCallAPI();
+  setPhase(5);
+}
+
+function renderBOM(raw) {
+  const lines = raw.split('\n').filter(l => l.trim() && l.includes('|'));
+  let html = '<div class="bom-wrap"><table class="bom-table"><thead><tr><th>Item</th><th>Component</th><th>Make</th><th>Model</th><th>Qty</th><th>Unit</th><th>Spec</th><th>Est. USD</th></tr></thead><tbody>';
+  let total = 0;
+  lines.forEach(line => {
+    const cells = line.split('|').map(c => c.trim());
+    if (cells.length < 6) return;
+    if (cells[0].toUpperCase() === 'ITEM' || cells[0].toUpperCase() === 'ITEM NO') return;
+    if (cells[0].toUpperCase().includes('TOTAL')) { total = parseFloat(cells[cells.length-1].replace(/[^0-9.]/g,'')) || total; return; }
+    const price = parseFloat(cells[7]||'0');
+    if (!isNaN(price) && price > 0) total += price;
+    html += `<tr>${cells.slice(0,8).map(c=>`<td>${c}</td>`).join('')}</tr>`;
+  });
+  html += `</tbody></table><div class="bom-total">ESTIMATED TOTAL: USD ${total > 0 ? total.toLocaleString('en-US',{minimumFractionDigits:0}) : '—'}</div></div>`;
+  return html;
+}
+
+function renderSchematic(desc) {
+  // Generate a simple ISO-style hydraulic schematic SVG based on the description
+  return `<div class="schematic-box">
+    <div style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;">&#9726; Hydraulic Circuit Schematic (ISO 1219)</div>
+    <svg class="schematic-svg" viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;background:rgba(4,8,16,.6);border-radius:8px;padding:16px;">
+      <defs>
+        <marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="#c8a550" opacity=".7"/>
+        </marker>
+      </defs>
+      <!-- Tank -->
+      <rect x="20" y="240" width="80" height="40" fill="none" stroke="#c8a550" stroke-width="1.5" opacity=".6"/>
+      <line x1="20" y1="240" x2="100" y2="240" stroke="#c8a550" stroke-width="3" opacity=".8"/>
+      <text x="60" y="268" font-family="Space Mono" font-size="9" fill="#c8a550" text-anchor="middle" opacity=".6">TANK</text>
+      <!-- Suction line -->
+      <line x1="60" y1="240" x2="60" y2="180" stroke="#c8a550" stroke-width="1.5" opacity=".5" stroke-dasharray="4,3"/>
+      <!-- Filter on suction -->
+      <circle cx="60" cy="175" r="10" fill="none" stroke="#c8a550" stroke-width="1.5" opacity=".6"/>
+      <line x1="53" y1="175" x2="67" y2="175" stroke="#c8a550" stroke-width="1" opacity=".5"/>
+      <text x="75" y="179" font-family="Space Mono" font-size="8" fill="#c8a550" opacity=".5">F1</text>
+      <!-- Pump -->
+      <circle cx="60" cy="140" r="20" fill="none" stroke="#c8a550" stroke-width="1.5" opacity=".8"/>
+      <line x1="60" y1="140" x2="75" y2="130" stroke="#c8a550" stroke-width="2" opacity=".8" marker-end="url(#arr)"/>
+      <text x="60" y="175" font-family="Space Mono" font-size="8" fill="#c8a550" text-anchor="middle" opacity=".5">P1</text>
+      <text x="60" y="118" font-family="Space Mono" font-size="8" fill="#c8a550" text-anchor="middle" opacity=".7">PUMP</text>
+      <!-- Electric motor -->
+      <circle cx="60" cy="80" r="18" fill="rgba(200,165,80,.04)" stroke="#f5c842" stroke-width="1.5" opacity=".7"/>
+      <text x="60" y="84" font-family="Space Mono" font-size="9" fill="#f5c842" text-anchor="middle" opacity=".8">M</text>
+      <text x="60" y="56" font-family="Space Mono" font-size="8" fill="#f5c842" text-anchor="middle" opacity=".6">MOTOR</text>
+      <line x1="60" y1="120" x2="60" y2="98" stroke="#c8a550" stroke-width="1.5" opacity=".5"/>
+      <!-- Pressure line -->
+      <line x1="80" y1="140" x2="200" y2="140" stroke="#c8a550" stroke-width="2" opacity=".8" marker-end="url(#arr)"/>
+      <!-- Relief valve -->
+      <line x1="140" y1="140" x2="140" y2="200" stroke="#c8a550" stroke-width="1" opacity=".4"/>
+      <path d="M130,200 Q140,185 150,200" fill="none" stroke="#c8a550" stroke-width="1.5" opacity=".6"/>
+      <line x1="140" y1="200" x2="140" y2="240" stroke="#c8a550" stroke-width="1" opacity=".4"/>
+      <text x="155" y="204" font-family="Space Mono" font-size="8" fill="#c8a550" opacity=".5">RV</text>
+      <!-- Pressure gauge -->
+      <circle cx="170" cy="125" r="8" fill="none" stroke="#c8a550" stroke-width="1" opacity=".5"/>
+      <line x1="170" y1="133" x2="170" y2="140" stroke="#c8a550" stroke-width="1" opacity=".4"/>
+      <text x="170" y="118" font-family="Space Mono" font-size="7" fill="#c8a550" text-anchor="middle" opacity=".4">PG</text>
+      <!-- Pressure filter -->
+      <rect x="200" y="130" width="30" height="20" fill="rgba(200,165,80,.04)" stroke="#c8a550" stroke-width="1.5" opacity=".6"/>
+      <line x1="205" y1="135" x2="225" y2="145" stroke="#c8a550" stroke-width="1" opacity=".5"/>
+      <line x1="205" y1="145" x2="225" y2="135" stroke="#c8a550" stroke-width="1" opacity=".5"/>
+      <text x="215" y="160" font-family="Space Mono" font-size="8" fill="#c8a550" text-anchor="middle" opacity=".5">PF</text>
+      <!-- Line to DCV -->
+      <line x1="230" y1="140" x2="310" y2="140" stroke="#c8a550" stroke-width="2" opacity=".8" marker-end="url(#arr)"/>
+      <!-- DCV 4/3 -->
+      <rect x="310" y="120" width="30" height="40" fill="rgba(200,165,80,.04)" stroke="#c8a550" stroke-width="1.5" opacity=".8"/>
+      <rect x="340" y="120" width="30" height="40" fill="rgba(200,165,80,.04)" stroke="#c8a550" stroke-width="1.5" opacity=".5"/>
+      <rect x="280" y="120" width="30" height="40" fill="rgba(200,165,80,.04)" stroke="#c8a550" stroke-width="1.5" opacity=".5"/>
+      <line x1="315" y1="125" x2="335" y2="155" stroke="#c8a550" stroke-width="1.5" opacity=".7"/>
+      <line x1="315" y1="155" x2="335" y2="125" stroke="#c8a550" stroke-width="1.5" opacity=".7"/>
+      <line x1="325" y1="115" x2="325" y2="120" stroke="#c8a550" stroke-width="1.5" opacity=".6"/>
+      <line x1="325" y1="160" x2="325" y2="165" stroke="#c8a550" stroke-width="1.5" opacity=".6"/>
+      <text x="325" y="108" font-family="Space Mono" font-size="8" fill="#c8a550" text-anchor="middle" opacity=".7">DCV 4/3</text>
+      <!-- Solenoid symbols -->
+      <rect x="368" y="128" width="12" height="24" fill="#c8a550" opacity=".3" rx="2"/>
+      <rect x="255" y="128" width="12" height="24" fill="#c8a550" opacity=".3" rx="2"/>
+      <text x="380" y="142" font-family="Space Mono" font-size="7" fill="#c8a550" opacity=".5">SOL</text>
+      <!-- Port A line up to cylinder -->
+      <line x1="325" y1="115" x2="325" y2="60" stroke="#c8a550" stroke-width="1.5" opacity=".7"/>
+      <line x1="325" y1="60" x2="460" y2="60" stroke="#c8a550" stroke-width="1.5" opacity=".7" marker-end="url(#arr)"/>
+      <!-- Port B line -->
+      <line x1="325" y1="165" x2="325" y2="220" stroke="#c8a550" stroke-width="1.5" opacity=".5"/>
+      <line x1="325" y1="220" x2="460" y2="220" stroke="#c8a550" stroke-width="1.5" opacity=".5" marker-end="url(#arr)"/>
+      <!-- Cylinder -->
+      <rect x="460" y="50" width="120" height="180" fill="rgba(200,165,80,.03)" stroke="#c8a550" stroke-width="2" opacity=".8" rx="4"/>
+      <rect x="460" y="115" width="90" height="50" fill="rgba(200,165,80,.06)" stroke="#c8a550" stroke-width="1.5" opacity=".7"/>
+      <line x1="550" y1="140" x2="620" y2="140" stroke="#c8a550" stroke-width="3" opacity=".8"/>
+      <text x="520" y="248" font-family="Space Mono" font-size="9" fill="#c8a550" text-anchor="middle" opacity=".7">CYLINDER</text>
+      <text x="635" y="144" font-family="Space Mono" font-size="9" fill="#c8a550" opacity=".7">ROD</text>
+      <!-- Port labels -->
+      <text x="455" y="55" font-family="Space Mono" font-size="8" fill="#c8a550" opacity=".5">A</text>
+      <text x="455" y="225" font-family="Space Mono" font-size="8" fill="#c8a550" opacity=".5">B</text>
+      <!-- Return line -->
+      <line x1="370" y1="140" x2="420" y2="140" stroke="#c8a550" stroke-width="1.5" opacity=".5"/>
+      <line x1="420" y1="140" x2="420" y2="270" stroke="#c8a550" stroke-width="1.5" opacity=".5"/>
+      <!-- Return filter -->
+      <rect x="405" y="255" width="30" height="20" fill="rgba(200,165,80,.04)" stroke="#c8a550" stroke-width="1.5" opacity=".6"/>
+      <line x1="410" y1="260" x2="430" y2="270" stroke="#c8a550" stroke-width="1" opacity=".5"/>
+      <line x1="410" y1="270" x2="430" y2="260" stroke="#c8a550" stroke-width="1" opacity=".5"/>
+      <text x="420" y="288" font-family="Space Mono" font-size="8" fill="#c8a550" text-anchor="middle" opacity=".5">RF</text>
+      <line x1="420" y1="275" x2="420" y2="295" stroke="#c8a550" stroke-width="1.5" opacity=".5"/>
+      <line x1="420" y1="295" x2="100" y2="295" stroke="#c8a550" stroke-width="1.5" opacity=".5"/>
+      <line x1="100" y1="295" x2="100" y2="265" stroke="#c8a550" stroke-width="1.5" opacity=".5"/>
+      <!-- Cooler -->
+      <rect x="200" y="255" width="40" height="30" fill="rgba(0,180,255,.04)" stroke="#00b4ff" stroke-width="1.5" opacity=".5" rx="3"/>
+      <line x1="205" y1="260" x2="235" y2="280" stroke="#00b4ff" stroke-width="1" opacity=".4"/>
+      <line x1="205" y1="280" x2="235" y2="260" stroke="#00b4ff" stroke-width="1" opacity=".4"/>
+      <text x="220" y="298" font-family="Space Mono" font-size="8" fill="#00b4ff" text-anchor="middle" opacity=".5">COOLER</text>
+      <!-- Legend -->
+      <text x="10" y="310" font-family="Space Mono" font-size="7" fill="rgba(200,165,80,.3)">ISO 1219 · HydroMind.AI System Design</text>
+    </svg>
+    <div style="font-size:.78rem;color:rgba(200,190,175,.4);margin-top:.65rem;line-height:1.6;">
+      ${desc ? desc.substring(0,300).replace(/\n/g,'<br>') : 'Circuit: Reservoir → Suction filter → Pump → Pressure filter → DCV 4/3 → Cylinder → Return filter → Cooler → Tank'}
+    </div>
+  </div>`;
+}
+
+function renderFullReport(text) {
+  // Extract special sections
+  let compJSON = '', bomRaw = '', schematicDesc = '', reportText = text;
+
+  // Extract COMPONENTS_JSON
+  const compMatch = text.match(/```COMPONENTS_JSON\s*([\s\S]*?)```/);
+  if (compMatch) { compJSON = compMatch[1].trim(); reportText = reportText.replace(compMatch[0], ''); }
+
+  // Extract BOM_TABLE
+  const bomMatch = text.match(/BOM_TABLE[\s\S]*?(ITEM\|[\s\S]*?)(?=\n\n|\n[A-Z]|$)/);
+  if (bomMatch) { bomRaw = bomMatch[1]; reportText = reportText.replace(bomMatch[0], ''); }
+
+  // Extract SCHEMATIC_DESC
+  const schMatch = text.match(/SCHEMATIC_DESC[:\s]*([\s\S]*?)(?=\n\nBOM|\n\n[A-Z#]|$)/);
+  if (schMatch) { schematicDesc = schMatch[1].trim(); reportText = reportText.replace(schMatch[0], ''); }
+
+  // Render components for selection if found
+  if (compJSON) {
+    // Show calculation text first
+    if (reportText.trim()) addAI(formatAIText(reportText.trim()));
+    renderComponents(compJSON);
+    return;
+  }
+
+  // Phase 5 - show schematic + BOM tabs
+  if (bomRaw || schematicDesc) {
+    const b = document.getElementById('sdBody');
+    const d = document.createElement('div');
+    d.className = 'msg-ai'; d.style.maxWidth = '100%';
+
+    let tabs = `<div class="report-tabs">
+      <button class="report-tab active" onclick="showRTab('calc',this)">&#128196; Calculations</button>
+      <button class="report-tab" onclick="showRTab('schema',this)">&#9726; Schematic</button>
+      <button class="report-tab" onclick="showRTab('bom',this)">&#128203; BOM</button>
+    </div>
+    <div class="report-panel active" id="rtab-calc">${formatAIText(reportText.trim())}</div>
+    <div class="report-panel" id="rtab-schema">${renderSchematic(schematicDesc)}</div>
+    <div class="report-panel" id="rtab-bom">${bomRaw ? renderBOM(bomRaw) : '<p style="color:var(--text3);">BOM not generated yet.</p>'}</div>
+    <div style="margin-top:1rem;display:flex;gap:.75rem;flex-wrap:wrap;">
+      <button onclick="location.reload()" style="padding:9px 20px;background:transparent;border:1px solid rgba(200,165,80,.25);border-radius:7px;color:var(--gold);font-size:.85rem;cursor:pointer;">&#43; New Design</button>
+      <button onclick="window.print()" style="padding:9px 20px;background:transparent;border:1px solid rgba(200,165,80,.2);border-radius:7px;color:var(--text2);font-size:.85rem;cursor:pointer;">&#128196; Print / Save PDF</button>
+    </div>`;
+
+    d.innerHTML = `<div class="msg-av av-ai">H</div><div style="flex:1;min-width:0;"><div class="msg-tag">HydroMind AI · Design Report</div><div class="bubble-ai" style="max-width:100%;">${tabs}</div></div>`;
+    b.appendChild(d); scroll();
+    setPhase(5);
+    document.getElementById('sdInputWrap').style.display = 'none';
+    return;
+  }
+
+  // Regular response
+  addAI(formatAIText(reportText.trim()));
+}
+
+function showRTab(name, btn) {
+  document.querySelectorAll('.report-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.report-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  const panel = document.getElementById('rtab-' + name);
+  if (panel) panel.classList.add('active');
+}
+
+async function sdCallAPI() {
+  const btn = document.getElementById('sdSendBtn');
+  if (btn) btn.disabled = true;
+  showTyping();
+  try {
+    const resp = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4096,
+        system: SD_SYSTEM_PROMPT,
+        messages: messages
+      })
+    });
+    const data = await resp.json();
+    hideTyping();
+    if (data.content?.[0]?.text) {
+      const reply = data.content[0].text;
+      messages.push({role:'assistant', content: reply});
+      renderFullReport(reply);
+      // Advance phase
+      if (phase === 1) setPhase(2);
+      else if (phase === 2) setPhase(3);
+    } else {
+      addAI('Error: ' + (data.error?.message || 'Unknown error. Please try again.'));
+    }
+  } catch(err) {
+    hideTyping();
+    addAI('Connection error: ' + err.message);
+  }
+  if (btn) btn.disabled = false;
+}
+
+function sdSend() {
+  const input = document.getElementById('sdInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = ''; input.style.height = 'auto';
+  addUser(text);
+  messages.push({role:'user', content: text});
+  sdCallAPI();
+}
+
+// Init
+window.addEventListener('DOMContentLoaded', () => {
+  addAI('<strong>Welcome to HydroMind AI — New System Design</strong><br><br>Describe your hydraulic system requirement in plain language and I will ask you the right questions, run the calculations, and give you 3 manufacturer options to choose from — then generate a schematic diagram and complete Bill of Materials.<br><br><strong>Example:</strong> <em>"I want to design a hydraulic press capacity 50 Ton, electric drive"</em>');
+  document.getElementById('sdInput').focus();
+});
+window.addEventListener('hm:login', e => { window._hmUser = e.detail; });
+</script>
+</body>
+</html>
