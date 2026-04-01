@@ -394,4 +394,20 @@ function renderPage() {
 function loadMoreKB() {
   KB_PAGE++;
   renderPage();
-  window.scrollBy({ top: 3
+  window.scrollBy({ top: 300, behavior: 'smooth' });
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  loadKBFromSupabase();
+});
+</script>
+</body>
+</html>
