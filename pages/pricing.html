@@ -2,83 +2,155 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pricing &amp; Plans — HydroMind.AI</title>
-<link rel="icon" href="../favicon.ico">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pricing & Plans — HydroMind.AI</title>
 <link rel="stylesheet" href="../css/style.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Outfit:wght@300;400;500;600&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;500&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ── Navbar size override: taller bar + larger link font ── */
-.navbar { height: 72px !important; }
-.navbar-inner { height: 72px !important; min-height: 72px !important; }
-.navbar-link {
-  font-size: 0.95rem !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.01em !important;
-  padding: 6px 10px !important;
-}
-.navbar-menu { gap: 2px !important; align-items: center !important; }
-.hm-logo-name { font-size: 1.05rem !important; }
-.hm-logo-sub  { font-size: 0.62rem !important; }
+:root{--hm-bg:#0d0f12;--hm-surface:#13171d;--hm-card:#1a1f28;--hm-border:#2a3040;--hm-orange:#f97316;--hm-green:#22c55e;--hm-red:#ef4444;--hm-yellow:#eab308;--hm-blue:#38bdf8;--hm-text:#e2e8f0;--hm-muted:#64748b;--hm-muted2:#94a3b8;--hm-mono:'Share Tech Mono',monospace;--hm-cond:'Barlow Condensed',sans-serif;--hm-body:'Barlow',sans-serif;}
+*{box-sizing:border-box;}
+body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);margin:0;}
+@keyframes hm-pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* NAV */
+.hm-nav{position:fixed;top:0;left:0;right:0;height:52px;z-index:900;background:rgba(13,15,18,.97);border-bottom:1px solid var(--hm-border);backdrop-filter:blur(16px);display:flex;align-items:center;padding:0 1rem;gap:1rem;}
+.hm-nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}
+.hm-nav-icon{width:36px;height:36px;border-radius:8px;background:var(--hm-orange);display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:18px;color:#fff;}
+.hm-nav-brand{font-family:Syne,sans-serif;font-weight:800;font-size:1.05rem;color:var(--hm-text);letter-spacing:.5px;line-height:1;}
+.hm-nav-brand span{color:var(--hm-orange);}
+.hm-nav-sub{font-family:var(--hm-mono);font-size:.48rem;color:rgba(249,115,22,.5);letter-spacing:.2em;text-transform:uppercase;}
+.hm-nav-links{flex:1;display:flex;align-items:center;gap:2px;overflow:hidden;}
+.hm-nav-a{padding:5px 10px;border-radius:6px;font-size:.82rem;color:var(--hm-muted);text-decoration:none;white-space:nowrap;transition:color .15s;}
+.hm-nav-a:hover{color:var(--hm-text);}
+.hm-nav-a.active{color:var(--hm-orange);}
+.hm-nav-cta{display:flex;gap:8px;flex-shrink:0;}
+.hm-btn-ghost{padding:6px 16px;border-radius:6px;background:transparent;border:1px solid var(--hm-border);color:var(--hm-muted2);font-size:.8rem;text-decoration:none;font-family:var(--hm-cond);letter-spacing:.5px;cursor:pointer;}
+.hm-btn-orange{padding:6px 16px;border-radius:6px;background:var(--hm-orange);color:#fff;font-size:.8rem;text-decoration:none;font-family:var(--hm-cond);font-weight:600;letter-spacing:.5px;cursor:pointer;border:none;}
+
+/* LAYOUT */
+.hm-page{margin-top:52px;display:grid;grid-template-columns:1fr 200px;min-height:calc(100vh - 52px);}
+.hm-main{overflow-y:auto;}
+.hm-sidebar-right{background:var(--hm-surface);border-left:1px solid var(--hm-border);padding:14px;display:flex;flex-direction:column;gap:10px;position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto;}
+
+/* RIGHT SIDEBAR CARDS */
+.rs-card{background:var(--hm-card);border:1px solid var(--hm-border);border-radius:8px;padding:12px;}
+.rs-title{font-family:var(--hm-cond);font-size:10px;letter-spacing:2px;color:var(--hm-muted);text-transform:uppercase;margin-bottom:8px;}
+.rs-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid var(--hm-border);font-size:10px;}
+.rs-row:last-child{border-bottom:none;}
+.rs-key{color:var(--hm-muted);}
+.rs-val{font-family:var(--hm-mono);color:var(--hm-text);}
+.rs-btn{width:100%;background:var(--hm-orange);color:#fff;border:none;border-radius:5px;padding:8px;font-family:var(--hm-cond);font-size:12px;font-weight:600;letter-spacing:1px;cursor:pointer;margin-top:8px;transition:opacity .15s;}
+.rs-btn:hover{opacity:.85;}
+.rs-chip{display:flex;align-items:center;gap:5px;font-size:10px;font-family:var(--hm-mono);padding:4px 8px;border-radius:4px;margin-bottom:4px;}
+.chip-g{background:rgba(34,197,94,.1);color:var(--hm-green);}
+.chip-o{background:rgba(249,115,22,.1);color:var(--hm-orange);}
+.chip-b{background:rgba(56,189,248,.1);color:var(--hm-blue);}
+
+/* PAGE HEADER */
+.pg-hero{background:var(--hm-surface);border-bottom:1px solid var(--hm-border);padding:3rem 2rem 2.5rem;text-align:center;}
+.pg-eyebrow{font-family:var(--hm-mono);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--hm-orange);margin-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:8px;}
+.pg-eyebrow::before,.pg-eyebrow::after{content:'';flex:1;max-width:60px;height:1px;background:var(--hm-border);}
+.pg-h1{font-family:var(--hm-cond);font-size:clamp(2rem,5vw,3rem);font-weight:700;line-height:1.05;margin-bottom:1rem;letter-spacing:1px;}
+.pg-h1 span{color:var(--hm-orange);}
+.pg-sub{font-size:1rem;color:var(--hm-muted2);max-width:520px;margin:0 auto;line-height:1.75;}
+
+/* TOGGLE */
+.billing-toggle{display:flex;align-items:center;justify-content:center;gap:12px;margin:2rem 0 0;font-size:.85rem;color:var(--hm-muted);}
+.toggle-track{width:44px;height:24px;border-radius:12px;background:var(--hm-border);position:relative;cursor:pointer;transition:background .2s;}
+.toggle-track.on{background:var(--hm-orange);}
+.toggle-thumb{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .2s;}
+.toggle-track.on .toggle-thumb{left:23px;}
+.save-badge{background:rgba(34,197,94,.12);color:var(--hm-green);border:1px solid rgba(34,197,94,.25);border-radius:4px;padding:2px 8px;font-family:var(--hm-mono);font-size:.65rem;}
+
+/* PRICING CARDS */
+.pricing-section{padding:2.5rem 2rem;}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:960px;margin:0 auto;}
+.pc{background:var(--hm-card);border:1px solid var(--hm-border);border-radius:10px;padding:24px;display:flex;flex-direction:column;transition:border-color .2s;}
+.pc:hover{border-color:var(--hm-border);} 
+.pc.featured{border-color:var(--hm-orange);position:relative;}
+.pc-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--hm-orange);color:#fff;font-family:var(--hm-cond);font-size:11px;font-weight:600;letter-spacing:1px;padding:3px 14px;border-radius:20px;white-space:nowrap;}
+.pc-name{font-family:var(--hm-cond);font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--hm-muted);margin-bottom:8px;}
+.pc-price{font-family:var(--hm-cond);font-size:2.8rem;font-weight:700;color:var(--hm-text);line-height:1;}
+.pc-price span{font-size:1rem;color:var(--hm-muted);font-weight:400;}
+.pc-annual{font-family:var(--hm-mono);font-size:.65rem;color:var(--hm-green);margin-top:4px;height:16px;}
+.pc-desc{font-size:.82rem;color:var(--hm-muted2);line-height:1.6;margin:12px 0 16px;border-top:1px solid var(--hm-border);padding-top:12px;}
+.pc-features{list-style:none;padding:0;margin:0 0 20px;display:flex;flex-direction:column;gap:6px;flex:1;}
+.pc-features li{font-size:.82rem;color:var(--hm-muted2);display:flex;align-items:flex-start;gap:8px;line-height:1.4;}
+.pc-features li::before{content:'✓';color:var(--hm-green);font-family:var(--hm-mono);font-size:.75rem;flex-shrink:0;margin-top:1px;}
+.pc-features li.dim{color:var(--hm-muted);}
+.pc-features li.dim::before{content:'—';color:var(--hm-muted);}
+.pc-btn{width:100%;padding:10px;border-radius:6px;font-family:var(--hm-cond);font-size:13px;font-weight:600;letter-spacing:1px;cursor:pointer;border:1px solid var(--hm-border);background:transparent;color:var(--hm-text);transition:all .15s;}
+.pc-btn:hover{border-color:var(--hm-orange);color:var(--hm-orange);}
+.pc-btn.featured-btn{background:var(--hm-orange);border-color:var(--hm-orange);color:#fff;}
+.pc-btn.featured-btn:hover{opacity:.85;}
+.pc-trial{font-family:var(--hm-mono);font-size:.62rem;color:var(--hm-muted);text-align:center;margin-top:8px;}
+
+/* COMPARISON TABLE */
+.compare-section{padding:0 2rem 2.5rem;}
+.section-label{font-family:var(--hm-mono);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--hm-orange);margin-bottom:.75rem;}
+.section-h2{font-family:var(--hm-cond);font-size:1.8rem;font-weight:700;margin-bottom:1.5rem;letter-spacing:.5px;}
+.section-h2 span{color:var(--hm-orange);}
+table.cmp{width:100%;border-collapse:collapse;font-size:.82rem;}
+table.cmp th{font-family:var(--hm-cond);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--hm-muted);border-bottom:2px solid var(--hm-border);padding:8px 12px;text-align:left;}
+table.cmp th.feat-col{width:40%;}
+table.cmp th.pro-col{color:var(--hm-orange);}
+table.cmp td{padding:9px 12px;border-bottom:1px solid var(--hm-border);color:var(--hm-muted2);}
+table.cmp td.yes{color:var(--hm-green);font-family:var(--hm-mono);}
+table.cmp td.pro-yes{color:var(--hm-orange);font-family:var(--hm-mono);}
+table.cmp td.no{color:var(--hm-muted);font-family:var(--hm-mono);}
+table.cmp td.mono{font-family:var(--hm-mono);font-size:.78rem;}
+table.cmp tr:hover td{background:rgba(249,115,22,.03);}
+table.cmp .cmp-section td{background:var(--hm-surface);font-family:var(--hm-cond);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--hm-muted);padding:6px 12px;}
+
+/* TRUST BAR */
+.trust-bar{background:var(--hm-surface);border-top:1px solid var(--hm-border);border-bottom:1px solid var(--hm-border);padding:1.25rem 2rem;display:flex;align-items:center;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:2.5rem;}
+.trust-item{display:flex;align-items:center;gap:8px;font-family:var(--hm-mono);font-size:.7rem;color:var(--hm-muted);}
+.trust-icon{color:var(--hm-green);font-size:.9rem;}
+
+/* FAQ */
+.faq-section{padding:0 2rem 3rem;}
+.faq-grid{display:flex;flex-direction:column;gap:8px;max-width:760px;}
+.faq-item{background:var(--hm-card);border:1px solid var(--hm-border);border-radius:8px;overflow:hidden;}
+.faq-q{padding:14px 16px;cursor:pointer;font-size:.9rem;font-weight:500;display:flex;justify-content:space-between;align-items:center;color:var(--hm-text);}
+.faq-q:hover{color:var(--hm-orange);}
+.faq-toggle{font-family:var(--hm-mono);font-size:.75rem;color:var(--hm-muted);flex-shrink:0;margin-left:12px;}
+.faq-a{padding:0 16px;max-height:0;overflow:hidden;transition:max-height .3s,padding .3s;font-size:.85rem;color:var(--hm-muted2);line-height:1.75;}
+.faq-a.open{max-height:200px;padding:0 16px 14px;}
+
+/* FOOTER */
+.hm-footer{background:var(--hm-surface);border-top:1px solid var(--hm-border);padding:2rem;display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:2rem;}
+.hm-footer-brand p{font-size:.82rem;color:var(--hm-muted);line-height:1.7;margin-top:.75rem;}
+.hm-footer h5{font-family:var(--hm-cond);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--hm-muted);margin-bottom:.75rem;}
+.hm-footer a{display:block;font-size:.82rem;color:var(--hm-muted);text-decoration:none;margin-bottom:.4rem;transition:color .15s;}
+.hm-footer a:hover{color:var(--hm-orange);}
+.hm-footer-bottom{background:var(--hm-bg);border-top:1px solid var(--hm-border);padding:.85rem 2rem;display:flex;justify-content:space-between;font-size:.75rem;color:var(--hm-muted);font-family:var(--hm-mono);}
 </style>
 </head>
 <body>
 
-<div class="circuit-bg"><svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><g stroke="rgba(0,212,255,0.04)" stroke-width="1" fill="none"><line x1="0" y1="200" x2="1400" y2="200"/><line x1="0" y1="400" x2="1400" y2="400"/><line x1="0" y1="600" x2="1400" y2="600"/><line x1="200" y1="0" x2="200" y2="900"/><line x1="500" y1="0" x2="500" y2="900"/><line x1="800" y1="0" x2="800" y2="900"/><line x1="1100" y1="0" x2="1100" y2="900"/></g></svg></div>
-
-<!-- NAVBAR -->
-<nav class="navbar" id="navbar">
-  <div class="navbar-inner">
-    <a href="../index.html" class="hm-logo-wrap">
-      <div class="hm-logo-icon"><div class="hm-logo-ring"></div><div class="hm-logo-h">H</div></div>
-      <div class="hm-logo-text">
-        <div class="hm-logo-name">HYDROMIND<span>.AI</span></div>
-        <div class="hm-logo-sub">Hydraulic Intelligence</div>
-      </div>
-    </a>
-    <div class="navbar-menu">
-      <a href="../index.html" class="navbar-link">Home</a>
-      <a href="advisor.html" class="navbar-link">AI Advisor</a>
-      <a href="../crane-diagnostic.html" class="navbar-link" style="color:#22c55e;">🏗 Crane Diag</a>
-      <a href="system-design.html" class="navbar-link">&#9881; System Design</a>
-      <a href="knowledge.html" class="navbar-link">Knowledge Base</a>
-      
-      <a href="../index.html#electrical" class="navbar-link" style="color:#f5c842;">&#9889; Electrical</a>
-      <a href="../index.html#calculator" class="navbar-link">Calculator</a>
-      <a href="pricing.html" class="navbar-link active" style="color:var(--gold);">Pricing</a>
-      <a href="feedback.html" class="navbar-link">Feedback</a>
-    </div>
-    <div class="navbar-cta" id="hmNavCta">
-      <button onclick="openAuthModal('login')" class="btn-outline" style="padding:8px 18px;font-size:.82rem;" id="hmNavLogin">Login</button>
-      <button onclick="openAuthModal('register')" class="btn-primary" style="padding:8px 18px;font-size:.82rem;" id="hmNavRegister">Register</button>
-      <div id="hmNavUser" style="display:none;align-items:center;gap:.5rem;background:rgba(200,165,80,.06);border:1px solid rgba(200,165,80,.15);border-radius:8px;padding:5px 10px;cursor:pointer;" onclick="doLogout()">
-        <div id="hmNavAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.78rem;color:#080c12;"></div>
-        <span id="hmNavName" style="font-size:.82rem;color:var(--text1);"></span>
-        <span id="hmNavPlan" style="font-family:'Space Mono',monospace;font-size:.62rem;padding:2px 8px;border-radius:100px;background:rgba(200,165,80,.1);color:var(--gold);"></span>
-      </div>
-    </div>
-    <button class="navbar-toggle" id="navToggle"><span></span><span></span><span></span></button>
+<!-- NAV -->
+<nav class="hm-nav">
+  <a href="../index.html" class="hm-nav-logo">
+    <div class="hm-nav-icon">H</div>
+    <div><div class="hm-nav-brand">HYDROMIND<span>.AI</span></div><div class="hm-nav-sub">Hydraulic Intelligence</div></div>
+  </a>
+  <div class="hm-nav-links">
+    <a href="../index.html" class="hm-nav-a">Home</a>
+    <a href="advisor.html" class="hm-nav-a">AI Advisor</a>
+    <a href="../crane-diagnostic.html" class="hm-nav-a" style="color:#22c55e;">⚙ Crane Diag</a>
+    <a href="system-design.html" class="hm-nav-a">System Design</a>
+    <a href="knowledge.html" class="hm-nav-a">Knowledge Base</a>
+    <a href="../pricing.html" class="hm-nav-a active">Pricing</a>
+    <a href="feedback.html" class="hm-nav-a">Feedback</a>
   </div>
-  <div class="navbar-mobile" id="navMobile">
-    <a href="../index.html">Home</a>
-    <a href="advisor.html">AI Advisor</a>
-    <a href="../crane-diagnostic.html" style="color:#22c55e;">🏗 Crane Diagnostic</a>
-    <a href="system-design.html">&#9881; System Design</a>
-    <a href="knowledge.html">Knowledge Base</a>
-    
-    <a href="../index.html#electrical" style="color:#f5c842;">&#9889; Electrical</a>
-    <a href="../index.html#calculator">Calculator</a>
-    <a href="pricing.html" style="color:var(--gold);">Pricing</a>
-    <a href="feedback.html">Feedback</a>
-    <div class="navbar-mobile-auth" style="display:flex;gap:.5rem;margin-top:.5rem;padding-top:.75rem;border-top:1px solid var(--border);">
-      <button onclick="openAuthModal('login')" class="btn-outline" style="flex:1;padding:8px;font-size:.85rem;">Login</button>
-      <button onclick="openAuthModal('register')" class="btn-primary" style="flex:1;padding:8px;font-size:.85rem;">Register</button>
-    </div>
+  <div class="hm-nav-cta">
+    <button class="hm-btn-ghost" onclick="openAuthModal('login')">Login</button>
+    <button class="hm-btn-orange" onclick="openAuthModal('register')">Get Pro</button>
   </div>
 </nav>
 
-<!-- AUTH MODAL -->
+<!-- AUTH MODAL (preserved) -->
 <div class="hm-auth-overlay" id="hmAuthOverlay">
   <div class="hm-auth-box">
     <div class="hm-auth-tabs"><button class="hm-auth-tab active" id="hmTab_login" onclick="switchAuthTab('login')">Login</button><button class="hm-auth-tab" id="hmTab_register" onclick="switchAuthTab('register')">Register</button><button class="hm-auth-close" onclick="closeAuthModal()">&#215;</button></div>
@@ -89,258 +161,284 @@
   </div>
 </div>
 
-<!-- PAGE LAYOUT -->
-<div class="page-layout">
+<!-- PAGE -->
+<div class="hm-page">
+  <div class="hm-main">
 
-  <!-- LEFT SIDEBAR -->
-  <div class="hm-left-sidebar" id="hmLeftSidebar">
-    <div class="hm-left-inner">
-      <div id="hmSidebarProfile" style="display:none;">
-        <div class="hm-profile-card">
-          <div class="hm-prof-av" id="hmProfAvatar">--</div>
-          <div class="hm-prof-name" id="hmProfName"></div>
-          <div class="hm-prof-email" id="hmProfEmail"></div>
-          <span class="hm-prof-plan" id="hmProfPlan">Free</span>
-        </div>
-      </div>
-      <div id="hmSidebarNoAuth">
-        <div style="margin-bottom:.75rem;">
-          <div class="hm-sidebar-label">Quick Links</div>
-          <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
-          <div class="hm-hist-item" onclick="location.href='system-design.html'"><span class="hm-hist-icon">&#9881;&#65039;</span><span class="hm-hist-text">System Design</span></div>
-          <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
-          
-          <div class="hm-hist-item" onclick="location.href='pricing.html'" style="background:rgba(200,165,80,.07);"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text" style="color:var(--gold);">Upgrade Plan</span></div>
-        </div>
-        <div style="font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.45rem;border-bottom:1px solid var(--border);margin-bottom:.5rem;">Sponsored</div>
-        <div style="background:rgba(200,165,80,.03);border:1px dashed rgba(200,165,80,.12);border-radius:6px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem;">
-          <div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement
-        </div>
-        <div style="text-align:center;"><a href="pricing.html" style="font-family:'Space Mono',monospace;font-size:.56rem;color:rgba(200,165,80,.38);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a></div>
-      </div>
-      <div id="hmSidebarHistory" style="display:none;margin-top:.75rem;">
-        <div class="hm-sidebar-label">Chat History</div>
-        <div id="hmHistoryList"></div>
-      </div>
-      <div id="hmSidebarLinks" style="display:none;margin-top:.75rem;">
-        <div class="hm-sidebar-label">Quick Links</div>
-        <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
-        <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
-        
-        <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
+    <!-- HERO -->
+    <div class="pg-hero">
+      <div class="pg-eyebrow">Choose Your Plan</div>
+      <h1 class="pg-h1">Plans for Every <span>Operation</span></h1>
+      <p class="pg-sub">From individual technicians to full offshore maintenance teams. No long-term commitment required.</p>
+      <div class="billing-toggle">
+        <span>Monthly</span>
+        <div class="toggle-track" id="billingToggle" onclick="toggleBilling()"><div class="toggle-thumb"></div></div>
+        <span>Annual</span>
+        <span class="save-badge">Save 20%</span>
       </div>
     </div>
-    <div class="hm-left-bottom"><button class="hm-logout-btn" id="hmLogoutBtn" onclick="doLogout()" style="display:none;">Sign Out</button></div>
-  </div>
-
-  <!-- MAIN CONTENT -->
-  <div class="hm-main-content">
-
-    <!-- PAGE HEADER -->
-    <section class="section" style="padding:4rem 0 3rem;background:var(--bg-dark);">
-      <div class="container" style="text-align:center;">
-        <div class="eyebrow" style="justify-content:center;">Choose Your Plan</div>
-        <h1 class="section-title">Plans for Every <span class="text-gold">Operation</span></h1>
-        <p class="section-subtitle" style="margin:1rem auto 0;text-align:center;">From individual technicians to full offshore maintenance teams. No long-term commitment required.</p>
-      </div>
-    </section>
 
     <!-- PRICING CARDS -->
-    <section class="section section-dark" style="padding-top:2rem;">
-      <div class="container">
-        <div class="pricing-cards">
+    <div class="pricing-section">
+      <div class="pricing-grid">
 
-          <!-- BASIC -->
-          <div class="pricing-card reveal">
-            <div class="plan-name">Basic</div>
-            <div class="plan-price">$29<span>/month</span></div>
-            <div class="plan-desc">For individual technicians needing quick hydraulic reference and basic troubleshooting guidance.</div>
-            <ul class="plan-features">
-              <li>AI Advisor — 20 queries/month</li>
-              <li>General hydraulic Q&amp;A</li>
-              <li>Formula quick reference</li>
-              <li>Basic troubleshooting methodology</li>
-              <li>Standard email support</li>
-              <li>Calculator — all 6 modules</li>
-            </ul>
-            <button class="plan-btn" onclick="selectPlan('Basic')">Get Started — $29/mo</button>
-          </div>
-
-          <!-- PRO (FEATURED) -->
-          <div class="pricing-card featured reveal">
-            <div class="plan-name">Pro</div>
-            <div class="plan-price">$69<span>/month</span></div>
-            <div class="plan-desc">For working hydraulic technicians and crane supervisors requiring full AI advisor capability.</div>
-            <ul class="plan-features">
-              <li>Unlimited AI Advisor queries</li>
-              <li>Full OEM Manual KB (30+ documents)</li>
-              <li>Field Case Library (KB30–KB33)</li>
-              <li>System Design — 12-step workflow + BOM</li>
-              <li>Schematic reading assistance</li>
-              <li>Custom KB upload</li>
-              <li>Priority email support (4hr response)</li>
-              <li>Ad-free experience</li>
-            </ul>
-            <button class="plan-btn featured-btn" onclick="selectPlan('Pro')">Get Pro — $69/mo ⭐</button>
-          </div>
-
-          <!-- ENTERPRISE -->
-          <div class="pricing-card reveal">
-            <div class="plan-name">Enterprise</div>
-            <div class="plan-price">$189<span>/month</span></div>
-            <div class="plan-desc">For maintenance teams, crane companies, and offshore operations requiring full platform access.</div>
-            <ul class="plan-features">
-              <li>Everything in Pro</li>
-              <li>Up to 10 team members</li>
-              <li>Custom OEM manual indexing</li>
-              <li>Dedicated account manager</li>
-              <li>API access for integration</li>
-              <li>Custom KB for your fleet</li>
-              <li>SLA — 2hr response time</li>
-              <li>Onboarding &amp; training session</li>
-            </ul>
-            <button class="plan-btn" onclick="selectPlan('Enterprise')">Get Enterprise — $189/mo</button>
-          </div>
-
+        <!-- BASIC -->
+        <div class="pc">
+          <div class="pc-name">Basic</div>
+          <div class="pc-price"><span style="font-size:1.2rem;vertical-align:top;margin-top:8px;display:inline-block;">$</span><span id="price-basic">29</span><span>/mo</span></div>
+          <div class="pc-annual" id="annual-basic"></div>
+          <div class="pc-desc">For individual technicians needing quick hydraulic reference and basic guidance.</div>
+          <ul class="pc-features">
+            <li>AI Advisor — 20 queries/month</li>
+            <li>General hydraulic Q&A</li>
+            <li>Engineering calculator — all 6 modules</li>
+            <li>Formula quick reference</li>
+            <li>Basic troubleshooting methodology</li>
+            <li>Standard email support</li>
+            <li class="dim">Full OEM KB (48+ docs)</li>
+            <li class="dim">System Design + BOM</li>
+            <li class="dim">Custom KB upload</li>
+          </ul>
+          <button class="pc-btn" onclick="selectPlan('Basic')">Get Basic</button>
+          <div class="pc-trial">No credit card required</div>
         </div>
 
-        <!-- SECURE PAYMENT NOTE -->
-        <div style="text-align:center;margin-top:2rem;padding:1.25rem;background:rgba(200,165,80,.04);border:1px solid rgba(200,165,80,.1);border-radius:10px;">
-          <div style="display:flex;align-items:center;justify-content:center;gap:.75rem;flex-wrap:wrap;">
-            <span style="font-size:1.2rem;">&#128274;</span>
-            <span style="font-family:'Space Mono',monospace;font-size:.72rem;color:var(--text3);">Secure checkout &nbsp;·&nbsp; Cancel anytime &nbsp;·&nbsp; 7-day free trial on Pro &amp; Enterprise</span>
-          </div>
+        <!-- PRO -->
+        <div class="pc featured">
+          <div class="pc-badge">Most Popular</div>
+          <div class="pc-name">Pro</div>
+          <div class="pc-price"><span style="font-size:1.2rem;vertical-align:top;margin-top:8px;display:inline-block;">$</span><span id="price-pro">69</span><span>/mo</span></div>
+          <div class="pc-annual" id="annual-pro"></div>
+          <div class="pc-desc">For working hydraulic technicians and crane supervisors requiring full AI capability.</div>
+          <ul class="pc-features">
+            <li>Unlimited AI Advisor queries</li>
+            <li>Full OEM KB — 48+ indexed manuals</li>
+            <li>Crane Diagnostic Agent — full access</li>
+            <li>System Design — 12-step + BOM</li>
+            <li>Field Case Library (KB30–KB48)</li>
+            <li>Custom KB upload</li>
+            <li>Schematic reading assistance</li>
+            <li>Priority support — 4hr response</li>
+            <li>Ad-free experience</li>
+          </ul>
+          <button class="pc-btn featured-btn" onclick="selectPlan('Pro')">Get Pro — $69/mo</button>
+          <div class="pc-trial">7-day free trial included</div>
+        </div>
+
+        <!-- ENTERPRISE -->
+        <div class="pc">
+          <div class="pc-name">Enterprise</div>
+          <div class="pc-price"><span style="font-size:1.2rem;vertical-align:top;margin-top:8px;display:inline-block;">$</span><span id="price-ent">189</span><span>/mo</span></div>
+          <div class="pc-annual" id="annual-ent"></div>
+          <div class="pc-desc">For maintenance teams and offshore operations requiring full platform access and API.</div>
+          <ul class="pc-features">
+            <li>Everything in Pro</li>
+            <li>Up to 10 team members</li>
+            <li>Custom OEM manual indexing</li>
+            <li>API access for integration</li>
+            <li>Custom KB for your fleet</li>
+            <li>Dedicated account manager</li>
+            <li>Onboarding & training session</li>
+            <li>SLA — 2hr response time</li>
+          </ul>
+          <button class="pc-btn" onclick="selectPlan('Enterprise')">Get Enterprise</button>
+          <div class="pc-trial">7-day free trial included</div>
         </div>
       </div>
-    </section>
+    </div>
+
+    <!-- TRUST BAR -->
+    <div class="trust-bar">
+      <div class="trust-item"><span class="trust-icon">✓</span>Cancel anytime</div>
+      <div class="trust-item"><span class="trust-icon">✓</span>Secure checkout via Stripe</div>
+      <div class="trust-item"><span class="trust-icon">✓</span>7-day free trial on Pro & Enterprise</div>
+      <div class="trust-item"><span class="trust-icon">✓</span>No long-term contracts</div>
+      <div class="trust-item"><span class="trust-icon">✓</span>Prorated upgrades</div>
+    </div>
 
     <!-- COMPARISON TABLE -->
-    <section class="section section-dark" style="padding-top:2rem;">
-      <div class="container">
-        <div class="section-eyebrow">Plan Comparison</div>
-        <h2>Full Feature <span class="text-gold">Breakdown</span></h2>
-        <div style="overflow-x:auto;margin-top:1.5rem;">
-          <table class="compare-table">
-            <thead>
-              <tr>
-                <th style="width:40%;">Feature</th>
-                <th>Basic</th>
-                <th style="color:var(--gold);">Pro ⭐</th>
-                <th>Enterprise</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td>AI Advisor queries</td><td style="font-family:'Space Mono',monospace;font-size:.82rem;">20/month</td><td style="color:var(--gold);font-family:'Space Mono',monospace;font-size:.82rem;">Unlimited</td><td style="font-family:'Space Mono',monospace;font-size:.82rem;">Unlimited</td></tr>
-              <tr><td>Hydraulic Q&amp;A</td><td>✓</td><td style="color:var(--gold);">✓</td><td>✓</td></tr>
-              <tr><td>Calculator — all 6 modules</td><td>✓</td><td style="color:var(--gold);">✓</td><td>✓</td></tr>
-              <tr><td>Full OEM KB (30+ docs)</td><td style="color:var(--text3);">—</td><td style="color:var(--gold);">✓</td><td>✓</td></tr>
-              <tr><td>Field Case Library (KB30–33)</td><td style="color:var(--text3);">—</td><td style="color:var(--gold);">✓</td><td>✓</td></tr>
-              <tr><td>System Design + BOM</td><td style="color:var(--text3);">—</td><td style="color:var(--gold);">✓</td><td>✓</td></tr>
-              <tr><td>Custom KB upload</td><td style="color:var(--text3);">—</td><td style="color:var(--gold);">✓</td><td>✓</td></tr>
-              <tr><td>Ad-free experience</td><td style="color:var(--text3);">—</td><td style="color:var(--gold);">✓</td><td>✓</td></tr>
-              <tr><td>Team members</td><td style="font-family:'Space Mono',monospace;font-size:.82rem;">1</td><td style="color:var(--gold);font-family:'Space Mono',monospace;font-size:.82rem;">1</td><td style="font-family:'Space Mono',monospace;font-size:.82rem;">Up to 10</td></tr>
-              <tr><td>API access</td><td style="color:var(--text3);">—</td><td style="color:var(--text3);">—</td><td>✓</td></tr>
-              <tr><td>Support response time</td><td style="font-family:'Space Mono',monospace;font-size:.82rem;">Standard</td><td style="color:var(--gold);font-family:'Space Mono',monospace;font-size:.82rem;">4 hours</td><td style="font-family:'Space Mono',monospace;font-size:.82rem;">2 hours</td></tr>
-              <!-- FIX: buttons left-aligned, text-align:left on each td -->
-              <tr>
-                <td></td>
-                <td style="text-align:left;padding-top:1rem;"><button class="plan-btn" onclick="selectPlan('Basic')" style="font-size:.78rem;padding:9px 16px;">Get Basic</button></td>
-                <td style="text-align:left;padding-top:1rem;"><button class="plan-btn featured-btn" onclick="selectPlan('Pro')" style="font-size:.78rem;padding:9px 16px;">Get Pro ⭐</button></td>
-                <td style="text-align:left;padding-top:1rem;"><button class="plan-btn" onclick="selectPlan('Enterprise')" style="font-size:.78rem;padding:9px 16px;">Get Enterprise</button></td>
-              </tr>
-            </tbody>
-          </table>
+    <div class="compare-section">
+      <div class="section-label">Plan Comparison</div>
+      <h2 class="section-h2">Full Feature <span>Breakdown</span></h2>
+      <div style="overflow-x:auto;">
+        <table class="cmp">
+          <thead>
+            <tr>
+              <th class="feat-col">Feature</th>
+              <th>Basic</th>
+              <th class="pro-col">Pro ★</th>
+              <th>Enterprise</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="cmp-section"><td colspan="4">AI Advisor</td></tr>
+            <tr><td>Monthly queries</td><td class="mono">20</td><td class="pro-yes">Unlimited</td><td class="yes">Unlimited</td></tr>
+            <tr><td>General hydraulic Q&A</td><td class="yes">✓</td><td class="pro-yes">✓</td><td class="yes">✓</td></tr>
+            <tr><td>Full OEM KB (48+ docs)</td><td class="no">—</td><td class="pro-yes">✓</td><td class="yes">✓</td></tr>
+            <tr><td>Field Case Library KB30–48</td><td class="no">—</td><td class="pro-yes">✓</td><td class="yes">✓</td></tr>
+            <tr class="cmp-section"><td colspan="4">Crane Diagnostic</td></tr>
+            <tr><td>10-State PLC sequence</td><td class="no">—</td><td class="pro-yes">✓</td><td class="yes">✓</td></tr>
+            <tr><td>3 architecture paths</td><td class="no">—</td><td class="pro-yes">✓</td><td class="yes">✓</td></tr>
+            <tr><td>DPR export</td><td class="no">—</td><td class="pro-yes">✓</td><td class="yes">✓</td></tr>
+            <tr class="cmp-section"><td colspan="4">Platform</td></tr>
+            <tr><td>Engineering calculator — 6 modules</td><td class="yes">✓</td><td class="pro-yes">✓</td><td class="yes">✓</td></tr>
+            <tr><td>System Design + BOM</td><td class="no">—</td><td class="pro-yes">✓</td><td class="yes">✓</td></tr>
+            <tr><td>Custom KB upload</td><td class="no">—</td><td class="pro-yes">✓</td><td class="yes">✓</td></tr>
+            <tr><td>Ad-free experience</td><td class="no">—</td><td class="pro-yes">✓</td><td class="yes">✓</td></tr>
+            <tr><td>Team members</td><td class="mono">1</td><td class="mono" style="color:var(--hm-orange);">1</td><td class="mono">Up to 10</td></tr>
+            <tr><td>API access</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+            <tr class="cmp-section"><td colspan="4">Support</td></tr>
+            <tr><td>Support response time</td><td class="mono">Standard</td><td class="mono" style="color:var(--hm-orange);">4 hours</td><td class="mono">2 hours</td></tr>
+            <tr><td>Dedicated account manager</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+            <tr><td>Onboarding session</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+            <tr>
+              <td></td>
+              <td><button class="pc-btn" onclick="selectPlan('Basic')" style="font-size:.75rem;padding:7px 12px;">Get Basic</button></td>
+              <td><button class="pc-btn featured-btn" onclick="selectPlan('Pro')" style="font-size:.75rem;padding:7px 12px;">Get Pro ★</button></td>
+              <td><button class="pc-btn" onclick="selectPlan('Enterprise')" style="font-size:.75rem;padding:7px 12px;">Get Enterprise</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="faq-section">
+      <div class="section-label">FAQ</div>
+      <h2 class="section-h2">Common <span>Questions</span></h2>
+      <div class="faq-grid">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Can I try before I pay?<span class="faq-toggle">+</span></div>
+          <div class="faq-a">Yes. Register a free account and use the Basic tier with 20 AI queries per month at no cost. Pro and Enterprise plans include a 7-day free trial with no card required.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Can I cancel anytime?<span class="faq-toggle">+</span></div>
+          <div class="faq-a">Yes. No long-term contracts. Cancel from your account dashboard — your plan remains active until the end of the billing period.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">How is payment processed?<span class="faq-toggle">+</span></div>
+          <div class="faq-a">Payments are processed securely via Stripe. We accept all major credit and debit cards. Your card details are never stored on our servers.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Can I upgrade or downgrade my plan?<span class="faq-toggle">+</span></div>
+          <div class="faq-a">Yes. Change your plan anytime from account settings. Changes take effect immediately with prorated billing.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Is this suitable for offshore operations?<span class="faq-toggle">+</span></div>
+          <div class="faq-a">Yes. HydroMind.AI is built specifically for offshore crane supervisors and hydraulic technicians. The KB includes Liebherr, Favco, Rexroth, Sauer Danfoss, and MacGregor field cases from real offshore operations.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">What OEM manuals are included in Pro?<span class="faq-toggle">+</span></div>
+          <div class="faq-a">Pro includes 48+ indexed OEM manuals across KB1–KB48 covering Rexroth A4VG/A10VO/A10VSO, Sauer Danfoss Series 90/S45, Eaton, Liebherr CBG 350 Litronic, MacGregor HMC, NOV AHC, SeaTrax, Favelle Favco, and more.</div>
         </div>
       </div>
-    </section>
+    </div>
 
-    <!-- FAQ — FIX: removed max-width:780px constraint, full container width -->
-    <section class="section" style="padding-bottom:4rem;">
-      <div class="container">
-        <div class="section-eyebrow" style="justify-content:center;">FAQ</div>
-        <h2 style="text-align:center;">Common <span class="text-gold">Questions</span></h2>
-        <!-- CHANGED: removed max-width:780px and margin-left/right:auto — now fills full container -->
-        <div style="margin-top:2rem;display:flex;flex-direction:column;gap:1rem;">
-          <div class="card" style="padding:1.25rem 1.5rem;">
-            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text1);margin-bottom:.5rem;">Can I try before I pay?</div>
-            <div style="font-size:.9rem;color:var(--text2);line-height:1.75;">Yes. Register a free account and use the Basic tier with 20 AI queries per month at no cost. Pro and Enterprise plans include a 7-day free trial.</div>
-          </div>
-          <div class="card" style="padding:1.25rem 1.5rem;">
-            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text1);margin-bottom:.5rem;">Can I cancel anytime?</div>
-            <div style="font-size:.9rem;color:var(--text2);line-height:1.75;">Yes. No long-term contracts. Cancel anytime from your account dashboard and your plan remains active until the end of the billing period.</div>
-          </div>
-          <div class="card" style="padding:1.25rem 1.5rem;">
-            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text1);margin-bottom:.5rem;">How is payment processed?</div>
-            <div style="font-size:.9rem;color:var(--text2);line-height:1.75;">Payments are processed securely via Stripe. We accept all major credit and debit cards. Your card details are never stored on our servers.</div>
-          </div>
-          <div class="card" style="padding:1.25rem 1.5rem;">
-            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text1);margin-bottom:.5rem;">Can I upgrade or downgrade my plan?</div>
-            <div style="font-size:.9rem;color:var(--text2);line-height:1.75;">Yes. You can change your plan at any time from your account settings. Changes take effect immediately with prorated billing.</div>
-          </div>
-          <div class="card" style="padding:1.25rem 1.5rem;">
-            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text1);margin-bottom:.5rem;">Is this suitable for offshore operations?</div>
-            <div style="font-size:.9rem;color:var(--text2);line-height:1.75;">Yes. HydroMind.AI is built specifically for offshore crane supervisors and hydraulic technicians. The KB includes Favco, Liebherr, Rexroth, and Danfoss field cases from real offshore operations.</div>
-          </div>
+    <!-- FOOTER -->
+    <div class="hm-footer">
+      <div class="hm-footer-brand">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:.5rem;">
+          <div style="width:32px;height:32px;border-radius:7px;background:var(--hm-orange);display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;color:#fff;font-size:16px;">H</div>
+          <div style="font-family:Syne,sans-serif;font-weight:800;font-size:1rem;color:var(--hm-text);">HYDROMIND<span style="color:var(--hm-orange);">.AI</span></div>
         </div>
+        <p>Expert AI advisor for hydraulic systems and offshore crane operations. Built by engineers, for engineers.</p>
+        <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);border-radius:4px;padding:3px 10px;font-family:var(--hm-mono);font-size:.62rem;color:var(--hm-green);margin-top:.75rem;"><div style="width:6px;height:6px;border-radius:50%;background:var(--hm-green);animation:hm-pulse 1.4s ease infinite;"></div>AI Online — KB v3.0</div>
       </div>
-    </section>
+      <div><h5>Platform</h5><a href="advisor.html">AI Advisor</a><a href="../crane-diagnostic.html">Crane Diagnostic</a><a href="system-design.html">System Design</a><a href="knowledge.html">Knowledge Base</a></div>
+      <div><h5>Account</h5><a href="../pricing.html">Pricing & Plans</a><a href="feedback.html">Feedback</a><a href="privacy.html">Privacy Policy</a><a href="disclaimer.html">Disclaimer</a></div>
+      <div><h5>Contact</h5><a href="mailto:support@hydromindai.com">support@hydromindai.com</a><a>Abu Dhabi, UAE</a><a>Response: 24hrs (Pro: 4hrs)</a></div>
+    </div>
+    <div class="hm-footer-bottom">
+      <span>© 2026 HydroMind.AI — All rights reserved</span>
+      <div style="display:flex;gap:1rem;"><a href="privacy.html" style="color:var(--hm-muted);text-decoration:none;">Privacy</a><a href="disclaimer.html" style="color:var(--hm-muted);text-decoration:none;">Disclaimer</a></div>
+    </div>
 
-    <!-- FOOTER (inside hm-main-content for correct margin alignment) -->
-    <footer class="footer">
-      <div class="container">
-        <div class="footer-grid">
-          <div class="footer-brand">
-            <div class="hm-logo-wrap" style="margin-bottom:.85rem;">
-              <div class="hm-logo-icon"><div class="hm-logo-ring"></div><div class="hm-logo-h">H</div></div>
-              <div class="hm-logo-text"><div class="hm-logo-name">HYDROMIND<span>.AI</span></div><div class="hm-logo-sub">Hydraulic Intelligence</div></div>
-            </div>
-            <p>Expert AI advisor for hydraulic systems and offshore crane operations. Built by engineers, for engineers.</p>
-            <span class="badge-pill">&#128994; AI Online — KB v2.0</span>
-          </div>
-          <div class="footer-col"><h5>Platform</h5><div class="footer-links"><a href="advisor.html">AI Advisor</a><a href="system-design.html">System Design</a><a href="knowledge.html">Knowledge Base</a></div></div>
-          <div class="footer-col"><h5>Account</h5><div class="footer-links"><a href="pricing.html">Pricing &amp; Plans</a><a href="feedback.html">Feedback</a><a href="privacy.html">Privacy Policy</a><a href="disclaimer.html">Disclaimer</a></div></div>
-          <div class="footer-col"><h5>Contact</h5><div class="footer-links"><a href="/cdn-cgi/l/email-protection#cdbeb8bdbda2bfb98da5b4a9bfa2a0a4a3a9aca4e3aea2a0"><span class="__cf_email__" data-cfemail="ef9c9a9f9f809d9baf87968b9d808286818b8e86c18c8082">[email&#160;protected]</span></a><a href="#">Abu Dhabi, UAE</a><a href="#">Response: 24hrs (Pro: 4hrs)</a></div></div>
-        </div>
-        <div class="footer-bottom">
-          <span>© 2026 HydroMind.AI — All rights reserved</span>
-          <div class="footer-bottom-links"><a href="privacy.html">Privacy</a><a href="disclaimer.html">Disclaimer</a></div>
-        </div>
-      </div>
-    </footer>
+  </div><!-- /hm-main -->
 
-  </div><!-- end hm-main-content -->
-
-  <!-- RIGHT SIDEBAR -->
-  <div class="hm-right-sidebar" id="hmAdSidebar">
-    <div id="hmAdTitle" style="font-family:'JetBrains Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.5rem;border-bottom:1px solid var(--border);margin-bottom:.55rem;">Sponsored</div>
-    <div id="hmNoAdBadge" style="display:none;background:rgba(61,214,140,.06);border:1px solid rgba(61,214,140,.2);border-radius:8px;padding:.75rem;text-align:center;margin-bottom:.55rem;"><div style="font-size:1.2rem;">&#127881;</div><p style="font-size:.68rem;color:#3dd68c;margin:.25rem 0 0;line-height:1.4;">Ad-free<br>Pro/Enterprise</p></div>
-    <div id="hmAd1" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:195px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:1rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement<br>200×195</div>
-    <div id="hmAd2" style="background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.11);border-radius:6px;padding:.65rem .6rem;text-align:center;margin-bottom:.55rem;"><div style="font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Partner</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:var(--cyan);margin:.15rem 0 .2rem;">Your Brand</div><div style="font-size:.65rem;color:var(--text2);line-height:1.4;">Reach hydraulic engineers worldwide.</div></div>
-    <div id="hmAd3" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128296;</div>Banner Ad<br>200×110</div>
-    <div id="hmAd4" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;"><div style="font-size:.85rem;opacity:.22;margin-bottom:3px;">&#128161;</div>Link Ad</div>
-    <div id="hmAd5" style="margin-top:auto;padding-top:.55rem;border-top:1px solid var(--border);text-align:center;"><a href="pricing.html" style="font-family:'JetBrains Mono',monospace;font-size:.57rem;color:rgba(0,212,255,.4);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a></div>
+  <!-- RIGHT SIDEBAR — Value Panel -->
+  <div class="hm-sidebar-right">
+    <div class="rs-card" style="border-color:rgba(249,115,22,.3);">
+      <div class="rs-title">Pro Plan</div>
+      <div style="font-family:var(--hm-cond);font-size:1.6rem;font-weight:700;color:var(--hm-orange);">$69<span style="font-size:.9rem;color:var(--hm-muted);font-weight:400;">/mo</span></div>
+      <div style="font-family:var(--hm-mono);font-size:.6rem;color:var(--hm-green);margin-bottom:10px;">7-day free trial</div>
+      <button class="rs-btn" onclick="selectPlan('Pro')">Start Free Trial</button>
+    </div>
+    <div class="rs-card">
+      <div class="rs-title">What You Get</div>
+      <div class="rs-chip chip-g">✓ 48+ OEM Manuals</div>
+      <div class="rs-chip chip-o">✓ Crane Diagnostic</div>
+      <div class="rs-chip chip-b">✓ System Design</div>
+      <div class="rs-chip chip-g">✓ Unlimited AI</div>
+      <div class="rs-chip chip-o">✓ DPR Export</div>
+    </div>
+    <div class="rs-card">
+      <div class="rs-title">KB Coverage</div>
+      <div class="rs-row"><span class="rs-key">Manuals</span><span class="rs-val">48+</span></div>
+      <div class="rs-row"><span class="rs-key">OEM Brands</span><span class="rs-val">12+</span></div>
+      <div class="rs-row"><span class="rs-key">Field Cases</span><span class="rs-val">KB30–48</span></div>
+      <div class="rs-row"><span class="rs-key">Architectures</span><span class="rs-val">3</span></div>
+    </div>
+    <div class="rs-card">
+      <div class="rs-title">Trusted By</div>
+      <div style="font-family:var(--hm-cond);font-size:1.4rem;font-weight:700;color:var(--hm-orange);">1,200+</div>
+      <div style="font-size:10px;color:var(--hm-muted);margin-bottom:8px;">offshore engineers</div>
+      <div style="font-family:var(--hm-mono);font-size:.65rem;color:var(--hm-yellow);">★★★★★ 4.9/5</div>
+    </div>
+    <div class="rs-card">
+      <div class="rs-title">Need Help?</div>
+      <div style="font-size:10px;color:var(--hm-muted2);line-height:1.6;margin-bottom:8px;">Questions about which plan fits your operation?</div>
+      <a href="feedback.html" style="display:block;text-align:center;background:transparent;border:1px solid var(--hm-border);color:var(--hm-muted2);border-radius:5px;padding:7px;font-family:var(--hm-cond);font-size:11px;text-decoration:none;transition:border-color .15s;" onmouseover="this.style.borderColor='var(--hm-orange)'" onmouseout="this.style.borderColor='var(--hm-border)'">Contact Us ↗</a>
+    </div>
   </div>
 
-</div><!-- end page-layout -->
+</div><!-- /hm-page -->
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="../js/main.js"></script>
+<script src="../js/main.js"></script>
 <script src="../js/auth.js"></script>
 <script>
+var isAnnual = false;
+var prices = {basic:{m:29,a:23},pro:{m:69,a:55},ent:{m:189,a:151}};
+
+function toggleBilling() {
+  isAnnual = !isAnnual;
+  var t = document.getElementById('billingToggle');
+  t.classList.toggle('on', isAnnual);
+  document.getElementById('price-basic').textContent = isAnnual ? prices.basic.a : prices.basic.m;
+  document.getElementById('price-pro').textContent   = isAnnual ? prices.pro.a   : prices.pro.m;
+  document.getElementById('price-ent').textContent   = isAnnual ? prices.ent.a   : prices.ent.m;
+  document.getElementById('annual-basic').textContent = isAnnual ? 'Billed $276/year — save $72' : '';
+  document.getElementById('annual-pro').textContent   = isAnnual ? 'Billed $660/year — save $168' : '';
+  document.getElementById('annual-ent').textContent   = isAnnual ? 'Billed $1,812/year — save $456' : '';
+}
+
+function toggleFaq(el) {
+  var a = el.nextElementSibling;
+  var tog = el.querySelector('.faq-toggle');
+  var open = a.classList.toggle('open');
+  tog.textContent = open ? '−' : '+';
+}
+
 function selectPlan(plan) {
-  var user = hmGetSession ? hmGetSession() : null;
+  var user = typeof hmGetSession === 'function' ? hmGetSession() : null;
   if (user) {
-    if (user.plan === plan) { showPlanToast('You are already on the ' + plan + ' plan.'); return; }
-    showPlanToast('Payment coming soon — we will notify you at ' + user.email + ' when subscriptions go live.');
+    if (user.plan === plan) { showToast('You are already on the ' + plan + ' plan.'); return; }
+    showToast('Payment coming soon — we will notify you at ' + user.email + ' when subscriptions go live.');
     return;
   }
   openAuthModal('register');
   setTimeout(function() {
     var sel = document.getElementById('hmRegPlan');
-    if (sel) { sel.value = plan; sel.style.borderColor = 'rgba(200,165,80,.6)'; }
+    if (sel) sel.value = plan;
   }, 200);
 }
-function showPlanToast(msg) {
+
+function showToast(msg) {
   var t = document.getElementById('hmToast');
-  if (!t) {
-    t = document.createElement('div'); t.id = 'hmToast';
-    t.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:9999;padding:13px 28px;border-radius:10px;font-size:.88rem;font-family:"Outfit",sans-serif;background:rgba(8,18,36,.97);border:1px solid rgba(200,165,80,.35);color:rgba(220,210,195,.9);
+  if (!t) { t = document.createElement('div'); t.id = 'hmToast'; document.body.appendChild(t); }
+  t.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:9999;padding:13px 24px;border-radius:8px;font-size:.85rem;background:rgba(13,15,18,.97);border:1px solid var(--hm-border);color:var(--hm-text);font-family:Barlow,sans-serif;box-shadow:0 8px 32px rgba(0,0,0,.4);';
+  t.textContent = msg;
+  setTimeout(function(){ t.style.opacity='0'; setTimeout(function(){ t.remove(); },400); }, 3500);
+}
+</script>
+</body>
+</html>

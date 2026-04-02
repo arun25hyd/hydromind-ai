@@ -18,23 +18,39 @@
 .kb-entry-cat{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--cyan);padding:2px 8px;border:1px solid rgba(0,229,212,.15);border-radius:100px;}
 .kb-entry-schem{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--text3);}
 
-/* ── Navbar size override: taller bar + larger link font ── */
-.navbar { height: 72px !important; }
-.navbar-inner { height: 72px !important; min-height: 72px !important; }
-.navbar-link {
-  font-size: 0.95rem !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.01em !important;
-  padding: 6px 10px !important;
-}
-.navbar-menu { gap: 2px !important; align-items: center !important; }
-.hm-logo-name { font-size: 1.05rem !important; }
+
+
+
+
+
+
 .hm-logo-sub  { font-size: 0.62rem !important; }
 
 </style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--hm-bg:#0d0f12;--hm-surface:#13171d;--hm-card:#1a1f28;--hm-border:#2a3040;--hm-orange:#f97316;--hm-green:#22c55e;--hm-red:#ef4444;--hm-yellow:#eab308;--hm-blue:#38bdf8;--hm-text:#e2e8f0;--hm-muted:#64748b;--hm-muted2:#94a3b8;--hm-mono:'Share Tech Mono',monospace;--hm-cond:'Barlow Condensed',sans-serif;--hm-body:'Barlow',sans-serif;}
+@keyframes hm-pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hm-topnav{position:fixed;top:0;left:0;right:0;height:52px;z-index:9999;background:rgba(13,15,18,.97);border-bottom:1px solid #2a3040;backdrop-filter:blur(16px);display:flex;align-items:center;padding:0 1rem;gap:.75rem;}
+.hm-topnav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;}
+.hm-topnav-icon{width:34px;height:34px;border-radius:8px;background:#f97316;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:17px;color:#fff;letter-spacing:-0.5px;flex-shrink:0;}
+.hm-topnav-brand{font-family:Syne,sans-serif;font-weight:800;font-size:1rem;color:#e2e8f0;letter-spacing:.5px;line-height:1;}
+.hm-topnav-brand em{color:#f97316;font-style:normal;}
+.hm-topnav-sub{font-family:'Share Tech Mono',monospace;font-size:.45rem;color:rgba(249,115,22,.5);letter-spacing:.2em;text-transform:uppercase;}
+.hm-topnav-links{flex:1;display:flex;align-items:center;gap:1px;overflow:hidden;}
+.hm-topnav-a{padding:5px 9px;border-radius:5px;font-size:.8rem;color:#64748b;text-decoration:none;white-space:nowrap;transition:color .15s;font-family:'Barlow',sans-serif;}
+.hm-topnav-a:hover,.hm-topnav-a.on{color:#e2e8f0;}
+.hm-topnav-a.active{color:#f97316 !important;}
+.hm-topnav-cta{display:flex;gap:7px;flex-shrink:0;}
+.hm-nav-ghost{padding:5px 14px;border-radius:5px;background:transparent;border:1px solid #2a3040;color:#94a3b8;font-size:.78rem;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;cursor:pointer;text-decoration:none;}
+.hm-nav-cta{padding:5px 14px;border-radius:5px;background:#f97316;color:#fff;font-size:.78rem;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.5px;cursor:pointer;border:none;text-decoration:none;}
+</style>
+<style>body{padding-top:52px;background:#0d0f12;color:#e2e8f0;font-family:Barlow,sans-serif;}</style>
 </head>
 <body>
-<div class="circuit-bg"><svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="abg" cx="50%" cy="50%" r="55%"><stop offset="0%" stop-color="#001830"/><stop offset="100%" stop-color="#020b18"/></radialGradient></defs><rect width="1400" height="900" fill="url(#abg)"/><line class="c-trace" x1="0" y1="450" x2="300" y2="450" stroke="#00d4ff" stroke-width=".7" opacity=".12" fill="none"/><line class="c-trace-r" x1="1400" y1="450" x2="1100" y2="450" stroke="#00d4ff" stroke-width=".7" opacity=".12" fill="none"/></svg></div>
+
 
 <!-- LEFT SIDEBAR -->
 <div class="hm-left-sidebar" id="hmLeftSidebar">
@@ -89,8 +105,7 @@
 </div>
 
 <!-- RIGHT SIDEBAR -->
-<div class="hm-right-sidebar" id="hmAdSidebar">
-  <div id="hmAdTitle" style="font-family:'JetBrains Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.5rem;border-bottom:1px solid var(--border);margin-bottom:.55rem;">Sponsored</div>
+
   <div id="hmNoAdBadge" style="display:none;background:rgba(61,214,140,.06);border:1px solid rgba(61,214,140,.2);border-radius:8px;padding:.75rem;text-align:center;margin-bottom:.55rem;"><div style="font-size:1.2rem;">&#127881;</div><p style="font-size:.68rem;color:#3dd68c;margin:.25rem 0 0;line-height:1.4;">Ad-free<br>Pro/Enterprise</p></div>
   <div id="hmAd1" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:195px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:1rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement<br>200×195</div>
   <div id="hmAd2" style="background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.11);border-radius:6px;padding:.65rem .6rem;text-align:center;margin-bottom:.55rem;"><div style="font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Partner</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:var(--cyan);margin:.15rem 0 .2rem;">Your Brand</div><div style="font-size:.65rem;color:var(--text2);line-height:1.4;">Reach hydraulic engineers worldwide.</div></div>
@@ -136,58 +151,7 @@
 </div>
 
 <!-- NAVBAR -->
-<nav class="navbar" id="navbar">
-  <div class="navbar-inner">
-    <a href="../index.html" class="hm-logo-wrap">
-      <div class="hm-logo-icon">
-        <div class="hm-logo-ring"></div>
-        <div class="hm-logo-h">H</div>
-      </div>
-      <div class="hm-logo-text">
-        <div class="hm-logo-name">HYDROMIND<span>.AI</span></div>
-        <div class="hm-logo-sub">Hydraulic Intelligence</div>
-      </div>
-    </a>
-        <div class="navbar-menu">
-      <a href="../index.html" class="navbar-link">Home</a>
-      <a href="advisor.html" class="navbar-link">AI Advisor</a>
-      <a href="../crane-diagnostic.html" class="navbar-link" style="color:#22c55e;">🏗 Crane Diag</a>
-      <a href="system-design.html" class="navbar-link">&#9881; System Design</a>
-      <a href="knowledge.html" class="navbar-link active">Knowledge Base</a>
-      
-      <a href="../index.html#electrical" class="navbar-link" style="color:#f5c842;">&#9889; Electrical</a>
-      <a href="../index.html#calculator" class="navbar-link">Calculator</a>
-      <a href="pricing.html" class="navbar-link">Pricing</a>
-      <a href="feedback.html" class="navbar-link">Feedback</a>
-    </div>
-    <div class="navbar-cta" id="hmNavCta">
-      <button onclick="openAuthModal('login')" class="btn-outline" style="padding:8px 18px;font-size:.82rem;" id="hmNavLogin">Login</button>
-      <button onclick="openAuthModal('register')" class="btn-primary" style="padding:8px 18px;font-size:.82rem;" id="hmNavRegister">Register</button>
-      <div id="hmNavUser" style="display:none;align-items:center;gap:.5rem;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);border-radius:8px;padding:5px 10px;cursor:pointer;" onclick="doLogout()">
-        <div id="hmNavAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#0050aa);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;color:#fff;"></div>
-        <span id="hmNavName" style="font-size:.82rem;color:#e8f4ff;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
-        <span id="hmNavPlan" style="font-family:'JetBrains Mono',monospace;font-size:.62rem;padding:2px 8px;border-radius:100px;background:rgba(0,212,255,.1);color:var(--cyan);"></span>
-      </div>
-    </div>
-    <button class="navbar-toggle" id="navToggle"><span></span><span></span><span></span></button>
-  </div>
-  <div class="navbar-mobile" id="navMobile">
-    <a href="../index.html">Home</a>
-    <a href="../pages/advisor.html">AI Advisor</a>
-    <a href="../crane-diagnostic.html" style="color:#22c55e;">🏗 Crane Diagnostic</a>
-    <a href="../pages/system-design.html">&#9881; System Design</a>
-    <a href="../pages/knowledge.html">Knowledge Base</a>
-    
-    <a href="../index.html#electrical" style="color:#f5c842;">&#9889; Electrical</a>
-    <a href="../index.html#calculator">Calculator</a>
-    <a href="../pages/pricing.html">Pricing</a>
-    <a href="../pages/feedback.html">Feedback</a>
-    <div class="navbar-mobile-auth" style="display:flex;gap:.5rem;margin-top:.5rem;padding-top:.75rem;border-top:1px solid var(--border);">
-      <button onclick="openAuthModal('login')" class="btn-outline" style="flex:1;padding:8px;font-size:.85rem;">Login</button>
-      <button onclick="openAuthModal('register')" class="btn-primary" style="flex:1;padding:8px;font-size:.85rem;">Register</button>
-    </div>
-  </div>
-</nav>
+
 
 <div class="hm-main-content">
 
@@ -264,8 +228,7 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <div class="hm-logo-wrap" style="margin-bottom:.85rem;">
-          <div class="hm-logo-icon"><div class="hm-logo-ring"></div><div class="hm-logo-h">H</div></div>
-          <div class="hm-logo-text"><div class="hm-logo-name">HYDROMIND<span>.AI</span></div><div class="hm-logo-sub">Hydraulic Intelligence</div></div>
+          <div style="width:30px;height:30px;border-radius:7px;background:#f97316;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;color:#fff;font-size:15px;">H</div><div style="margin-left:8px;"><div style="font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;color:#e2e8f0;letter-spacing:.5px;line-height:1;">HYDROMIND<span style=\"color:#f97316;\">.AI</span></div><div style="font-family:'Share Tech Mono',monospace;font-size:.45rem;color:rgba(249,115,22,.5);letter-spacing:.2em;text-transform:uppercase;">Hydraulic Intelligence</div></div>
         </div>
         <p>Expert AI advisor for hydraulic systems and offshore crane operations. Built by engineers, for engineers.</p>
         <span class="badge-pill">&#128994; AI Online — KB v3.0</span>
