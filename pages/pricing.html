@@ -126,8 +126,60 @@ table.cmp .cmp-section td{background:var(--hm-surface);font-family:var(--hm-cond
 .hm-footer a:hover{color:var(--hm-orange);}
 .hm-footer-bottom{background:var(--hm-bg);border-top:1px solid var(--hm-border);padding:.85rem 2rem;display:flex;justify-content:space-between;font-size:.75rem;color:var(--hm-muted);font-family:var(--hm-mono);}
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+/* HydroMind Nav v2 */
+body{background:#0d0f12;color:#e2e8f0;font-family:"Barlow",sans-serif;}
+.hm-topnav{position:fixed;top:0;left:0;right:0;height:52px;z-index:9999;background:rgba(13,15,18,.97);border-bottom:1px solid #2a3040;backdrop-filter:blur(16px);display:flex;align-items:center;padding:0 1rem;gap:.75rem;}
+.hm-topnav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;}
+.hm-topnav-icon{width:34px;height:34px;border-radius:8px;background:#f97316;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:17px;color:#fff;flex-shrink:0;letter-spacing:-0.5px;}
+.hm-topnav-brand{font-family:Syne,sans-serif;font-weight:800;font-size:1rem;color:#e2e8f0;letter-spacing:.5px;line-height:1;}
+.hm-topnav-brand em{color:#f97316;font-style:normal;}
+.hm-topnav-sub{font-family:"Share Tech Mono",monospace;font-size:.45rem;color:rgba(249,115,22,.5);letter-spacing:.18em;text-transform:uppercase;}
+.hm-topnav-links{flex:1;display:flex;align-items:center;gap:1px;overflow:hidden;}
+.hm-topnav-a{padding:5px 9px;border-radius:5px;font-size:.8rem;color:#64748b;text-decoration:none;white-space:nowrap;transition:color .15s;font-family:"Barlow",sans-serif;}
+.hm-topnav-a:hover{color:#e2e8f0;}
+.hm-topnav-a.active{color:#f97316!important;}
+.hm-topnav-cta{display:flex;align-items:center;gap:7px;flex-shrink:0;}
+.hm-nav-ghost{padding:5px 14px;border-radius:5px;background:transparent;border:1px solid #2a3040;color:#94a3b8;font-size:.78rem;font-family:"Barlow Condensed",sans-serif;letter-spacing:.5px;cursor:pointer;}
+.hm-nav-cta-btn{padding:5px 14px;border-radius:5px;background:#f97316;color:#fff;font-size:.78rem;font-family:"Barlow Condensed",sans-serif;font-weight:600;letter-spacing:.5px;cursor:pointer;border:none;}
+:root{--gold:#f97316;--gold2:#c2410c;--cyan:#f97316;--gold-y:#f97316;--nav-h:52px;--bg:#0d0f12;--bg2:#13171d;--bg3:#1a1f28;--border:rgba(249,115,22,.12);--text1:#e2e8f0;--text2:#94a3b8;--text3:#64748b;}
+nav.navbar{display:none!important;}
+.circuit-bg{display:none!important;}
+.hm-left-sidebar{top:52px!important;height:calc(100vh - 52px)!important;}
+.hm-right-sidebar{top:52px!important;height:calc(100vh - 52px)!important;}
+</style>
 </head>
 <body>
+<!-- HydroMind Nav v2 -->
+<nav class="hm-topnav" id="hmTopNav">
+  <a href="../index.html" class="hm-topnav-logo">
+    <div class="hm-topnav-icon">H</div>
+    <div>
+      <div class="hm-topnav-brand">HYDROMIND<em>.AI</em></div>
+      <div class="hm-topnav-sub">Hydraulic Intelligence</div>
+    </div>
+  </a>
+  <div class="hm-topnav-links">
+    <a href="../index.html" class="hm-topnav-a" id="navHome">Home</a>
+    <a href="advisor.html" class="hm-topnav-a" id="navAdvisor">AI Advisor</a>
+    <a href="../crane-diagnostic.html" class="hm-topnav-a" id="navCrane" style="color:#22c55e;">&#9881; Crane Diag</a>
+    <a href="system-design.html" class="hm-topnav-a" id="navSD">System Design</a>
+    <a href="knowledge.html" class="hm-topnav-a" id="navKB">Knowledge Base</a>
+    <a href="../pricing.html" class="hm-topnav-a active" id="navPricing">Pricing</a>
+    <a href="feedback.html" class="hm-topnav-a" id="navFeedback">Feedback</a>
+  </div>
+  <div class="hm-topnav-cta">
+    <button class="hm-nav-ghost" onclick="typeof openAuthModal==='function'&&openAuthModal('login')" id="hmNavLogin">Login</button>
+    <button class="hm-nav-cta-btn" onclick="typeof openAuthModal==='function'&&openAuthModal('register')">Get Pro</button>
+    <div id="hmNavUser" style="display:none;align-items:center;gap:.5rem;background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.2);border-radius:7px;padding:4px 10px;cursor:pointer;" onclick="doLogout()">
+      <div id="hmNavAvatar" style="width:26px;height:26px;border-radius:50%;background:#f97316;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:.72rem;color:#fff;"></div>
+      <span id="hmNavName" style="font-size:.8rem;color:#e2e8f0;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+      <span id="hmNavPlan" style="font-family:'Share Tech Mono',monospace;font-size:.6rem;padding:2px 7px;border-radius:100px;background:rgba(249,115,22,.12);color:#f97316;"></span>
+    </div>
+  </div>
+</nav>
 
 <!-- NAV -->
 <nav class="hm-nav">

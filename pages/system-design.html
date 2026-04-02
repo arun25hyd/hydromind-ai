@@ -6,7 +6,7 @@
 <title>System Design — HydroMind.AI</title>
 <link rel="stylesheet" href="../css/style.css">
 <style>
-.sd-wrap{display:flex;flex-direction:column;height:calc(100vh - 72px);margin-top:72px;margin-left:220px;margin-right:200px;position:relative;z-index:1;background:rgba(4,8,18,.97);}
+.sd-wrap{display:flex;flex-direction:column;height:calc(100vh - 52px);margin-top:52px;margin-left:220px;margin-right:200px;position:relative;z-index:1;background:rgba(4,8,18,.97);}
 @media(max-width:1200px){.sd-wrap{margin-right:0;}}
 @media(max-width:1024px){.sd-wrap{margin-left:160px;}}
 @media(max-width:860px){.sd-wrap{margin-left:0;}}
@@ -109,7 +109,7 @@
 
 
 
-.hm-logo-sub  { font-size: 0.62rem !important; }
+
 
 </style>
 
@@ -135,6 +135,34 @@
 <style>body{padding-top:52px;background:#0d0f12;color:#e2e8f0;font-family:Barlow,sans-serif;}</style>
 </head>
 <body>
+<!-- HydroMind Nav v2 -->
+<nav class="hm-topnav" id="hmTopNav">
+  <a href="../index.html" class="hm-topnav-logo">
+    <div class="hm-topnav-icon">H</div>
+    <div>
+      <div class="hm-topnav-brand">HYDROMIND<em>.AI</em></div>
+      <div class="hm-topnav-sub">Hydraulic Intelligence</div>
+    </div>
+  </a>
+  <div class="hm-topnav-links">
+    <a href="../index.html" class="hm-topnav-a" id="navHome">Home</a>
+    <a href="advisor.html" class="hm-topnav-a" id="navAdvisor">AI Advisor</a>
+    <a href="../crane-diagnostic.html" class="hm-topnav-a" id="navCrane" style="color:#22c55e;">&#9881; Crane Diag</a>
+    <a href="system-design.html" class="hm-topnav-a active" id="navSD">System Design</a>
+    <a href="knowledge.html" class="hm-topnav-a" id="navKB">Knowledge Base</a>
+    <a href="../pricing.html" class="hm-topnav-a" id="navPricing">Pricing</a>
+    <a href="feedback.html" class="hm-topnav-a" id="navFeedback">Feedback</a>
+  </div>
+  <div class="hm-topnav-cta">
+    <button class="hm-nav-ghost" onclick="typeof openAuthModal==='function'&&openAuthModal('login')" id="hmNavLogin">Login</button>
+    <button class="hm-nav-cta-btn" onclick="typeof openAuthModal==='function'&&openAuthModal('register')">Get Pro</button>
+    <div id="hmNavUser" style="display:none;align-items:center;gap:.5rem;background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.2);border-radius:7px;padding:4px 10px;cursor:pointer;" onclick="doLogout()">
+      <div id="hmNavAvatar" style="width:26px;height:26px;border-radius:50%;background:#f97316;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:.72rem;color:#fff;"></div>
+      <span id="hmNavName" style="font-size:.8rem;color:#e2e8f0;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+      <span id="hmNavPlan" style="font-family:'Share Tech Mono',monospace;font-size:.6rem;padding:2px 7px;border-radius:100px;background:rgba(249,115,22,.12);color:#f97316;"></span>
+    </div>
+  </div>
+</nav>
 
 
 <!-- LEFT SIDEBAR -->
