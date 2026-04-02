@@ -159,12 +159,12 @@ function _updateNavbar(user){
     const av=document.getElementById('hmNavAvatar');
     const nm=document.getElementById('hmNavName');
     const pl=document.getElementById('hmNavPlan');
-    if(av)av.textContent=(user.first||user.email).slice(0,2).toUpperCase();
+    if(av){av.textContent=(user.first||user.email).slice(0,2).toUpperCase();av.style.background='#f97316';}
     if(nm)nm.textContent=(user.first||user.email.split('@')[0]);
     if(pl){
       pl.textContent=user.plan;
-      pl.style.color=user.isAdmin?'#f5c842':(user.plan==='Pro'||user.plan==='Enterprise')?'#3dd68c':'var(--cyan)';
-      pl.style.background=user.isAdmin?'rgba(245,200,66,.12)':(user.plan==='Pro'||user.plan==='Enterprise')?'rgba(61,214,140,.1)':'rgba(0,212,255,.1)';
+      pl.style.color=user.isAdmin?'#f97316':(user.plan==='Pro'||user.plan==='Enterprise')?'#22c55e':'#f97316';
+      pl.style.background=user.isAdmin?'rgba(249,115,22,.15)':(user.plan==='Pro'||user.plan==='Enterprise')?'rgba(34,197,94,.1)':'rgba(249,115,22,.1)';
     }
   }
   if(user.isAdmin){
@@ -172,7 +172,7 @@ function _updateNavbar(user){
     if(cta&&!document.getElementById('hmAdminLink')){
       const a=document.createElement('a');
       a.id='hmAdminLink';a.className='btn-outline';
-      a.style.cssText='padding:8px 14px;font-size:.8rem;border-color:rgba(245,200,66,.4);color:#f5c842;text-decoration:none;';
+      a.style.cssText='padding:5px 14px;font-size:.78rem;border-radius:5px;border:1px solid rgba(249,115,22,.4);color:#f97316;text-decoration:none;font-family:"Barlow Condensed",sans-serif;font-weight:600;letter-spacing:.5px;';
       a.textContent='⚙ Admin';
       a.href=window.location.pathname.includes('/pages/')?'admin.html':'pages/admin.html';
       cta.insertBefore(a,cta.firstChild);
@@ -199,15 +199,15 @@ function _updateLeftSidebar(user){
   if(em)em.textContent=user.email;
   if(pl){
     pl.textContent=user.plan;
-    pl.style.background=user.isAdmin?'rgba(245,200,66,.12)':(user.plan==='Pro'||user.plan==='Enterprise')?'rgba(61,214,140,.1)':'rgba(0,212,255,.08)';
-    pl.style.color=user.isAdmin?'#f5c842':(user.plan==='Pro'||user.plan==='Enterprise')?'#3dd68c':'var(--cyan)';
+    pl.style.background=user.isAdmin?'rgba(249,115,22,.15)':(user.plan==='Pro'||user.plan==='Enterprise')?'rgba(34,197,94,.1)':'rgba(249,115,22,.08)';
+    pl.style.color=user.isAdmin?'#f97316':(user.plan==='Pro'||user.plan==='Enterprise')?'#22c55e':'#f97316';
   }
   // Add edit button
   const pc=document.querySelector('.hm-profile-card');
   if(pc&&!document.getElementById('hmProfEditBtn')){
     const btn=document.createElement('button');
     btn.id='hmProfEditBtn';btn.title='Edit Profile';btn.innerHTML='✎';
-    btn.style.cssText='position:absolute;top:8px;right:8px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);border-radius:6px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--cyan);font-size:.8rem;transition:.18s;';
+    btn.style.cssText='position:absolute;top:8px;right:8px;background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.2);border-radius:6px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#f97316;font-size:.8rem;transition:.18s;';
     btn.onclick=openProfileEdit;pc.appendChild(btn);
   }
   _renderHistory();

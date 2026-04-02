@@ -116,6 +116,7 @@ body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);mar
 .hm-topnav-cta{display:flex;gap:7px;flex-shrink:0;}
 .hm-nav-ghost{padding:5px 14px;border-radius:5px;background:transparent;border:1px solid #2a3040;color:#94a3b8;font-size:.78rem;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;cursor:pointer;text-decoration:none;}
 .hm-nav-cta{padding:5px 14px;border-radius:5px;background:#f97316;color:#fff;font-size:.78rem;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.5px;cursor:pointer;border:none;text-decoration:none;}
+.hm-nav-cta-btn{padding:5px 14px;border-radius:5px;background:#f97316;color:#fff;font-size:.78rem;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.5px;cursor:pointer;border:none;}
 </style>
 <style>body{padding-top:52px;background:#0d0f12;color:#e2e8f0;font-family:Barlow,sans-serif;}</style>
 </head>
@@ -181,8 +182,9 @@ body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);mar
   </div>
 </div>
 
-<!-- LEFT SIDEBAR -->
-<div class="hm-left-sidebar" id="hmLeftSidebar">
+<div class="hm-page">
+  <!-- LEFT SIDEBAR -->
+  <div class="hm-left-sidebar" id="hmLeftSidebar">
   <div class="hm-left-inner">
     <div id="hmSidebarProfile" style="display:none;">
       <div class="hm-profile-card">
@@ -226,7 +228,6 @@ body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);mar
     <button class="hm-logout-btn" id="hmLogoutBtn" onclick="doLogout()" style="display:none;">Sign Out</button>
   </div>
 </div>
-<div class="hm-page">
   <div class="hm-main">
 
     <!-- HERO -->
@@ -378,35 +379,27 @@ body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);mar
 
   </div><!-- /hm-main -->
 
-  <!-- RIGHT SIDEBAR -->
-  <div class="hm-sidebar-right">
-    <div class="rs-card" style="border-color:rgba(249,115,22,.3);">
-      <div class="rs-title">Quick Links</div>
-      <a href="advisor.html" style="display:block;font-size:.8rem;color:var(--hm-muted2);text-decoration:none;padding:5px 0;border-bottom:1px solid var(--hm-border);transition:color .15s;" onmouseover="this.style.color='var(--hm-orange)'" onmouseout="this.style.color='var(--hm-muted2)'">🤖 AI Advisor</a>
-      <a href="../crane-diagnostic.html" style="display:block;font-size:.8rem;color:var(--hm-muted2);text-decoration:none;padding:5px 0;border-bottom:1px solid var(--hm-border);transition:color .15s;" onmouseover="this.style.color='var(--hm-orange)'" onmouseout="this.style.color='var(--hm-muted2)'">⚙ Crane Diagnostic</a>
-      <a href="knowledge.html" style="display:block;font-size:.8rem;color:var(--hm-muted2);text-decoration:none;padding:5px 0;border-bottom:1px solid var(--hm-border);transition:color .15s;" onmouseover="this.style.color='var(--hm-orange)'" onmouseout="this.style.color='var(--hm-muted2)'">📚 Knowledge Base</a>
-      <a href="../pricing.html" style="display:block;font-size:.8rem;color:var(--hm-orange);text-decoration:none;padding:5px 0;font-weight:600;">⭐ Upgrade to Pro</a>
-    </div>
-    <div class="rs-card">
-      <div class="rs-title">Pro Includes</div>
-      <div class="rs-chip chip-g">✓ 48+ OEM Manuals</div>
-      <div class="rs-chip chip-o">✓ Crane Diagnostic</div>
-      <div class="rs-chip chip-b">✓ Unlimited AI</div>
-      <div class="rs-chip chip-g">✓ DPR Export</div>
-    </div>
-    <div class="rs-card">
-      <div class="rs-title">Community Rating</div>
-      <div style="font-family:var(--hm-cond);font-size:2rem;font-weight:700;color:var(--hm-orange);">4.9/5</div>
-      <div style="font-size:.72rem;color:var(--hm-yellow);margin-bottom:4px;">★★★★★</div>
-      <div style="font-family:var(--hm-mono);font-size:.6rem;color:var(--hm-muted);">1,200+ engineers</div>
-    </div>
-    <div class="rs-card">
-      <div class="rs-title">Response Time</div>
-      <div style="font-size:.78rem;color:var(--hm-muted2);line-height:1.6;">
-        Free/Basic: 24hrs<br>
-        Pro: <span style="color:var(--hm-orange);">4 hours</span><br>
-        Enterprise: <span style="color:var(--hm-green);">2 hours</span>
+  <!-- RIGHT SIDEBAR — Ads -->
+  <div class="hm-sidebar-right" id="hmAdSidebar">
+    <div class="rs-card" style="border-color:rgba(249,115,22,.25);">
+      <div class="rs-title">Partner</div>
+      <div style="background:rgba(249,115,22,.04);border:1px dashed rgba(249,115,22,.2);border-radius:6px;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--hm-orange);">Your Brand</div>
+        <div style="font-size:.65rem;color:var(--hm-muted);line-height:1.5;margin-top:4px;">Reach hydraulic engineers worldwide.</div>
       </div>
+    </div>
+    <div class="rs-card">
+      <div class="rs-title">Advertisement</div>
+      <div style="background:rgba(249,115,22,.03);border:1px dashed rgba(249,115,22,.12);border-radius:6px;min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--hm-muted);font-family:'Share Tech Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.04em;">
+        <div style="font-size:1.2rem;opacity:.2;margin-bottom:6px;">&#128227;</div>300×250
+      </div>
+    </div>
+    <div class="rs-card">
+      <div class="rs-title">Advertisement</div>
+      <div style="background:rgba(249,115,22,.03);border:1px dashed rgba(249,115,22,.12);border-radius:6px;min-height:120px;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--hm-muted);font-family:'Share Tech Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.04em;">300×120</div>
+    </div>
+    <div style="text-align:center;margin-top:4px;">
+      <a href="mailto:support@hydromindai.com" style="font-family:'Share Tech Mono',monospace;font-size:.56rem;color:rgba(249,115,22,.38);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a>
     </div>
   </div>
 

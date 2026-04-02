@@ -29,7 +29,7 @@ body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);mar
 .hm-btn-orange{padding:6px 16px;border-radius:6px;background:var(--hm-orange);color:#fff;font-size:.8rem;text-decoration:none;font-family:var(--hm-cond);font-weight:600;letter-spacing:.5px;cursor:pointer;border:none;}
 
 /* LAYOUT */
-.hm-page{margin-top:52px;display:grid;grid-template-columns:1fr 200px;min-height:calc(100vh - 52px);}
+.hm-page{margin-top:52px;display:grid;grid-template-columns:220px 1fr 200px;min-height:calc(100vh - 52px);}
 .hm-main{overflow-y:auto;}
 .hm-sidebar-right{background:var(--hm-surface);border-left:1px solid var(--hm-border);padding:14px;display:flex;flex-direction:column;gap:10px;position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto;}
 
@@ -215,6 +215,45 @@ nav.navbar{display:none!important;}
 
 <!-- PAGE -->
 <div class="hm-page">
+  <!-- LEFT SIDEBAR -->
+  <div class="hm-left-sidebar" id="hmLeftSidebar">
+    <div class="hm-left-inner">
+      <div id="hmSidebarProfile" style="display:none;">
+        <div class="hm-profile-card">
+          <div class="hm-prof-av" id="hmProfAvatar">--</div>
+          <div class="hm-prof-name" id="hmProfName"></div>
+          <div class="hm-prof-email" id="hmProfEmail"></div>
+          <span class="hm-prof-plan" id="hmProfPlan">Free</span>
+        </div>
+      </div>
+      <div id="hmSidebarNoAuth">
+        <div style="margin-bottom:.75rem;">
+          <div class="hm-sidebar-label">Quick Links</div>
+          <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
+          <div class="hm-hist-item" onclick="location.href='../crane-diagnostic.html'"><span class="hm-hist-icon">&#9881;</span><span class="hm-hist-text">Crane Diagnostic</span></div>
+          <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
+        </div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:#64748b;padding-bottom:.45rem;border-bottom:1px solid #2a3040;margin-bottom:.5rem;">Sponsored</div>
+        <div style="background:rgba(249,115,22,.03);border:1px dashed rgba(249,115,22,.12);border-radius:6px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#64748b;font-family:'Share Tech Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem;">
+          <div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement
+        </div>
+        <div style="text-align:center;"><a href="pricing.html" style="font-family:'Share Tech Mono',monospace;font-size:.56rem;color:rgba(249,115,22,.38);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a></div>
+      </div>
+      <div id="hmSidebarHistory" style="display:none;margin-top:.75rem;">
+        <div class="hm-sidebar-label">Chat History</div>
+        <div id="hmHistoryList"></div>
+      </div>
+      <div id="hmSidebarLinks" style="display:none;margin-top:.75rem;">
+        <div class="hm-sidebar-label">Quick Links</div>
+        <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
+        <div class="hm-hist-item" onclick="location.href='../crane-diagnostic.html'"><span class="hm-hist-icon">&#9881;</span><span class="hm-hist-text">Crane Diagnostic</span></div>
+        <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
+      </div>
+    </div>
+    <div class="hm-left-bottom">
+      <button class="hm-logout-btn" id="hmLogoutBtn" onclick="doLogout()" style="display:none;">Sign Out</button>
+    </div>
+  </div>
   <div class="hm-main">
 
     <!-- HERO -->
@@ -407,40 +446,25 @@ nav.navbar{display:none!important;}
 
   </div><!-- /hm-main -->
 
-  <!-- RIGHT SIDEBAR — Value Panel -->
-  <div class="hm-sidebar-right">
-    <div class="rs-card" style="border-color:rgba(249,115,22,.3);">
-      <div class="rs-title">Pro Plan</div>
-      <div style="font-family:var(--hm-cond);font-size:1.6rem;font-weight:700;color:var(--hm-orange);">$69<span style="font-size:.9rem;color:var(--hm-muted);font-weight:400;">/mo</span></div>
-      <div style="font-family:var(--hm-mono);font-size:.6rem;color:var(--hm-green);margin-bottom:10px;">7-day free trial</div>
-      <button class="rs-btn" onclick="selectPlan('Pro')">Start Free Trial</button>
+  <!-- RIGHT SIDEBAR — Ads -->
+  <div class="hm-sidebar-right" id="hmAdSidebar">
+    <div style="font-family:var(--hm-mono);font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--hm-muted);padding-bottom:.4rem;border-bottom:1px solid var(--hm-border);margin-bottom:.25rem;">Partner</div>
+    <div style="background:rgba(249,115,22,.03);border:1px dashed rgba(249,115,22,.2);border-radius:8px;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:12px;gap:6px;">
+      <div style="font-family:var(--hm-cond);font-size:12px;font-weight:700;color:var(--hm-orange);">Your Brand</div>
+      <div style="font-size:.65rem;color:var(--hm-muted);line-height:1.5;">Reach hydraulic engineers worldwide.</div>
+      <a href="mailto:support@hydromindai.com" style="font-family:var(--hm-mono);font-size:.55rem;color:rgba(249,115,22,.5);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;margin-top:4px;">Advertise here →</a>
     </div>
-    <div class="rs-card">
-      <div class="rs-title">What You Get</div>
-      <div class="rs-chip chip-g">✓ 48+ OEM Manuals</div>
-      <div class="rs-chip chip-o">✓ Crane Diagnostic</div>
-      <div class="rs-chip chip-b">✓ System Design</div>
-      <div class="rs-chip chip-g">✓ Unlimited AI</div>
-      <div class="rs-chip chip-o">✓ DPR Export</div>
+    <div style="font-family:var(--hm-mono);font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--hm-muted);padding-bottom:.4rem;border-bottom:1px solid var(--hm-border);margin-top:.5rem;margin-bottom:.25rem;">Advertisement</div>
+    <div style="background:rgba(249,115,22,.03);border:1px dashed rgba(249,115,22,.12);border-radius:8px;min-height:250px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--hm-muted);font-family:var(--hm-mono);font-size:.58rem;text-transform:uppercase;letter-spacing:.04em;">
+      <div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">📢</div>200×250
     </div>
-    <div class="rs-card">
-      <div class="rs-title">KB Coverage</div>
-      <div class="rs-row"><span class="rs-key">Manuals</span><span class="rs-val">48+</span></div>
-      <div class="rs-row"><span class="rs-key">OEM Brands</span><span class="rs-val">12+</span></div>
-      <div class="rs-row"><span class="rs-key">Field Cases</span><span class="rs-val">KB30–48</span></div>
-      <div class="rs-row"><span class="rs-key">Architectures</span><span class="rs-val">3</span></div>
+    <div style="background:rgba(249,115,22,.03);border:1px dashed rgba(249,115,22,.12);border-radius:8px;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--hm-muted);font-family:var(--hm-mono);font-size:.58rem;text-transform:uppercase;letter-spacing:.04em;margin-top:.5rem;">
+      <div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">📢</div>200×120
     </div>
-    <div class="rs-card">
-      <div class="rs-title">Trusted By</div>
-      <div style="font-family:var(--hm-cond);font-size:1.4rem;font-weight:700;color:var(--hm-orange);">1,200+</div>
-      <div style="font-size:10px;color:var(--hm-muted);margin-bottom:8px;">offshore engineers</div>
-      <div style="font-family:var(--hm-mono);font-size:.65rem;color:var(--hm-yellow);">★★★★★ 4.9/5</div>
+    <div style="text-align:center;margin-top:4px;">
+      <a href="mailto:support@hydromindai.com" style="font-family:var(--hm-mono);font-size:.54rem;color:rgba(249,115,22,.35);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">ADVERTISE HERE →</a>
     </div>
-    <div class="rs-card">
-      <div class="rs-title">Need Help?</div>
-      <div style="font-size:10px;color:var(--hm-muted2);line-height:1.6;margin-bottom:8px;">Questions about which plan fits your operation?</div>
-      <a href="feedback.html" style="display:block;text-align:center;background:transparent;border:1px solid var(--hm-border);color:var(--hm-muted2);border-radius:5px;padding:7px;font-family:var(--hm-cond);font-size:11px;text-decoration:none;transition:border-color .15s;" onmouseover="this.style.borderColor='var(--hm-orange)'" onmouseout="this.style.borderColor='var(--hm-border)'">Contact Us ↗</a>
-    </div>
+
   </div>
 
 </div><!-- /hm-page -->
