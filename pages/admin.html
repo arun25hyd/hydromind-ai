@@ -9,28 +9,28 @@
 .admin-layout{display:flex;min-height:calc(100vh - 72px);margin-top:72px;position:relative;z-index:1;}
 .admin-sidebar{width:220px;flex-shrink:0;background:rgba(5,15,31,.97);border-right:1px solid var(--border);padding:1.25rem 0;}
 .admin-nav-item{display:flex;align-items:center;gap:10px;padding:.75rem 1.25rem;font-size:.82rem;color:var(--text2);cursor:pointer;transition:.2s;border-left:3px solid transparent;}
-.admin-nav-item:hover{background:rgba(0,212,255,.06);color:var(--text-primary);}
-.admin-nav-item.active{background:rgba(0,212,255,.08);color:var(--cyan);border-left-color:var(--cyan);}
+.admin-nav-item:hover{background:rgba(249,115,22,.06);color:var(--text-primary);}
+.admin-nav-item.active{background:rgba(249,115,22,.08);color:#f97316;border-left-color:#f97316;}
 .admin-main{flex:1;padding:2rem;overflow-y:auto;}
 .admin-panel{display:none;}
 .admin-panel.active{display:block;}
 .admin-card{background:rgba(8,22,40,.85);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.75rem;margin-bottom:1.5rem;backdrop-filter:blur(8px);}
-.admin-stat{background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.15);border-radius:var(--radius);padding:1.25rem;text-align:center;}
-.admin-stat-val{font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:700;color:var(--cyan);}
+.admin-stat{background:rgba(249,115,22,.05);border:1px solid rgba(249,115,22,.15);border-radius:var(--radius);padding:1.25rem;text-align:center;}
+.admin-stat-val{font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:700;color:#f97316;}
 .admin-stat-label{font-size:.75rem;color:var(--text3);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.07em;margin-top:4px;}
-.upload-zone{border:2px dashed rgba(0,212,255,.25);border-radius:var(--radius-lg);padding:2.5rem;text-align:center;cursor:pointer;transition:.2s;}
-.upload-zone:hover,.upload-zone.drag{border-color:rgba(0,212,255,.55);background:rgba(0,212,255,.04);}
+.upload-zone{border:2px dashed rgba(249,115,22,.25);border-radius:var(--radius-lg);padding:2.5rem;text-align:center;cursor:pointer;transition:.2s;}
+.upload-zone:hover,.upload-zone.drag{border-color:rgba(249,115,22,.55);background:rgba(249,115,22,.04);}
 .kb-table{width:100%;border-collapse:collapse;font-size:.85rem;}
 .kb-table th{text-align:left;padding:.75rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);border-bottom:1px solid var(--border);}
-.kb-table td{padding:.75rem 1rem;border-bottom:1px solid rgba(0,212,255,.06);color:var(--text2);vertical-align:middle;}
-.kb-table tr:hover td{background:rgba(0,212,255,.03);}
+.kb-table td{padding:.75rem 1rem;border-bottom:1px solid rgba(249,115,22,.06);color:var(--text2);vertical-align:middle;}
+.kb-table tr:hover td{background:rgba(249,115,22,.03);}
 .kb-badge{padding:3px 10px;border-radius:100px;font-family:'JetBrains Mono',monospace;font-size:.65rem;}
-.kb-badge.hyd{background:rgba(0,212,255,.1);color:var(--cyan);}
-.kb-badge.elec{background:rgba(245,200,66,.1);color:#f5c842;}
+.kb-badge.hyd{background:rgba(249,115,22,.1);color:#f97316;}
+.kb-badge.elec{background:rgba(245,200,66,.1);color:#f97316;}
 .kb-badge.crane{background:rgba(61,214,140,.1);color:#3dd68c);}
 .delete-btn{padding:5px 12px;border:1px solid rgba(226,75,74,.3);border-radius:6px;background:transparent;color:rgba(226,75,74,.7);font-size:.72rem;font-family:'JetBrains Mono',monospace;cursor:pointer;transition:.2s;}
 .delete-btn:hover{background:rgba(226,75,74,.1);color:#e24b4a;}
-.progress-bar{height:6px;background:rgba(0,212,255,.08);border-radius:3px;margin-top:.5rem;overflow:hidden;}
+.progress-bar{height:6px;background:rgba(249,115,22,.08);border-radius:3px;margin-top:.5rem;overflow:hidden;}
 .progress-fill{height:100%;background:var(--cyan);border-radius:3px;transition:width .4s ease;}
 </style>
 </head>
@@ -39,8 +39,8 @@
 <svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
   <defs><radialGradient id="adbg" cx="50%" cy="50%" r="55%"><stop offset="0%" stop-color="#001830"/><stop offset="100%" stop-color="#020b18"/></radialGradient></defs>
   <rect width="1400" height="900" fill="url(#adbg)"/>
-  <line class="c-trace" x1="0" y1="450" x2="300" y2="450" stroke="#00d4ff" stroke-width=".7" opacity=".15" fill="none"/>
-  <line class="c-trace-r" x1="1400" y1="450" x2="1100" y2="450" stroke="#00d4ff" stroke-width=".7" opacity=".15" fill="none"/>
+  <line class="c-trace" x1="0" y1="450" x2="300" y2="450" stroke="#f97316" stroke-width=".7" opacity=".15" fill="none"/>
+  <line class="c-trace-r" x1="1400" y1="450" x2="1100" y2="450" stroke="#f97316" stroke-width=".7" opacity=".15" fill="none"/>
 </svg>
 </div>
 
@@ -65,15 +65,15 @@
       <a href="system-design.html" class="navbar-link">&#9881; System Design</a>
       <a href="knowledge.html" class="navbar-link">Knowledge Base</a>
       
-      <a href="../index.html#electrical" class="navbar-link" style="color:#f5c842;">&#9889; Electrical</a>
+      <a href="../index.html#electrical" class="navbar-link" style="color:#f97316;">&#9889; Electrical</a>
       <a href="../index.html#calculator" class="navbar-link">Calculator</a>
       <a href="pricing.html" class="navbar-link">Pricing</a>
       <a href="feedback.html" class="navbar-link">Feedback</a>
     </div>
     <div class="navbar-cta">
       <div style="display:flex;align-items:center;gap:.65rem;padding:.5rem .75rem;border-radius:8px;background:rgba(245,200,66,.06);border:1px solid rgba(245,200,66,.2);">
-        <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#f5c842,#e07020);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.8rem;color:#000;">AT</div>
-        <span style="font-size:.8rem;color:#f5c842;font-family:'JetBrains Mono',monospace;">Admin</span>
+        <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#f97316,#e07020);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.8rem;color:#000;">AT</div>
+        <span style="font-size:.8rem;color:#f97316;font-family:'JetBrains Mono',monospace;">Admin</span>
       </div>
       <a href="../index.html" class="btn-outline" style="padding:8px 16px;font-size:.82rem;">← Exit Admin</a>
     </div>
@@ -124,12 +124,12 @@
       <div style="margin-bottom:2rem;">
         <div class="eyebrow">Admin Dashboard</div>
         <h2>HydroMind.AI Control Panel</h2>
-        <p style="color:var(--text2);margin-top:.5rem;font-size:.88rem;">Logged in as <strong style="color:var(--gold-y);">arun25hyd@gmail.com</strong> — Admin</p>
+        <p style="color:var(--text2);margin-top:.5rem;font-size:.88rem;">Logged in as <strong style="color:#f97316;">arun25hyd@gmail.com</strong> — Admin</p>
       </div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;">
         <div class="admin-stat"><div class="admin-stat-val">33</div><div class="admin-stat-label">KB Entries</div></div>
         <div class="admin-stat"><div class="admin-stat-val" style="color:#3dd68c;">1,247</div><div class="admin-stat-label">Active Users</div></div>
-        <div class="admin-stat"><div class="admin-stat-val" style="color:var(--gold-y);">18.4k</div><div class="admin-stat-label">Queries This Month</div></div>
+        <div class="admin-stat"><div class="admin-stat-val" style="color:#f97316;">18.4k</div><div class="admin-stat-label">Queries This Month</div></div>
         <div class="admin-stat"><div class="admin-stat-val" style="color:#e040fb;">4.9★</div><div class="admin-stat-label">User Rating</div></div>
       </div>
       <div class="admin-card">
@@ -218,7 +218,7 @@
         <table class="kb-table">
           <thead><tr><th>User</th><th>Email</th><th>Plan</th><th>Queries</th><th>Joined</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td>Arun Tiwari</td><td style="color:var(--gold-y);">arun25hyd@gmail.com</td><td><span class="kb-badge" style="background:rgba(245,200,66,.12);color:#f5c842;">Admin</span></td><td>—</td><td>Mar 2026</td><td><span style="color:#3dd68c;">● Active</span></td></tr>
+            <tr><td>Arun Tiwari</td><td style="color:#f97316;">arun25hyd@gmail.com</td><td><span class="kb-badge" style="background:rgba(245,200,66,.12);color:#f97316;">Admin</span></td><td>—</td><td>Mar 2026</td><td><span style="color:#3dd68c;">● Active</span></td></tr>
             <tr><td>M. Rahman</td><td>m.rahman@offshore.ae</td><td><span class="kb-badge hyd">Pro</span></td><td>342</td><td>Feb 2026</td><td><span style="color:#3dd68c;">● Active</span></td></tr>
             <tr><td>S. Kumar</td><td>s.kumar@yardeng.com</td><td><span class="kb-badge hyd">Pro</span></td><td>218</td><td>Jan 2026</td><td><span style="color:#3dd68c;">● Active</span></td></tr>
             <tr><td>J. Al-Harthi</td><td>j.alharthi@port.ae</td><td><span class="kb-badge" style="background:rgba(192,38,211,.12);color:#e040fb;">Free</span></td><td>18</td><td>Mar 2026</td><td><span style="color:#3dd68c;">● Active</span></td></tr>
@@ -234,19 +234,19 @@
         <h3 style="margin-bottom:1.25rem;font-size:1.05rem;">Answer Behaviour</h3>
         <div style="display:flex;flex-direction:column;gap:1rem;">
           <label style="display:flex;align-items:flex-start;gap:.75rem;cursor:pointer;">
-            <input type="checkbox" checked style="margin-top:3px;accent-color:var(--cyan);">
+            <input type="checkbox" checked style="margin-top:3px;accent-color:#f97316;">
             <div><div style="font-size:.9rem;color:#e8f4ff;font-weight:500;">Short diagnosis first</div><div style="font-size:.8rem;color:var(--text2);">Give 2-3 line initial answer, then ask if user wants full instructions</div></div>
           </label>
           <label style="display:flex;align-items:flex-start;gap:.75rem;cursor:pointer;">
-            <input type="checkbox" checked style="margin-top:3px;accent-color:var(--cyan);">
+            <input type="checkbox" checked style="margin-top:3px;accent-color:#f97316;">
             <div><div style="font-size:.9rem;color:#e8f4ff;font-weight:500;">KB search before web search</div><div style="font-size:.8rem;color:var(--text2);">Search internal knowledge base first, fall back to internet if not found</div></div>
           </label>
           <label style="display:flex;align-items:flex-start;gap:.75rem;cursor:pointer;">
-            <input type="checkbox" checked style="margin-top:3px;accent-color:var(--cyan);">
+            <input type="checkbox" checked style="margin-top:3px;accent-color:#f97316;">
             <div><div style="font-size:.9rem;color:#e8f4ff;font-weight:500;">Safety-first escalation</div><div style="font-size:.8rem;color:var(--text2);">Emergency keywords trigger LOTO/isolation priority before diagnosis</div></div>
           </label>
           <label style="display:flex;align-items:flex-start;gap:.75rem;cursor:pointer;">
-            <input type="checkbox" checked style="margin-top:3px;accent-color:var(--cyan);">
+            <input type="checkbox" checked style="margin-top:3px;accent-color:#f97316;">
             <div><div style="font-size:.9rem;color:#e8f4ff;font-weight:500;">Electrical/PLC mode enabled</div><div style="font-size:.8rem;color:var(--text2);">PLC fault codes, solenoid diagnostics, sensor troubleshooting, VFD faults</div></div>
           </label>
         </div>
@@ -257,10 +257,10 @@
       <div class="admin-card">
         <h3 style="margin-bottom:1rem;font-size:1.05rem;">KB Module Status</h3>
         <div style="display:flex;flex-direction:column;gap:.75rem;">
-          <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:4px;"><span style="color:var(--text2);">Hydraulic (KB01–KB29)</span><span style="color:var(--cyan);font-family:'JetBrains Mono',monospace;">29 docs</span></div><div class="progress-bar"><div class="progress-fill" style="width:88%"></div></div></div>
-          <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:4px;"><span style="color:var(--text2);">Field Cases (KB30–KB33)</span><span style="color:var(--cyan);font-family:'JetBrains Mono',monospace;">4 docs</span></div><div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div></div>
-          <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:4px;"><span style="color:var(--text2);">Electrical / PLC</span><span style="color:#f5c842;font-family:'JetBrains Mono',monospace;">0 docs — Upload needed</span></div><div class="progress-bar"><div class="progress-fill" style="width:0%;background:#f5c842;"></div></div></div>
-          <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:4px;"><span style="color:var(--text2);">Offshore Crane (Favco, Liebherr)</span><span style="color:var(--cyan);font-family:'JetBrains Mono',monospace;">Indexed</span></div><div class="progress-bar"><div class="progress-fill" style="width:75%"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:4px;"><span style="color:var(--text2);">Hydraulic (KB01–KB29)</span><span style="color:#f97316;font-family:'JetBrains Mono',monospace;">29 docs</span></div><div class="progress-bar"><div class="progress-fill" style="width:88%"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:4px;"><span style="color:var(--text2);">Field Cases (KB30–KB33)</span><span style="color:#f97316;font-family:'JetBrains Mono',monospace;">4 docs</span></div><div class="progress-bar"><div class="progress-fill" style="width:40%"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:4px;"><span style="color:var(--text2);">Electrical / PLC</span><span style="color:#f97316;font-family:'JetBrains Mono',monospace;">0 docs — Upload needed</span></div><div class="progress-bar"><div class="progress-fill" style="width:0%;background:#f97316;"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:4px;"><span style="color:var(--text2);">Offshore Crane (Favco, Liebherr)</span><span style="color:#f97316;font-family:'JetBrains Mono',monospace;">Indexed</span></div><div class="progress-bar"><div class="progress-fill" style="width:75%"></div></div></div>
         </div>
       </div>
     </div>
@@ -291,7 +291,7 @@ function renderKBTable(docs) {
   const catColors = {Hydraulic:'hyd',Electrical:'elec','Field Case':'hyd',Crane:'crane',Fluid:'hyd'};
   document.getElementById('kbTableBody').innerHTML = docs.map(d=>`
     <tr>
-      <td style="font-family:'JetBrains Mono',monospace;color:var(--cyan);font-size:.8rem;">${d.ref}</td>
+      <td style="font-family:'JetBrains Mono',monospace;color:#f97316;font-size:.8rem;">${d.ref}</td>
       <td>${d.name}</td>
       <td><span class="kb-badge ${catColors[d.cat]||'hyd'}">${d.cat}</span></td>
       <td style="font-family:'JetBrains Mono',monospace;font-size:.8rem;">${d.size}</td>
@@ -331,7 +331,7 @@ function handleAdminUpload(event) {
   const queue = document.getElementById('uploadQueue');
   files.forEach(file => {
     const div = document.createElement('div');
-    div.style.cssText='background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.15);border-radius:8px;padding:1rem;';
+    div.style.cssText='background:rgba(249,115,22,.04);border:1px solid rgba(249,115,22,.15);border-radius:8px;padding:1rem;';
     div.innerHTML=`
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;">
         <span style="font-size:.85rem;color:#e8f4ff;">📄 ${file.name}</span>

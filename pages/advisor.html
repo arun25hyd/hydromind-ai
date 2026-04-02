@@ -11,13 +11,13 @@
 @media(max-width:1024px){.advisor-wrap{margin-left:160px;}}
 @media(max-width:860px){.advisor-wrap{margin-left:0;}}
 .mode-pill{padding:5px 14px;border:1px solid var(--border);border-radius:100px;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text3);cursor:pointer;transition:.18s;flex-shrink:0;}
-.mode-pill:hover{border-color:rgba(0,212,255,.35);color:var(--text2);}
-.mode-pill.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,.07);}
+.mode-pill:hover{border-color:rgba(249,115,22,.35);color:var(--text2);}
+.mode-pill.active{border-color:#f97316;color:#f97316;background:rgba(249,115,22,.07);}
 .adv-messages{flex:1;overflow-y:auto;padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:.9rem;}
 .msg-row{display:flex;gap:.7rem;max-width:88%;}
 .msg-row.user{flex-direction:row-reverse;align-self:flex-end;}
 .msg-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.78rem;}
-.msg-av.ai{background:rgba(0,212,255,.12);color:var(--cyan);border:1px solid rgba(0,212,255,.2);}
+.msg-av.ai{background:rgba(249,115,22,.12);color:#f97316;border:1px solid rgba(249,115,22,.2);}
 .msg-av.usr{background:rgba(192,38,211,.12);color:#e040fb;border:1px solid rgba(192,38,211,.2);}
 .msg-tag{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text3);margin-bottom:3px;}
 .msg-bubble{background:rgba(8,22,40,.92);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;font-size:.875rem;color:var(--text2);line-height:1.75;}
@@ -30,17 +30,17 @@
 .fb-btn.selected-down{color:#f87171;border-color:#f87171;background:rgba(248,113,113,.1);}
 .fb-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text3);}
 .typing-ind{display:flex;gap:4px;padding:9px 13px;background:rgba(8,22,40,.92);border:1px solid var(--border);border-radius:10px;width:fit-content;}
-.typing-dot{width:6px;height:6px;border-radius:50%;background:rgba(0,212,255,.5);animation:tbounce .8s ease-in-out infinite;}
+.typing-dot{width:6px;height:6px;border-radius:50%;background:rgba(249,115,22,.5);animation:tbounce .8s ease-in-out infinite;}
 .typing-dot:nth-child(2){animation-delay:.15s;}.typing-dot:nth-child(3){animation-delay:.3s;}
 @keyframes tbounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
 .adv-input-area{flex-shrink:0;border-top:1px solid var(--border);background:rgba(3,10,24,.98);position:sticky;bottom:0;z-index:10;box-shadow:0 -4px 24px rgba(0,0,0,.45);}
-.attach-preview{display:none;padding:.45rem 1.25rem;background:rgba(0,212,255,.04);border-bottom:1px solid rgba(0,212,255,.08);gap:.45rem;flex-wrap:wrap;}
-.attach-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(0,212,255,.09);border:1px solid rgba(0,212,255,.18);border-radius:100px;padding:3px 10px;font-family:'JetBrains Mono',monospace;font-size:.67rem;color:var(--cyan);}
+.attach-preview{display:none;padding:.45rem 1.25rem;background:rgba(249,115,22,.04);border-bottom:1px solid rgba(249,115,22,.08);gap:.45rem;flex-wrap:wrap;}
+.attach-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(249,115,22,.09);border:1px solid rgba(249,115,22,.18);border-radius:100px;padding:3px 10px;font-family:'JetBrains Mono',monospace;font-size:.67rem;color:#f97316;}
 .adv-input-row{display:flex;gap:.55rem;padding:.9rem 1.25rem;align-items:flex-end;}
-.attach-btn{width:38px;height:38px;flex-shrink:0;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.18);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.95rem;transition:.18s;align-self:flex-end;}
-.attach-btn:hover{background:rgba(0,212,255,.14);}
+.attach-btn{width:38px;height:38px;flex-shrink:0;background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.18);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.95rem;transition:.18s;align-self:flex-end;}
+.attach-btn:hover{background:rgba(249,115,22,.14);}
 .adv-textarea{flex:1;background:rgba(2,11,24,.88);border:1px solid var(--border);border-radius:8px;padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:.88rem;color:#e8f4ff;resize:none;outline:none;min-height:42px;max-height:110px;transition:.18s;line-height:1.5;}
-.adv-textarea:focus{border-color:rgba(0,212,255,.38);}
+.adv-textarea:focus{border-color:rgba(249,115,22,.38);}
 .send-btn{width:38px;height:38px;flex-shrink:0;background:linear-gradient(135deg,#c026d3,#9333ea);border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.9rem;transition:.18s;align-self:flex-end;}
 .send-btn:hover{opacity:.85;transform:translateY(-1px);}
 .adv-hint{padding:.3rem 1.25rem .65rem;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text3);}
@@ -192,11 +192,11 @@ nav.navbar{display:none!important;}
 <div class="hm-right-sidebar" id="hmAdSidebar">
   <div id="hmAdTitle" style="font-family:'JetBrains Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.5rem;border-bottom:1px solid var(--border);margin-bottom:.55rem;">Sponsored</div>
   <div id="hmNoAdBadge" style="display:none;background:rgba(61,214,140,.06);border:1px solid rgba(61,214,140,.2);border-radius:8px;padding:.75rem;text-align:center;margin-bottom:.55rem;"><div style="font-size:1.2rem;">&#127881;</div><p style="font-size:.68rem;color:#3dd68c;margin:.25rem 0 0;line-height:1.4;">Ad-free<br>Pro/Enterprise</p></div>
-  <div id="hmAd1" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:195px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:1rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement<br>200×195</div>
-  <div id="hmAd2" style="background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.11);border-radius:6px;padding:.65rem .6rem;text-align:center;margin-bottom:.55rem;"><div style="font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Partner</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:var(--cyan);margin:.15rem 0 .2rem;">Your Brand</div><div style="font-size:.65rem;color:var(--text2);line-height:1.4;">Reach hydraulic engineers worldwide.</div></div>
-  <div id="hmAd3" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128296;</div>Banner Ad<br>200×110</div>
-  <div id="hmAd4" style="background:rgba(0,212,255,.03);border:1px dashed rgba(0,212,255,.14);border-radius:6px;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;"><div style="font-size:.85rem;opacity:.22;margin-bottom:3px;">&#128161;</div>Link Ad</div>
-  <div id="hmAd5" style="margin-top:auto;padding-top:.55rem;border-top:1px solid var(--border);text-align:center;"><a href="pricing.html" style="font-family:'JetBrains Mono',monospace;font-size:.57rem;color:rgba(0,212,255,.4);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a></div>
+  <div id="hmAd1" style="background:rgba(249,115,22,.03);border:1px dashed rgba(249,115,22,.14);border-radius:6px;height:195px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:1rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement<br>200×195</div>
+  <div id="hmAd2" style="background:rgba(249,115,22,.04);border:1px solid rgba(249,115,22,.11);border-radius:6px;padding:.65rem .6rem;text-align:center;margin-bottom:.55rem;"><div style="font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Partner</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:#f97316;margin:.15rem 0 .2rem;">Your Brand</div><div style="font-size:.65rem;color:var(--text2);line-height:1.4;">Reach hydraulic engineers worldwide.</div></div>
+  <div id="hmAd3" style="background:rgba(249,115,22,.03);border:1px dashed rgba(249,115,22,.14);border-radius:6px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128296;</div>Banner Ad<br>200×110</div>
+  <div id="hmAd4" style="background:rgba(249,115,22,.03);border:1px dashed rgba(249,115,22,.14);border-radius:6px;height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;"><div style="font-size:.85rem;opacity:.22;margin-bottom:3px;">&#128161;</div>Link Ad</div>
+  <div id="hmAd5" style="margin-top:auto;padding-top:.55rem;border-top:1px solid var(--border);text-align:center;"><a href="pricing.html" style="font-family:'JetBrains Mono',monospace;font-size:.57rem;color:rgba(249,115,22,.4);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a></div>
 </div>
 
 <!-- AUTH MODAL -->
@@ -456,8 +456,8 @@ function appendAI(text, source, schematics, kbUsed, schematicMode) {
     t = t.replace(/\n/g,'<br>');
     return t;
   })(text);
-  const src = source ? '<div style="font-family:\'JetBrains Mono\',monospace;font-size:.6rem;color:var(--text3);margin-top:4px;">Source: <span style="color:rgba(0,212,255,.5);">' + source + '</span></div>' : '';
-  const badge = kbUsed ? ' · <a href="../pages/knowledge.html" style="color:rgba(0,212,255,.5);text-decoration:none;font-size:.65rem;" title="View full manuals in Knowledge Base">&#128218; KB v3.0</a>' : '';
+  const src = source ? '<div style="font-family:\'JetBrains Mono\',monospace;font-size:.6rem;color:var(--text3);margin-top:4px;">Source: <span style="color:rgba(249,115,22,.5);">' + source + '</span></div>' : '';
+  const badge = kbUsed ? ' · <a href="../pages/knowledge.html" style="color:rgba(249,115,22,.5);text-decoration:none;font-size:.65rem;" title="View full manuals in Knowledge Base">&#128218; KB v3.0</a>' : '';
   const msgId = 'msg-' + Date.now();
   div.innerHTML = '<div class="msg-av ai">HM</div><div style="width:100%">' +
     '<div class="msg-tag">HydroMind AI · ' + currentMode.toUpperCase() + badge + '</div>' +
