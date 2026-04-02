@@ -53,7 +53,7 @@ body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);mar
 .pg-eyebrow::before,.pg-eyebrow::after{content:'';flex:1;max-width:60px;height:1px;background:var(--hm-border);}
 .pg-h1{font-family:var(--hm-cond);font-size:clamp(2rem,5vw,3rem);font-weight:700;line-height:1.05;margin-bottom:1rem;letter-spacing:1px;}
 .pg-h1 span{color:var(--hm-orange);}
-.pg-sub{font-size:1rem;color:var(--hm-muted2);max-width:520px;margin:0 auto;line-height:1.75;}
+.pg-sub{font-size:1rem;color:var(--hm-muted2);line-height:1.75;}
 
 /* TOGGLE */
 .billing-toggle{display:flex;align-items:center;justify-content:center;gap:12px;margin:2rem 0 0;font-size:.85rem;color:var(--hm-muted);}
@@ -65,7 +65,7 @@ body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);mar
 
 /* PRICING CARDS */
 .pricing-section{padding:2.5rem 2rem;}
-.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:960px;margin:0 auto;}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 .pc{background:var(--hm-card);border:1px solid var(--hm-border);border-radius:10px;padding:24px;display:flex;flex-direction:column;transition:border-color .2s;}
 .pc:hover{border-color:var(--hm-border);} 
 .pc.featured{border-color:var(--hm-orange);position:relative;}
@@ -110,7 +110,7 @@ table.cmp .cmp-section td{background:var(--hm-surface);font-family:var(--hm-cond
 
 /* FAQ */
 .faq-section{padding:0 2rem 3rem;}
-.faq-grid{display:flex;flex-direction:column;gap:8px;max-width:760px;}
+.faq-grid{display:flex;flex-direction:column;gap:8px;}
 .faq-item{background:var(--hm-card);border:1px solid var(--hm-border);border-radius:8px;overflow:hidden;}
 .faq-q{padding:14px 16px;cursor:pointer;font-size:.9rem;font-weight:500;display:flex;justify-content:space-between;align-items:center;color:var(--hm-text);}
 .faq-q:hover{color:var(--hm-orange);}
