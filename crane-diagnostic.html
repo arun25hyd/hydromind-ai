@@ -23,7 +23,7 @@
 body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);}
 
 /* ── Override site nav conflict ── */
-.diag-page-wrap{display:flex;flex-direction:column;height:100vh;margin-top:72px;margin-left:220px;}
+.diag-page-wrap{display:flex;flex-direction:column;height:100vh;margin-top:52px;}
 @media(max-width:1100px){.diag-page-wrap{margin-left:180px;}}
 @media(max-width:900px){.diag-page-wrap{margin-left:0;}}
 
@@ -177,7 +177,27 @@ body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);}
 <body>
 
 <!-- Site nav (preserved) -->
-<div id="siteNav"></div>
+<nav style="position:fixed;top:0;left:0;right:0;height:52px;z-index:900;background:rgba(8,12,18,.97);border-bottom:1px solid #2a3040;backdrop-filter:blur(16px);display:flex;align-items:center;padding:0 1rem;gap:1rem;">
+  <a href="../index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;">
+    <div style="width:34px;height:34px;border-radius:8px;background:#f97316;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:17px;color:#fff;letter-spacing:-0.5px;">H</div>
+    <div>
+      <div style="font-family:Syne,sans-serif;font-weight:800;font-size:1rem;color:#e8f4ff;letter-spacing:.5px;line-height:1;">HYDROMIND<span style="color:#f97316;">.AI</span></div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:.5rem;color:rgba(249,115,22,.5);letter-spacing:.2em;text-transform:uppercase;">Hydraulic Intelligence</div>
+    </div>
+  </a>
+  <div style="flex:1;display:flex;align-items:center;gap:2px;overflow:hidden;">
+    <a href="../index.html" style="padding:5px 10px;border-radius:6px;font-size:.82rem;color:#64748b;text-decoration:none;white-space:nowrap;transition:color .15s;" onmouseover="this.style.color='#e2e8f0'" onmouseout="this.style.color='#64748b'">Home</a>
+    <a href="../pages/advisor.html" style="padding:5px 10px;border-radius:6px;font-size:.82rem;color:#64748b;text-decoration:none;white-space:nowrap;" onmouseover="this.style.color='#e2e8f0'" onmouseout="this.style.color='#64748b'">AI Advisor</a>
+    <a href="../crane-diagnostic.html" style="padding:5px 10px;border-radius:6px;font-size:.82rem;color:#f97316;text-decoration:none;white-space:nowrap;font-weight:600;">⚙ Crane Diag</a>
+    <a href="../pages/system-design.html" style="padding:5px 10px;border-radius:6px;font-size:.82rem;color:#64748b;text-decoration:none;white-space:nowrap;" onmouseover="this.style.color='#e2e8f0'" onmouseout="this.style.color='#64748b'">System Design</a>
+    <a href="../pages/knowledge.html" style="padding:5px 10px;border-radius:6px;font-size:.82rem;color:#64748b;text-decoration:none;white-space:nowrap;" onmouseover="this.style.color='#e2e8f0'" onmouseout="this.style.color='#64748b'">Knowledge Base</a>
+    <a href="../pricing.html" style="padding:5px 10px;border-radius:6px;font-size:.82rem;color:#64748b;text-decoration:none;white-space:nowrap;" onmouseover="this.style.color='#e2e8f0'" onmouseout="this.style.color='#64748b'">Pricing</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+    <a href="../pages/advisor.html" style="padding:6px 16px;border-radius:6px;background:transparent;border:1px solid #2a3040;color:#94a3b8;font-size:.8rem;text-decoration:none;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;">Login</a>
+    <a href="../pricing.html" style="padding:6px 16px;border-radius:6px;background:#f97316;color:#fff;font-size:.8rem;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.5px;">Get Pro</a>
+  </div>
+</nav>
 
 <!-- Auth Modal -->
 <div id="authModal">
