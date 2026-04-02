@@ -193,21 +193,25 @@ body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);}
     <a href="pages/knowledge.html" style="padding:5px 10px;border-radius:6px;font-size:.82rem;color:#64748b;text-decoration:none;white-space:nowrap;" onmouseover="this.style.color='#e2e8f0'" onmouseout="this.style.color='#64748b'">Knowledge Base</a>
     <a href="pricing.html" style="padding:5px 10px;border-radius:6px;font-size:.82rem;color:#64748b;text-decoration:none;white-space:nowrap;" onmouseover="this.style.color='#e2e8f0'" onmouseout="this.style.color='#64748b'">Pricing</a>
   </div>
-  <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-    <a href="pages/advisor.html" style="padding:6px 16px;border-radius:6px;background:transparent;border:1px solid #2a3040;color:#94a3b8;font-size:.8rem;text-decoration:none;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;">Login</a>
-    <a href="pricing.html" style="padding:6px 16px;border-radius:6px;background:#f97316;color:#fff;font-size:.8rem;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.5px;">Get Pro</a>
+  <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;" id="hmNavCta">
+    <button id="hmNavLogin" onclick="typeof openAuthModal==='function'&&openAuthModal('login')" style="padding:5px 14px;border-radius:5px;background:transparent;border:1px solid #2a3040;color:#94a3b8;font-size:.78rem;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;cursor:pointer;">Login</button>
+    <button id="hmNavRegister" onclick="typeof openAuthModal==='function'&&openAuthModal('register')" style="padding:5px 14px;border-radius:5px;background:#f97316;color:#fff;font-size:.78rem;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.5px;cursor:pointer;border:none;">Get Pro</button>
+    <div id="hmNavUser" style="display:none;align-items:center;gap:.5rem;background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.2);border-radius:7px;padding:4px 10px;cursor:pointer;" onclick="typeof doLogout==='function'&&doLogout()">
+      <div id="hmNavAvatar" style="width:26px;height:26px;border-radius:50%;background:#f97316;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:.72rem;color:#fff;"></div>
+      <span id="hmNavName" style="font-size:.8rem;color:#e2e8f0;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+      <span id="hmNavPlan" style="font-family:'Share Tech Mono',monospace;font-size:.6rem;padding:2px 7px;border-radius:100px;background:rgba(249,115,22,.12);color:#f97316;"></span>
+    </div>
   </div>
 </nav>
 
 <!-- Auth Modal -->
-<div id="authModal">
-  <div class="auth-box">
-    <h2>HydroMind Access</h2>
-    <p>Enter your credentials to access the Crane Diagnostic Agent.</p>
-    <input type="email" id="authEmail" class="auth-input" placeholder="Email address">
-    <input type="password" id="authPass" class="auth-input" placeholder="Password">
-    <button class="auth-submit" onclick="doAuth()">Sign In</button>
-    <div class="auth-err" id="authErr">Invalid credentials. Try again.</div>
+<div class="hm-auth-overlay" id="hmAuthOverlay">
+  <div class="hm-auth-box">
+    <div class="hm-auth-tabs"><button class="hm-auth-tab active" id="hmTab_login" onclick="switchAuthTab('login')">Login</button><button class="hm-auth-tab" id="hmTab_register" onclick="switchAuthTab('register')">Register</button><button class="hm-auth-close" onclick="closeAuthModal()">&#215;</button></div>
+    <div class="hm-auth-error" id="hmAuthError"></div>
+    <div class="hm-auth-panel" id="hmPanel_login"><div class="hm-auth-title">Welcome Back</div><div class="hm-auth-sub">Sign in to HydroMind.AI</div><div class="hm-auth-field"><label>Email</label><input type="email" id="hmLoginEmail" class="hm-auth-input" placeholder="your@email.com"></div><div class="hm-auth-field"><label>Password</label><input type="password" id="hmLoginPass" class="hm-auth-input" onkeydown="if(event.key==='Enter')doLogin()"></div><div class="hm-auth-forgot"><button class="hm-auth-link" onclick="switchAuthTab('forgot')">Forgot password?</button></div><button class="hm-auth-btn" onclick="doLogin()">Sign In</button><div class="hm-auth-footer">No account? <button class="hm-auth-link" onclick="switchAuthTab('register')">Register free</button></div></div>
+    <div class="hm-auth-panel" id="hmPanel_register" style="display:none;"><div class="hm-auth-title">Create Account</div><div class="hm-auth-row"><div class="hm-auth-field"><label>First Name *</label><input type="text" id="hmRegFirst" class="hm-auth-input"></div><div class="hm-auth-field"><label>Last Name</label><input type="text" id="hmRegLast" class="hm-auth-input"></div></div><div class="hm-auth-field"><label>Email *</label><input type="email" id="hmRegEmail" class="hm-auth-input"></div><div class="hm-auth-field"><label>Password *</label><input type="password" id="hmRegPass" class="hm-auth-input" onkeydown="if(event.key==='Enter')doRegister()"></div><button class="hm-auth-btn" onclick="doRegister()">Create Account</button><div class="hm-auth-footer">Have account? <button class="hm-auth-link" onclick="switchAuthTab('login')">Sign in</button></div></div>
+    <div class="hm-auth-panel" id="hmPanel_forgot" style="display:none;"><div class="hm-auth-title">Reset Password</div><div class="hm-auth-field"><label>Email</label><input type="email" id="hmForgotEmail" class="hm-auth-input"></div><div class="hm-auth-ok" id="hmForgotOk"></div><button class="hm-auth-btn" onclick="doForgot()">Send Reset Link</button><div class="hm-auth-footer"><button class="hm-auth-link" onclick="switchAuthTab('login')">&#8592; Back</button></div></div>
   </div>
 </div>
 
