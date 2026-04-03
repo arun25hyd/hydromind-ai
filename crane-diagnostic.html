@@ -564,7 +564,7 @@ function startSession() {
   currentStep = 0;
   renderPLCSteps(0);
   setStatus('ACTIVE', 'active');
-  addAIMessage('HydroMind Crane Diagnostic Agent ready.\n\nTo begin: tell me the crane make and model, which function is affected (hoist / luff / slew / aux), describe the symptom (no movement / slow / jerky / alarm), and whether the load is on the hook.\n\nAlso confirm the control architecture:\n<strong>A</strong> — Electronic joystick + closed loop\n<strong>B</strong> — Hydraulic joystick + closed loop\n<strong>C</strong> — Open loop DCV');
+  addAIMessage('HydroMind Crane Diagnostic Agent ready.\n\nTo begin: tell me the crane make and model, which function is affected (hoist / luff / slew / aux), describe the symptom (no movement / slow / jerky / alarm), and whether the load is on the hook.\n\nAlso confirm the control architecture:\n**A** — Electronic joystick + closed loop\n**B** — Hydraulic joystick + closed loop\n**C** — Open loop DCV');
 }
 
 function resetSession() {
@@ -672,6 +672,8 @@ function removeTyping() {
 function formatMsg(t) {
   return escHtml(t)
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/`(.*?)`/g, '<code style="background:rgba(249,115,22,.1);color:var(--hm-orange);padding:1px 5px;border-radius:3px;font-family:var(--hm-mono);font-size:.82em;">$1</code>')
     .replace(/\n/g, '<br>');
 }
 
