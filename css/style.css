@@ -72,13 +72,10 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-html {
-  background: var(--bg);
-}
 body {
   font-family: 'Outfit', sans-serif;
   font-size: 16px;
-  background: transparent;
+  background: var(--bg);
   color: var(--text2);
   min-height: 100vh;
   overflow-x: hidden;
