@@ -70,7 +70,73 @@
   </div>
 </nav>
 
-<!-- ANIMATED CIRCUIT BACKGROUND -->
+<!-- HYDRAULIC SCHEMATIC BACKGROUND -->
+<div class="circuit-bg"><svg viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+<defs><radialGradient id="cbg" cx="50%" cy="55%" r="60%"><stop offset="0%" stop-color="#0d1018"/><stop offset="100%" stop-color="#0d0f12"/></radialGradient>
+<marker id="harr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#f97316" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g transform="translate(118,0)">
+<rect width="1400" height="900" fill="url(#cbg)"/>
+<!-- Reservoir -->
+<rect x="60" y="500" width="90" height="110" rx="4" fill="none" stroke="#f97316" stroke-width="1" opacity=".28"/>
+<rect x="60" y="555" width="90" height="55" fill="rgba(249,115,22,.04)"/>
+<text font-family="monospace" font-size="9" fill="#f97316" opacity=".3" x="105" y="516" text-anchor="middle">RESERVOIR</text>
+<!-- Suction line -->
+<line x1="105" y1="500" x2="105" y2="420" stroke="#f97316" stroke-width=".8" opacity=".12"/>
+<line class="c-trace" x1="105" y1="500" x2="105" y2="420" stroke="#f97316" stroke-width="1.5" opacity=".4" fill="none"/>
+<line x1="105" y1="420" x2="240" y2="420" stroke="#f97316" stroke-width=".8" opacity=".12"/>
+<line class="c-trace" x1="105" y1="420" x2="240" y2="420" stroke="#f97316" stroke-width="1.5" opacity=".4" fill="none"/>
+<!-- Motor -->
+<rect x="210" y="280" width="110" height="40" rx="5" fill="none" stroke="#f97316" stroke-width=".9" opacity=".32"/>
+<text font-family="monospace" font-size="9" fill="#f97316" opacity=".32" x="265" y="296" text-anchor="middle">ELEC. MOTOR</text>
+<text font-family="monospace" font-size="9" fill="#f97316" opacity=".22" x="265" y="309" text-anchor="middle">45 kW  1500 rpm</text>
+<line x1="265" y1="320" x2="265" y2="336" stroke="#f97316" stroke-width="1.5" stroke-dasharray="4 2" opacity=".32"/>
+<line x1="265" y1="336" x2="285" y2="336" stroke="#f97316" stroke-width="1.5" opacity=".32"/>
+<!-- Pump -->
+<circle cx="330" cy="380" r="46" fill="none" stroke="#f97316" stroke-width="1.2" opacity=".45"/>
+<circle cx="330" cy="380" r="40" fill="rgba(249,115,22,.03)"/>
+<g opacity=".45"><path d="M330 342 L338 374 L330 380Z" fill="#f97316"><animateTransform attributeName="transform" type="rotate" values="0 330 380;360 330 380" dur="3s" repeatCount="indefinite"/></path><path d="M330 380 L362 388 L330 380 L352 358Z" fill="#f97316" opacity=".7"><animateTransform attributeName="transform" type="rotate" values="0 330 380;360 330 380" dur="3s" repeatCount="indefinite"/></path></g>
+<text font-family="monospace" font-size="9" fill="#f97316" opacity=".38" x="330" y="440" text-anchor="middle">PUMP A4VG</text>
+<!-- HP pulse -->
+<circle cx="390" cy="380" r="5" fill="none" stroke="#f97316" stroke-width="1" opacity=".45"><animate attributeName="r" values="4;18;4" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values=".7;0;.7" dur="2s" repeatCount="indefinite"/></circle>
+<line x1="376" y1="380" x2="620" y2="380" stroke="#f97316" stroke-width=".8" opacity=".12"/>
+<line class="c-trace" x1="376" y1="380" x2="620" y2="380" stroke="#f97316" stroke-width="2" opacity=".5" fill="none"/>
+<text font-family="monospace" font-size="9" fill="#f97316" opacity=".4" x="495" y="370" text-anchor="middle">HP  285 bar</text>
+<!-- Pressure gauge -->
+<line x1="490" y1="380" x2="490" y2="326" stroke="#f97316" stroke-width=".8" stroke-dasharray="3 3" opacity=".25"/>
+<circle cx="490" cy="308" r="19" fill="none" stroke="#f97316" stroke-width=".9" opacity=".42"/>
+<circle cx="490" cy="308" r="13" fill="rgba(249,115,22,.03)"/>
+<line x1="490" y1="308" x2="490" y2="297" stroke="#f97316" stroke-width="1.2" opacity=".6" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" values="-30 490 308;22 490 308;-30 490 308" dur="4s" repeatCount="indefinite"/></line>
+<circle cx="490" cy="308" r="2.5" fill="#f97316" opacity=".6"/>
+<!-- DCV -->
+<rect x="620" y="356" width="118" height="48" rx="4" fill="none" stroke="#f97316" stroke-width="1.1" opacity=".5"/>
+<rect x="658" y="359" width="30" height="42" rx="2" fill="rgba(249,115,22,.1)" stroke="#f97316" stroke-width=".7" opacity=".52"/>
+<line x1="663" y1="370" x2="684" y2="381" stroke="#f97316" stroke-width=".9" opacity=".52"/>
+<line x1="684" y1="370" x2="663" y2="381" stroke="#f97316" stroke-width=".9" opacity=".52"/>
+<circle cx="679" cy="354" r="5" fill="#f97316" opacity=".7"><animate attributeName="opacity" values=".9;.2;.9" dur="1.8s" repeatCount="indefinite"/></circle>
+<text font-family="monospace" font-size="9" fill="#f97316" opacity=".38" x="679" y="418" text-anchor="middle">DCV 4/3 WE6</text>
+<!-- Port A to motor -->
+<line class="c-trace" x1="638" y1="404" x2="638" y2="560" stroke="#f97316" stroke-width="1.5" opacity=".45" fill="none"/>
+<line class="c-trace" x1="638" y1="560" x2="840" y2="560" stroke="#f97316" stroke-width="1.5" opacity=".45" fill="none"/>
+<!-- Hydraulic Motor -->
+<circle cx="900" cy="545" r="46" fill="none" stroke="#f97316" stroke-width="1.2" opacity=".45"/>
+<polygon points="883,529 917,529 900,561" fill="rgba(249,115,22,.07)" stroke="#f97316" stroke-width=".9" opacity=".45"/>
+<line x1="854" y1="578" x2="926" y2="510" stroke="#f97316" stroke-width="1.2" opacity=".42"/>
+<text font-family="monospace" font-size="9" fill="#f97316" opacity=".35" x="900" y="604" text-anchor="middle">MOTOR A6VM</text>
+<!-- Return line -->
+<line class="c-trace-slow" x1="900" y1="591" x2="900" y2="660" stroke="#c2410c" stroke-width="1.2" opacity=".32" fill="none"/>
+<line class="c-trace-slow" x1="900" y1="660" x2="105" y2="660" stroke="#c2410c" stroke-width="1.2" opacity=".32" fill="none"/>
+<line class="c-trace-slow" x1="105" y1="660" x2="105" y2="610" stroke="#c2410c" stroke-width="1.2" opacity=".32" fill="none"/>
+<!-- Filter -->
+<rect x="575" y="648" width="50" height="24" rx="3" fill="none" stroke="#f97316" stroke-width=".9" opacity=".38"/>
+<text font-family="monospace" font-size="8" fill="#f97316" opacity=".35" x="600" y="640" text-anchor="middle">FILTER</text>
+<!-- Cooler -->
+<rect x="760" y="648" width="62" height="24" rx="4" fill="none" stroke="#f97316" stroke-width=".9" opacity=".38"/>
+<text font-family="monospace" font-size="8" fill="#f97316" opacity=".35" x="791" y="640" text-anchor="middle">COOLER</text>
+<!-- ISO label -->
+<text font-family="monospace" font-size="10" fill="#f97316" opacity=".07" x="700" y="840" text-anchor="middle" letter-spacing="3">HYDRAULIC CIRCUIT — ISO 1219-1 — HydroMind.AI</text>
+</g>
+</svg></div>
+
 
 
 <!-- ═══════════════ LEFT SIDEBAR ═══════════════ -->
@@ -207,47 +273,6 @@
 
 <!-- ═══ HERO ═══ -->
 <section style="min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;padding:40px 2rem 80px;">
-
-  <!-- Circuit animation canvas — fixed full viewport -->
-  <canvas id="hmCircuit" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none;opacity:.55;"></canvas>
-  <script>
-  (function(){
-    var cv=document.getElementById('hmCircuit');
-    var cx=cv.getContext('2d');
-    var nodes=[],W,H;
-    var N=90,DIST=180;
-    function resize(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;}
-    function rand(a,b){return a+Math.random()*(b-a);}
-    function init(){resize();nodes=[];for(var i=0;i<N;i++)nodes.push({x:rand(0,W),y:rand(0,H),vx:rand(-.25,.25),vy:rand(-.25,.25),r:rand(1.8,3.5),ph:rand(0,6.28)});}
-    function draw(){
-      cx.clearRect(0,0,W,H);
-      var t=performance.now()*.001;
-      for(var i=0;i<nodes.length;i++){
-        var a=nodes[i];
-        for(var j=i+1;j<nodes.length;j++){
-          var b=nodes[j];
-          var dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);
-          if(d<DIST){
-            var al=((1-d/DIST)*.65).toFixed(2);
-            cx.beginPath();cx.moveTo(a.x,a.y);
-            if((i+j)%2===0){cx.lineTo(b.x,a.y);cx.lineTo(b.x,b.y);}
-            else{cx.lineTo(a.x,b.y);cx.lineTo(b.x,b.y);}
-            cx.strokeStyle='rgba(249,115,22,'+al+')';cx.lineWidth=.8;cx.stroke();
-          }
-        }
-        var p=.5+.5*Math.sin(t*5+a.ph);
-        cx.beginPath();cx.arc(a.x,a.y,a.r*(1+.35*p),0,6.28);
-        cx.fillStyle='rgba(249,115,22,'+(.55+.45*p).toFixed(2)+')';cx.fill();
-        a.x+=a.vx;a.y+=a.vy;
-        if(a.x<0||a.x>W)a.vx*=-1;
-        if(a.y<0||a.y>H)a.vy*=-1;
-      }
-      requestAnimationFrame(draw);
-    }
-    window.addEventListener('resize',function(){resize();init();});
-    init();draw();
-  })();
-  </script>
 
   <!-- Glow orb -->
   <div style="position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(249,115,22,.07) 0%,transparent 70%);pointer-events:none;"></div>
