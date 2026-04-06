@@ -71,6 +71,65 @@
 </nav>
 
 <!-- ANIMATED CIRCUIT BACKGROUND -->
+<canvas id="hmCircuitBg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.18;"></canvas>
+<script>
+(function(){
+  var cv=document.getElementById('hmCircuitBg');
+  var cx=cv.getContext('2d');
+  var W,H,nodes;
+  var NODE_COUNT=55,CONN_DIST=160,PULSE_SPEED=0.012;
+
+  function resize(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;}
+  window.addEventListener('resize',function(){resize();init();});
+
+  function rand(a,b){return a+Math.random()*(b-a);}
+
+  function init(){
+    resize();
+    nodes=[];
+    for(var i=0;i<NODE_COUNT;i++){
+      nodes.push({x:rand(0,W),y:rand(0,H),vx:rand(-0.18,0.18),vy:rand(-0.18,0.18),r:rand(1.5,3),phase:rand(0,Math.PI*2)});
+    }
+  }
+
+  function draw(){
+    cx.clearRect(0,0,W,H);
+    var t=performance.now()*0.001;
+    for(var i=0;i<nodes.length;i++){
+      var a=nodes[i];
+      for(var j=i+1;j<nodes.length;j++){
+        var b=nodes[j];
+        var dx=a.x-b.x,dy=a.y-b.y;
+        var dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<CONN_DIST){
+          var alpha=(1-dist/CONN_DIST)*0.55;
+          cx.beginPath();
+          cx.moveTo(a.x,a.y);
+          if((i+j)%2===0){cx.lineTo(b.x,a.y);cx.lineTo(b.x,b.y);}
+          else{cx.lineTo(a.x,b.y);cx.lineTo(b.x,b.y);}
+          cx.strokeStyle='rgba(249,115,22,'+alpha.toFixed(3)+')';
+          cx.lineWidth=0.6;
+          cx.stroke();
+        }
+      }
+    }
+    for(var i=0;i<nodes.length;i++){
+      var n=nodes[i];
+      var pulse=0.5+0.5*Math.sin(t*6+n.phase);
+      cx.beginPath();
+      cx.arc(n.x,n.y,n.r*(0.8+0.4*pulse),0,Math.PI*2);
+      cx.fillStyle='rgba(249,115,22,'+(0.4+0.4*pulse).toFixed(3)+')';
+      cx.fill();
+      n.x+=n.vx;n.y+=n.vy;
+      if(n.x<0||n.x>W)n.vx*=-1;
+      if(n.y<0||n.y>H)n.vy*=-1;
+    }
+    requestAnimationFrame(draw);
+  }
+
+  init();draw();
+})();
+</script>
 
 
 <!-- ═══════════════ LEFT SIDEBAR ═══════════════ -->
