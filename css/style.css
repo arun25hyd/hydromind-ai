@@ -227,7 +227,7 @@ input, textarea, select { font-family: inherit; }
   width: calc(100% - var(--left-sb) - var(--right-sb));
   min-height: calc(100vh - var(--nav-h));
   position: relative;
-  z-index: 1;
+  z-index: auto;
   box-sizing: border-box;
   overflow-x: hidden;
 }
