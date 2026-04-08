@@ -29,9 +29,6 @@ body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);mar
 .hm-btn-orange{padding:6px 16px;border-radius:6px;background:var(--hm-orange);color:#fff;font-size:.8rem;text-decoration:none;font-family:var(--hm-cond);font-weight:600;letter-spacing:.5px;cursor:pointer;border:none;}
 
 /* LAYOUT */
-.hm-page{margin-top:52px;display:grid;grid-template-columns:220px 1fr 200px;min-height:calc(100vh - 52px);}
-.hm-main{overflow-y:auto;}
-.hm-sidebar-right{background:var(--hm-surface);border-left:1px solid var(--hm-border);padding:14px;display:flex;flex-direction:column;gap:10px;position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto;}
 
 /* RIGHT SIDEBAR CARDS */
 .rs-card{background:var(--hm-card);border:1px solid var(--hm-border);border-radius:8px;padding:12px;}
@@ -254,7 +251,7 @@ nav.navbar{display:none!important;}
       <button class="hm-logout-btn" id="hmLogoutBtn" onclick="doLogout()" style="display:none;">Sign Out</button>
     </div>
   </div>
-  <div class="hm-main">
+  <div class="hm-main-content">
 
     <!-- HERO -->
     <div class="pg-hero">
@@ -444,10 +441,10 @@ nav.navbar{display:none!important;}
       <div style="display:flex;gap:1rem;"><a href="privacy.html" style="color:var(--hm-muted);text-decoration:none;">Privacy</a><a href="disclaimer.html" style="color:var(--hm-muted);text-decoration:none;">Disclaimer</a></div>
     </div>
 
-  </div><!-- /hm-main -->
+  </div><!-- /hm-main-content -->
 
   <!-- RIGHT SIDEBAR — Ads -->
-  <div class="hm-sidebar-right" id="hmAdSidebar">
+  <div class="hm-right-sidebar" id="hmAdSidebar">
     <div style="font-family:var(--hm-mono);font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--hm-muted);padding-bottom:.4rem;border-bottom:1px solid var(--hm-border);margin-bottom:.25rem;">Partner</div>
     <div style="background:rgba(249,115,22,.03);border:1px dashed rgba(249,115,22,.2);border-radius:8px;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:12px;gap:6px;">
       <div style="font-family:var(--hm-cond);font-size:12px;font-weight:700;color:var(--hm-orange);">Your Brand</div>
