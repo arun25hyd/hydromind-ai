@@ -29,7 +29,7 @@ body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);mar
 .hm-btn-orange{padding:6px 16px;border-radius:6px;background:var(--hm-orange);color:#fff;font-size:.8rem;text-decoration:none;font-family:var(--hm-cond);font-weight:600;letter-spacing:.5px;cursor:pointer;border:none;}
 
 /* LAYOUT */
-.hm-page{margin-top:52px;display:grid;grid-template-columns:1fr 200px;min-height:calc(100vh - 52px);}
+.hm-page{margin-top:52px;display:grid;grid-template-columns:220px 1fr 200px;min-height:calc(100vh - 52px);}
 .hm-main{overflow-y:auto;}
 .hm-sidebar-right{background:var(--hm-surface);border-left:1px solid var(--hm-border);padding:14px;display:flex;flex-direction:column;gap:10px;position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto;}
 
@@ -175,6 +175,45 @@ table.cmp .cmp-section td{background:var(--hm-surface);font-family:var(--hm-cond
 
 <!-- PAGE -->
 <div class="hm-page">
+<!-- LEFT SIDEBAR -->
+<div class="hm-left-sidebar" id="hmLeftSidebar">
+  <div class="hm-left-inner">
+    <div id="hmSidebarProfile" style="display:none;">
+      <div class="hm-profile-card">
+        <div class="hm-prof-av" id="hmProfAvatar">--</div>
+        <div class="hm-prof-name" id="hmProfName"></div>
+        <div class="hm-prof-email" id="hmProfEmail"></div>
+        <span class="hm-prof-plan" id="hmProfPlan">Free</span>
+      </div>
+    </div>
+    <div id="hmSidebarNoAuth">
+      <div style="margin-bottom:.75rem;">
+        <div class="hm-sidebar-label">Quick Links</div>
+        <div class="hm-hist-item" onclick="location.href='pages/advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
+        <div class="hm-hist-item" onclick="location.href='crane-diagnostic.html'"><span class="hm-hist-icon">&#9881;</span><span class="hm-hist-text">Crane Diagnostic</span></div>
+        <div class="hm-hist-item" onclick="location.href='pages/knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
+        <div class="hm-hist-item" onclick="location.href='pricing.html'" style="background:rgba(249,115,22,.07);"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text" style="color:#f97316;">Upgrade Plan</span></div>
+      </div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:#64748b;padding-bottom:.45rem;border-bottom:1px solid #2a3040;margin-bottom:.5rem;">Sponsored</div>
+      <div style="background:rgba(249,115,22,.03);border:1px dashed rgba(249,115,22,.12);border-radius:6px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#64748b;font-family:'Share Tech Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem;"><div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement</div>
+      <div style="text-align:center;"><a href="pricing.html" style="font-family:'Share Tech Mono',monospace;font-size:.56rem;color:rgba(249,115,22,.38);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a></div>
+    </div>
+    <div id="hmSidebarHistory" style="display:none;margin-top:.75rem;">
+      <div class="hm-sidebar-label">Chat History</div>
+      <div id="hmHistoryList"></div>
+    </div>
+    <div id="hmSidebarLinks" style="display:none;margin-top:.75rem;">
+      <div class="hm-sidebar-label">Quick Links</div>
+      <div class="hm-hist-item" onclick="location.href='pages/advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
+      <div class="hm-hist-item" onclick="location.href='crane-diagnostic.html'"><span class="hm-hist-icon">&#9881;</span><span class="hm-hist-text">Crane Diagnostic</span></div>
+      <div class="hm-hist-item" onclick="location.href='pages/knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
+      <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
+    </div>
+  </div>
+  <div class="hm-left-bottom">
+    <button class="hm-logout-btn" id="hmLogoutBtn" onclick="doLogout()" style="display:none;">Sign Out</button>
+  </div>
+</div>
   <div class="hm-main">
 
     <!-- HERO -->

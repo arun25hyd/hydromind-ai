@@ -5,18 +5,18 @@
 <title>Knowledge Base — HydroMind.AI</title>
 <link rel="stylesheet" href="../css/style.css">
 <style>
-.kb-filter-btn{font-family:'Space Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.06em;padding:5px 14px;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;transition:.2s;}
+.kb-filter-btn{font-family:'Space Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.06em;padding:5px 14px;border-radius:100px;border:1px solid var(--hm-border);background:transparent;color:var(--hm-muted);cursor:pointer;transition:.2s;}
 .kb-filter-btn:hover{border-color:#f97316;color:#f97316;}
 .kb-filter-btn.active{background:rgba(249,115,22,.12);border-color:#f97316;color:#f97316;}
-.kb-entry-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.4rem;transition:.2s;cursor:pointer;}
+.kb-entry-card{background:var(--hm-card);border:1px solid var(--hm-border);border-radius:10px;padding:1.1rem 1.4rem;transition:.2s;cursor:pointer;}
 .kb-entry-card:hover{border-color:rgba(249,115,22,.3);transform:translateY(-1px);}
-.kb-entry-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;color:var(--text1);margin-bottom:.35rem;}
-.kb-entry-desc{font-size:.83rem;color:var(--text2);line-height:1.55;margin-bottom:.5rem;}
+.kb-entry-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;color:var(--hm-text);margin-bottom:.35rem;}
+.kb-entry-desc{font-size:.83rem;color:var(--hm-muted2);line-height:1.55;margin-bottom:.5rem;}
 .kb-entry-meta{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;}
 .kb-entry-id{font-family:'Space Mono',monospace;font-size:.6rem;color:#f97316;padding:2px 8px;border:1px solid rgba(249,115,22,.2);border-radius:100px;}
-.kb-entry-brand{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--text3);}
-.kb-entry-cat{font-family:'Space Mono',monospace;font-size:.6rem;color:#f97316;padding:2px 8px;border:1px solid rgba(0,229,212,.15);border-radius:100px;}
-.kb-entry-schem{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--text3);}
+.kb-entry-brand{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--hm-muted);}
+.kb-entry-cat{font-family:'Space Mono',monospace;font-size:.6rem;color:#f97316;padding:2px 8px;border:1px solid rgba(249,115,22,.2);border-radius:100px;}
+.kb-entry-schem{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--hm-muted);}
 
 
 
@@ -105,8 +105,8 @@
         <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
       </div>
       <!-- Ad slot in left sidebar -->
-      <div style="font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.45rem;border-bottom:1px solid var(--border);margin-bottom:.5rem;">Sponsored</div>
-      <div style="background:rgba(249,115,22,.03);border:1px dashed rgba(249,115,22,.12);border-radius:6px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem;">
+      <div style="font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--hm-muted);padding-bottom:.45rem;border-bottom:1px solid var(--hm-border);margin-bottom:.5rem;">Sponsored</div>
+      <div style="background:rgba(249,115,22,.03);border:1px dashed rgba(249,115,22,.12);border-radius:6px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--hm-muted);font-family:'Space Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.5rem;">
         <div style="font-size:.9rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement
       </div>
       <div style="text-align:center;">
@@ -205,7 +205,7 @@
     <div class="breadcrumb"><a href="../index.html">Home</a> › Knowledge Base</div>
     <div class="eyebrow">KB v3.0 — March 2026</div>
     <h1>Technical Document <span class="text-gold">Library</span></h1>
-    <p style="color:var(--text2);max-width:580px;margin-top:1rem;line-height:1.8;">OEM manuals, field cases, hydraulic system documentation and troubleshooting guides — indexed and searchable via AI Advisor.</p>
+    <p style="color:var(--hm-muted2);max-width:580px;margin-top:1rem;line-height:1.8;">OEM manuals, field cases, hydraulic system documentation and troubleshooting guides — indexed and searchable via AI Advisor.</p>
   </div>
 </div>
 
@@ -214,21 +214,21 @@
 
     <!-- Stats Row -->
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2.5rem;">
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center;">
+      <div style="background:var(--hm-card);border:1px solid var(--hm-border);border-radius:12px;padding:1.25rem;text-align:center;">
         <div style="font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;color:#f97316;" id="statDocs">—</div>
-        <div style="font-size:.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:.3rem;">Documents</div>
+        <div style="font-size:.75rem;color:var(--hm-muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.3rem;">Documents</div>
       </div>
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center;">
+      <div style="background:var(--hm-card);border:1px solid var(--hm-border);border-radius:12px;padding:1.25rem;text-align:center;">
         <div style="font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;color:#f97316;" id="statBrands">—</div>
-        <div style="font-size:.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:.3rem;">OEM Brands</div>
+        <div style="font-size:.75rem;color:var(--hm-muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.3rem;">OEM Brands</div>
       </div>
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center;">
+      <div style="background:var(--hm-card);border:1px solid var(--hm-border);border-radius:12px;padding:1.25rem;text-align:center;">
         <div style="font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;color:#f97316;" id="statVersion">v3.0</div>
-        <div style="font-size:.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:.3rem;">KB Version</div>
+        <div style="font-size:.75rem;color:var(--hm-muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.3rem;">KB Version</div>
       </div>
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center;">
+      <div style="background:var(--hm-card);border:1px solid var(--hm-border);border-radius:12px;padding:1.25rem;text-align:center;">
         <div style="font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;color:#f97316;" id="statSchematics">—</div>
-        <div style="font-size:.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:.3rem;">Schematics</div>
+        <div style="font-size:.75rem;color:var(--hm-muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.3rem;">Schematics</div>
       </div>
     </div>
 
@@ -249,12 +249,12 @@
     <div style="margin-bottom:1.5rem;position:relative;">
       <input type="text" id="kbSearch" placeholder="Search documents, brands, components..."
         oninput="searchKB(this.value)"
-        style="width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem .75rem 2.75rem;color:var(--text1);font-size:.9rem;box-sizing:border-box;">
+        style="width:100%;background:var(--hm-card);border:1px solid var(--hm-border);border-radius:10px;padding:.75rem 1rem .75rem 2.75rem;color:var(--hm-text);font-size:.9rem;box-sizing:border-box;">
       <span style="position:absolute;left:.9rem;top:50%;transform:translateY(-50%);font-size:1rem;opacity:.5;">🔍</span>
     </div>
 
     <!-- Count Label -->
-    <div style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem;" id="kbCountLabel">Loading documents...</div>
+    <div style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--hm-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem;" id="kbCountLabel">Loading documents...</div>
 
     <!-- KB Grid -->
     <div id="kbGrid" style="display:flex;flex-direction:column;gap:.75rem;"></div>
@@ -318,7 +318,7 @@ var CAT_ICONS = {
 async function loadKBFromSupabase() {
   var grid  = document.getElementById('kbGrid');
   var label = document.getElementById('kbCountLabel');
-  if (grid) grid.innerHTML = '<div style="color:var(--text3);font-size:.85rem;padding:2rem 0;text-align:center;">Loading knowledge base...</div>';
+  if (grid) grid.innerHTML = '<div style="color:var(--hm-muted);font-size:.85rem;padding:2rem 0;text-align:center;">Loading knowledge base...</div>';
   try {
     var resp = await fetch(
       SUPABASE_URL + '/rest/v1/kb_chunks?select=kb_id,doc_name,category,brand,component_type,schematic_count,searchable_text&kb_id=not.is.null&order=kb_id.asc&limit=300',

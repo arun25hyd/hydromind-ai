@@ -27,7 +27,7 @@ body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);mar
 .hm-btn-ghost{padding:6px 16px;border-radius:6px;background:transparent;border:1px solid var(--hm-border);color:var(--hm-muted2);font-size:.8rem;font-family:var(--hm-cond);letter-spacing:.5px;cursor:pointer;}
 .hm-btn-orange{padding:6px 16px;border-radius:6px;background:var(--hm-orange);color:#fff;font-size:.8rem;font-family:var(--hm-cond);font-weight:600;letter-spacing:.5px;cursor:pointer;border:none;}
 
-.hm-page{margin-top:52px;display:grid;grid-template-columns:1fr 200px;min-height:calc(100vh - 52px);margin-left:220px;}
+.hm-page{margin-top:52px;display:grid;grid-template-columns:220px 1fr 200px;min-height:calc(100vh - 52px);}
 .hm-main{overflow-y:auto;}
 
 /* RIGHT SIDEBAR */
@@ -150,26 +150,6 @@ body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);mar
   </div>
 </nav>
 
-<!-- NAV -->
-<nav class="hm-nav">
-  <a href="../index.html" class="hm-nav-logo">
-    <div class="hm-nav-icon">H</div>
-    <div><div class="hm-nav-brand">HYDROMIND<span>.AI</span></div><div class="hm-nav-sub">Hydraulic Intelligence</div></div>
-  </a>
-  <div class="hm-nav-links">
-    <a href="../index.html" class="hm-nav-a">Home</a>
-    <a href="advisor.html" class="hm-nav-a">AI Advisor</a>
-    <a href="../crane-diagnostic.html" class="hm-nav-a" style="color:#22c55e;">⚙ Crane Diag</a>
-    <a href="system-design.html" class="hm-nav-a">System Design</a>
-    <a href="knowledge.html" class="hm-nav-a">Knowledge Base</a>
-    <a href="../pricing.html" class="hm-nav-a">Pricing</a>
-    <a href="feedback.html" class="hm-nav-a active">Feedback</a>
-  </div>
-  <div class="hm-nav-cta">
-    <button class="hm-btn-ghost" onclick="openAuthModal('login')">Login</button>
-    <button class="hm-btn-orange" onclick="openAuthModal('register')">Get Pro</button>
-  </div>
-</nav>
 
 <!-- AUTH MODAL -->
 <div class="hm-auth-overlay" id="hmAuthOverlay">
