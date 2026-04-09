@@ -47,7 +47,7 @@
 :root {
   --left-sb:  220px;
   --right-sb: 200px;
-  --nav-h:    72px;
+  --nav-h:    52px;
   --gold:    #f97316;
   --gold2:   #8b6914;
   --cyan:    #f97316;
@@ -87,8 +87,11 @@ input, textarea, select { font-family: inherit; }
 
 /* ── Circuit BG ── */
 .circuit-bg {
-  position: fixed; top: 0; left: 0;
-  width: 100vw; height: 100vh;
+  position: fixed;
+  top: 52px;
+  left: var(--left-sb);
+  width: calc(100vw - var(--left-sb) - var(--right-sb));
+  height: calc(100vh - 52px);
   pointer-events: none; z-index: 0; overflow: hidden;
 }
 .circuit-bg svg { width: 100%; height: 100%; }
@@ -417,12 +420,14 @@ textarea.form-input { resize:vertical; min-height:130px; }
 @media(min-width:1600px){
   :root { --left-sb:240px; }
   .hm-main-content { margin-left:240px; width:calc(100% - 240px - 200px); }
+  .circuit-bg { left:240px; width:calc(100vw - 240px - 200px); }
 }
 
 /* 1280px Hide right sidebar */
 @media(max-width:1280px){
   .hm-right-sidebar  { display:none; }
   .hm-main-content   { margin-right:0; width:calc(100% - var(--left-sb)); }
+  .circuit-bg { width:calc(100vw - var(--left-sb)); }
 }
 
 /* 1100px Compact left sidebar */
@@ -430,6 +435,7 @@ textarea.form-input { resize:vertical; min-height:130px; }
   :root { --left-sb:180px; }
   .hm-right-sidebar  { display:none; }
   .hm-main-content   { margin-left:180px; margin-right:0; width:calc(100% - 180px); }
+  .circuit-bg { left:180px; width:calc(100vw - 180px); }
   .navbar-link       { font-size:.78rem; padding:5px 7px; }
   .hm-logo-sub       { display:none; }
   .hm-logo-name      { font-size:.9rem; }
@@ -447,6 +453,7 @@ textarea.form-input { resize:vertical; min-height:130px; }
   .hm-left-sidebar   { display:none; }
   .hm-right-sidebar  { display:none; }
   .hm-main-content   { margin-left:0; margin-right:0; margin-top:var(--nav-h); width:100%; }
+  .circuit-bg { left:0; width:100vw; }
   .page-layout       { display:block; width:100%; }
   .navbar-menu       { display:none !important; }
   .navbar-toggle     { display:flex !important; }
@@ -458,6 +465,7 @@ textarea.form-input { resize:vertical; min-height:130px; }
   .hm-left-sidebar  { display:none; }
   .hm-right-sidebar { display:none; }
   .hm-main-content  { margin:0; margin-top:var(--nav-h); width:100%; }
+  .circuit-bg { left:0; width:100vw; }
   .footer           { margin-left:0 !important; }
   .navbar-menu      { display:none !important; }
   .navbar-toggle    { display:flex !important; }
