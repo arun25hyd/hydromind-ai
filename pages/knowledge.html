@@ -424,26 +424,6 @@ function esc(s) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Admin-only gate: check if logged-in user is admin
-  var raw = localStorage.getItem('HM_USER');
-  var user = raw ? JSON.parse(raw) : null;
-  var isAdmin = user && user.isAdmin === true;
-
-  if (!isAdmin) {
-    // Hide the KB content, show redirect message
-    var main = document.querySelector('.hm-main-content');
-    if (main) {
-      main.innerHTML =
-        '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;padding:2rem;">' +
-        '<div style="font-size:2.5rem;margin-bottom:1rem;">🔒</div>' +
-        '<h2 style="font-family:Syne,sans-serif;font-weight:800;font-size:1.8rem;color:#e2e8f0;margin-bottom:1rem;">Knowledge Base — Admin Only</h2>' +
-        '<p style="color:#94a3b8;max-width:480px;line-height:1.7;margin-bottom:2rem;">The Knowledge Base document library is restricted to administrators. To search our indexed OEM manuals, use the AI Advisor — it has full access to all 48+ manuals and 223 documents.</p>' +
-        '<a href="advisor.html" style="padding:12px 32px;border-radius:7px;background:#f97316;color:#fff;font-family:\'Barlow Condensed\',sans-serif;font-weight:600;font-size:1rem;letter-spacing:1px;text-decoration:none;">Ask AI Advisor</a>' +
-        '</div>';
-    }
-    return;
-  }
-
   loadKBFromSupabase();
 });
 </script>
