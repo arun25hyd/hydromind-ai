@@ -106,8 +106,10 @@ INSPECT → PLAN → EXECUTE → VERIFY → COMMIT
 - Security: security.js, helmet, rate limiters, input validation
 
 ### KB State
-- KB1–KB47: COMPLETE | KB48 Fukushima IHI: PENDING (manual not uploaded)
+- KB1–KB57: COMPLETE (KB57 = Parker HY14-2533 sandwich valves)
 - Total KB documents indexed: 223
+- knowledge.html: rebuilt with all 57 entries, fully public, no auth wall
+- pages/knowledge.html: admin gate removed, loads Supabase for all users
 
 ---
 
@@ -241,15 +243,14 @@ OEM tools: Liebherr=LiDAT | Rexroth=BODAS | Danfoss=PLUS+1 | Eaton=gauges only
 
 ---
 
-## RULE 11 — PENDING TASKS (Apr 6, 2026)
+## RULE 11 — PENDING TASKS (Apr 11, 2026)
 
 | Priority | Task | Status |
 |---|---|---|
-| 1 | Upload Fukushima IHI manual → complete KB48 | ⏳ Waiting on manual |
+| 1 | AdSense review request — submit via AdSense → Sites → Request review | ⏳ Awaiting Arun action |
 | 2 | EAS build versionCode 35 → upload AAB | ⏳ Wait May 1, 2026 |
 | 3 | Fix left sidebar grid on pricing.html + feedback.html | ⏳ Pending |
-| 4 | Fix pages/knowledge.html sidebar positioning | ⏳ Pending |
-| 5 | HydroFit: run gen_hose_fittings.py | ⏳ Pending |
+| 4 | HydroFit: run gen_hose_fittings.py | ⏳ Pending |
 
 ---
 
@@ -333,3 +334,4 @@ It is NOT a canvas particle animation.
 |---|---|---|
 | v1.0 | 2026-04-04 | Initial — 14 rules, mistakes registry, full project state |
 | v1.1 | 2026-04-06 | Added rules 15–19 from animated BG incident. Updated Android versionCode to 35, Play Store status, pending tasks. Added curl verification step to git workflow. Circuit-bg preservation rule added. |
+| v1.2 | 2026-04-11 | AdSense fixes: ads.txt moved to repo root (not public/). knowledge.html redirect removed from vercel.json. pages/knowledge.html admin gate removed — KB open to all users. knowledge.html rebuilt with 57 KB entries (KB01–KB57), SEO meta, schema markup, public crawlable. Crane diagnostic Path A/B/C font size increased (ac-title: 1rem orange, ac-desc: .85rem). KB now goes to KB57. |
