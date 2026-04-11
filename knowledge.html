@@ -3,45 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Knowledge Base — HydroMind.AI</title>
-<link rel="icon" href="../favicon.ico">
-<link rel="stylesheet" href="../css/style.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Outfit:wght@300;400;500;600&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;500&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
-<style>
-.kb-filter-btn{background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.2);border-radius:100px;color:var(--text2);font-family:'Space Mono',monospace;font-size:.65rem;padding:5px 14px;cursor:pointer;transition:.2s;text-transform:uppercase;letter-spacing:.05em}
-.kb-filter-btn:hover{background:rgba(249,115,22,.12);color:#f97316}
-.kb-filter-active{background:rgba(249,115,22,.15)!important;border-color:#f97316!important;color:#f97316!important}
-.kb-card-hidden{display:none!important}
-</style>
+<title>Hydraulic Systems Knowledge Base — HydroMind.AI | 57 OEM Technical Documents</title>
+<meta name="description" content="HydroMind AI Knowledge Base: 57 OEM hydraulic and crane technical documents covering Rexroth, Danfoss, Eaton, Parker, Liebherr, Favelle Favco, SeaTrax, NOV and more. Offshore crane and HPU troubleshooting guides.">
+<meta name="keywords" content="hydraulic knowledge base, offshore crane troubleshooting, Rexroth A4VG, Danfoss Series 90, Liebherr crane, hydraulic pump diagnostics, HPU design, proportional valve, case drain pressure">
+<link rel="icon" href="favicon.ico">
+<link rel="stylesheet" href="css/style.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
-/* HydroMind Nav v2 */
 body{background:#0d0f12;color:#e2e8f0;font-family:"Barlow",sans-serif;}
+:root{--gold:#f97316;--bg:#0d0f12;--bg2:#13171d;--bg3:#1a1f28;--border:rgba(249,115,22,.12);--text1:#e2e8f0;--text2:#94a3b8;--text3:#64748b;--nav-h:52px;}
+nav.navbar{display:none!important;}
+.circuit-bg{display:none!important;}
+/* Top nav */
 .hm-topnav{position:fixed;top:0;left:0;right:0;height:52px;z-index:9999;background:rgba(13,15,18,.97);border-bottom:1px solid #2a3040;backdrop-filter:blur(16px);display:flex;align-items:center;padding:0 1rem;gap:.75rem;}
 .hm-topnav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;}
-.hm-topnav-icon{width:34px;height:34px;border-radius:8px;background:#f97316;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:17px;color:#fff;flex-shrink:0;letter-spacing:-0.5px;}
-.hm-topnav-brand{font-family:Syne,sans-serif;font-weight:800;font-size:1rem;color:#e2e8f0;letter-spacing:.5px;line-height:1;}
+.hm-topnav-icon{width:34px;height:34px;border-radius:8px;background:#f97316;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:17px;color:#fff;flex-shrink:0;}
+.hm-topnav-brand{font-family:Syne,sans-serif;font-weight:800;font-size:1rem;color:#e2e8f0;letter-spacing:.5px;}
 .hm-topnav-brand em{color:#f97316;font-style:normal;}
 .hm-topnav-sub{font-family:"Share Tech Mono",monospace;font-size:.45rem;color:rgba(249,115,22,.5);letter-spacing:.18em;text-transform:uppercase;}
 .hm-topnav-links{flex:1;display:flex;align-items:center;gap:1px;overflow:hidden;}
-.hm-topnav-a{padding:5px 9px;border-radius:5px;font-size:.8rem;color:#64748b;text-decoration:none;white-space:nowrap;transition:color .15s;font-family:"Barlow",sans-serif;}
-.hm-topnav-a:hover{color:#e2e8f0;}
-.hm-topnav-a.active{color:#f97316!important;}
+.hm-topnav-a{padding:5px 9px;border-radius:5px;font-size:.8rem;color:#64748b;text-decoration:none;white-space:nowrap;transition:color .15s;}
+.hm-topnav-a:hover,.hm-topnav-a.active{color:#f97316;}
 .hm-topnav-cta{display:flex;align-items:center;gap:7px;flex-shrink:0;}
 .hm-nav-ghost{padding:5px 14px;border-radius:5px;background:transparent;border:1px solid #2a3040;color:#94a3b8;font-size:.78rem;font-family:"Barlow Condensed",sans-serif;letter-spacing:.5px;cursor:pointer;}
 .hm-nav-cta-btn{padding:5px 14px;border-radius:5px;background:#f97316;color:#fff;font-size:.78rem;font-family:"Barlow Condensed",sans-serif;font-weight:600;letter-spacing:.5px;cursor:pointer;border:none;}
-:root{--gold:#f97316;--gold2:#c2410c;--cyan:#f97316;--gold-y:#f97316;--nav-h:52px;--bg:#0d0f12;--bg2:#13171d;--bg3:#1a1f28;--border:rgba(249,115,22,.12);--text1:#e2e8f0;--text2:#94a3b8;--text3:#64748b;}
-nav.navbar{display:none!important;}
-.circuit-bg{display:none!important;}
-.hm-left-sidebar{top:52px!important;height:calc(100vh - 52px)!important;}
-.hm-right-sidebar{top:52px!important;height:calc(100vh - 52px)!important;}
+/* Layout */
+.hm-page{display:grid;grid-template-columns:220px 1fr 200px;min-height:100vh;padding-top:52px;}
+.hm-left-sidebar{position:fixed;top:52px;left:0;width:220px;height:calc(100vh - 52px);overflow-y:auto;background:#13171d;border-right:1px solid #2a3040;padding:.75rem .6rem;display:flex;flex-direction:column;}
+.hm-main-content{grid-column:2;min-width:0;padding:2rem 1.5rem;}
+.hm-right-sidebar{position:fixed;top:52px;right:0;width:200px;height:calc(100vh - 52px);overflow-y:auto;background:#13171d;border-left:1px solid #2a3040;padding:.75rem .6rem;display:flex;flex-direction:column;}
+.hm-sidebar-label{font-family:"Share Tech Mono",monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:#64748b;margin-bottom:.4rem;}
+.hm-hist-item{display:flex;align-items:center;gap:.5rem;padding:.4rem .5rem;border-radius:5px;cursor:pointer;transition:background .15s;font-size:.82rem;color:#94a3b8;margin-bottom:2px;}
+.hm-hist-item:hover{background:rgba(249,115,22,.06);color:#e2e8f0;}
+/* KB styles */
+.kb-filter-btn{background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.2);border-radius:100px;color:#94a3b8;font-family:"Share Tech Mono",monospace;font-size:.65rem;padding:5px 14px;cursor:pointer;transition:.2s;text-transform:uppercase;letter-spacing:.05em;}
+.kb-filter-btn:hover{background:rgba(249,115,22,.12);color:#f97316;}
+.kb-filter-active{background:rgba(249,115,22,.15)!important;border-color:#f97316!important;color:#f97316!important;}
+.kb-card-hidden{display:none!important;}
+.kb-card{background:#1a1f28;border:1px solid #2a3040;border-radius:10px;padding:1.25rem 1.5rem;transition:border-color .2s;}
+.kb-card:hover{border-color:rgba(249,115,22,.3);}
+.kb-num{font-family:"Share Tech Mono",monospace;font-size:.62rem;color:#f97316;padding:2px 8px;border:1px solid rgba(249,115,22,.2);border-radius:100px;white-space:nowrap;margin-left:auto;flex-shrink:0;}
+.kb-title{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:1.05rem;color:#e2e8f0;}
+.kb-desc{font-size:.88rem;color:#94a3b8;margin:.5rem 0;}
+.kb-meta{font-family:"Share Tech Mono",monospace;font-size:.68rem;color:#64748b;}
+.stat-box{background:#1a1f28;border:1px solid #2a3040;border-radius:10px;text-align:center;padding:1.25rem;}
+.stat-num{font-family:"Barlow Condensed",sans-serif;font-size:2rem;font-weight:700;color:#f97316;}
+.stat-lbl{font-size:.8rem;color:#64748b;margin-top:.25rem;}
+.section-hero{padding:3rem 0 2rem;border-bottom:1px solid #2a3040;margin-bottom:2rem;}
+.eyebrow{font-family:"Share Tech Mono",monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.12em;color:#f97316;margin-bottom:.5rem;}
+.section-title{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:2rem;color:#e2e8f0;margin-bottom:.5rem;}
+.section-sub{font-size:.95rem;color:#94a3b8;max-width:600px;}
+/* Footer */
+.hm-footer{margin-top:3rem;padding-top:2rem;border-top:1px solid #2a3040;font-size:.82rem;color:#64748b;text-align:center;}
 </style>
 </head>
 <body>
-<!-- HydroMind Nav v2 -->
-<nav class="hm-topnav" id="hmTopNav">
+<!-- Top Nav -->
+<nav class="hm-topnav">
   <a href="index.html" class="hm-topnav-logo">
     <div class="hm-topnav-icon">H</div>
     <div>
@@ -50,159 +69,205 @@ nav.navbar{display:none!important;}
     </div>
   </a>
   <div class="hm-topnav-links">
-    <a href="index.html" class="hm-topnav-a active" id="navKB">Home</a>
-    <a href="pages/advisor.html" class="hm-topnav-a" id="navAdvisor">AI Advisor</a>
-    <a href="crane-diagnostic.html" class="hm-topnav-a" id="navCrane" style="color:#22c55e;">&#9881; Crane Diag</a>
-    <a href="pages/system-design.html" class="hm-topnav-a" id="navSD">System Design</a>
-    <a href="pages/knowledge.html" class="hm-topnav-a" id="navKB">Knowledge Base</a>
-    <a href="pricing.html" class="hm-topnav-a" id="navPricing">Pricing</a>
-    <a href="pages/feedback.html" class="hm-topnav-a" id="navFeedback">Feedback</a>
+    <a href="index.html" class="hm-topnav-a">Home</a>
+    <a href="pages/advisor.html" class="hm-topnav-a">AI Advisor</a>
+    <a href="crane-diagnostic.html" class="hm-topnav-a" style="color:#22c55e;">&#9881; Crane Diag</a>
+    <a href="pages/system-design.html" class="hm-topnav-a">System Design</a>
+    <a href="knowledge.html" class="hm-topnav-a active">Knowledge Base</a>
+    <a href="pricing.html" class="hm-topnav-a">Pricing</a>
+    <a href="pages/feedback.html" class="hm-topnav-a">Feedback</a>
   </div>
   <div class="hm-topnav-cta">
-    <button class="hm-nav-ghost" onclick="typeof openAuthModal==='function'&&openAuthModal('login')" id="hmNavLogin">Login</button>
+    <button class="hm-nav-ghost" onclick="typeof openAuthModal==='function'&&openAuthModal('login')">Login</button>
     <button class="hm-nav-cta-btn" onclick="typeof openAuthModal==='function'&&openAuthModal('register')">Get Pro</button>
-    <div id="hmNavUser" style="display:none;align-items:center;gap:.5rem;background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.2);border-radius:7px;padding:4px 10px;cursor:pointer;" onclick="doLogout()">
-      <div id="hmNavAvatar" style="width:26px;height:26px;border-radius:50%;background:#f97316;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:.72rem;color:#fff;"></div>
-      <span id="hmNavName" style="font-size:.8rem;color:#e2e8f0;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
-      <span id="hmNavPlan" style="font-family:'Share Tech Mono',monospace;font-size:.6rem;padding:2px 7px;border-radius:100px;background:rgba(249,115,22,.12);color:#f97316;"></span>
-    </div>
   </div>
 </nav>
 
+<!-- Page Layout -->
+<div class="hm-page">
 
-<div class="page-layout">
-<div class="hm-left-sidebar" id="hmLeftSidebar">
-  <div class="hm-left-inner">
-    <div id="hmSidebarProfile" style="display:none;"><div class="hm-profile-card"><div class="hm-prof-av" id="hmProfAvatar">--</div><div class="hm-prof-name" id="hmProfName"></div><div class="hm-prof-email" id="hmProfEmail"></div><span class="hm-prof-plan" id="hmProfPlan">Free</span></div></div>
-    <div id="hmSidebarNoAuth">
-      <div style="margin-bottom:.75rem;"><div class="hm-sidebar-label">Quick Links</div>
-        <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
-        <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
-        
-        <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
-      </div>
-    </div>
-    <div id="hmSidebarHistory" style="display:none;margin-top:.75rem;"><div class="hm-sidebar-label">Chat History</div><div id="hmHistoryList"></div></div>
-    <div id="hmSidebarLinks" style="display:none;margin-top:.75rem;"><div class="hm-sidebar-label">Quick Links</div>
-      <div class="hm-hist-item" onclick="location.href='advisor.html'"><span class="hm-hist-icon">&#129302;</span><span class="hm-hist-text">AI Advisor</span></div>
-      <div class="hm-hist-item" onclick="location.href='knowledge.html'"><span class="hm-hist-icon">&#128218;</span><span class="hm-hist-text">Knowledge Base</span></div>
-      
-      <div class="hm-hist-item" onclick="location.href='pricing.html'"><span class="hm-hist-icon">&#128179;</span><span class="hm-hist-text">Upgrade Plan</span></div>
-    </div>
+<!-- Left Sidebar -->
+<div class="hm-left-sidebar">
+  <div class="hm-sidebar-label">Quick Links</div>
+  <div class="hm-hist-item" onclick="location.href='pages/advisor.html'">&#129302; AI Advisor</div>
+  <div class="hm-hist-item" onclick="location.href='knowledge.html'">&#128218; Knowledge Base</div>
+  <div class="hm-hist-item" onclick="location.href='crane-diagnostic.html'">&#9881; Crane Diagnostic</div>
+  <div class="hm-hist-item" onclick="location.href='pages/system-design.html'">&#128736; System Design</div>
+  <div class="hm-hist-item" onclick="location.href='pricing.html'">&#128179; Upgrade Plan</div>
+  <div style="margin-top:1rem;">
+    <div class="hm-sidebar-label">Filter by Category</div>
+    <div class="hm-hist-item" onclick="filterKB('all')">&#127968; All Documents</div>
+    <div class="hm-hist-item" onclick="filterKB('pump')">&#9881; Pumps</div>
+    <div class="hm-hist-item" onclick="filterKB('motor')">&#128260; Motors</div>
+    <div class="hm-hist-item" onclick="filterKB('valve')">&#128196; Valves</div>
+    <div class="hm-hist-item" onclick="filterKB('crane')">&#127959; Cranes</div>
+    <div class="hm-hist-item" onclick="filterKB('hpu')">&#128736; HPU</div>
+    <div class="hm-hist-item" onclick="filterKB('field')">&#128203; Field Cases</div>
+    <div class="hm-hist-item" onclick="filterKB('fluid')">&#128167; Fluid</div>
   </div>
-  <div class="hm-left-bottom"><button class="hm-logout-btn" id="hmLogoutBtn" onclick="doLogout()" style="display:none;">Sign Out</button></div>
 </div>
+
+<!-- Main Content -->
 <div class="hm-main-content">
-<section class="section" style="padding:5rem 0 3rem;background:var(--bg-dark);">
-  <div class="container"><div class="eyebrow">Knowledge Base</div><h1 class="section-title">Technical Document Library</h1><p class="section-subtitle">OEM manuals, field cases, hydraulic system documentation and troubleshooting guides — indexed and searchable via AI Advisor.</p></div>
-</section>
-<section class="section section-dark" style="padding:2rem 0;">
-  <div class="container">
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;">
-      <div class="card" style="text-align:center;padding:1.25rem;"><div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;color:#f97316;">8</div><div style="font-size:.8rem;color:var(--text3);">Documents</div></div>
-      <div class="card" style="text-align:center;padding:1.25rem;"><div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;color:#f97316;">6</div><div style="font-size:.8rem;color:var(--text3);">OEM Brands</div></div>
-      <div class="card" style="text-align:center;padding:1.25rem;"><div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;color:#f97316;">v2.4</div><div style="font-size:.8rem;color:var(--text3);">KB Version</div></div>
-      <div class="card" style="text-align:center;padding:1.25rem;"><div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;color:#f97316;">AI</div><div style="font-size:.8rem;color:var(--text3);">Powered Search</div></div>
+
+  <!-- Hero -->
+  <div class="section-hero">
+    <div class="eyebrow">Technical Library</div>
+    <h1 class="section-title">Hydraulic Systems Knowledge Base</h1>
+    <p class="section-sub">57 OEM technical documents covering offshore cranes, hydraulic pumps, motors, directional control valves, HPU design, and field cases. Built for hydraulic engineers and crane technicians operating in offshore and marine environments.</p>
+  </div>
+
+  <!-- Stats -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;">
+    <div class="stat-box"><div class="stat-num">57</div><div class="stat-lbl">KB Documents</div></div>
+    <div class="stat-box"><div class="stat-num">12+</div><div class="stat-lbl">OEM Brands</div></div>
+    <div class="stat-box"><div class="stat-num">v3.0</div><div class="stat-lbl">KB Version</div></div>
+    <div class="stat-box"><div class="stat-num">AI</div><div class="stat-lbl">Powered Search</div></div>
+  </div>
+
+  <!-- Filter buttons -->
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+    <button onclick="filterKB('all')" id="fAll" class="kb-filter-btn kb-filter-active">All</button>
+    <button onclick="filterKB('pump')" id="fPump" class="kb-filter-btn">Pumps</button>
+    <button onclick="filterKB('motor')" id="fMotor" class="kb-filter-btn">Motors</button>
+    <button onclick="filterKB('valve')" id="fValve" class="kb-filter-btn">Valves</button>
+    <button onclick="filterKB('crane')" id="fCrane" class="kb-filter-btn">Cranes</button>
+    <button onclick="filterKB('field')" id="fField" class="kb-filter-btn">Field Cases</button>
+    <button onclick="filterKB('fluid')" id="fFluid" class="kb-filter-btn">Fluid</button>
+    <button onclick="filterKB('hpu')" id="fHpu" class="kb-filter-btn">HPU</button>
+  </div>
+
+  <!-- KB Grid -->
+  <div id="kbGrid" style="display:flex;flex-direction:column;gap:1rem;"></div>
+
+  <!-- About Section -->
+  <div style="background:#1a1f28;border:1px solid #2a3040;border-radius:10px;padding:2rem;margin-top:2rem;">
+    <div class="eyebrow">About This Library</div>
+    <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;color:#e2e8f0;margin-bottom:.75rem;">What Is Covered in This Knowledge Base?</h2>
+    <p style="color:#94a3b8;font-size:.92rem;line-height:1.7;margin-bottom:1rem;">The HydroMind Knowledge Base is a curated collection of OEM technical data extracted from official manuals, service bulletins, and offshore field case reports. It covers the most widely used hydraulic components in offshore crane and industrial hydraulic systems, including variable displacement piston pumps, fixed displacement motors, directional control valves, proportional valve amplifier cards, HPU circuit design, and complete crane system architectures.</p>
+    <p style="color:#94a3b8;font-size:.92rem;line-height:1.7;margin-bottom:1rem;">Key areas include: Rexroth A4VG and A10VO closed-loop pump diagnostics, Danfoss Series 90 charge pressure fault analysis, Eaton/Vickers DCV spool clearance data, Parker and Bosch proportional valve control, Liebherr CBG 350 Litronic crane parameter settings, Favelle Favco field case root cause analysis, SeaTrax open-loop LS system troubleshooting, and NOV Active Heave Compensation system commissioning data.</p>
+    <p style="color:#94a3b8;font-size:.92rem;line-height:1.7;">All documents are indexed and searchable via the HydroMind AI Advisor, which provides structured diagnostic answers referencing the correct KB entry for the system under question.</p>
+    <div style="margin-top:1rem;">
+      <a href="pages/advisor.html" style="background:#f97316;color:#fff;padding:8px 20px;border-radius:6px;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.9rem;">Open AI Advisor &#8594;</a>
     </div>
   </div>
-</section>
-<section class="section section-dark" style="padding:1rem 0 0;">
-  <div class="container">
-    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;">
-      <button onclick="filterKB('all')" id="fAll" class="kb-filter-btn kb-filter-active">All</button>
-      <button onclick="filterKB('pump')" id="fPump" class="kb-filter-btn">Pumps</button>
-      <button onclick="filterKB('motor')" id="fMotor" class="kb-filter-btn">Motors</button>
-      <button onclick="filterKB('valve')" id="fValve" class="kb-filter-btn">Valves</button>
-      <button onclick="filterKB('crane')" id="fCrane" class="kb-filter-btn">Cranes</button>
-      <button onclick="filterKB('field')" id="fField" class="kb-filter-btn">Field Cases</button>
-      <button onclick="filterKB('fluid')" id="fFluid" class="kb-filter-btn">Fluid</button>
-      <button onclick="filterKB('hpu')" id="fHpu" class="kb-filter-btn">HPU</button>
-    </div>
+
+  <!-- Footer -->
+  <div class="hm-footer">
+    <p>&#169; 2026 HydroMind.AI — Built by engineers, for engineers. Abu Dhabi, UAE.</p>
+    <p style="margin-top:.3rem;"><a href="pages/privacy.html" style="color:#64748b;text-decoration:none;margin-right:1rem;">Privacy Policy</a><a href="pages/disclaimer.html" style="color:#64748b;text-decoration:none;">Disclaimer</a></p>
   </div>
-</section>
-<section class="section section-dark" style="padding-top:.5rem;">
-  <div class="container">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;"><div class="eyebrow">Built-in Documents</div></div>
-    <div id="kbGrid" style="display:flex;flex-direction:column;gap:1rem;"></div>
-  </div>
-</section>
-<section class="section section-dark" style="padding:2rem 0 3rem;">
-  <div class="container">
-    <div class="card" style="text-align:center;padding:2.5rem;">
-      <div class="eyebrow" style="margin-bottom:.75rem;">AI-Powered Search</div>
-      <h3 style="margin-bottom:.75rem;">Ask the AI Advisor</h3>
-      <p style="font-size:.9rem;color:var(--text2);margin-bottom:1rem;">Access the full Knowledge Base through the AI Advisor — ask any question and the AI searches KB automatically.</p>
-      <a href="advisor.html" class="btn-primary">Open AI Advisor</a>
-    </div>
-  </div>
-</section>
-<footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="hm-logo-wrap" style="margin-bottom:.85rem;"><div style="width:30px;height:30px;border-radius:7px;background:#f97316;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;color:#fff;font-size:15px;flex-shrink:0;">H</div><div style="margin-left:8px;"><div style="font-family:Syne,sans-serif;font-weight:800;font-size:.95rem;color:#e2e8f0;letter-spacing:.5px;line-height:1;">HYDROMIND<span style='color:#f97316;'>.AI</span></div><div style="font-family:'Share Tech Mono',monospace;font-size:.45rem;color:rgba(249,115,22,.5);letter-spacing:.18em;text-transform:uppercase;">Hydraulic Intelligence</div></div></div>
-        <p>Expert AI advisor for hydraulic systems and offshore & marine crane operations. Built by engineers, for engineers.</p>
-        <span class="badge-pill">&#128994; AI Online — KB v3.0</span>
-      </div>
-      <div class="footer-col"><h5>Platform</h5><div class="footer-links"><a href="advisor.html">AI Advisor</a><a href="system-design.html">System Design</a><a href="knowledge.html">Knowledge Base</a></div></div>
-      <div class="footer-col"><h5>Account</h5><div class="footer-links"><a href="pricing.html">Pricing &amp; Plans</a><a href="feedback.html">Feedback</a><a href="privacy.html">Privacy Policy</a><a href="disclaimer.html">Disclaimer</a></div></div>
-      <div class="footer-col"><h5>Contact</h5><div class="footer-links"><a href="mailto:support@hydromindai.com">support@hydromindai.com</a><a href="#">Abu Dhabi, UAE</a><a href="#">Response: 24hrs (Pro: 4hrs)</a></div></div>
-    </div>
-    <div class="footer-bottom"><span>&#169; 2026 HydroMind.AI — All rights reserved</span><div class="footer-bottom-links"><a href="privacy.html">Privacy</a><a href="disclaimer.html">Disclaimer</a></div></div>
-  </div>
-</footer>
-</div>
+
+</div><!-- end hm-main-content -->
+
+<!-- Right Sidebar (Ad) -->
 <div class="hm-right-sidebar" id="hmAdSidebar">
-  <div id="hmAdTitle" style="font-family:'JetBrains Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);padding-bottom:.5rem;border-bottom:1px solid var(--border);margin-bottom:.55rem;">Sponsored</div>
-  <div id="hmNoAdBadge" style="display:none;background:rgba(61,214,140,.06);border:1px solid rgba(61,214,140,.2);border-radius:8px;padding:.75rem;text-align:center;margin-bottom:.55rem;"><div style="font-size:1.2rem;">&#127881;</div><p style="font-size:.68rem;color:#3dd68c;margin:.25rem 0 0;line-height:1.4;">Ad-free<br>Pro/Enterprise</p></div>
-  <div style="background:rgba(249,115,22,.03);border:1px dashed rgba(249,115,22,.14);border-radius:6px;height:195px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;"><div style="font-size:1rem;opacity:.22;margin-bottom:4px;">&#128226;</div>Advertisement</div>
-  <div style="background:rgba(249,115,22,.04);border:1px solid rgba(249,115,22,.11);border-radius:6px;padding:.65rem .6rem;text-align:center;margin-bottom:.55rem;"><div style="font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Partner</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:#f97316;margin:.15rem 0 .2rem;">Your Brand</div><div style="font-size:.65rem;color:var(--text2);line-height:1.4;">Reach hydraulic engineers worldwide.</div></div>
-  <div style="margin-top:auto;padding-top:.55rem;border-top:1px solid var(--border);text-align:center;"><a href="pricing.html" style="font-family:'JetBrains Mono',monospace;font-size:.57rem;color:rgba(249,115,22,.4);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a></div>
+  <div style="font-family:'Share Tech Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:#64748b;padding-bottom:.5rem;border-bottom:1px solid #2a3040;margin-bottom:.55rem;">Sponsored</div>
+  <div style="background:rgba(249,115,22,.03);border:1px dashed rgba(249,115,22,.14);border-radius:6px;height:195px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#64748b;font-family:'Share Tech Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;">&#128226; Advertisement</div>
+  <div style="background:rgba(249,115,22,.04);border:1px solid rgba(249,115,22,.11);border-radius:6px;padding:.65rem;text-align:center;margin-bottom:.55rem;">
+    <div style="font-family:'Share Tech Mono',monospace;font-size:.56rem;color:#64748b;text-transform:uppercase;">Partner</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:#f97316;margin:.15rem 0 .2rem;">Your Brand</div>
+    <div style="font-size:.65rem;color:#94a3b8;line-height:1.4;">Reach hydraulic engineers worldwide.</div>
+  </div>
+  <div style="margin-top:auto;padding-top:.55rem;border-top:1px solid #2a3040;text-align:center;">
+    <a href="pricing.html" style="font-family:'Share Tech Mono',monospace;font-size:.57rem;color:rgba(249,115,22,.4);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a>
+  </div>
 </div>
-</div>
-<script src="../js/main.js"></script>
-<script src="../js/auth.js"></script>
+
+</div><!-- end hm-page -->
+
+<script src="js/auth.js"></script>
 <script>
 var KB_ENTRIES=[
-{num:"KB01",title:"Rexroth A4VG Series 40 — Variable Displacement Axial Piston Pump",desc:"Closed-loop pump reference: charge pressure specs, servo control, variable displacement diagnostics, fault isolation for A4VG028-180 variants.",cat:"pump",brand:"Bosch Rexroth",icon:"&#9881;"},
-{num:"KB02-03",title:"Rexroth A2FO / A7VO — Fixed & Variable Displacement Open Circuit Pumps",desc:"Open-circuit pump selection guide, pressure/flow sizing, shaft options, port identifications, commissioning procedure and case drain limits.",cat:"pump",brand:"Bosch Rexroth",icon:"&#9881;"},
-{num:"KB04",title:"Danfoss Series 90 — Closed-Loop Pump Full Reference",desc:"S90 pump/motor integration: charge circuit, servo pressure, EDC/HDC control, brake valve settings and fault diagnostic flow charts.",cat:"pump",brand:"Danfoss Power Solutions",icon:"&#9881;"},
-{num:"KB30",title:"Favelle Favco Field Case — Rig Al-Hail ADNOC Drilling Jan 2026",desc:"Offshore field case: hoist pump neutral pressure fault, brake band wear, motor shaft seal failure — root cause analysis and corrective actions.",cat:"field",brand:"Favelle Favco",icon:"&#128738;"},
-{num:"KB34",title:"Rexroth A10VO / A10VSO — Variable Displacement Open Circuit Pump",desc:"DR/DRG/EP control types, case drain limits (1 bar abs max), EP signal 350-1000 mA, filtration requirements, fault table and cross-reference.",cat:"pump",brand:"Bosch Rexroth",icon:"&#9881;"},
-{num:"KB35",title:"Danfoss Series 90 — Closed-Circuit Axial Piston Pump/Motor (75cc Frame)",desc:"EDC neutral 12 mA reference, charge pressure thresholds (min 17 bar), case drain rebuild limits per frame size, loop flushing valve fault guide.",cat:"pump",brand:"Danfoss Power Solutions",icon:"&#9881;"},
-{num:"KB36",title:"SeaTrax Marine Hydraulic Crane — Model 4228",desc:"Open-circuit LS system, pilot pressure 400-600 psi critical range, CBV luffing circuit settings, LMI fault guide and maintenance intervals.",cat:"crane",brand:"SeaTrax Inc.",icon:"&#127959;"},
-{num:"KB37",title:"NOV AHC Knuckle Boom Crane — T6047-Z-MA-001",desc:"Active heave compensation system, servo valve response requirements, accumulator N2 pre-charge data, ISO 16/14/11 cleanliness mandate.",cat:"crane",brand:"National Oilwell Varco",icon:"&#127959;"}
+{num:"KB01",title:"Rexroth A4VG Series 40 — Variable Displacement Axial Piston Pump",desc:"Closed-loop pump reference: charge pressure specs (min 18 bar), servo control, variable displacement diagnostics, fault isolation for A4VG028-180 variants. Covers EP/HD/DA control types, swash plate angle feedback, case drain temperature limits (max 80°C).",cat:"pump",brand:"Bosch Rexroth"},
+{num:"KB02-03",title:"Rexroth A2FO / A7VO — Fixed & Variable Displacement Open Circuit Pumps",desc:"Open-circuit pump selection guide: pressure/flow sizing for A2FO fixed and A7VO variable. Port identification, shaft options, case drain limit (1 bar abs), commissioning procedure, cross-reference table for crane hoist/slew/luffing applications.",cat:"pump",brand:"Bosch Rexroth"},
+{num:"KB04",title:"Danfoss Series 90 — Closed-Loop Axial Piston Pump Full Reference",desc:"S90 pump/motor integration: charge circuit (min 17 bar), servo pressure, EDC neutral (12 mA reference), HDC control, loop flushing valve, brake valve settings. Fault diagnostic flow charts for neutral drift, low charge pressure, and case drain overtemperature.",cat:"pump",brand:"Danfoss Power Solutions"},
+{num:"KB05",title:"Eaton / Vickers PVH / PVB Series — Variable Displacement Piston Pumps",desc:"PVH/PVB pump data: pressure compensator settings, load-sensing margin (20–35 bar), servo piston specs, spool clearance data for DCV, field fault guide for PVH74/98/131 variants used in offshore crane HPUs.",cat:"pump",brand:"Eaton Hydraulics"},
+{num:"KB06",title:"Parker Commercial / Gear Pump Series — Fixed Displacement Reference",desc:"Gear pump sizing guide: displacement vs RPM vs flow, volumetric efficiency curves, case drain connection requirements, shaft seal pressure limits, application notes for HPU charge/aux circuits.",cat:"pump",brand:"Parker Hannifin"},
+{num:"KB07",title:"Hydraulic Pump Fault Diagnosis — Universal Troubleshooting Protocol",desc:"OEM-agnostic pump fault matrix: low flow, no flow, overheating, noise (cavitation vs aeration), external leakage, case drain overtemperature. Step-by-step isolation procedure covering charge pressure, servo pressure, displacement control, and swash angle feedback.",cat:"pump",brand:"HydroMind Technical"},
+{num:"KB08",title:"Rexroth A6VM / A2FM — Axial Piston Motors (Fixed & Variable)",desc:"A6VM variable motor: HD/EP/HA control, min/max displacement stops, case drain limit (3 bar abs max), flushing valve, multi-function valve block. A2FM fixed motor: shaft seal types, speed limits, bearing load capacity. Common fault: case drain pressure buildup from worn shaft seal.",cat:"motor",brand:"Bosch Rexroth"},
+{num:"KB09",title:"Danfoss Series 90 — Axial Piston Motor Reference",desc:"S90 motor: fixed and variable (FV) types, charge pressure from loop, loop flushing valve settings, brake valve integration, minimum case drain line sizing. EDC motor control signal range. Used in Favelle Favco, ZPMC, and IHI crane hoist drives.",cat:"motor",brand:"Danfoss Power Solutions"},
+{num:"KB10",title:"Eaton Char-Lynn / Geroler Motors — Low Speed High Torque Reference",desc:"Geroler motor selection: torque vs displacement vs RPM, shaft options, parking brake integration (spring-applied, hydraulic release). Case drain requirements. Application: slew drive, winch low-speed, pipe tensioner. Common fault: starting torque loss from worn geroler set.",cat:"motor",brand:"Eaton Hydraulics"},
+{num:"KB11",title:"Directional Control Valves — Rexroth M4 / 4WE Series",desc:"Rexroth 4WE6/10/16/25: spool types (A/B/C/E/Y/M), solenoid coil data (12V/24V DC), pilot pressure requirements, manual override, sandwich valve options. Fault guide: spool sticking (contamination), solenoid burn (overvoltage), external leakage (worn O-ring on face seal).",cat:"valve",brand:"Bosch Rexroth"},
+{num:"KB12",title:"Proportional Directional Control Valves — Rexroth 4WRPH / 4WRKE",desc:"Proportional DCV for closed-loop crane control: 4WRPH/4WRKE spool data, hysteresis specs (<0.5%), null offset adjustment, integrated LVDT position feedback, amplifier card (VT-VSPA2) signal range (0–10V / ±10V / 4–20 mA). Common fault: null drift from temperature, LVDT cable fault.",cat:"valve",brand:"Bosch Rexroth"},
+{num:"KB13",title:"Counterbalance Valves — Rexroth / Sun Hydraulics Reference",desc:"CBV function in open-loop crane circuits: set pressure 110–130% of max load pressure, pilot ratio selection (3:1 to 12:1), thermal relief requirements, load-side check valve. Fault guide: meter-out chatter (ratio too high), load creep (set too low), port B pressure spike on rapid direction change.",cat:"valve",brand:"Rexroth / Sun Hydraulics"},
+{num:"KB14",title:"Eaton Vickers Directional Control Valves — DGMC / DPHI Series",desc:"Vickers DGMC/DPHI DCV: solenoid pilot data, spool position feedback options, cetop NG6/NG10 mounting, pressure rating (350 bar), flow rating (120–400 LPM). Proportional variants: DGMX2-3 with integrated amplifier. Common fault: pilot supply pressure loss, solenoid coil resistance check.",cat:"valve",brand:"Eaton Vickers"},
+{num:"KB15",title:"Parker D1VW / D3W Series — Directional Control Valves",desc:"Parker D1VW (NG6) and D3W (NG10): spool options, spring return vs double solenoid, tandem center options, subplate mounting (D03/D05), pressure rating. Application notes for crane auxiliary circuits, deck machinery, and tension winch DCVs. Fault: solenoid not shifting — check pilot pressure minimum 5 bar.",cat:"valve",brand:"Parker Hannifin"},
+{num:"KB16",title:"Hydraulic Proportional Amplifier Cards — Rexroth, Eaton, Sauer-Danfoss",desc:"Amplifier card setup guide: Rexroth VT-VSPA2/VT-MSPA1, Eaton Proportional Amplifier Series, Sauer-Danfoss PVEO/PVEH. Parameters: enable input, ramp times, dither frequency, null current, current limit, gain. Fault diagnosis: LED status codes, test signal injection, oscilloscope measurement of valve current waveform.",cat:"valve",brand:"Multi-OEM"},
+{num:"KB17",title:"HPU Design Reference — Offshore Crane Power Unit",desc:"HPU design guide for offshore crane applications: pump selection (closed vs open loop), reservoir sizing (3–5× flow LPM), filtration (βx≥200 at 10µm), heat exchanger sizing (20–30% power dissipation), pressure relief valve sizing, accumulator pre-charge, case drain manifold. ATEX considerations for Zone 1/2.",cat:"hpu",brand:"HydroMind Technical"},
+{num:"KB18",title:"Hydraulic Filtration — Pall, Parker, Hydac Reference",desc:"Filter element selection: beta ratio, micron rating, collapse pressure, ηc efficiency. Offshore standards: ISO 4406 cleanliness target 16/14/11 (servo systems) to 18/16/13 (general). High-pressure filter (HP), return line filter (RL), case drain filter (10µm nominal). Bypass indicator — check at 6-bar differential.",cat:"fluid",brand:"Pall / Parker / Hydac"},
+{num:"KB19",title:"Hydraulic Fluid Selection — VG32 / VG46 / VG68 Offshore Guide",desc:"Viscosity grade selection vs ambient temperature: VG32 (-20°C start), VG46 (general offshore, +10 to +50°C), VG68 (high-ambient/tropical). Fire-resistant fluid (HF-D, HFAS, HWBF) selection criteria for hot-work proximity. Fluid contamination analysis: particle count, water content (Karl Fischer), acid number, viscosity check.",cat:"fluid",brand:"HydroMind Technical"},
+{num:"KB20",title:"Pressure Relief Valves — Direct Acting & Pilot Operated",desc:"PRV selection guide: direct-acting (up to 50 LPM), pilot-operated (high flow, tight pressure override). Set pressure procedure, pressure override characteristic, thermal relief (1 LPM bypass minimum). Cartridge vs line-body types. Common fault: PRV chattering (spring fatigue), leakage to tank (contaminated seat), set pressure drift (poppet wear).",cat:"valve",brand:"HydroMind Technical"},
+{num:"KB21",title:"Rexroth VT-MSPA1 / VT-VSPA2 Amplifier Cards — Setup & Fault Guide",desc:"Step-by-step commissioning: DIP switch configuration, null adjustment (±200 mA range), ramp time setting (0–5s), enable pin wiring, 24V supply tolerances. Fault codes: LED blink patterns for enable fault, overcurrent, temperature shutdown. Replacement procedure: match card series to valve coil resistance (12–30 Ω).",cat:"valve",brand:"Bosch Rexroth"},
+{num:"KB22",title:"Hydraulic Accumulator — Bladder, Piston, Diaphragm Types",desc:"Accumulator sizing: N2 pre-charge (typically 60–90% of min operating pressure), gas law calculations, usable volume. Bladder accumulator inspection: rupture disc, gas valve, shell inspection interval. Application: emergency brake release, pulsation dampening, surge suppression. Fault: pre-charge loss (nitrogen leak) — check gas valve Schrader core.",cat:"hpu",brand:"HydroMind Technical"},
+{num:"KB23",title:"Offshore Crane Load Sensing Systems — LS Margin & Pump Control",desc:"Load-sensing system fundamentals: LS margin (Δp = 20–35 bar), pump standby pressure, LS signal routing through shuttle valves, NPC valve function, LS relief setting. Fault guide: pump hunting (LS margin too low), slow response (LS line leak), cavitation on startup (charge pressure fault).",cat:"crane",brand:"HydroMind Technical"},
+{num:"KB24",title:"Slew Drive Hydraulics — Open & Closed Loop Configurations",desc:"Slew system architecture: open-loop (DCV + Geroler motor + slew ring), closed-loop (variable piston motor + proportional control + electro-hydraulic brake). Slew brake circuit: spring-applied, hydraulic-release, set pressure 20–30 bar. Anti-jerk valve function. Common fault: slew overshoot (ramp time too fast), brake drag (residual pressure in brake line).",cat:"crane",brand:"HydroMind Technical"},
+{num:"KB25",title:"Hoist Winch Hydraulics — Motor, Gearbox, Brake Circuit Reference",desc:"Hoist system: closed-loop pump → variable motor → planetary gearbox → drum. Brake: spring-applied multi-disc, hydraulic release. Case drain circuit sizing (min 1% of max flow). Free-fall mode (where fitted): DCV shifts, motor bypasses, mechanical brake controls descent. Fault: brake slip (worn friction disc), motor case drain overtemperature.",cat:"crane",brand:"HydroMind Technical"},
+{num:"KB26",title:"Luffing / Boom Cylinder Hydraulics — CBV & Load Holding",desc:"Luffing circuit: fixed pump → DCV → dual counterbalance valves → cylinders OR variable pump closed-loop → proportional DCV → cylinders. CBV set at 110–130% of max load pressure (luffing down condition). Pilot ratio: 3:1 to 4.5:1 typical. Fault: cylinder drift (CBV seat leak), hard lowering (pilot ratio insufficient for full load).",cat:"crane",brand:"HydroMind Technical"},
+{num:"KB27",title:"PLC-Based Crane Control — Siemens S7 / Allen-Bradley Integration",desc:"PLC architecture for electronic joystick crane control: joystick signal (0–10V or 4–20mA) → PLC analog input → scaled output → proportional valve amplifier → valve current. Safety: dual-channel E-stop, watchdog timer, SIL2 considerations. Fault diagnosis: PLC I/O fault codes, analog signal loss (4–20mA wire break = 0mA detected), valve enable relay check.",cat:"crane",brand:"HydroMind Technical"},
+{num:"KB28",title:"Liebherr LMI / LICCON System — Load Moment Indicator Reference",desc:"Liebherr LICCON LMI system: boom angle sensor (potentiometer / resolver), radius calculation, SWL curve lookup, anti-2-block switch, hoist limit switch. Fault codes: F01 (angle sensor fault), F05 (overload — >100% SWL), F10 (2-block detected). Reset procedure. LiDAT remote diagnostics: parameter download, fault log extraction.",cat:"crane",brand:"Liebherr"},
+{num:"KB29",title:"Hydraulic Cylinder Sizing & Seal Reference — Offshore Applications",desc:"Cylinder sizing: bore vs rod diameter for push/pull force at system pressure, buckling check (Euler), cushion design. Seal types: NBR (mineral oil, -40 to +120°C), FKM (HF-D fluid), PTFE (low friction). Wiper seal selection for offshore (saltwater splash). Fault: rod seal leak (scoring), barrel distortion (side loading), end cap crack (shock load).",cat:"hpu",brand:"HydroMind Technical"},
+{num:"KB30",title:"Favelle Favco Field Case — Rig Al-Hail ADNOC Drilling Jan 2026",desc:"Live offshore field case: hoist pump neutral pressure fault — pump not returning to zero displacement at joystick neutral. Root cause: servo spool contamination causing partial displacement hold. Secondary finding: brake band wear beyond tolerance. Motor shaft seal failure identified. Corrective actions and parts list documented.",cat:"field",brand:"Favelle Favco"},
+{num:"KB31",title:"Hydraulic Hose & Fitting Reference — Parker / Gates / Manuli",desc:"Hose selection: WP rating, OD, bend radius, temperature range, end fitting types (JIC 37°, BSP, SAE O-ring face seal, ORFS). High-pressure spiral (SAE 100R12/R13) vs braided (SAE 100R2). Offshore: stainless steel end fittings for saltwater resistance. Assembly torque tables. Fault: hose burst (fatigue at fitting), fitting pullout (improper crimp).",cat:"fluid",brand:"Parker / Gates / Manuli"},
+{num:"KB32",title:"Hydraulic System Commissioning — Offshore Crane Pre-Op Checklist",desc:"Pre-commissioning: reservoir fill, charge circuit bleed, filter bypass check, relief valve bench-set verification, pump case drain priming. Function test sequence: brake release, slew, hoist low speed, hoist high speed, luffing. LMI calibration. Documentation: test report, fluid sample, pressure chart. Safety: accumulator discharge before any maintenance.",cat:"crane",brand:"HydroMind Technical"},
+{num:"KB33",title:"ROHNER Swivel / Rotary Union — Hydraulic Deck Crane Reference",desc:"Rohner multi-passage rotary union: passage pressure ratings, seal type (face seal, lip seal), fluid compatibility, speed limits (RPM). Maintenance: seal replacement interval, passage cross-leak test (pressure test each passage individually). Fault: cross-leakage between passages, external shaft seal leak, high torque (seal binding).",cat:"crane",brand:"Rohner AG"},
+{num:"KB34",title:"Rexroth A10VO / A10VSO — Variable Displacement Open Circuit Pump",desc:"A10VO/A10VSO: DR/DRG/EP control types. Case drain limit: 1 bar abs max. EP signal: 350–1000 mA. Filtration: 25µm high-pressure, 10µm return. Fault table: low output flow (EP signal fault or worn cylinder block), external leak (shaft seal / port plate), noise (cavitation — check suction line and charge pressure).",cat:"pump",brand:"Bosch Rexroth"},
+{num:"KB35",title:"Danfoss Series 90 — 75cc Frame Pump/Motor Detailed Reference",desc:"EDC neutral 12 mA reference, charge pressure thresholds (min 17 bar at max speed), case drain rebuild limits per frame size, loop flushing valve (thermostatic bypass at 50°C). Cross-reference: S90P055/075/100/130/180. Common fault: EDC null drift — adjust trim pot on EDC card after 500 operating hours.",cat:"pump",brand:"Danfoss Power Solutions"},
+{num:"KB36",title:"SeaTrax Marine Hydraulic Crane — Model 4228",desc:"Open-circuit LS system architecture: fixed displacement pump + LS DCV + counterbalance valves. Pilot pressure: 400–600 psi critical range — check pilot relief if crane functions are sluggish. CBV luffing circuit: 1.25× max load pressure setting. LMI fault guide, slew motor Geroler replacement procedure, maintenance interval table.",cat:"crane",brand:"SeaTrax Inc."},
+{num:"KB37",title:"NOV AHC Knuckle Boom Crane — T6047 Active Heave Compensation",desc:"Active heave compensation: closed-loop servo valve response < 100ms, accumulator N2 pre-charge 150 bar, heave sensor (MRU) signal to PLC, AHC enable/disable hydraulic locking. ISO 16/14/11 cleanliness mandatory for servo valve protection. Fault: AHC oscillation (gain too high), position drift (LVDT fault), accumulator pre-charge loss.",cat:"crane",brand:"National Oilwell Varco"},
+{num:"KB38",title:"Hydraulic Oil Cooler Sizing — Offshore Crane HPU",desc:"Heat load calculation: 20–30% of total input power rejected as heat. Cooler types: air-blast (fan-driven) vs sea-water shell-and-tube. Thermostat bypass valve: opens at 45–50°C, full flow at 60°C. Cooler sizing formula, fouling factor, salt water corrosion allowance. Fault: cooler bypass stuck open (oil overtemperature), tube fouling (reduced ΔT).",cat:"hpu",brand:"HydroMind Technical"},
+{num:"KB39",title:"Electrohydraulic Joystick — Hall Effect vs Potentiometer Types",desc:"Joystick signal types: 0–10V single-ended, ±10V bipolar, 4–20mA (12mA = center). Hall effect: non-contact, long life, suitable for offshore (no wiper wear). Potentiometer: lower cost, wiper wear failure mode. Fault diagnosis: stuck output (cable fault vs sensor fault), signal noise (shielding), offset drift (recalibrate or replace).",cat:"crane",brand:"HydroMind Technical"},
+{num:"KB40",title:"Rexroth / Sauer-Danfoss Hydraulic Joystick — RHINO / JS Series",desc:"Rexroth RHINO and Sauer-Danfoss JS joystick: signal output spec, mechanical detent, spring return force, IP67 rating, connector pinout (M12, Deutsch). Setup: null adjustment, span adjustment, deadband setting. Fault: joystick output stuck at one extreme (internal short), ramp not working (amplifier card ramp parameter check needed).",cat:"crane",brand:"Rexroth / Sauer-Danfoss"},
+{num:"KB41",title:"Hydraulic Brake Systems — Offshore Crane Hoist & Slew",desc:"Spring-applied hydraulic-release disc brakes: set pressure (20–30 bar release), friction disc material (sintered vs organic), wear limit measurement, spring pre-load check. Fail-safe logic: power loss → spring engages. Emergency brake: separate circuit, accumulator-backed. Fault: brake not releasing (low hydraulic pressure to brake), brake drag (residual pressure due to DCV spool leakage).",cat:"crane",brand:"HydroMind Technical"},
+{num:"KB42",title:"Eaton Series 74 / 78 — Variable Displacement Piston Pump",desc:"Eaton Series 74/78: pressure compensator (PC) and load-sensing (LS) control types. Compensator setting procedure: PC set 15–20 bar above max load pressure, LS margin 20–35 bar. Shaft seal replacement procedure. Application in offshore crane HPU with Char-Lynn slew motor. Fault: PC hunting (spring fatigue), LS signal loss (shuttle valve stuck).",cat:"pump",brand:"Eaton Hydraulics"},
+{num:"KB43",title:"Hydraulic System Noise & Vibration Diagnosis",desc:"Noise source identification: cavitation (suction restriction — high-pitched whine), aeration (air ingestion — low-frequency knock), mechanical (bearing/coupling — periodic impact). Diagnosis: suction vacuum measurement (max 0.5 bar vacuum), fluid sample for air bubbles, case drain temperature check. Common fixes: suction strainer bypass, case drain line reroute, coupling alignment.",cat:"hpu",brand:"HydroMind Technical"},
+{num:"KB44",title:"Hydraulic Cylinder Rod Seal — Replacement & Fault Guide",desc:"Seal kit selection: NBR vs FKM vs PTFE by fluid type and temperature. Replacement procedure: de-pressurize, retract rod fully, remove gland, replace wiper/rod seal/O-rings, reassemble with seal protector sleeve. Torque gland to spec. Common fault: seal extrusion (excessive back pressure behind rod seal), scoring from contaminated fluid, rod corrosion (offshore salt exposure).",cat:"hpu",brand:"HydroMind Technical"},
+{num:"KB45",title:"AmClyde Hydraulic Crane System — Ransome Series",desc:"AmClyde Ransome crane: closed-loop hoist (A4VG pump + A6VM motor), open-loop slew (Char-Lynn Geroler), luffing cylinder with dual CBVs. HPU: 132kW electric motor + S45 gear pump for charge. Pressure settings: hoist main 350 bar, slew relief 250 bar, charge 25 bar. Field fault: luffing cylinder drift — CBV seat contamination.",cat:"crane",brand:"AmClyde Engineering"},
+{num:"KB46",title:"Liebherr CBG 350 Litronic — Serial 165083 Full Parameter Set",desc:"Liebherr CBG 350 pedestal crane (SNo.165083): hoist closed-loop (A4VG130+A6VM107), slew open-loop (2×Geroler), luffing closed-loop (A4VG71+cylinder). LiDAT parameters: hoist max pressure 350 bar, hoist min pressure 30 bar, slew relief 220 bar, luffing up 280 bar, luffing down CBV 310 bar. LICCON LMI fault codes and reset procedure.",cat:"crane",brand:"Liebherr"},
+{num:"KB47",title:"Mitsubishi 30t Deck Crane — PALAU SNo.789",desc:"IHI/Mitsubishi 30t deck crane (PALAU SNo.789): open-loop system, DCV pilot pressure 400–600 psi, hoist motor (Hagglunds CB840), slew via Geroler + planetary gearbox, luffing cylinder dual CBV at 4200 psi. Fault history: pilot pressure loss causing all functions sluggish — pilot relief valve spring fatigue. Replacement: Rexroth DBDH10G1X/315 (cross-ref).",cat:"crane",brand:"Mitsubishi / IHI"},
+{num:"KB48",title:"Fukushima IHI Offshore Crane — HPU & Control System",desc:"IHI crane HPU reference: pump arrangement (tandem), control system (PLC + proportional valves), emergency hydraulic system. Covers pressure settings, flow circuits for hoist/slew/luffing, accumulator system for emergency lowering. Fault diagnosis approach for IHI-specific control architecture.",cat:"crane",brand:"IHI Corporation"},
+{num:"KB49",title:"IFPS Hydraulic Technician Certification — Study Reference",desc:"International Fluid Power Society (IFPS) Hydraulic Technician certification reference: circuit symbols (ISO 1219), component identification, pressure-flow-force relationships, pump efficiency (volumetric, mechanical, overall), motor torque calculation, cylinder force/speed formulas, filtration standards, safety codes. Study guide for HTT and HTS certification tracks.",cat:"hpu",brand:"IFPS"},
+{num:"KB50",title:"Parker Hannifin Hydraulic System Design — Engineering Reference",desc:"Parker system design guide: pump sizing (flow = displacement × RPM / 1000), pipe/hose velocity limits (pressure line 4–6 m/s, return 2–4 m/s, suction 0.5–1.5 m/s), pressure drop calculation (Hagen-Poiseuille), reservoir design (retention time min 3 min), heat exchanger sizing. Complete offshore HPU design worked example.",cat:"hpu",brand:"Parker Hannifin"},
+{num:"KB51",title:"Hydraulic Cleanliness & Contamination Control — Offshore Standard",desc:"ISO 4406 cleanliness code: particle count at 4µm, 6µm, 14µm. Target codes by system type: servo/proportional valve systems 16/14/11, general systems 18/16/13. Sampling procedure (inline vs offline), oil analysis parameters (particle count, water content ppm, acid number, viscosity), contamination sources (new oil, new hose, maintenance ingression). Flushing procedure to achieve target code.",cat:"fluid",brand:"HydroMind Technical"},
+{num:"KB52",title:"Bosch Rexroth Proportional Valve — 4WRPEH / 4WRPH Series",desc:"4WRPEH/4WRPH: spool type W (4-way symmetric), integrated LVDT position feedback, on-board electronics (OBE), CAN/analogue interface. Null adjustment: fine trim via OBE parameter, hysteresis <0.3%. Flow gain at P1 (typical: 200 LPM at 350 bar Δp). Fault: null drift (temp), LVDT failure (loss of feedback → valve defaults to fail-safe position).",cat:"valve",brand:"Bosch Rexroth"},
+{num:"KB53",title:"Crane Slewing Ring — Maintenance & Fault Reference",desc:"Slewing ring types: four-point contact ball bearing, cross-roller, three-row roller. Lubrication: grease quantity and interval (every 100 operating hours for offshore cranes), grease type (open gear grease, NLGI 1-2). Wear measurement: axial/radial play limits per OEM spec. Bolt torque check procedure. Fault: uneven wear (misalignment), corrosion (marine environment, failed grease seal).",cat:"crane",brand:"HydroMind Technical"},
+{num:"KB54",title:"Hydraulic Pump & Motor Shaft Seal — Replacement Guide",desc:"Shaft seal types: lip seal (NBR/FKM), rotary face seal (mechanical). Case drain pressure limit: 1 bar abs for lip seals. Replacement: de-pressurize, drain case, remove coupling/shaft key, extract old seal (puller), install new seal (driver tool, no metal contact on seal lip), prime case before startup. Fault: seal extrusion (case drain restriction), lip hardening (fluid incompatibility).",cat:"pump",brand:"HydroMind Technical"},
+{num:"KB55",title:"Sauer-Danfoss PLUS+1 Service Tool — Diagnostic Reference",desc:"Danfoss PLUS+1 service tool: parameter read/write via CAN bus (J1939), fault code extraction, EDC/HDC control calibration, displacement limiter adjustment. Connection: USB-CAN adapter to service port. Common parameters: min displacement (stop screw position in software), max pressure override, charge pressure alarm threshold. Export fault log as CSV for maintenance records.",cat:"pump",brand:"Danfoss Power Solutions"},
+{num:"KB56",title:"Favelle Favco MK50 — Closed Loop Hoist & Slew Architecture",desc:"Favelle Favco MK50: hoist drive — A4VG180 + A6VM200 + Hagglunds planetary gearbox. Slew drive — 2× A4VG71 + 2× A6VM107 + Brevini slew gearbox. HPU: 2× 200kW drives, common pressure header. Control: Siemens S7-300 PLC + Rexroth VT-MSPA1 amplifier cards. Pressure settings: hoist 380 bar, slew 280 bar. Fault: slew yaw oscillation — ramp time too aggressive on amplifier card.",cat:"crane",brand:"Favelle Favco"},
+{num:"KB57",title:"Parker Hannifin Flow, Check & Sandwich Valves — HY14-2533",desc:"Parker catalog HY14-2533: 2F1C pressure-compensated flow control (NG10/NG16, 280–350 bar), sandwich valves — ZRD throttle+check, ZRE pilot-operated check (load holding), ZRV direct check, ZDR pilot-operated pressure reducing, ZDV pilot-operated pressure relief, SPC pressure compensator. Selection guide for crane/winch speed control and load-holding applications.",cat:"valve",brand:"Parker Hannifin"}
 ];
+
+var CAT_ICONS={pump:"&#9881;",motor:"&#128260;",valve:"&#128196;",crane:"&#127959;",hpu:"&#128736;",field:"&#128203;",fluid:"&#128167;",technical:"&#128221;"};
 var CAT_LABELS={pump:"Pump Documentation",motor:"Motor Documentation",valve:"Valve / DCV",crane:"Crane Systems",hpu:"HPU / Circuit Design",field:"Offshore Field Case",electrical:"Electrical / PLC",fluid:"Fluid & Filtration",technical:"Technical"};
-function renderKB(){
+
+function renderKB(filter){
+  filter=filter||'all';
   var html="";
   KB_ENTRIES.forEach(function(e){
-    html+='<div class="card kb-card" data-cat="'+e.cat+'" style="padding:1.25rem 1.5rem;">';
-    html+='<div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;">';
-    html+='<span style="font-size:1.1rem;">'+e.icon+'</span>';
-    html+='<div style="font-family:\'Syne\',sans-serif;font-weight:700;font-size:1rem;color:var(--text1);">'+e.title+'</div>';
-    html+='<span style="font-family:\'Space Mono\',monospace;font-size:.62rem;color:#f97316;padding:2px 8px;border:1px solid rgba(249,115,22,.2);border-radius:100px;white-space:nowrap;margin-left:auto;">'+e.num+'</span>';
+    if(filter!=='all' && e.cat!==filter) return;
+    var icon=CAT_ICONS[e.cat]||"&#128221;";
+    html+='<article class="kb-card" data-cat="'+e.cat+'" itemscope itemtype="https://schema.org/TechArticle">';
+    html+='<div style="display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.5rem;">';
+    html+='<span style="font-size:1.1rem;flex-shrink:0;">'+icon+'</span>';
+    html+='<div class="kb-title" itemprop="name">'+e.title+'</div>';
+    html+='<span class="kb-num">'+e.num+'</span>';
     html+='</div>';
-    html+='<p style="font-size:.88rem;color:var(--text2);margin-bottom:.5rem;">'+e.desc+'</p>';
-    html+='<div style="font-family:\'Space Mono\',monospace;font-size:.68rem;color:var(--text3);">// '+(CAT_LABELS[e.cat]||e.cat)+' &middot; '+e.brand+'</div>';
-    html+='</div>';
+    html+='<p class="kb-desc" itemprop="abstract">'+e.desc+'</p>';
+    html+='<div class="kb-meta">// '+(CAT_LABELS[e.cat]||e.cat)+' &middot; <span itemprop="author">'+e.brand+'</span></div>';
+    html+='</article>';
   });
-  document.getElementById("kbGrid").innerHTML=html;
+  document.getElementById("kbGrid").innerHTML=html||'<p style="color:#64748b;text-align:center;padding:2rem;">No documents in this category.</p>';
 }
+
 function filterKB(cat){
   document.querySelectorAll(".kb-filter-btn").forEach(function(b){b.classList.remove("kb-filter-active");});
   var map={all:"fAll",pump:"fPump",motor:"fMotor",valve:"fValve",crane:"fCrane",field:"fField",fluid:"fFluid",hpu:"fHpu"};
   var btn=document.getElementById(map[cat]); if(btn) btn.classList.add("kb-filter-active");
-  document.querySelectorAll(".kb-card").forEach(function(c){
-    c.classList.toggle("kb-card-hidden", cat!=="all" && c.getAttribute("data-cat")!==cat);
-  });
+  renderKB(cat);
+  document.querySelectorAll(".hm-hist-item").forEach(function(i){i.style.color="";});
 }
-function checkAdmin(){
-  try{var s=JSON.parse(localStorage.getItem("hm_session")||"null");if(s&&(s.isAdmin||s.email==="arun25hyd@gmail.com"))return true;}catch(e){}
-  return false;
-}
-renderKB();
-document.addEventListener("DOMContentLoaded",function(){renderKB();});
+
+document.addEventListener("DOMContentLoaded",function(){renderKB('all');});
 </script>
 </body>
 </html>
