@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://hydromindai.com/sitemap.xml
+Sitemap: https://www.hydromindai.com/sitemap.xml
