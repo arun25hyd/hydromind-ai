@@ -3497,3 +3497,28 @@ Re = w × D / ν
 
 **Source:** Idelchik, I. E., Handbook of Hydraulic Resistance, 4th Ed., Begell House, 2007
 **KB entry date:** 2026-04-18 | **HydroMind SKILL.md v2.10**
+
+
+---
+
+## KB59 — Zappe: Valve Selection Handbook (4th Ed.)
+
+**Reference:** R. W. Zappe, Gulf Professional Publishing / Butterworth-Heinemann, 1998 | ISBN 0-88415-886-1
+**Scope:** Engineering fundamentals for manual valves, check valves, pressure relief valves, rupture discs — sealing, flow coefficients, cavitation, waterhammer, sizing
+**Use when:** Valve selection, Cv/Kv/ζ conversion, relief valve sizing, check valve selection, cavitation assessment
+
+---
+
+### 1. Valve Resistance & Flow Coefficients
+
+**Resistance Coefficient ζ (dimensionless):**
+ΔP = ζ × (ρv²/2) — valid for turbulent & laminar flow, Newtonian liquids, gas at Ma < 0.5
+
+**Flow Coefficient Cv (US):** Q(USgpm) = Cv × √(ΔP_psi / G)
+**Flow Coefficient Kv (SI mixed):** Q(m³/h) = Kv × √(ΔP_bar / G)
+**Flow Coefficient Av (coherent SI):** Q(m³/s) = Av × √(ΔP_Pa / ρ)
+
+**Interconversions:**
+- Cv = 1.156 × Kv
+- Kv = 0.865 × Cv
+- ζ = (d_mm / 31.62)⁴ / Kv² (approx, at pipe bore d_mm)
