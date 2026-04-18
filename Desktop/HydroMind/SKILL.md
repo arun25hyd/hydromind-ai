@@ -4767,3 +4767,167 @@ Where: evp = pump volumetric efficiency, evm = motor volumetric efficiency, Qp =
 
 **Source:** Cundiff, J.S., Fluid Power Circuits and Controls, CRC Press, 2002
 **KB entry date:** 2026-04-18 | **HydroMind SKILL.md v2.10**
+
+---
+
+## KB69 — Zappe: Valve Selection Handbook (4th Ed., Gulf/Elsevier, 1999)
+
+**Reference:** R.W. Zappe, Gulf Professional Publishing / Elsevier, 1999 | ISBN 0-88415-886-1
+**Scope:** Comprehensive valve engineering reference — flow coefficients, cavitation, waterhammer, manual valve types, check valve selection, pressure relief valve design/sizing, rupture discs
+**Use when:** Valve sizing, cavitation assessment, waterhammer analysis, check valve selection, pressure relief valve sizing, inlet/discharge pipe sizing for relief devices
+
+---
+
+### 1. Flow Coefficient Definitions & Interrelationships (Ch. 2)
+
+**Resistance coefficient ζ (zeta):**
+ΔP = ζ × (ρv²/2) = ζ × (ρu²/2)
+- Defines pressure loss due to valve in terms of velocity head
+- Valid for single-phase Newtonian liquids, turbulent and laminar flow
+
+**Flow coefficient Cv (US units):**
+Cv = Q(USgpm) × √(G/ΔP)
+Where: G = specific gravity, ΔP = pressure drop in psi
+- States flow in USgpm of water at 60°F at 1 psi differential
+
+**Flow coefficient Kv (SI mixed units):**
+Kv = Q(m³/h) × √(ρ/ΔP_bar)
+- States flow in m³/h at 1 bar differential
+
+**Interrelationship:**
+Cv = 1.156 × Kv | Kv = 0.865 × Cv
+
+**ζ ↔ Cv/Kv relationship:**
+ζ = (dinch/Cv)² × 891 = (dmm/Kv)² × 0.0272
+
+**Approximate ζ for fully open valves (fully turbulent flow):**
+
+| Valve Type | Typical ζ |
+|---|---|
+| Globe valve, standard (full bore) | 4–10 |
+| Gate valve, full bore | 0.1–0.2 |
+| Ball valve, full bore | 0.05–0.1 |
+| Butterfly valve | 0.5–1.5 (depends on disc thickness) |
+| Diaphragm valve, straight-through | 2–4 |
+| Lift check valve (as globe) | 4–10 |
+| Swing check valve | 1–2 |
+| Tilting-disc check valve | 0.5–1.5 |
+
+---
+
+### 2. Cavitation of Valves (Ch. 2)
+
+**Mechanism:** Liquid velocity increases through partially closed valve → static pressure drops → vapor bubbles form → collapse violently on surfaces → pitting damage
+
+**Cavitation index C (dimensionless):**
+C = (P1 − P_vapor) / (P1 − P2)
+Where: P1 = inlet pressure (3D upstream), P2 = outlet pressure (12D downstream), P_vapor = vapor pressure (negative relative to atmospheric)
+
+**Valve cavitation susceptibility order (most to least):**
+1. Butterfly valve — most prone at mid-opening
+2. Globe valve — moderate
+3. Gate valve — moderate
+4. Ball valve — least prone
+
+**Remedies for cavitation:**
+- Stage the pressure drop — use two valves in series
+- Inject compressed air immediately downstream of valve seat
+- Use sudden enlargement in flow passage downstream of seat — protects pipe walls
+- Select valve with higher cavitation index for the service
+
+---
+
+### 3. Waterhammer from Valve Operation (Ch. 2)
+
+**Joukowsky equation (instantaneous valve closure):**
+ΔP = a × v × ρ / B
+
+Where:
+- ΔP = pressure rise above normal
+- v = velocity of arrested flow (m/s or ft/s)
+- a = velocity of pressure wave propagation = √(K/ρ) × correction for pipe elasticity
+- ρ = fluid density
+- B = 1.0 (SI coherent) or 32.174 ft/s² (imperial fps)
+
+**For steel pipe D/e = 35, water flow:**
+- Wave velocity a ≈ 1200 m/s (≈4000 ft/s)
+- Pressure rise ≈ 13.5 bar per 1 m/s velocity change
+- Or ≈ 60 psi per 1 ft/s instantaneous velocity change
+
+**Critical closure time:**
+- If valve closes within 2L/a (round-trip wave time): full Joukowsky pressure rise
+- If valve closes in > 2L/a: returning pressure waves cancel outgoing waves — reduced surge
+
+**Countermeasures:**
+- Operate stop valves slowly (closure time > 2L/a)
+- Install surge vessel (gas-over-liquid or separated by flexible wall/relief valve)
+- Modify fluid acoustic properties (even small gas content dramatically reduces wave speed)
+
+---
+
+### 4. Check Valve Selection (Ch. 4)
+
+**Selection process — two steps:**
+1. Qualitatively assess required closing speed from system characteristics
+2. Select valve type with closing characteristics that match requirement
+
+**Closing characteristics by type (fastest to slowest):**
+
+| Type | Closing Speed | Best Application |
+|---|---|---|
+| Lift check (spring-loaded) | Very fast | Pulsating flow, compressors, high-speed systems |
+| Tilting-disc check | Fast | Pump discharge, water/process systems |
+| Swing check | Moderate | Low-velocity systems, horizontal mounting |
+| Diaphragm check | Moderate | Small sizes, clean fluids |
+
+**Key selection rules:**
+- **Lift check valves:** Must be mounted with closure member weight acting in closing direction — check orientation
+- **Swing check valves:** Horizontal installation preferred; vertical acceptable only if upward flow keeps disc open
+- **Tilting-disc check:** More expensive and harder to repair than swing check but better closing speed
+- **Dashpot-equipped check:** For systems where fast flow reversal causes surge — dashpot active only at last closing movement
+- **Compressor check valves:** Use lift check with minimum lift, low inertia, frictionless guide — handles pulsating flow
+
+---
+
+### 5. Pressure Relief Valve — Key Terminology (Ch. 5)
+
+| Term | Definition |
+|---|---|
+| Set pressure | Inlet pressure at which PRV commences to open in service |
+| Popping pressure | Pressure at which safety/relief valve pops open (gas/vapor) |
+| Overpressure | Pressure increase over set pressure (% of set) |
+| Accumulation | Pressure increase over MAWP |
+| Relieving pressure | Set pressure + overpressure |
+| Blowdown | Pressure drop below set pressure before valve reseats |
+| Built-up back pressure | Back pressure at valve outlet due to flow through discharge piping |
+| Superimposed back pressure | Static back pressure present before valve opens |
+| Balanced bellows valve | Compensates for back pressure effects on set point |
+| Conventional SRV | Back pressure DOES affect set point and capacity |
+| Cold differential test pressure | Pressure to which valve is set on test bench (adjusted for back pressure/temperature in service) |
+
+**Types of PRV:**
+- **Safety valve:** Direct-loaded, mainly gas/vapor/steam service — pops open
+- **Relief valve:** Direct-loaded, mainly liquid service — modulates open
+- **Safety relief valve:** Can handle either gas or liquid
+- **Pilot-operated PRV:** Main valve controlled by pilot — tight shutoff, accurate set, handles high back pressure
+
+---
+
+### 6. Pressure Relief Valve — Inlet and Discharge Piping Rules (Ch. 7)
+
+**Inlet piping — 3% rule:**
+Non-recoverable pressure loss in inlet piping must NOT exceed **3% of set pressure**
+- Industry practice: commonly neglect capacity loss from 3% inlet loss when sizing
+- Exceeding 3% causes unstable valve operation (chatter/cycling)
+- Minimum blowdown must not be lower than 5% — consult manufacturer
+
+**Discharge piping — back pressure limits:**
+- **Conventional PRV:** Built-up back pressure affects capacity — keep below 10% of set pressure for minimal correction
+- **Balanced bellows PRV:** Use Kw correction factor from API RP 520 charts for back pressure up to 50%
+- Sizing procedure: Calculate resistance coefficient of proposed discharge pipe → find permissible back pressure → verify against manufacturer's limit
+
+**Viscosity correction (Kv factor):**
+Use iterative procedure: size for non-viscous flow first → determine Reynolds number at calculated area → find Kv from API RP 520 Figure 7-7 → apply Kv to area → repeat if necessary
+
+**Source:** Zappe, R.W., Valve Selection Handbook, 4th Ed., Gulf Professional Publishing, 1999
+**KB entry date:** 2026-04-18 | **HydroMind SKILL.md v2.10**
