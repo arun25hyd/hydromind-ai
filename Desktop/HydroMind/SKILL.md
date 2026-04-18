@@ -4622,3 +4622,148 @@ Every hydraulic fault maps to one of three fundamental problems:
 
 **Source:** Bloch, H.P., Improving Machinery Reliability, 3rd Ed., Gulf Professional Publishing, 1998
 **KB entry date:** 2026-04-18 | **HydroMind SKILL.md v2.10**
+
+---
+
+## KB68 — Cundiff: Fluid Power Circuits and Controls (CRC Press, 2002)
+
+**Reference:** John S. Cundiff, CRC Press, 2002 | ISBN 0-8493-0924-7
+**Scope:** University-level fluid power textbook — pressure/flow/direction control, pump/motor/cylinder analysis, hydrostatic transmissions, contamination control, filter beta ratings, servo and proportional valves, heat generation
+**Use when:** Circuit design analysis, ISO cleanliness code selection, filter sizing, charge pump sizing, hydrostatic transmission design, proportional/servo valve understanding
+
+---
+
+### 1. ISO Cleanliness Code — Target Cleanliness Chart (Vickers, Table 8.3)
+
+**Format:** XX/YY/ZZ = particles >4µm / >6µm / >14µm per milliliter (ISO 4406:1999)
+
+| Component | <2000 psi | 2000–3000 psi | >3000 psi |
+|---|---|---|---|
+| Gear pump | 20/18/15 | 19/17/15 | — |
+| Fixed vane pump | 20/18/15 | 19/17/14 | 18/16/13 |
+| Fixed piston pump | 19/17/15 | 18/16/14 | 17/15/13 |
+| Variable vane pump | 18/16/14 | 17/15/13 | — |
+| Variable piston pump | 18/16/14 | 17/15/13 | 16/14/12 |
+| Solenoid DCV | 20/18/15 | 19/17/14 | — |
+| Pressure control (modulating) | 19/17/14 | 19/17/14 | — |
+| Proportional valve (directional) | 17/15/12 | 16/14/11* | — |
+| Servo valve | 16/14/11* | 15/13/10* | — |
+| Cylinders | 20/18/15 | 20/18/15 | 20/18/15 |
+| Gear motors | 21/19/17 | 20/18/15 | 19/17/14 |
+| Axial piston motors | 19/17/14 | 18/16/13 | 17/15/12 |
+
+*Requires precise sampling practices to verify
+
+**For closed-circuit hydrostatic transmissions (in-loop fluid):**
+- <2000 psi: 17/15/13
+- 2000–3000 psi: 16/14/12
+- >3000 psi: 16/14/11*
+
+**Rules for adjusting target:**
+- Non-petroleum fluid (water glycol etc.): set one code CLEANER for each digit
+- Two or more of these conditions → set one additional level cleaner: cold starts <0°F, intermittent ops >160°F, high shock loads, critical production dependence, operator safety risk
+
+---
+
+### 2. Filter Beta Ratio — Efficiency Reference (ISO 4572)
+
+Beta ratio = upstream particle count / downstream particle count for particles >Xµm
+
+| Beta Ratio | Removal Efficiency |
+|---|---|
+| β = 2 | 50% |
+| β = 5 | 80% |
+| β = 10 | 90% |
+| β = 20 | 95% |
+| β = 75 | 98.7% |
+| β = 100 | 99% |
+| β = 200 | 99.5% |
+| β = 1000 | 99.9% |
+
+**Notation:** B10 = 100 means 99% of particles >10µm removed. B5 = 20 means 95% of particles >5µm removed.
+
+**Filter placement rules:**
+- **Pressure line filter** (protects all downstream components): Required for circuits >2250 psi, all variable pump circuits >1500 psi, all servo and proportional valve circuits
+- **Return line filter** (main system cleanup): Must see ≥20% of system flow per minute — size for 2× pump flow if cylinder has 2:1 area ratio (retraction flow spike)
+- **Off-line filter** (continuous cleanup): Needed when pump is in compensation mode for long periods; combine with cooler
+- **Non-bypass component isolation filter**: Directly upstream of servo/proportional valves — finer than return filter only for protection, not main cleanup
+
+**Never use return-line filter on case drain line** — case drain must go directly to reservoir without restriction.
+
+---
+
+### 3. Contamination Effects by Component
+
+**Gear pumps:** Large clearances — only particles >10µm significantly damaging. Temperature control critical (high temp → viscosity drop → gear leakage)
+
+**Vane pumps:** Four critical wear zones — vane tip to cam ring, vane to vane slot, side plate to rotor. Require cleaner fluid than gear pumps.
+
+**Axial piston pumps:** Three critical zones — shoe to swashplate, piston to cylinder block, cylinder block to valve plate. Most contamination-sensitive of common pump types.
+
+**Spool DCVs:** Bore-to-spool clearance 4–13µm (min 2.5µm in practice). Single large particle can bridge clearance and stick valve. Silting: small particles forced into clearances under pressure — causes intermittent sticking. Prevention: periodic cycling of infrequently-used valves. Poppet valves less prone to silting.
+
+**Relief valves:** High-velocity fluid at cracking point erodes spool and seat — contamination accelerates relief valve wear.
+
+---
+
+### 4. Closed-Circuit Hydrostatic Transmission — Charge Pump Sizing
+
+**Charge pump purpose (dual function):**
+1. Replaces fluid that leaks past pistons into pump/motor housing (essential for lubrication and sealing)
+2. Provides cooling flow through pump and motor housings
+
+**Charge pump required flow calculation:**
+Q_charge = (1 − evp × evm) × Qp
+
+Where: evp = pump volumetric efficiency, evm = motor volumetric efficiency, Qp = theoretical main pump flow
+
+**Typical axial piston values: evp = evm = 0.9**
+→ Q_charge = (1 − 0.81) × Qp = **0.19 × Qp** (minimum — 19% of main pump flow)
+→ May need 2× this for adequate cooling flow on larger transmissions
+
+**Multipurpose valve (built into pump housing) incorporates:**
+1. High-pressure cross-port relief (shaves dynamic pressure peaks — motor stops when reached)
+2. Check valves (maintains loop charge on both sides — needed for reversibility)
+3. Bypass valve (allows free-wheel for towing)
+4. Pressure limiter (destrokes pump at excessive pressure — prevents damage when stalled)
+
+**Cross-port relief key rule:** Designed to pass flow only momentarily for dynamic peak shaving. Sustained flow at high ΔP generates heat rapidly — will overheat and damage transmission. Design vehicle system to achieve wheel slip before crossover relief opens.
+
+**Shuttle valve at motor end (larger transmissions):** Directs LP side fluid to charge relief at motor end — provides dedicated cooling flow at motor housing. Required when motor is physically separated from pump.
+
+---
+
+### 5. Counterbalance Valve — Setting Rules
+
+**CBV setting rule from Cundiff problem analysis:**
+- Set at minimum 10% higher than maximum induced load pressure
+- Installed DIRECTLY on cylinder port (no hose between port and valve) — eliminates hose burst load-drop risk
+- For dual cylinders: install individual CBV on each cylinder
+
+**Working principle:** When retract pressure is applied at rod end, pilot pressure via external pilot line opens CBV. Load lowers in controlled manner. If hose at cap end fails → CBV holds — load stays up.
+
+**Heat generated by CBV during lowering:**
+- CBV converts hydraulic energy to heat: Q_heat = ΔP × flow rate
+- 40% typically absorbed by oil passing through valve
+- 20% conducted to cylinder body
+- 30% convected/radiated to atmosphere
+- Valve body temperature rise = (heat retained) / (mass × specific heat)
+
+---
+
+### 6. Proportional and Servo Valve — Key Differences
+
+| Feature | Proportional Valve | Servo Valve |
+|---|---|---|
+| Spool control | Force-controlled (solenoid proportional to current) or stroke-controlled (position feedback on spool) | Torque motor + hydraulic amplifier (flapper-nozzle or jet pipe) |
+| Cleanliness requirement | 16/14/11 | 15/13/10 (strictest in system) |
+| Hysteresis | Higher (2–5%) | Lower (<1%) |
+| Threshold | Higher | Lower |
+| Response | Good (10–100 Hz) | Excellent (up to 300+ Hz) |
+| Filtration | Non-bypass pressure filter required | Non-bypass pressure filter required — finer rating |
+| Typical application | Mobile machine speed control, proportional flow | Position servo systems, force control, closed-loop |
+
+**Dither:** Small high-frequency oscillating signal added to command — breaks static friction (stiction) in proportional valve spool. Reduces hysteresis and deadband effectively.
+
+**Source:** Cundiff, J.S., Fluid Power Circuits and Controls, CRC Press, 2002
+**KB entry date:** 2026-04-18 | **HydroMind SKILL.md v2.10**
