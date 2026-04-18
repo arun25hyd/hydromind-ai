@@ -3522,3 +3522,170 @@ Re = w × D / ν
 - Cv = 1.156 × Kv
 - Kv = 0.865 × Cv
 - ζ = (d_mm / 31.62)⁴ / Kv² (approx, at pipe bore d_mm)
+
+
+---
+
+## KB60 — Hehn: Fluid Power Troubleshooting (Marcel Dekker, 1984)
+
+**Reference:** Anton H. Hehn, Marcel Dekker Inc., 1984 | ISBN 0-8247-7048-X | 14 chapters, 522 pages
+**Scope:** Systematic hydraulic & pneumatic system troubleshooting — pumps, motors, valves, cylinders, accumulators, filters, seals, hydrostatic transmissions, servo/proportional valves
+**Use when:** Diagnosing hydraulic system faults using symptom → cause → remedy methodology
+
+---
+
+### 1. Four Senses Troubleshooting Framework (Ch. 12)
+
+Before reaching for instruments, use the four natural diagnostic tools:
+
+**SIGHT:** Oil milky = air/water contamination | Low reservoir level = leak | Wet hoses/fittings = external leak | Gauge reading off = pressure fault
+**HEARING:** Shotlike bang = water hammer (pressure surge 4× normal) | Continuous noise = cavitation, air ingestion, misalignment, wear | Chattering relief valve = contamination or wrong setting
+**TOUCH:** Hot return line from relief valve = running at relief continuously | Hot section = internal bypass / leak | Cold section compared to others = restricted flow | Vibrating pipe = cavitation or resonance
+**SMELL:** Burnt oil smell = overheating (>80°C) — check cooler, relief setting, viscosity
+
+**Excessive heat = trouble. Excessive noise = trouble. Both together = urgent fault.**
+
+---
+
+### 2. Pump Troubleshooting Chart (Ch. 2.3.2)
+
+| Problem | Causes | Solution |
+|---|---|---|
+| Insufficient system pressure | Relief valve set too low | Adjust relief to minimum required |
+| | Oil bypassing to reservoir | Check open-centre valves, open circuits |
+| | Pump speed too low | Check minimum speed spec |
+| | Defective pressure gauge / plugged gauge orifice | Install known-good gauge |
+| | Vane stuck in rotor slot | Dismantle, check for chips or sticky oil |
+| Excessive pump noise | Coupling misalignment | Align to within 0.005 in TIR |
+| | Oil level low | Fill reservoir — suction line must be submerged |
+| | Air leak — suction line, shaft seal, case drain line | Pour oil/grease around joints while listening for change in sound |
+| | Wrong rotation direction | Check arrow on pump housing |
+| | Restricted suction | Check full bore throughout, no rags, no blocked strainer |
+| | Case drain not below oil surface | Extend drain line to terminate below oil level |
+| | Restricted filter/strainer | Clean or replace element |
+| | Air bubbles from return lines | Return lines must end below oil surface, opposite side of baffle |
+| System overheating | Pump at relief continuously | Check for mechanical binding; set relief 25% above compensator |
+| | Pump slippage too high | Inspect pumping element — worn/damaged |
+| | Cooling inadequate | Check cooler condition, cooler control valve, oil viscosity |
+| | High ambient temperature | Relocate unit or baffle against heat source |
+
+---
+
+### 3. System-Level Troubleshooting Guide (Ch. 11.7)
+
+**System Inoperative:**
+1. No oil / low oil → Fill to full mark, check for leaks
+2. Wrong viscosity oil → Use spec-grade fluid
+3. Dirty/plugged filter → Replace filter, find contamination source
+4. Restriction in lines → Clean or replace collapsed/dirty lines, clean orifices
+5. Air leak in suction → Repair suction line
+6. Badly worn pump → Replace; check misalignment or contaminated oil as root cause
+7. Worn components → Test valves/motors/cylinders for internal leaks
+
+**System Operates Erratically:**
+1. Air in system → Check suction side for leaks, verify oil level
+2. Cold oil at startup → Allow warm-up before loading
+3. Components sticking → Dirt or gummy deposits — find contamination source
+4. Pump damaged → Check broken/worn parts
+5. Dirt in relief valves → Clean relief valves
+
+**System Operates Slowly:**
+1. Cold oil / wrong viscosity → Warm up; use correct grade
+2. Insufficient prime mover speed → Check governor or engine speed
+3. Low oil supply → Check reservoir level, check for leaks
+4. Adjustable orifice restricted → Back off and set per specs
+5. Worn pump → Replace; check alignment and oil cleanliness
+6. Relief valve not set correctly or leaking through seat → Test and reset
+7. Badly worn components → Inspect for internal bypass
+
+**Rule:** The correct operating pressure is the LOWEST pressure that gives adequate performance while staying below component maximum ratings.
+
+---
+
+### 4. Three Maintenance Rules (Ch. 11.5)
+
+The three actions with greatest impact on hydraulic system life:
+1. Maintain clean hydraulic fluid of correct type and viscosity
+2. Change filters and clean strainers on schedule
+3. Keep all connections tight (airtight on suction side) to exclude air
+
+**Oil change intervals:**
+- First oil change: 50–100 hr after initial startup
+- Small systems: every 5,000 hr
+- Large systems: every 10,000 hr maximum
+- Suction filter: check every 2–3 hr during startup, then weekly minimum
+
+**Contamination root causes (Ch. 4):**
+- Built-in at assembly (swarf, scale, sealant)
+- Generated in service (wear particles, cavitation erosion)
+- Ingested through seals, breather, fill point
+- Introduced during maintenance (dirty rags, open systems)
+
+**Dirt effects on components:**
+- Pumps: erodes wear plates, sticks vanes, wears cam ring
+- Valves: sticks spools, erodes seats, blocks orifices
+- Motors: increases bearing wear, shaft journal wear
+- Cylinders: scores bore, damages piston seals
+
+---
+
+### 5. Hydrostatic Transmission Troubleshooting (Ch. 6)
+
+**Startup procedure:**
+1. Set variable displacement unit at half stroke for initial priming
+2. Jog motor on/off repeatedly before running to full speed
+3. Bleed pressure lines until flow is free of air bubbles
+4. Set relief valves at minimum initially, increase gradually
+
+**Common faults:**
+| Fault | Cause |
+|---|---|
+| No drive / low speed | Charge pressure low — check charge pump, charge relief |
+| Drive in one direction only | Servo control fault or crossport relief set too low |
+| Overheating | Loop flushing valve not operating, hot oil shuttle blocked |
+| Shaft seal leaking | Excessive case pressure — check case drain restriction |
+
+---
+
+### 6. Proportional & Servo Valve Troubleshooting (Ch. 14)
+
+**Key parameters to record when system is working correctly:**
+- Signal levels (mA) at each operating point
+- Feedback levels
+- Dither frequency and amplitude settings
+- Gain settings
+Mark all on hydraulic schematic for future reference.
+
+**Installation rules:**
+- Flush system to servo cleanliness (ISO 4406: 16/14/11 minimum) before installing servo valve
+- Check valve orientation (flow arrow direction)
+- Zero offset adjustment before pressurising
+- Never apply full signal on first startup — ramp from zero
+
+**Spool lap condition matters:**
+- Underlap → leakage in neutral, poor position holding
+- Overlap → deadband, sluggish response near null
+- Correct lap → defined by manufacturer — not field-adjustable
+
+**Common servo/proportional faults:**
+| Fault | Probable Cause |
+|---|---|
+| No response to command | No enable signal, no pilot pressure, contaminated filter |
+| Drift / position creep | Spool underlap, worn spool, thermal zero shift |
+| Oscillation / instability | Gain too high, air in actuator circuit, load stiffness change |
+| Slow response | Low pilot pressure, contamination in pilot stage, wrong dither |
+| Valve chatters | Contamination on spool, incorrect dither frequency |
+
+---
+
+### 7. KB60 Quick Reference — Contamination ISO Targets
+
+| System Type | ISO 4406 Target |
+|---|---|
+| General hydraulic (gear/vane) | 18/16/13 |
+| Piston pump, proportional valves | 17/15/12 |
+| Servo valves | 16/14/11 |
+| High-pressure (>350 bar) systems | 16/14/11 |
+
+**Source:** Hehn, A. H., Fluid Power Troubleshooting, Marcel Dekker, 1984
+**KB entry date:** 2026-04-18 | **HydroMind SKILL.md v2.10**
