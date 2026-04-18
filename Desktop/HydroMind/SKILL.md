@@ -4195,3 +4195,293 @@ For impeller diameter change (D₁ → D₂):
 
 **Source:** Mobley, R.K., Root Cause Failure Analysis, Newnes, 1999
 **KB entry date:** 2026-04-18 | **HydroMind SKILL.md v2.10**
+
+
+---
+
+## KB65 — Vickers: Hydraulic Hints & Trouble Shooting Guide (Eaton/Vickers, Rev. 8/96)
+
+**Reference:** Vickers General Product Support, Eaton Corporation, Publication 694, Revised 8/96
+**Scope:** Practical hydraulic system troubleshooting — 5-symptom cause/remedy charts, contamination control, aeration, leakage, fluid/viscosity recommendations, oil flow velocity tables, pipe pressure ratings, hydraulic formulas
+**Use when:** Field troubleshooting any hydraulic system symptom — noise, heat, flow, pressure, faulty operation
+
+---
+
+### 1. Five-Symptom Troubleshooting Charts
+
+**CHART 1 — EXCESSIVE NOISE**
+
+| Component | Cause (priority order) | Remedy |
+|---|---|---|
+| Pump noisy | 1. Cavitation | Replace filters, clean inlet, check breather, check fluid temp, check speed |
+| | 2. Air in fluid | Tighten inlet connections, fill reservoir, bleed air, replace shaft seal |
+| | 3. Coupling misaligned | Align — check seals and bearings |
+| | 4. Pump worn/damaged | Overhaul or replace |
+| Motor noisy | 1. Coupling misaligned | Align — check seals and bearings |
+| | 2. Motor/coupling worn | Overhaul or replace |
+| Relief valve noisy | 1. Setting too low / too close to another valve | Install pressure gauge, adjust — keep ≥125 psi between valve settings |
+| | 2. Worn poppet and seat | Overhaul or replace |
+
+**CHART 2 — EXCESSIVE HEAT**
+
+| Component | Cause | Remedy |
+|---|---|---|
+| Pump heated | 1. Cavitation | See Chart 1 remedy a |
+| | 2. Air in fluid | See Chart 1 remedy b |
+| | 3. Relief/unloading valve set too high | Adjust pressure — keep ≥125 psi between settings |
+| | 4. Excessive load | Align unit, check mechanical binding, check load vs circuit design |
+| | 5. Excessive load | Same |
+| | 6. Worn/damaged pump | Overhaul or replace |
+| Fluid heated | 1. System pressure too high | Adjust to minimum required |
+| | 2. Unloading valve set too high | Adjust |
+| | 3. Fluid dirty or low supply | Change filters + fluid, fill reservoir |
+| | 4. Incorrect fluid viscosity | Change filters + fluid |
+| | 5. Faulty fluid cooling | Clean cooler/strainer, replace cooler control valve |
+
+---
+
+**CHART 3 — INCORRECT FLOW**
+
+| Symptom | Cause (priority order) | Remedy |
+|---|---|---|
+| No flow | 1. Pump not receiving fluid | Clean filters, inlet, breather; fill reservoir |
+| | 2. Pump drive motor not operating | Check electrical/mechanical drive |
+| | 3. Coupling sheared | Check/replace coupling |
+| | 4. Wrong rotation | Reverse motor rotation |
+| Low flow | 1. Relief/unloading valve set too low | Adjust |
+| | 2. Yoke actuating device inoperative (variable pump) | Overhaul or replace |
+| | 3. Flow bypassing through partially open valve | Check/overhaul valve |
+| | 4. External leak | Tighten connections |
+| | 5. Wrong RPM | Replace with correct unit |
+| | 6. Entire flow passing over relief valve | Adjust relief valve |
+| | 7. Worn pump/valve/motor/cylinder | Overhaul or replace |
+| Excessive flow | 1. Flow control set too high | Adjust |
+
+**CHART 4 — INCORRECT PRESSURE**
+
+| Symptom | Cause | Remedy |
+|---|---|---|
+| No pressure | 1. No flow — see Chart 3 | — |
+| | 2. Pressure relief path exists | See Chart 3 |
+| Low pressure | 1. Pressure reducing valve set too low | Adjust |
+| | 2. Worn relief valve | Overhaul or replace |
+| | 3. Damaged pump/motor/cylinder | Overhaul or replace |
+| | 4. Air in fluid | Tighten connections, fill reservoir, bleed |
+| Erratic pressure | 1. Contamination in fluid | Replace filters + fluid |
+| | 2. Pressure reducing/relief/unloading valve misadjusted | Adjust |
+| | 3. Accumulator defective or lost charge | Check/recharge |
+| | 4. Worn pump/motor/cylinder | Overhaul or replace |
+| Excessive pressure | 1. Pressure reducing/relief/unloading valve misadjusted | Adjust |
+
+**CHART 5 — FAULTY OPERATION**
+
+| Symptom | Cause | Remedy |
+|---|---|---|
+| No movement | 1. No flow/pressure — see Charts 3 & 4 | — |
+| | 2. Limit/sequence device inoperative or misadjusted | Overhaul or replace |
+| | 3. Mechanical bind | Locate and repair |
+| Slow movement | 1. Fluid viscosity too high | Change to correct viscosity fluid |
+| | 2. Limit/sequence device misadjusted | Adjust/replace |
+| | 3. No lubrication of ways/linkage | Lubricate |
+| | 4. Servo amplifier misadjusted | Adjust/repair/replace |
+| Erratic movement | 1. Air in fluid — see Chart 1 | — |
+| | 2. Erratic pressure — see Chart 4 | — |
+| | 3. Feedback transducer malfunctioning | Overhaul or replace |
+| | 4. Servo amplifier fault | Adjust/repair/replace |
+| Excessive speed | 1. Excessive flow — see Chart 3 | — |
+| | 2. Overriding work load | Adjust/repair/replace counterbalance valve |
+
+---
+
+### 2. Vickers Oil Viscosity & Temperature Recommendations
+
+**Optimal operating temperature:** 49–54°C (120–130°F) | Maximum: 66°C (150°F)
+
+| Unit Type | Viscosity Grade (ISO) | Running Range | Start-up Max |
+|---|---|---|---|
+| Inline/angle piston, vane, gear pumps & motors | ISO VG 32–68 | 13–54 cSt | 860 cSt (4000 SUS) |
+| MHT high-torque vane motors | ISO VG 32–68 | 13–54 cSt | 110 cSt (500 SUS) |
+
+**Mobile systems operating temperature selection:**
+
+| ISO Grade | Operating Temp Range |
+|---|---|
+| VG 22 | –21°C to 60°C |
+| VG 32 | –15°C to 77°C |
+| VG 46 | –9°C to 88°C |
+| VG 68 | –1°C to 99°C |
+
+**Three maintenance rules (highest impact):**
+1. Maintain clean, correct type and viscosity hydraulic fluid
+2. Change filters and clean strainers
+3. Keep all connections tight (airtight on suction side) — no air ingestion
+
+---
+
+### 3. Vickers Hydraulic Formulas (Field Reference)
+
+**Horsepower:** HP = GPM × PSI / 1714
+**Torque (lb·in):** T = (cu.in/rev × PSI) / 2π
+**Flow:** Q(gpm) = (cu.in/rev × RPM) / 231
+**Velocity (ft/s):** v = 0.408 × Q(gpm) / D²(in)
+**Pressure (PSI):** P = Head(ft) × 0.433 × SG
+**SG of oil:** ≈ 0.85
+**1 USgal = 231 cu.in | Atmospheric pressure = 14.7 psi**
+
+---
+
+### 4. Aeration — Causes and Cures
+
+**Sources of air ingestion:**
+- Leaking inlet pipe fittings (use approved pipe thread sealer)
+- Control valve O-ring leaks (test: apply grease around O-ring — if noise stops, found it)
+- Shaft seal leakage (max inlet vacuum = 5 in Hg; misalignment accelerates seal leakage)
+- Cylinder rod seals under vacuum (use anti-cavitation check valves on rapid retract circuits)
+- Return lines discharging ABOVE fluid level (always terminate BELOW fluid surface)
+- Reservoir vortexing at low fluid level (fit anti-cavitation plate over reservoir outlet)
+- Cold oil releasing dissolved air on warming
+
+**Aeration effects:** pump noise, vane pounding, ring rippling, rapid ring/vane wear — can destroy vane pump ring within 1 hour under extreme aeration.
+
+---
+
+### 5. Leakage Control
+
+**Three main causes of hydraulic leaks in service:**
+1. Loosening of fittings by shock and vibration
+2. Wear of dynamic seals and mating parts (cylinders, motors)
+3. Seal deterioration from elevated temperature or fluid incompatibility
+
+**Seal life rule:** Seal life halves for every 20°F (11°C) rise above design temperature — keep fluid below 150°F (66°C)
+
+**Seal material guide:**
+- **Nitrile (Buna-N):** Best all-round for mineral oil, fuel, fire-resistant fluids (except phosphate ester)
+- **Viton (Fluoroelastomer):** Better for >150°F service, compatible with phosphate ester
+- **Polyurethane:** Superior abrasion/extrusion resistance in mineral oil — not for hot water
+
+**Source:** Vickers Hydraulic Hints & Trouble Shooting Guide, Eaton Corporation, 694, Rev.8/96
+**KB entry date:** 2026-04-18 | **HydroMind SKILL.md v2.10**
+
+
+---
+
+## KB66 — Vickers: Logical Troubleshooting in Hydraulic Systems (Eaton/Vickers, 8/84)
+
+**Reference:** Vickers General Product Support, Publication GB-B-9003, August 1984
+**Scope:** Systematic 8-step logic-tree troubleshooting methodology — pressure/flow/direction analysis, algorithm test charts for every component type, pump cavitation/aeration FCR tables
+**Use when:** Structured fault isolation on any hydraulic system — especially for multi-symptom problems where common cause must be identified
+
+---
+
+### 1. Core Principle — Three Hydraulic Variables
+
+Every hydraulic fault maps to one of three fundamental problems:
+
+| Machine Symptom | Hydraulic Problem |
+|---|---|
+| Wrong speed / slow actuator | **FLOW** problem |
+| Wrong force / insufficient torque | **PRESSURE** problem |
+| Wrong direction / no movement in one direction | **DIRECTION** problem |
+
+**Before using any instrument:** Define which of Flow, Pressure, or Direction is the root issue. This narrows component list immediately.
+
+---
+
+### 2. Eight-Step Machine Malfunction Procedure
+
+**Step 1 — Define:** Categorize symptom as Flow / Pressure / Direction fault
+**Step 2 — Circuit diagram:** Identify all components and their function in the circuit
+**Step 3 — List:** Draw up ALL components that could affect the problem area (do not apply judgement yet — better a long list than a short one that misses the cause)
+**Step 4 — Prioritize:** Order the list by likelihood and ease of checking
+**Step 5 — Preliminary check (human senses first):** For each unit check: correct model? installed correctly? adjusted correctly? external signal correct? responds to signal? abnormal symptoms (heat/noise/vibration)?
+**Step 6 — Algorithm test:** If preliminary check fails, use instrument-based algo charts for suspect unit
+**Step 7 — Decision:** Repair or replace the identified unit
+**Step 8 — THINK:** What caused the failure? What are the consequences? (contamination spread? settings drifted? other components affected?)
+
+**Key rule:** When multiple symptoms occur simultaneously, draw up a list for each symptom and find the components COMMON to all lists — this is where the single root cause almost certainly lies.
+
+---
+
+### 3. Pump Cavitation — FCR1 (Fault-Cause-Remedy)
+
+| Cause | Remedy |
+|---|---|
+| Suction strainer clogged or too small | Clean or renew |
+| Bore of suction line too small | Fit larger bore pipes |
+| Too many bends in suction line | Modify pipe layout |
+| Suction line too long | Reduce length or fit larger bore |
+| Fluid too cold | Heat fluid to recommended temperature |
+| Unsuitable fluid | Replace with correct fluid |
+| Air breather blocked or too small | Clean or replace element |
+| Local restriction (partly closed valve, hose collapse) | Open valve, renew hose |
+| Boost pump failure | Repair or replace boost pump |
+| Pump running too fast | Reduce to recommended speed |
+| Pump mounted too high above oil level | Modify pump installation |
+
+**Cavitation threshold:** Vacuum at pump inlet >5 in Hg (0.21 bar) = cavitation risk
+
+---
+
+### 4. Aeration — FCR2 (Fault-Cause-Remedy)
+
+| Cause | Remedy |
+|---|---|
+| Reservoir fluid level low | Fill to correct level |
+| Poor reservoir design | Modify design |
+| Return line above fluid level | Extend return pipe below fluid level |
+| Unsuitable fluid | Replace with correct fluid |
+| Pump shaft seal worn or damaged | Renew seals |
+| Suction line joints allowing air entry | Renew or tighten joints |
+| Porous suction hose | Renew hose |
+| Improper bleeding | Re-bleed system |
+
+**Air leak test:** Smear each suction joint with grease one at a time — if pump noise changes, that joint is the source.
+
+---
+
+### 5. Case Drain Flow — Key Pump Health Indicator
+
+**Measuring case drain on variable piston pump:**
+- Insert flow meter (or measuring jar + stopwatch) in case drain line
+- Measure under steady-state conditions (constant pump delivery)
+- Case drain pressure: normally ~0.3 bar max — use low-pressure flow meter
+- **NEVER block the case drain line**
+- Compare measured drain flow against OEM specification for worn pump judgement
+- Excessive drain flow = worn pump internals or excessive running clearances
+
+**Pressure gauge installation methods (in priority for fieldwork):**
+1. Permanent tee in pipework (subject to shock — use snubber + glycerine fill)
+2. Isolating valve — open only when reading needed
+3. Push-to-read venting valve (isolates + vents to tank on release)
+4. Multi-station selector valve (one gauge reads 6 points)
+5. Gauge plugged into unit gauge port
+6. Quick-release self-sealing test point (most practical for offshore field use)
+
+**Gauge accuracy:** Most accurate at mid-scale deflection — choose gauge range so expected reading falls near 50% of full scale.
+
+---
+
+### 6. Worked Example — Multi-Symptom Diagnosis (Bar Trimming Machine)
+
+**Symptoms reported simultaneously:**
+- Carriage drive motor slow in both directions
+- Traverse cylinder slow when extending
+- System running hotter than usual
+
+**Step 1:** Both slow symptoms = FLOW problem
+
+**Step 2:** Circuit has 52 components total
+
+**Step 3:** List units affecting each fault separately
+
+**Step 4:** Find units COMMON to both lists
+→ Narrowed from 52 units to 18 by circuit diagram analysis alone — without touching any instrument
+
+**Step 5:** Preliminary check in order → clamp cylinder #52 found unusually hot
+
+**Step 6:** Algo G.1 test → apply pressure to full bore end, fluid leaks from rod end connection → piston seals failed
+
+**Key lesson:** One failed cylinder with leaking piston seals caused both motor slowdown AND cylinder slowdown because both share the pump flow. Finding the common component eliminates most of the system from investigation before a single gauge is installed.
+
+**Source:** Vickers Logical Troubleshooting in Hydraulic Systems, Eaton/Vickers, GB-B-9003, 8/84
+**KB entry date:** 2026-04-18 | **HydroMind SKILL.md v2.10**
