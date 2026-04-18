@@ -3970,3 +3970,228 @@ The P-F curve defines the window between detectable fault onset (P) and function
 
 **Source:** Mobley, R.K., Introduction to Predictive Maintenance, 2nd Ed., Elsevier, 2002
 **KB entry date:** 2026-04-18 | **HydroMind SKILL.md v2.10**
+
+
+---
+
+## KB63 — Cameron Hydraulic Data (16th Ed., Ingersoll-Rand)
+
+**Reference:** C.R. Westaway & A.W. Loomis (Eds.), Ingersoll-Rand Company, 1984 | Form 931
+**Scope:** Practical hydraulic reference handbook — pump head calculations, NPSH, affinity laws, pipe friction, viscosity, unit conversions, fluid properties, pump materials
+**Use when:** Pump sizing, NPSH calculations, pipe head loss, unit conversion (US/SI), fluid properties, pump power calculations
+
+---
+
+### 1. Key Pressure-Head Conversions
+
+- **1 psi = 2.31 ft of water** (at SG = 1.00, ~65°F)
+- **1 ft of water = 0.433 psi**
+- **Head (ft) = Pressure (psi) × 2.31 / SG**
+- **Pressure (psi) = Head (ft) × SG / 2.31**
+- **1 bar = 14.504 psi = 33.45 ft water**
+- **1 MPa = 145.04 psi = 334.5 ft water**
+- **1 kPa = 0.145 psi = 0.335 ft water**
+
+---
+
+### 2. Flow & Velocity Formulas
+
+**Velocity head:** hv = V²/2g = V²/64.4 (ft, ft/s)
+
+**Reynolds number:** Re = V × D / ν
+- Re < 2000 → laminar flow
+- Re > 4000 → turbulent flow
+- 2000–4000 → critical zone (unpredictable)
+
+**Flow units:**
+- 1 USgpm = 0.06309 L/s = 3.785 L/min
+- 1 L/min = 0.2642 USgpm
+- 1 m³/h = 4.403 USgpm = 16.67 L/min
+
+---
+
+### 3. Pump Power Formulas
+
+**Hydraulic horsepower (whp):**
+whp = Q(gpm) × H(ft) × SG / 3960
+
+**Brake horsepower (bhp):**
+bhp = Q(gpm) × H(ft) × SG / (3960 × η)
+
+**In SI (kW):**
+P(kW) = Q(m³/s) × ΔP(Pa) / η = Q(L/min) × ΔP(bar) / (600 × η)
+
+**Power conversions:**
+- 1 hp = 0.7457 kW
+- 1 kW = 1.341 hp
+- 1 hp = 550 ft·lb/s = 33,000 ft·lb/min
+
+---
+
+### 4. NPSH — Net Positive Suction Head
+
+**NPSHA = ha - hvpa ± hst - hfs**
+
+Where:
+- ha = absolute pressure on liquid surface (ft of liquid)
+- hvpa = vapor pressure of liquid at pumping temperature (ft)
+- hst = static suction head (positive) or lift (negative)
+- hfs = friction losses in suction piping (ft)
+
+**Rule:** NPSHA must exceed NPSHR (required) by minimum 2 ft margin
+
+**Cavitation symptoms:** Noise like rattling marbles, vibration, pitting on impeller, fluctuating pressure/flow
+
+**NPSH increases by:**
+- Increasing suction pressure (pressurised tank)
+- Lowering liquid temperature (lowers vapor pressure)
+- Reducing suction pipe friction (larger bore, fewer elbows)
+- Lowering pump relative to liquid level
+
+**NPSH reduces with:** Higher liquid temperature, higher elevation (less atmospheric pressure), long/restricted suction line
+
+---
+
+### 5. Affinity Laws (Variable Speed / Impeller Diameter)
+
+For speed change (N₁ → N₂):
+- Q₂ = Q₁ × (N₂/N₁)
+- H₂ = H₁ × (N₂/N₁)²
+- BHP₂ = BHP₁ × (N₂/N₁)³
+
+For impeller diameter change (D₁ → D₂):
+- Q₂ = Q₁ × (D₂/D₁)
+- H₂ = H₁ × (D₂/D₁)²
+- BHP₂ = BHP₁ × (D₂/D₁)³
+
+**Practical use:** Halving speed reduces flow by half, head by 75%, power by 87.5%
+
+---
+
+### 6. Key Unit Conversions (SI ↔ Imperial)
+
+| Quantity | To Convert | Multiply By |
+|---|---|---|
+| Flow | USgpm → L/min | 3.785 |
+| Flow | L/min → USgpm | 0.2642 |
+| Flow | m³/h → USgpm | 4.403 |
+| Pressure | psi → bar | 0.06895 |
+| Pressure | bar → psi | 14.504 |
+| Pressure | bar → kPa | 100 |
+| Head | ft water → m water | 0.3048 |
+| Head | m water → ft water | 3.281 |
+| Power | hp → kW | 0.7457 |
+| Power | kW → hp | 1.341 |
+| Torque | lb·ft → N·m | 1.356 |
+| Torque | N·m → lb·ft | 0.7376 |
+| Viscosity | cSt → SSU (approx, >60 cSt) | × 4.635 |
+
+**Source:** Cameron Hydraulic Data, 16th Ed., Ingersoll-Rand, 1984
+**KB entry date:** 2026-04-18 | **HydroMind SKILL.md v2.10**
+
+
+---
+
+## KB64 — Mobley: Root Cause Failure Analysis (Newnes/BH, 1999)
+
+**Reference:** R. Keith Mobley, Newnes/Butterworth-Heinemann, 1999 | ISBN 0-7506-7158-0
+**Scope:** Systematic RCFA methodology — fault-tree, fishbone, sequence-of-events analysis + failure mode tables for pumps, compressors, gearboxes, valves, seals
+**Use when:** Investigating repeat failures, structured fault diagnosis, post-incident analysis, building troubleshooting logic for any rotating or hydraulic equipment
+
+---
+
+### 1. RCFA — Core 5-Step Methodology
+
+**Step 1 — Define the event:** Precise symptom description + boundaries (when/where/what operating condition). Separate FACT from OPINION at this stage.
+
+**Step 2 — Classify the incident:**
+- Equipment damage/failure (physical)
+- Operating performance deviation (no physical failure)
+- Capacity restriction (throughput loss)
+- Economic deviation (high cost)
+- Injury/safety event
+
+**Step 3 — Collect data:** Interview operators (record opinions, don't dismiss them), review maintenance history, examine failed parts before they are cleaned or repaired.
+
+**Step 4 — Analyze using logic tree (fault-tree or sequence-of-events):**
+- Top event → contributing causes → primary events
+- Never stop at first cause found — trace to ROOT cause
+- Ask WHY five times
+
+**Step 5 — Corrective action + prevent recurrence:** Redesign, change operating procedure, change maintenance interval, or accept risk with monitoring.
+
+**Key rule:** RCFA is NOT about fixing blame. Investigators must put aside perceptions and base analysis only on confirmed facts.
+
+---
+
+### 2. Centrifugal Pump — Common Failure Modes (Table 19-1)
+
+**Cavitation (most common failure mode):**
+- Cause: Phase change (vapor bubbles), entrained air/gas, turbulent flow
+- Symptom: Noise like rattling marbles, vibration, fluctuating discharge pressure, pitting on impeller
+- Solution: Increase NPSHA (raise liquid level, pressurize tank, reduce suction friction), reduce NPSHR (lower speed, trim impeller), eliminate air entrainment
+
+**Variations in Total System Head (TSH):**
+- Symptom: Changes in motor speed, flow rate deviation from design
+- Too low TSH (runout): pump overloads motor, excessive flow, bearing wear from axial thrust
+- Too high TSH: reduced flow, pump operates left of curve, instability
+
+**Other centrifugal pump failure modes:**
+- Seal failure → shaft seal leakage (check seal flush, temperature, pressure)
+- Bearing failure → vibration at bearing frequencies (check lubrication, misalignment, radial load)
+- Impeller wear → reduced head/flow (check for abrasives, cavitation damage)
+- Motor overload → wrong fluid SG or viscosity, TSH too low, pump oversized
+
+---
+
+### 3. Rotary Positive-Displacement Pumps (Table 19-2) — Hydraulic Pump Application
+
+| Failure Mode | Primary Causes |
+|---|---|
+| Low/no output pressure | Worn rotors/gears, excessive clearance, relief valve set too low or stuck open |
+| Excessive noise | Cavitation, air ingestion, worn components, misalignment |
+| Overheating | Internal bypass from wear, wrong viscosity oil, cooler insufficient |
+| Shaft seal leaking | Excessive case pressure, worn seal, shaft runout |
+| Erratic output | Contamination in valve/spool, aeration, viscosity too high (cold start) |
+| Short bearing life | Misalignment, contamination, excessive radial load, wrong lubricant |
+
+**Note:** Rotary PD pumps (gear, vane, piston) share failure modes with centrifugal pumps but are MORE tolerant of system pressure variation and LESS tolerant of contamination.
+
+---
+
+### 4. Gearbox / Gearset Failure Modes (Table 26-1)
+
+| Failure | Vibration Signature | Root Cause |
+|---|---|---|
+| Gear tooth wear | Gear mesh + harmonics elevated | Contamination, lubrication failure |
+| Gear misalignment | 2× gear mesh elevated, sidebands | Incorrect shimming, bearing wear |
+| Broken tooth | Impact at gear mesh frequency | Overload, fatigue, contamination |
+| Bearing failure | BPFO/BPFI elevated | Wrong lubrication, misalignment, overload |
+| Looseness | Subharmonics (0.5×, 1×, 2×) | Worn keys, loose mounting, worn splines |
+
+---
+
+### 5. Mechanical Seals & Packing Failure Modes (Table 30-1)
+
+| Failure | Probable Cause |
+|---|---|
+| Premature seal face failure | Dry running, contamination, wrong face material |
+| Excessive leakage | Worn faces, incorrect spring tension, face distortion from heat |
+| Packing overheating | Gland too tight, insufficient flush, wrong packing grade |
+| Shaft sleeve wear | Abrasive contamination, misalignment, incorrect sleeve material |
+| Seal blowout | Pressure exceeded seal rating, wrong seal type for application |
+
+---
+
+### 6. Control Valve Failure Modes (Table 29-1)
+
+| Problem | Cause |
+|---|---|
+| Valve fails to close | Contamination on seat, worn plug/ball, actuator failure |
+| Valve leaks in closed position | Damaged seat, scored closure member |
+| Erratic control | Positioner fault, contamination in pilot, sticky spool |
+| Excessive valve noise | Cavitation (check ΔP and Cv sizing), flashing, high velocity |
+| Actuator fails to operate | Loss of air supply, positioner fault, spring failure |
+
+**Source:** Mobley, R.K., Root Cause Failure Analysis, Newnes, 1999
+**KB entry date:** 2026-04-18 | **HydroMind SKILL.md v2.10**
