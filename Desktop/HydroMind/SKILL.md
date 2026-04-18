@@ -4931,3 +4931,140 @@ Use iterative procedure: size for non-viscous flow first → determine Reynolds 
 
 **Source:** Zappe, R.W., Valve Selection Handbook, 4th Ed., Gulf Professional Publishing, 1999
 **KB entry date:** 2026-04-18 | **HydroMind SKILL.md v2.10**
+
+---
+
+## KB70 — IFPS: Hydraulic Specialist Certification Study Guide (FPS Manual #401, 2007)
+
+**Reference:** Fluid Power Society / International Fluid Power Society, Manual #401, Rev. 9/7/07
+**Scope:** Hydraulic Specialist certification reference — all key formulas, component sizing, conductor sizing, amplifier card, proportional valves, accumulator sizing, seal compatibility, fluid cleanliness, troubleshooting procedure
+**Use when:** Quick formula reference for any hydraulic sizing task — cylinder, motor, pump, conductor, accumulator, heat exchanger — or seal/fluid compatibility questions
+
+---
+
+### 1. Complete IFPS Formula Reference Sheet
+
+**Pump and Motor Flow/Speed:**
+- Pump flow: Q(gpm) = Displacement(cipr) × N(rpm) / 231
+- Motor speed: N(rpm) = Q(gpm) × 231 / Displacement(cipr)
+- Motor speed (from pump): Motor_N = Pump_N × (Pump_D / Motor_D)
+
+**Valve Cv Flow:**
+- Q(gpm) = Cv × √(ΔP(psi) / SG)
+
+**Torque / Power:**
+- Torque(lb-in) = Displacement(ci/rev) × Pressure(psi) / 2π
+- Torque(lb-in) = HP × 63,025 / N(rpm)
+- HP_fluid = P(psi) × Q(gpm) / 1714
+- HP_input = P(psi) × Q(gpm) / (1714 × Efficiency)
+- Energy loss (Btu/hr) = 2545 × T(hours) × (HP_input − HP_output)
+- Energy loss (Joules) = 746 × T(seconds) × (HP_input − HP_output)
+
+**Cylinder Force and Area:**
+- Force(lb) = Pressure(psi) × Area(sq-in)
+- Cap end area: A = π × D² / 4
+- Rod end area: A = π × (D_bore² − D_rod²) / 4
+
+**Intensifier Pressure:**
+- Output pressure = Input pressure × (Large piston area / Small piston area)
+- Intensification ratio = A_large / A_small
+
+**Fluid Velocity in Conductors:**
+- V(ft/sec) = Q(gpm) × 0.3208 / A(sq-in)
+- Recommended velocity limits: Inlet 3–4 ft/sec | Return 10 ft/sec | Pressure 15–20 ft/sec
+- Inlet hose rule: minimum 10× pipe diameter straight run before any elbow/fitting/strainer
+
+**Barlow's Formula (tubing wall thickness):**
+- Burst pressure(psi) = Working pressure × Safety factor
+- Burst pressure = (2 × Wall thickness × Tensile strength) / OD
+- Standard safety factor: 4:1 | Shock loading: up to 10:1
+
+**Accumulator Sizing (isothermal):**
+- P1 × V1 = P2 × V2 = P3 × V3 (all pressures absolute = gauge + 14.7 psi)
+- P1 = precharge | P2 = high system pressure | P3 = low system pressure
+- Fluid available = V3 − V2
+
+**Accumulator Sizing (general gas law — adiabatic, temperature change):**
+- P1 × V1 × T2 = P2 × V2 × T1 (all values absolute)
+- T in Rankine: °R = °F + 459.7 | T in Kelvin: °K = °C + 273.7
+- NEVER precharge with oxygen or air — spontaneous combustion risk. Use dry nitrogen only.
+
+**Reservoir Volume:**
+- V(gal) = (Length × Width × Height × % full) / 231
+
+**Reservoir Heat Dissipation:**
+- HP_dissipated = 0.001 × ΔT(°F) × Vertical reservoir area(sq-ft)
+
+**Filter Beta Ratio:**
+- Beta ratio = (Particles upstream) / (Particles downstream)
+- Filter efficiency = (Beta − 1) / Beta × 100%
+
+---
+
+### 2. Conductor Velocity Rules
+
+| Line Type | Max Recommended Velocity |
+|---|---|
+| Inlet / suction line | 3–4 ft/sec |
+| Return line | 10 ft/sec |
+| Pressure line | 15–20 ft/sec |
+
+**Suction line laminar flow rule:** Minimum 10 pipe diameters of straight hose before pump inlet — no elbows, tees, strainers, or valves within this length. A flared open end further reduces pump noise.
+
+**Return line sizing note:** When a single-rod cylinder retracts, return flow exceeds pump flow. Size return line for cap end area × velocity. Regenerative circuits require larger cap end line.
+
+---
+
+### 3. Seal Material Compatibility Table (IFPS Table 5-1)
+
+| Seal Material | Compatible Fluids | Temp Range |
+|---|---|---|
+| Metallic piston rings | Petroleum, synthetics, phosphate esters | Up to 500°F (260°C) |
+| Leather | Petroleum, some synthetics, phosphate esters | −65°F to 225°F |
+| Neoprene rubber | General purpose, Freon 12, salt water resistant | −65°F to 300°F |
+| Nitrile (Buna-N) | Petroleum-base mineral oils | −65°F to 225°F |
+| Silicone rubber | Water, petroleum, phosphate esters — STATIC ONLY | −80°F to 450°F |
+| Viton / Fluorel (FKM) | Petroleum, synthetic, diester, halogenated HC — high temp | −20°F to 400°F |
+| Polyurethane | Petroleum-base — high abrasion/ozone resistance, low water resistance | −65°F to 200°F |
+
+**Max allowable swell:** 20% for dynamic seals | 40–50% for confined static seals
+
+---
+
+### 4. Amplifier Card — Functions (Proportional Valve Control)
+
+**Amplifier card components for proportional directional control valve:**
+
+| Component | Function |
+|---|---|
+| Enable input | Power on/off to valve solenoid — prevents valve from activating without control signal |
+| Command signal input | Analog voltage/current signal (±10V or 4–20mA) — determines valve position and direction |
+| Ramp generator | Limits rate of change of command signal → controls valve stroke rate → prevents pressure spikes |
+| Dither generator | Adds small high-frequency oscillation to command — overcomes spool stiction, reduces hysteresis |
+| Gain adjustment | Scales command signal → adjusts sensitivity (slope of signal vs spool stroke) |
+| Null/offset adjustment | Zeros the output when command signal is zero — compensates for mechanical null error |
+| Output stage | Converts processed signal to current drive for proportional solenoid(s) |
+
+**Key rule:** Enable signal must be present before command signal for safe valve operation. Loss of enable deenergizes valve immediately.
+
+---
+
+### 5. Hydraulic Fluid Properties (IFPS Outcome 5.1.1)
+
+**Most important operational property:** Viscosity
+
+**Viscosity too HIGH:** Sluggish operation, excessive heat from flow resistance, poor pump inlet flow (cavitation risk), slow response
+**Viscosity too LOW:** Internal slippage past clearances, leakage, heat generation from bypassing, poor lubrication film
+
+**Viscosity Index (VI):** Rate of viscosity change with temperature
+- Industrial fixed-speed: VI of 90+ acceptable
+- Mobile equipment (−20°F to 160°F): VI of 100+ required
+
+**Contamination sources:**
+1. Built-in (from assembly — swarf, scale, welding slag)
+2. System-generated (wear particles from components in service)
+3. Induced (added with fluid during service — dirty containers, poor practices)
+4. Ingested (via breather, cylinder rod retraction past rod seals)
+
+**Source:** IFPS Hydraulic Specialist Certification Study Guide, FPS Manual #401, Rev. 9/7/07
+**KB entry date:** 2026-04-18 | **HydroMind SKILL.md v2.10**
