@@ -4485,3 +4485,140 @@ Every hydraulic fault maps to one of three fundamental problems:
 
 **Source:** Vickers Logical Troubleshooting in Hydraulic Systems, Eaton/Vickers, GB-B-9003, 8/84
 **KB entry date:** 2026-04-18 | **HydroMind SKILL.md v2.10**
+
+
+---
+
+## KB67 — Bloch: Improving Machinery Reliability (3rd Ed., Gulf/Elsevier, 1998)
+
+**Reference:** Heinz P. Bloch, P.E., Gulf Professional Publishing / Elsevier, 1998 | ISBN 0-88415-661-3
+**Series:** Practical Machinery Management for Process Plants, Volume 1
+**Scope:** Comprehensive machinery reliability engineering — bearing selection & lubrication, pump condition monitoring, vibration analysis, shaft alignment, mechanical seals, lube oil purification, maintenance strategies, life cycle cost
+**Use when:** Engineering decisions on bearing specification, lubrication selection, pump condition monitoring, alignment, reliability improvement for rotating equipment in process/offshore plants
+
+---
+
+### 1. Bearing Failure Causes (SKF Statistical Data)
+
+**SKF USA documented breakdown of rolling element bearing failures:**
+
+| Root Cause | % of Failures |
+|---|---|
+| Lubrication-related (total) | **54%** |
+| — Improper lubrication | 34.4% |
+| — Contamination | 19.6% |
+| Installation errors | 17.7% |
+| Overload | 6.9% |
+| Storage & handling errors | 2.8% |
+| Other | 18.6% |
+
+**Key takeaway:** More than half of all bearing failures are lubrication-related. Contamination alone (dirt, water, particles) accounts for one-fifth of all failures. Correct installation and handling account for another significant fraction.
+
+**L10 bearing life:** Defined by AFBMA as the life in millions of revolutions at which 90% of bearings will still be operating. Motor bearings typically selected for L10 = 40,000–50,000 hours (≈5 years) under design load.
+
+---
+
+### 2. Anti-Friction Bearing Lubrication Rules
+
+**Minimum lubricant viscosity for rolling element bearings:**
+- Ball and cylindrical roller bearings: minimum 13.1 cSt (70 SUS) at operating temperature
+- Spherical roller bearings: minimum 13.1 cSt at operating temperature
+- Below minimum viscosity → accelerated wear, reduced L10 life
+
+**Standard bearing oil grades for pumps/motors:**
+- ISO VG 32: suitable for most light-duty general purpose pumps
+- ISO VG 68: preferred for pumps without cooling water (compensates for temperature rise)
+- ISO VG 100: widely adopted by petrochemical plants after eliminating bearing cooling water
+
+**Bearing temperature limit:**
+- Anti-friction bearings show no life loss as long as metal temperatures do not exceed 250°F (121°C)
+- Above 250°F: accelerate oil change interval, consider higher viscosity grade
+
+**Water in lube oil — critical limits:**
+- Even dissolved or free water causes significant reduction in bearing fatigue life
+- Free water is most damaging — displaces protective oil film, promotes corrosion
+- Water >0.05% (500 ppm) = action threshold for hydraulic and lube oil systems
+- Water causes bearing pitting, erosion, corrosion of journal surfaces, additive leaching
+
+**Bearing lubrication methods — ranked by decreasing service life (Bloch/SKF):**
+1. Automatic grease feed (continuous metered injection)
+2. Oil mist (dry sump)
+3. Oil mist (purge)
+4. Oil bath / sump
+5. Manual grease replenishment (highest failure rate due to over/under-lubrication intervals)
+
+---
+
+### 3. Manual vs. Automatic Grease Lubrication
+
+**Three principal disadvantages of manual lubrication:**
+1. Long relubrication intervals → dirt and moisture penetrate seals (>50% of bearings show significant ingress damage)
+2. Overlubrication at replenishment → excessive friction and temperature rise
+3. Underlubrication between intervals → starvation period before next greasing
+
+**Automated lubrication advantages:**
+- Optimised time between events
+- Accurately metered amounts delivered "on time"
+- Contaminants displaced by fresh lubricant
+- Bearing seal integrity maintained
+- Payback typically 6 months to 3 years in process plant applications
+
+---
+
+### 4. Centrifugal Pump Condition Monitoring (Ch. 11)
+
+**Vibration transducer types for pumps:**
+1. **Proximity probes (eddy-current):** Non-contact, measure shaft displacement directly — used on large machines with sleeve bearings (compressors, turbines, large pumps)
+2. **Velocity transducers (seismic):** Measure casing velocity — good for general pump monitoring (portable use)
+3. **Accelerometers (piezoelectric):** High-frequency response — best for rolling element bearing fault detection, vane pass, gear mesh
+4. **Dual probes:** Combined proximity + velocity in one housing
+
+**Vibration monitoring programme economics:**
+- Reduces pump and driver maintenance costs by approximately 30%
+- Direct cost for plant-wide conventional vibration monitoring programme: ~$2.25 per measurement point
+- ISO 2372 standard used to rate overall vibration severity levels
+
+**Condition monitoring detects:**
+- Internal rubbing (increased broadband vibration)
+- Overloading of bearings (elevated bearing frequencies)
+- Cavitation (broadband noise rise, especially 2–10 kHz)
+- Imbalance (1× running speed)
+- Misalignment (1× and 2× running speed, elevated axial)
+- Looseness (0.5×, 1×, multiple harmonics)
+- Impeller vane pass frequency (No. of vanes × RPM)
+
+**Broadband RMS velocity:** Single measurement giving overall condition — baseline when new, trend monthly. A conscientiously followed programme reduces pump maintenance costs ~30%.
+
+---
+
+### 5. Pipe Stress and Equipment Nozzle Loading
+
+**Critical principle:** Piping loads on rotating equipment nozzles cause shaft misalignment, bearing overload, and seal failure even if the machine appears correctly aligned when cold.
+
+**Allowable piping loads:**
+- API Standard 617 (centrifugal compressors): 1.85× NEMA allowable loads
+- ANSI B73.1 (process pumps): vendors often supply 2×–3× NEMA allowable with added bracing
+- The allowable load on equipment nozzles is always much smaller than the strength of the connecting pipe itself — pipe will not yield but the machine will be damaged
+
+**Thermal growth considerations:**
+- Always check hot alignment after machine reaches operating temperature
+- Piping thermal expansion shifts pump-driver alignment from cold condition
+- Pedestal cooling water removal requires hot alignment verification
+
+---
+
+### 6. Maintenance Strategy — Key Statistics
+
+**Bloch Appendix A reliability statistics (process plants):**
+- Best-of-class companies use predictive maintenance for 45–55% of work orders
+- 85% of failures are the result of problems with the system/process, not operator error (W. Edwards Deming)
+- Reactive (run-to-failure) maintenance average repair cost = ~3× planned maintenance repair cost
+- Typical centrifugal pump MTBF in well-managed plant: 60–80 months
+
+**Three maintenance approaches:**
+1. **Reactive (run-to-failure):** Only for non-critical, readily replaceable equipment
+2. **Preventive (time-based):** Scheduled overhaul — appropriate where failure modes are time-dependent
+3. **Predictive (condition-based):** Monitor actual condition — preferred for critical rotating equipment
+
+**Source:** Bloch, H.P., Improving Machinery Reliability, 3rd Ed., Gulf Professional Publishing, 1998
+**KB entry date:** 2026-04-18 | **HydroMind SKILL.md v2.10**
