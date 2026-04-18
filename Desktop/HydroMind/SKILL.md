@@ -3689,3 +3689,161 @@ Mark all on hydraulic schematic for future reference.
 
 **Source:** Hehn, A. H., Fluid Power Troubleshooting, Marcel Dekker, 1984
 **KB entry date:** 2026-04-18 | **HydroMind SKILL.md v2.10**
+
+
+---
+
+## KB61 — Albers: Motion Control in Offshore and Dredging (Springer, 2010)
+
+**Reference:** Peter Albers, Springer Science+Business Media, 2010 | ISBN 978-90-481-8802-4
+**Author:** 25 years consultancy in offshore/dredging hydraulics; TU Delft staff member Offshore Engineering
+**Scope:** Complete hydraulic and electrical drive design for offshore cranes, winches, heave compensation, subsea systems, dredgers — 12 chapters
+**Use when:** Offshore crane drive design, winch hydraulics, heave compensation, counterbalance/brake valves, proportional valve sizing, servo control, rotating drive selection
+
+---
+
+### 1. Open Loop vs Closed Loop Rotating Drives (Ch. 10.2)
+
+**Open system (offshore crane/winch common on slew, aux):**
+- Variable pump + proportional DCV → motor → return via brake valve → tank
+- Brake valve (CBV) on motor outlet protects against runaway
+- Motor displacement: fixed or variable (variable gives speed range but torque must be checked)
+- Warning: If variable motor at minimum displacement cannot generate sufficient torque, load drives motor → runaway risk
+
+**Closed system (hoist, luffing on offshore cranes):**
+- Variable pump A+B ports → variable motor directly (no DCV)
+- Boost pump continuously refreshes loop oil (cooling + contamination control)
+- Flushing valve discharges LP side to reservoir through pressure control valve (set 16–24 bar)
+- Boost pressure relief set ~5 bar above flushing valve setting
+- Higher oil stiffness with proportional valve mounted directly at motor
+- Load regeneration possible — motor acts as pump, returns energy to electrical grid
+
+**Secondary drive:**
+- Constant pressure HPU + variable motor stroke volume control
+- Torque generator — speed controlled by torque equilibrium
+- Used where precise speed/force control needed (tensioner, AHC)
+
+---
+
+### 2. Counterbalance / Brake Valve (Ch. 2.1.4 + Ch. 7)
+
+**Function:** Prevents uncontrolled load-driven motion — load holds under gravity/external force
+**Setting rule:** CBV relief setting = 130% of maximum induced load pressure pL
+**Pilot operation:** Pilot pressure from opposite port (annular side) opens CBV gradually — prevents jerk
+**Back-pressure sensitivity:** Standard CBV pressure pC2 IS sensitive to return line back-pressure. Use back-pressure compensated ("vented spring") version if return line pressure varies.
+
+**Static pressure equations (cylinder with CBV):**
+- pC2 = load-induced pressure plus pilot-opened relief cracking condition
+- ppilot = pilot pressure from annular port needed to open CBV
+
+**Field application (offshore crane hoist):**
+- CBV set too high → slow lowering, overheating, cavitation on motor
+- CBV set too low → load runs away on descent
+- CBV chatters → pilot ratio too low for load pressure, or return line back-pressure too high
+- Optimal pilot ratio range: 3:1 to 4.5:1 for most offshore crane CBVs
+
+---
+
+### 3. Proportional Valve Key Parameters (Ch. 2.4)
+
+**Nominal flow Qn:** Flow P→A at ΔP = 5 bar per land (10 bar total P→A + B→T)
+**Servo valve Qn:** Rated at ΔP = 35 bar per land (70 bar total) — much higher pressure drop, higher accuracy
+
+**Pressure drop allocation (servo system design rule):**
+- Available ΔP for servo valve = Supply pressure − load pressure
+- Recommended: 25–30 bar per notch (port) minimum for servo valves
+- Size servo valve Qn at 30% above maximum operating flow (never operate at 100% capacity)
+
+**Asymmetric spool (for differential cylinders, bore:rod ratio 2:1):**
+- Flow P→A = 2× flow B→T
+- Used where cylinder piston area = 2× annular area
+- Prevents speed difference between extend and retract strokes
+
+**Proportional control modes:**
+- Variable throttle (simplest, pressure-dependent speed)
+- 2-way flow regulator (pressure-compensated, speed independent)
+- Proportional DCV (2 chokes active simultaneously)
+- Variable displacement pump (most efficient, no throttle loss)
+
+---
+
+### 4. Heave Compensation — Passive System (Ch. 9)
+
+**Passive heave compensator (PHC) principle:**
+- Gas spring (nitrogen + hydraulic cylinder) absorbs vessel heave
+- Load remains stationary while vessel moves up/down
+- Gas law: adiabatic for fast movements (κ ≈ 1.7 for nitrogen)
+
+**Key formula — compensator stiffness:**
+CHC = κ × pL × A² / V1
+
+Where: κ = adiabatic constant, pL = average gas pressure, A = cylinder bore area, V1 = gas volume
+
+**Design example (900 kN load, 2.5 m heave, 500 m depth):**
+- Bore: 360 mm | Average pressure: 177 bar | Gas volume: 0.485 m³
+- Max pressure: 225 bar | Min pressure: 143 bar
+- Stiffness CHC = 1.65×10⁵ N/m
+
+**Crane vessel PHC specifics:**
+- Max compensation speed: 0.625 m/s typical (vessel tip speed 1.25 m/s)
+- Max flow requirement: 3,825 lpm → requires cartridge valves NG100–NG150
+- Gas bottles: nitrogen only (NOT compressed air with mineral oil — combustion risk)
+- Dredging: compressed air acceptable (max ~80 bar, non-combustible fluid)
+
+**Active Heave Compensation (AHC):**
+- MRU (Motion Reference Unit) measures vessel movement
+- Feed-forward control adds correcting signal to servo valves
+- 90% motion reduction achievable with feed-forward
+- Natural frequency must be measured at startup (step response test at 10% gain)
+- Set final gain at 50% of oscillation threshold
+
+**Resonance risk:**
+- Cable + load mass forms spring-mass system
+- Natural frequency shifts with water depth — risk at specific depths
+- Remedy: increase lowering speed when cable load variation observed
+
+---
+
+### 5. DCV Sizing — CETOP Reference (Ch. 2.2)
+
+| CETOP Size | Max Flow | Max Pressure |
+|---|---|---|
+| 03 | ~30 L/min | 350 bar |
+| 05 | ~80 L/min | 350 bar |
+| 07 | ~120 L/min | 350 bar |
+| 08 | ~200 L/min | 350 bar |
+| 10 | ~800 L/min (pilot operated) | 350 bar |
+
+**Pilot operated DCV requirement:** External pilot port X needed if P→T in neutral (no internal pilot available)
+**Flow force effect:** At high flow, spool pushed to centre — overcome with pilot valve on large main valve
+
+---
+
+### 6. Safety Design — Winch Motor Free-Fall Case Studies (Ch. 12.6)
+
+**Real failure case: Free fall of winch motor (boost pressure loss):**
+- Cause: Boost pressure dropped below minimum → pump lost hydraulic lock
+- Closed-loop pump with no boost = pump cavitates, no motor braking torque
+- Load free-falls under gravity → catastrophic
+- Prevention: Boost pressure switch → emergency stop AND fail-safe mechanical brake apply
+
+**Design rules from failures:**
+1. Mechanical brake must apply automatically on loss of hydraulic pressure (spring-applied, hydraulic-release)
+2. Boost pressure interlock: minimum 14 bar — below this, command must be cut to zero and brake applied
+3. Never allow variable motor to go below minimum displacement while load is suspended
+4. Logic valves in A/B lines of each servo valve allow individual valve blocking on failure (FMEA requirement)
+5. FMEA required for any active control system where single failure could cause uncontrolled motion
+
+---
+
+### 7. Subsea Hydraulic Drives (Ch. 11)
+
+**Subsea hydraulic circuit design differences:**
+- All return oil must overcome water depth back-pressure (1 bar per 10 m depth)
+- At 500 m depth: 50 bar back-pressure on return line — size relief valves and CBVs accordingly
+- Compensated subsea HPUs: pressure-compensated housing maintains slight positive internal pressure
+- Subsea valve control: typically pilot-operated with topside control signals via umbilical
+- Hydraulic fluid: must be compatible with seawater ingress (HW-type preferred for subsea)
+
+**Source:** Albers, P., Motion Control in Offshore and Dredging, Springer, 2010
+**KB entry date:** 2026-04-18 | **HydroMind SKILL.md v2.10**
