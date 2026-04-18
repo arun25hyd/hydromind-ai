@@ -3847,3 +3847,126 @@ Where: κ = adiabatic constant, pL = average gas pressure, A = cylinder bore are
 
 **Source:** Albers, P., Motion Control in Offshore and Dredging, Springer, 2010
 **KB entry date:** 2026-04-18 | **HydroMind SKILL.md v2.10**
+
+
+---
+
+## KB62 — Mobley: Introduction to Predictive Maintenance (2nd Ed., 2002)
+
+**Reference:** R. Keith Mobley, Butterworth-Heinemann / Elsevier, 2002 | ISBN 0-7506-7531-4
+**Scope:** Comprehensive predictive maintenance methodology — vibration analysis, thermography, oil analysis, wear particle analysis, failure mode analysis, program implementation
+**Use when:** Interpreting oil sample results, understanding vibration fault frequencies, diagnosing bearing/gear/pump failure modes, setting up condition monitoring for hydraulic equipment
+
+---
+
+### 1. Oil Analysis for Hydraulic Systems (Ch. 9)
+
+**Critical distinction:**
+- **Lube oil analysis** = condition of the OIL (viscosity, TAN, TBN, oxidation, contamination)
+- **Wear particle analysis** = condition of the MACHINE (what is wearing and how)
+- Do NOT rely on oil analysis alone to detect hydraulic component failure — use both
+
+**Key oil test parameters for hydraulic systems:**
+
+| Parameter | What it indicates | Action threshold |
+|---|---|---|
+| Viscosity | Oil degradation, wrong grade, overheating | >±15% from new oil spec |
+| Particle count | Component wear rate, orifice blockage risk | Per ISO 4406 target for system type |
+| Water content | Seal failure, condensation, cooler leak | >0.05% (500 ppm) |
+| TAN (Total Acid No.) | Oil oxidation, additive depletion | Compare vs new oil baseline |
+| Iron (Fe) | Pump/motor barrel, cylinder wall wear | Rising trend more important than absolute value |
+| Silicon (Si) | Dirt ingestion via breather/seal | >10 ppm indicates ingestion problem |
+| Copper (Cu) | Bearing cage, bronze valve bushing wear | Rising trend = bearing or bushing issue |
+| Aluminium (Al) | Pump housing, motor housing wear | Elevated = internal housing contact |
+
+---
+
+### 2. Wear Particle Analysis — 5 Wear Types (Ch. 9.1.2)
+
+| Wear Type | Particle Characteristics | Hydraulic System Cause |
+|---|---|---|
+| **Rubbing wear** (normal) | <15 µm, flat platelets | Normal sliding — acceptable if low quantity |
+| **Cutting wear** | Long thin slivers, ratio >5:1 length:width | Misaligned shaft, abrasive contamination embedded in soft surface — ABNORMAL |
+| **Rolling fatigue** | Fatigue spall chunks, spherical particles | Bearing race fatigue — imminent bearing failure |
+| **Combined rolling/sliding** | Gear fatigue particles, no spheres | Gear tooth fatigue — pump drive gear, gearbox |
+| **Severe sliding** | Large flat particles | Overload, lubrication film breakdown — catastrophic wear underway |
+
+**Sampling rules for hydraulic systems:**
+- Sample from RETURN LINE before filter — captures active wear particles
+- Never sample from reservoir bottom (settled particles) or downstream of filter (removed particles)
+- Sample under operating conditions — not more than 30 min after shutdown
+- Critical systems (offshore cranes, HPUs): sample every 25 hours operation
+- Standard continuous duty: monthly sampling adequate
+- Heavy-load systems: weekly sampling
+
+---
+
+### 3. Vibration Fault Frequency Reference (Ch. 7)
+
+**Key frequencies to monitor on hydraulic pump drives:**
+
+| Component | Fault Frequency | Notes |
+|---|---|---|
+| Imbalance | 1× running speed | Dominant single peak at 1X |
+| Misalignment | 1× and 2× running speed, high axial | 2X often dominant for angular misalignment |
+| Looseness | 0.5×, 1×, 2×, 3× and subharmonics | Multiple harmonics, noisy spectrum |
+| Gear mesh | No. of teeth × RPM | Monitor 1× and 2× gear mesh + sidebands |
+| Bearing — outer race | BPFO | Calculated from bearing geometry |
+| Bearing — inner race | BPFI | Modulated at running speed |
+| Bearing — rolling element | BSF | Usually low amplitude until advanced damage |
+| Vane pass (vane pump) | No. of vanes × RPM | Also applies to piston pump barrel frequency |
+| Cavitation | Broadband noise floor rise | Especially in 2–10 kHz range |
+
+**Practical rule:** All failure modes produce distinct, repeatable frequency signatures. If you can identify the frequency, you can identify the failing component without disassembly.
+
+---
+
+### 4. Hydraulic Pump Condition Monitoring Parameters (Ch. 10.1)
+
+**Monitor these parameters for hydraulic pump health:**
+- Case drain flow rate (trend over time — >10% of rated output = internal wear threshold)
+- Case drain temperature (>15°C above return line = excessive internal leakage)
+- Inlet vacuum (>0.5 bar vacuum = suction restriction — cavitation risk)
+- Outlet pressure stability (fluctuating = worn pump, sticking compensator, or relief valve)
+- Vibration at pump mounting feet (baseline when new, trend monthly)
+- Oil sample — Fe, Si, Al, Cu — monthly minimum
+
+**Centrifugal pump failure mode sequence (applicable to HPU charge pumps):**
+1. Impeller wear → reduced flow, loss of head
+2. Seal leakage → external wet contamination
+3. Bearing degradation → vibration increase at bearing frequencies
+4. Cavitation damage → broadband vibration + pitting on impeller
+
+---
+
+### 5. Thermography for Hydraulic Systems (Ch. 8)
+
+**IR thermography applications on hydraulic equipment:**
+- **Relief valve passing:** Hot return line at relief valve outlet — valve cycling continuously
+- **Blocked filter element:** Hot spot at filter inlet differential vs outlet
+- **Internal bypass leak:** Localised hot spot on valve body or actuator
+- **Cooler fouling:** Non-uniform temperature distribution on cooler surface
+- **Pump bearing fault:** Hot bearing housing vs adjacent housing
+- **Solenoid valve coil failure:** Overheating coil vs adjacent coil
+
+**Thermography frequency:** Monthly on critical equipment, quarterly on standard
+
+---
+
+### 6. P-F Curve — Failure Detection Timeline (Ch. 1)
+
+The P-F curve defines the window between detectable fault onset (P) and functional failure (F):
+
+| Detection Method | Typical Lead Time Before Failure |
+|---|---|
+| Wear particle analysis | 1–3 months |
+| Vibration analysis | 1–6 weeks |
+| Thermography | 1–3 weeks |
+| Oil analysis (chemistry) | Weeks to months |
+| Operator observation (noise/heat) | Days |
+| Functional failure (pressure loss) | Failure has occurred |
+
+**Key rule:** The earlier the detection method on the P-F curve, the more time available for planned maintenance. Combine methods for maximum warning time.
+
+**Source:** Mobley, R.K., Introduction to Predictive Maintenance, 2nd Ed., Elsevier, 2002
+**KB entry date:** 2026-04-18 | **HydroMind SKILL.md v2.10**
