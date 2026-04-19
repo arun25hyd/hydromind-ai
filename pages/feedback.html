@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--hm-bg:#0d0f12;--hm-surface:#13171d;--hm-card:#1a1f28;--hm-border:#2a3040;--hm-orange:#f97316;--hm-green:#22c55e;--hm-red:#ef4444;--hm-yellow:#eab308;--hm-blue:#38bdf8;--hm-text:#e2e8f0;--hm-muted:#64748b;--hm-muted2:#94a3b8;--hm-mono:'Share Tech Mono',monospace;--hm-cond:'Barlow Condensed',sans-serif;--hm-body:'Barlow',sans-serif;}
+:root{--hm-bg:#0d0f12;--hm-surface:#13171d;--hm-card:#1a1f28;--hm-border:#2a3040;--hm-orange:#f97316;--hm-green:#22c55e;--hm-red:#ef4444;--hm-yellow:#eab308;--hm-blue:#38bdf8;--hm-text:#e2e8f0;--hm-muted:#64748b;--hm-muted2:#94a3b8;--hm-mono:'Share Tech Mono',monospace;--hm-cond:'Barlow Condensed',sans-serif;--hm-body:'Barlow',sans-serif;--left-sb:220px;--right-sb:200px;--nav-h:52px;}
 *{box-sizing:border-box;}
 body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);margin:0;}
 @keyframes hm-pulse{0%,100%{opacity:1}50%{opacity:.3}}
@@ -29,10 +29,6 @@ body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);mar
 .hm-nav-cta{display:flex;gap:8px;flex-shrink:0;}
 .hm-btn-ghost{padding:6px 16px;border-radius:6px;background:transparent;border:1px solid var(--hm-border);color:var(--hm-muted2);font-size:.8rem;font-family:var(--hm-cond);letter-spacing:.5px;cursor:pointer;}
 .hm-btn-orange{padding:6px 16px;border-radius:6px;background:var(--hm-orange);color:#fff;font-size:.8rem;font-family:var(--hm-cond);font-weight:600;letter-spacing:.5px;cursor:pointer;border:none;}
-
-/* PAGE GRID — 3-column layout */
-.hm-page{margin-top:52px;display:grid;grid-template-columns:220px 1fr 200px;min-height:calc(100vh - 52px);}
-@media(max-width:900px){.hm-page{grid-template-columns:1fr;}.hm-left-sidebar,.hm-right-sidebar{display:none;}}
 
 
 /* RIGHT SIDEBAR */
@@ -105,7 +101,7 @@ body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);mar
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--hm-bg:#0d0f12;--hm-surface:#13171d;--hm-card:#1a1f28;--hm-border:#2a3040;--hm-orange:#f97316;--hm-green:#22c55e;--hm-red:#ef4444;--hm-yellow:#eab308;--hm-blue:#38bdf8;--hm-text:#e2e8f0;--hm-muted:#64748b;--hm-muted2:#94a3b8;--hm-mono:'Share Tech Mono',monospace;--hm-cond:'Barlow Condensed',sans-serif;--hm-body:'Barlow',sans-serif;}
+:root{--hm-bg:#0d0f12;--hm-surface:#13171d;--hm-card:#1a1f28;--hm-border:#2a3040;--hm-orange:#f97316;--hm-green:#22c55e;--hm-red:#ef4444;--hm-yellow:#eab308;--hm-blue:#38bdf8;--hm-text:#e2e8f0;--hm-muted:#64748b;--hm-muted2:#94a3b8;--hm-mono:'Share Tech Mono',monospace;--hm-cond:'Barlow Condensed',sans-serif;--hm-body:'Barlow',sans-serif;--left-sb:220px;--right-sb:200px;--nav-h:52px;}
 @keyframes hm-pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .hm-topnav{position:fixed;top:0;left:0;right:0;height:52px;z-index:9999;background:rgba(13,15,18,.97);border-bottom:1px solid #2a3040;backdrop-filter:blur(16px);display:flex;align-items:center;padding:0 1rem;gap:.75rem;}
 .hm-topnav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;}
@@ -166,9 +162,7 @@ body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);mar
   </div>
 </div>
 
-<div class="hm-page">
-  <!-- LEFT SIDEBAR -->
-  <div class="hm-left-sidebar" id="hmLeftSidebar">
+<div class="hm-left-sidebar" id="hmLeftSidebar">
   <div class="hm-left-inner">
     <div id="hmSidebarProfile" style="display:none;">
       <div class="hm-profile-card">
@@ -387,7 +381,7 @@ body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);mar
     </div>
   </div>
 
-</div><!-- /hm-page -->
+<!-- /end layout -->
 
 <script src="../js/main.js"></script>
 <script src="../js/auth.js"></script>
