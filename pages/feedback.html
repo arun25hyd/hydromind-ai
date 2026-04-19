@@ -30,6 +30,10 @@ body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);mar
 .hm-btn-ghost{padding:6px 16px;border-radius:6px;background:transparent;border:1px solid var(--hm-border);color:var(--hm-muted2);font-size:.8rem;font-family:var(--hm-cond);letter-spacing:.5px;cursor:pointer;}
 .hm-btn-orange{padding:6px 16px;border-radius:6px;background:var(--hm-orange);color:#fff;font-size:.8rem;font-family:var(--hm-cond);font-weight:600;letter-spacing:.5px;cursor:pointer;border:none;}
 
+/* PAGE GRID — 3-column layout */
+.hm-page{margin-top:52px;display:grid;grid-template-columns:220px 1fr 200px;min-height:calc(100vh - 52px);}
+@media(max-width:900px){.hm-page{grid-template-columns:1fr;}.hm-left-sidebar,.hm-right-sidebar{display:none;}}
+
 
 /* RIGHT SIDEBAR */
 .rs-card{background:var(--hm-card);border:1px solid var(--hm-border);border-radius:8px;padding:12px;}
