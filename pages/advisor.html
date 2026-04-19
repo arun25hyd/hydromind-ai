@@ -505,6 +505,10 @@ async function sendMessage(){
   if(isFirstMessage){
     msgContent = '[Topic: ' + (modeLabels[currentMode] || 'hydraulic') + '] ' + text;
     isFirstMessage = false;
+    // Save new chat to history on first message
+    if(typeof addChatToHistory === 'function'){
+      window._currentChatId = addChatToHistory(text, currentMode, []);
+    }
   }
   conversationHistory.push({role:'user', content:msgContent});
   
@@ -544,6 +548,10 @@ async function sendMessage(){
       if(!reply) reply = '⚠️ Unexpected response. Please try again.';
       conversationHistory.push({role:'assistant', content:reply});
       appendAI(reply, 'HydroMind KB v3.0', [], !!data.kbUsed, 'text');
+      // Update saved chat history with latest messages
+      if(window._currentChatId && typeof updateChatHistory === 'function'){
+        updateChatHistory(window._currentChatId, conversationHistory);
+      }
     }
     
   } catch(err) {
