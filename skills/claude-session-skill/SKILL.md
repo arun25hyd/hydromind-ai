@@ -193,14 +193,14 @@ Gold and cyan: FULLY ELIMINATED — never reintroduce.
 
 ```bash
 # Frontend
-cd /Users/admin/Desktop/HydroMind/hydromind-frontend
+cd /Users/admin/HydroMind-Platform/web-frontend
 git branch           # verify first
 git add -A
 git commit -m "feat: <description>"
 git push origin main
 
 # Backend
-cd /Users/admin/Desktop/HydroMind/hydromind-backend
+cd /Users/admin/HydroMind-Platform/backend
 git branch
 git add -A
 git commit -m "fix: <description>"
