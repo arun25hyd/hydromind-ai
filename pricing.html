@@ -263,10 +263,11 @@ table.cmp .cmp-section td{background:var(--hm-surface);font-family:var(--hm-cond
           <div class="pc-desc">For working hydraulic technicians and crane supervisors requiring full AI capability.</div>
           <ul class="pc-features">
             <li>Unlimited AI Advisor queries</li>
-            <li>Full OEM KB — 48+ indexed manuals</li>
+            <li>Full Engineering KB — 86 entries (KB1–KB86)</li>
+            <li>Hydraulic · Crane · Seals · Rigging · Standards</li>
             <li>Crane Diagnostic Agent — full access</li>
             <li>System Design — 12-step + BOM</li>
-            <li>Field Case Library (KB30–KB48)</li>
+            <li>Field Case Library (KB30–KB86)</li>
             <li>Custom KB upload</li>
             <li>Schematic reading assistance</li>
             <li>Priority support — 4hr response</li>
@@ -325,8 +326,8 @@ table.cmp .cmp-section td{background:var(--hm-surface);font-family:var(--hm-cond
             <tr class="cmp-section"><td colspan="4">AI Advisor</td></tr>
             <tr><td>Monthly queries</td><td class="mono">20</td><td class="pro-yes">Unlimited</td><td class="yes">Unlimited</td></tr>
             <tr><td>General hydraulic Q&A</td><td class="yes">✓</td><td class="pro-yes">✓</td><td class="yes">✓</td></tr>
-            <tr><td>Full OEM KB (48+ docs)</td><td class="no">—</td><td class="pro-yes">✓</td><td class="yes">✓</td></tr>
-            <tr><td>Field Case Library KB30–48</td><td class="no">—</td><td class="pro-yes">✓</td><td class="yes">✓</td></tr>
+            <tr><td>Full Engineering KB (86 entries)</td><td class="no">—</td><td class="pro-yes">✓</td><td class="yes">✓</td></tr>
+            <tr><td>Field Case Library KB30–KB86</td><td class="no">—</td><td class="pro-yes">✓</td><td class="yes">✓</td></tr>
             <tr class="cmp-section"><td colspan="4">Crane Diagnostic</td></tr>
             <tr><td>10-State PLC sequence</td><td class="no">—</td><td class="pro-yes">✓</td><td class="yes">✓</td></tr>
             <tr><td>3 architecture paths</td><td class="no">—</td><td class="pro-yes">✓</td><td class="yes">✓</td></tr>
@@ -380,7 +381,7 @@ table.cmp .cmp-section td{background:var(--hm-surface);font-family:var(--hm-cond
         </div>
         <div class="faq-item">
           <div class="faq-q" onclick="toggleFaq(this)">What OEM manuals are included in Pro?<span class="faq-toggle">+</span></div>
-          <div class="faq-a">Pro includes 48+ indexed OEM manuals across KB1–KB48 covering Rexroth A4VG/A10VO/A10VSO, Sauer Danfoss Series 90/S45, Eaton, Liebherr CBG 350 Litronic, MacGregor HMC, NOV AHC, SeaTrax, Favelle Favco, and more.</div>
+          <div class="faq-a">Pro includes 86 KB entries across KB1–KB86 — covering Rexroth A4VG/A10VO, Danfoss Series 90/45, Liebherr, MacGregor, Favelle Favco, Verschoof crane calcs, DNV-ST-0378, ISO 4413, Flitney seals, AISI wire rope, rigging handbook, and more.</div>
         </div>
       </div>
     </div>
@@ -407,7 +408,7 @@ table.cmp .cmp-section td{background:var(--hm-surface);font-family:var(--hm-cond
   </div><!-- /hm-main -->
 
   <!-- RIGHT SIDEBAR — Value Panel -->
-  <div class="hm-sidebar-right">
+  <div class="hm-sidebar-right" id="hmAdSidebar">
     <div class="rs-card" style="border-color:rgba(249,115,22,.3);">
       <div class="rs-title">Pro Plan</div>
       <div style="font-family:var(--hm-cond);font-size:1.6rem;font-weight:700;color:var(--hm-orange);">$69<span style="font-size:.9rem;color:var(--hm-muted);font-weight:400;">/mo</span></div>
@@ -416,7 +417,7 @@ table.cmp .cmp-section td{background:var(--hm-surface);font-family:var(--hm-cond
     </div>
     <div class="rs-card">
       <div class="rs-title">What You Get</div>
-      <div class="rs-chip chip-g">✓ 48+ OEM Manuals</div>
+      <div class="rs-chip chip-g">✓ 86 KB Entries</div>
       <div class="rs-chip chip-o">✓ Crane Diagnostic</div>
       <div class="rs-chip chip-b">✓ System Design</div>
       <div class="rs-chip chip-g">✓ Unlimited AI</div>
@@ -424,16 +425,18 @@ table.cmp .cmp-section td{background:var(--hm-surface);font-family:var(--hm-cond
     </div>
     <div class="rs-card">
       <div class="rs-title">KB Coverage</div>
-      <div class="rs-row"><span class="rs-key">Manuals</span><span class="rs-val">48+</span></div>
+      <div class="rs-row"><span class="rs-key">KB Entries</span><span class="rs-val">86</span></div>
+      <div class="rs-row"><span class="rs-key">Lines of Data</span><span class="rs-val">6,533</span></div>
       <div class="rs-row"><span class="rs-key">OEM Brands</span><span class="rs-val">12+</span></div>
-      <div class="rs-row"><span class="rs-key">Field Cases</span><span class="rs-val">KB30–48</span></div>
+      <div class="rs-row"><span class="rs-key">Standards</span><span class="rs-val">DNV/ISO/FEM</span></div>
+      <div class="rs-row"><span class="rs-key">Field Cases</span><span class="rs-val">KB30–KB86</span></div>
       <div class="rs-row"><span class="rs-key">Architectures</span><span class="rs-val">3</span></div>
     </div>
     <div class="rs-card">
       <div class="rs-title">Built For</div>
       <div style="font-family:var(--hm-cond);font-size:1.1rem;font-weight:700;color:var(--hm-orange);">Engineers</div>
       <div style="font-size:10px;color:var(--hm-muted);margin-bottom:8px;">offshore & marine crane operations</div>
-      <div style="font-family:var(--hm-mono);font-size:.65rem;color:var(--hm-yellow);">48+ OEM Manuals Indexed</div>
+      <div style="font-family:var(--hm-mono);font-size:.65rem;color:var(--hm-yellow);">86 KB Entries · 6,533 Lines</div>
     </div>
     <div class="rs-card">
       <div class="rs-title">Need Help?</div>
