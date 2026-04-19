@@ -268,16 +268,16 @@ Do NOT use Desktop Commander for container filesystem.
 
 ---
 
-## RULE 11 — PENDING TASKS (as of Apr 19, 2026)
+## RULE 11 — PENDING TASKS (as of Apr 19, 2026 — end of session)
 
 | Priority | Task | Status |
 |---|---|---|
 | 1 | Upload Fukushima IHI manual → complete KB48 | ⏳ Waiting on manual |
-| 2 | EAS build versionCode 35 | ⏳ Wait May 1, 2026 |
-| 3 | Fix left sidebar grid on pricing.html + feedback.html | ⏳ Pending |
-| 4 | Fix pages/knowledge.html sidebar positioning | ⏳ Pending |
-| 5 | HydroFit EAS build May 1 | ⏳ Pending |
-| 6 | Play Store production track — 14-day review (submitted Apr 19) | ⏳ In review |
+| 2 | EAS build versionCode 35 — Android app | ⏳ Wait May 1, 2026 |
+| 3 | Play Store production track review | ⏳ In review (submitted Apr 19) |
+| 4 | HydroFit EAS build | ⏳ Wait May 1, 2026 |
+| 5 | Visual QA of pricing.html / knowledge.html sidebars on live site | ⏳ Minor |
+| 6 | KB87+ — additional books if available | ⏳ As needed |
 
 ---
 
