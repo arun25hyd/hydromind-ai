@@ -88,12 +88,16 @@ INSPECT → PLAN → EXECUTE → VERIFY → COMMIT
 ### Mac File Paths (EXACT — never guess)
 | Item | Path |
 |---|---|
-| Frontend root | `/Users/admin/Desktop/HydroMind/hydromind-frontend` |
-| Backend root | `/Users/admin/Desktop/HydroMind/hydromind-backend` |
-| SKILL.md (master) | `/Users/admin/Desktop/HydroMind/SKILL.md` |
-| Session skill | `/Users/admin/skills/claude-session-skill/SKILL.md` |
-| Android app | `/Users/admin/hydromind` |
-| HydroFit app | `/Users/admin/hydrofit` |
+| **Platform root** | `/Users/admin/HydroMind-Platform/` |
+| Frontend root | `/Users/admin/HydroMind-Platform/web-frontend` |
+| Backend root | `/Users/admin/HydroMind-Platform/backend` |
+| Android app | `/Users/admin/HydroMind-Platform/android-app` |
+| HydroFit app | `/Users/admin/HydroMind-Platform/hydrofit-app` |
+| OpenClaw agent | `/Users/admin/HydroMind-Platform/openclaw` |
+| SKILL.md (master) | `/Users/admin/HydroMind-Platform/SKILL.md` |
+| AI Advisor skill | `/Users/admin/HydroMind-Platform/skills/ai-advisor/SKILL.md` |
+| Session skill | `/Users/admin/HydroMind-Platform/skills/session-skill/SKILL.md` |
+| Docs / marketing | `/Users/admin/HydroMind-Platform/docs/` |
 | Claude Code | `/Users/admin/.npm-global/bin/claude` |
 
 ### Backend State
