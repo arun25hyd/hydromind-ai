@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Knowledge Base — HydroMind.AI | 86 Entries · 6,533 Lines</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --o:#FF6B1A;--o2:#FF9A4A;--og:rgba(255,107,26,0.15);
+  --bg:#080A0C;--bg2:#0D1014;--bg3:#131820;--bg4:#1A2028;
+  --b:rgba(255,255,255,0.07);--bo:rgba(255,107,26,0.25);
+  --t:#EEF0F4;--td:#8A919E;--tm:#404855;
+  --green:#34D399;--blue:#60A5FA;--purple:#A78BFA;--yellow:#FBBF24;
+  --sans:'Space Grotesk',sans-serif;--mono:'Space Mono',monospace;
+  --r:10px;
+}
+html{font-family:var(--sans);background:var(--bg);color:var(--t);overflow-x:hidden;scroll-behavior:smooth}
+a{text-decoration:none;color:inherit}
+button{font-family:var(--sans);cursor:pointer}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+
+/* ── BG ── */
+.bg-wrap{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:var(--bg)}
+#bgCanvas{position:absolute;inset:0;width:100%;height:100%}
+
+/* ── LAYOUT ── */
+.page{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+.container{max-width:1340px;margin:0 auto;padding:0 40px}
+
+/* ── UTILS ── */
+.dot-pulse{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.8s ease-in-out infinite;display:inline-block}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.7)}}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:100px;font-family:var(--mono);font-size:11px;letter-spacing:.05em}
+.badge-green{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);color:var(--green)}
+.badge-orange{background:rgba(255,107,26,.1);border:1px solid var(--bo);color:var(--o)}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;height:58px;
+  border-bottom:1px solid var(--b);background:rgba(8,10,12,.88);backdrop-filter:blur(20px);padding:0 32px}
+.nav-logo{display:flex;align-items:center;gap:10px;margin-right:36px}
+.nav-logo-icon{width:30px;height:30px;border-radius:7px;
+  background:linear-gradient(135deg,var(--o),var(--o2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:12px;font-weight:700;color:#000}
+.nav-logo-text{font-size:14px;font-weight:700;letter-spacing:.04em}
+.nav-logo-text b{color:var(--o)}
+.nav-links{display:flex;align-items:center;gap:1px;flex:1}
+.nav-links a{padding:5px 13px;border-radius:6px;font-size:13px;font-weight:500;color:var(--td);transition:all .15s}
+.nav-links a:hover{color:var(--t);background:var(--bg3)}
+.nav-links a.active{color:var(--t);background:rgba(255,107,26,.08)}
+.nav-links a.hl{color:var(--o)}
+.nav-r{display:flex;align-items:center;gap:10px}
+.btn-login{font-size:13px;font-weight:500;color:var(--td);padding:6px 14px;border-radius:6px;border:1px solid var(--b);background:transparent;transition:all .15s}
+.btn-login:hover{color:var(--t)}
+.btn-pro{font-size:13px;font-weight:700;color:#000;background:var(--o);padding:7px 18px;border-radius:7px;border:none;transition:all .15s}
+.btn-pro:hover{background:var(--o2)}
+.nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none;margin-left:8px}
+.nav-toggle span{width:22px;height:2px;background:var(--td);border-radius:2px}
+.mobile-menu{display:none;position:fixed;top:58px;left:0;right:0;z-index:190;background:rgba(8,10,12,.97);border-bottom:1px solid var(--b);backdrop-filter:blur(20px);flex-direction:column;padding:12px 20px 20px}
+.mobile-menu.open{display:flex}
+.mobile-menu a{padding:11px 12px;font-size:15px;font-weight:500;color:var(--td);border-radius:8px;transition:all .15s}
+.mobile-menu a:hover,.mobile-menu a.active{color:var(--t);background:var(--bg3)}
+.mobile-menu a.hl{color:var(--o)}
+.mobile-menu-btns{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--b)}
+@media(max-width:900px){
+  .kb-layout{flex-direction:column}
+  .kb-sidebar{width:100%;border-right:none;border-bottom:1px solid var(--b);padding-bottom:16px}
+  .doc-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:640px){
+  .nav-links,.nav-r .btn-login,.nav-r .badge-green{display:none}
+  .nav-toggle{display:flex}
+  .container,.kb-hero{padding-left:20px;padding-right:20px}
+  .ticker{padding:7px 16px;gap:14px}
+  .doc-grid{grid-template-columns:1fr}
+  .kb-hero-content{flex-direction:column}
+  .hero-stats{flex-wrap:wrap;gap:16px}
+  .kb-search-row{flex-direction:column}
+  .view-sort-row{flex-wrap:wrap;gap:8px}
+}
+
+/* ── TICKER ── */
+.ticker{display:flex;align-items:center;gap:28px;padding:7px 40px;
+  background:rgba(255,107,26,.04);border-bottom:1px solid var(--bo);
+  font-family:var(--mono);font-size:11px;color:var(--td);overflow-x:auto}
+.ticker-item{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.ticker-item .v{color:var(--o)}
+
+/* ── KB HERO ── */
+.kb-hero{padding:48px 40px 40px;max-width:1340px;margin:0 auto;width:100%}
+.kb-breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--td);margin-bottom:24px;font-family:var(--mono)}
+.kb-breadcrumb a{color:var(--td);transition:color .15s}
+.kb-breadcrumb a:hover{color:var(--t)}
+.kb-breadcrumb span{color:var(--tm)}
+
+.kb-hero-content{display:flex;align-items:flex-start;justify-content:space-between;gap:32px;flex-wrap:wrap}
+.kb-hero-left h1{font-size:clamp(28px,3.5vw,44px);font-weight:700;letter-spacing:-.02em;margin-bottom:10px}
+.kb-hero-left h1 span{color:var(--o)}
+.kb-hero-left p{font-size:15px;color:var(--td);max-width:520px;line-height:1.65}
+
+/* Search bar */
+.kb-search-wrap{position:relative;width:420px;flex-shrink:0}
+.kb-search{
+  width:100%;background:var(--bg2);border:1px solid var(--b);
+  border-radius:10px;padding:13px 48px 13px 44px;
+  font-family:var(--sans);font-size:14px;color:var(--t);outline:none;
+  transition:all .18s;
+}
+.kb-search:focus{border-color:var(--bo);box-shadow:0 0 0 3px rgba(255,107,26,.08)}
+.kb-search::placeholder{color:var(--tm)}
+.kb-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--td);pointer-events:none}
+.kb-search-clear{position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  color:var(--tm);cursor:pointer;font-size:16px;display:none;transition:color .15s}
+.kb-search-clear:hover{color:var(--t)}
+
+/* ── STATS STRIP ── */
+.kb-stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border:1px solid var(--b);border-radius:12px;overflow:hidden;
+  margin:32px 40px;max-width:calc(1340px - 80px);width:calc(100% - 80px);
+  margin-left:auto;margin-right:auto;
+  background:var(--bg2);
+}
+.kb-stat{padding:20px 24px;border-right:1px solid var(--b);position:relative}
+.kb-stat:last-child{border-right:none}
+.kb-stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--o),var(--o2));opacity:0;transition:opacity .2s}
+.kb-stat:hover::before{opacity:1}
+.kb-stat-num{font-size:32px;font-weight:700;font-family:var(--mono);color:var(--t);line-height:1}
+.kb-stat-num span{color:var(--o)}
+.kb-stat-lbl{font-size:11px;color:var(--tm);font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;margin-top:5px}
+
+/* ── MAIN LAYOUT ── */
+.kb-main{display:grid;grid-template-columns:240px 1fr;gap:24px;padding:0 40px 60px;
+  max-width:1340px;margin:0 auto;width:100%}
+
+/* ── SIDEBAR ── */
+.kb-sidebar{display:flex;flex-direction:column;gap:16px}
+.sidebar-card{background:var(--bg2);border:1px solid var(--b);border-radius:12px;overflow:hidden}
+.sidebar-hdr{padding:12px 16px;border-bottom:1px solid var(--b);
+  font-size:11px;font-weight:700;color:var(--td);font-family:var(--mono);
+  text-transform:uppercase;letter-spacing:.07em}
+
+/* Category filter */
+.cat-filter{padding:10px 10px}
+.cat-btn{
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;padding:7px 10px;border-radius:7px;font-size:13px;font-weight:500;
+  color:var(--td);background:transparent;border:none;transition:all .15s;text-align:left;
+}
+.cat-btn:hover{color:var(--t);background:var(--bg3)}
+.cat-btn.active{color:var(--o);background:rgba(255,107,26,.08)}
+.cat-btn .cat-count{font-family:var(--mono);font-size:10px;color:var(--tm);
+  background:var(--bg4);padding:2px 7px;border-radius:100px}
+.cat-btn.active .cat-count{background:rgba(255,107,26,.15);color:var(--o)}
+
+/* Brand filter */
+.brand-list{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.brand-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--td);cursor:pointer;transition:color .15s}
+.brand-item:hover{color:var(--t)}
+.brand-item input[type=checkbox]{accent-color:var(--o);width:13px;height:13px}
+
+/* Tag cloud */
+.tag-cloud{padding:12px 16px;display:flex;flex-wrap:wrap;gap:6px}
+.tag-pill{
+  font-size:11px;font-family:var(--mono);padding:3px 9px;border-radius:100px;
+  cursor:pointer;transition:all .15s;
+  background:var(--bg3);border:1px solid var(--b);color:var(--td);
+}
+.tag-pill:hover{border-color:var(--bo);color:var(--o)}
+.tag-pill.active{background:rgba(255,107,26,.1);border-color:var(--bo);color:var(--o)}
+
+/* ── CONTENT AREA ── */
+.kb-content{display:flex;flex-direction:column;gap:20px}
+
+/* Toolbar */
+.kb-toolbar{display:flex;align-items:center;gap:12px}
+.kb-result-count{font-size:13px;color:var(--td);font-family:var(--mono);flex:1}
+.kb-result-count span{color:var(--t);font-weight:700}
+.kb-sort{background:var(--bg2);border:1px solid var(--b);border-radius:7px;
+  padding:7px 12px;font-family:var(--mono);font-size:12px;color:var(--td);outline:none;cursor:pointer}
+.kb-sort:focus{border-color:var(--bo)}
+.view-btns{display:flex;gap:4px}
+.view-btn{width:32px;height:32px;background:var(--bg2);border:1px solid var(--b);
+  border-radius:7px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .15s;color:var(--td)}
+.view-btn:hover{color:var(--t);border-color:rgba(255,255,255,.15)}
+.view-btn.active{color:var(--o);border-color:var(--bo);background:rgba(255,107,26,.06)}
+
+/* Document cards grid */
+.doc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.doc-grid.list{grid-template-columns:1fr}
+
+.doc-card{
+  background:var(--bg2);border:1px solid var(--b);border-radius:12px;
+  padding:18px 20px;transition:all .2s;cursor:pointer;position:relative;overflow:hidden;
+}
+.doc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--o),var(--o2));opacity:0;transition:opacity .2s}
+.doc-card:hover{border-color:var(--bo);transform:translateY(-1px);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.doc-card:hover::before{opacity:1}
+
+.doc-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.doc-kb-num{font-family:var(--mono);font-size:11px;color:var(--o);background:rgba(255,107,26,.1);
+  border:1px solid rgba(255,107,26,.2);padding:2px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0}
+.doc-cat-badge{font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:4px;flex-shrink:0}
+.cat-pumps{background:rgba(255,107,26,.1);color:var(--o);border:1px solid rgba(255,107,26,.2)}
+.cat-motors{background:rgba(96,165,250,.1);color:var(--blue);border:1px solid rgba(96,165,250,.2)}
+.cat-valves{background:rgba(167,139,250,.1);color:var(--purple);border:1px solid rgba(167,139,250,.2)}
+.cat-cranes{background:rgba(251,191,36,.1);color:var(--yellow);border:1px solid rgba(251,191,36,.2)}
+.cat-trouble{background:rgba(248,113,113,.1);color:#F87171;border:1px solid rgba(248,113,113,.2)}
+.cat-electrical{background:rgba(52,211,153,.1);color:var(--green);border:1px solid rgba(52,211,153,.2)}
+.cat-symbols{background:rgba(255,255,255,.07);color:var(--td);border:1px solid var(--b)}
+.cat-accessories{background:rgba(255,107,26,.07);color:var(--o);border:1px solid rgba(255,107,26,.15)}
+
+.doc-card h3{font-size:14px;font-weight:600;line-height:1.35;margin-bottom:6px}
+.doc-card p{font-size:12px;color:var(--td);line-height:1.55;margin-bottom:12px}
+.doc-card-footer{display:flex;align-items:center;justify-content:space-between}
+.doc-brand{font-family:var(--mono);font-size:10px;color:var(--tm);
+  display:flex;align-items:center;gap:5px}
+.doc-brand svg{color:var(--td)}
+.doc-actions{display:flex;gap:6px}
+.btn-ask{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:600;color:var(--o);
+  background:rgba(255,107,26,.08);border:1px solid rgba(255,107,26,.2);
+  padding:5px 10px;border-radius:6px;transition:all .15s;
+}
+.btn-ask:hover{background:rgba(255,107,26,.15);transform:translateY(-1px)}
+.btn-view{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:500;color:var(--td);
+  background:var(--bg3);border:1px solid var(--b);
+  padding:5px 10px;border-radius:6px;transition:all .15s;
+}
+.btn-view:hover{color:var(--t);border-color:rgba(255,255,255,.15)}
+
+/* Locked card overlay */
+.doc-card.locked::after{
+  content:'🔒 Pro';position:absolute;top:10px;right:10px;
+  font-size:10px;font-family:var(--mono);color:var(--td);
+  background:var(--bg3);border:1px solid var(--b);padding:2px 8px;border-radius:4px;
+}
+
+/* Load more */
+.load-more-btn{
+  width:100%;padding:13px;border-radius:9px;border:1px solid var(--b);
+  background:transparent;color:var(--td);font-size:14px;font-weight:600;
+  transition:all .2s;
+}
+.load-more-btn:hover{border-color:var(--bo);color:var(--o);background:rgba(255,107,26,.04)}
+
+/* Empty state */
+.empty-state{text-align:center;padding:60px 20px;color:var(--td)}
+.empty-state svg{opacity:.3;margin-bottom:16px}
+.empty-state h3{font-size:18px;font-weight:600;margin-bottom:8px;color:var(--t)}
+.empty-state p{font-size:14px}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--b);padding:40px;max-width:1340px;margin:0 auto;width:100%}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:32px}
+.footer-brand h3{font-size:15px;font-weight:700;margin-bottom:8px}
+.footer-brand h3 span{color:var(--o)}
+.footer-brand p{font-size:13px;color:var(--td);line-height:1.6;max-width:260px;margin-bottom:14px}
+.footer-col h4{font-size:11px;font-weight:700;color:var(--td);text-transform:uppercase;
+  letter-spacing:.07em;font-family:var(--mono);margin-bottom:14px}
+.footer-col a{display:block;font-size:13px;color:var(--td);margin-bottom:8px;transition:color .15s}
+.footer-col a:hover{color:var(--t)}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;
+  padding-top:20px;border-top:1px solid var(--b);font-size:12px;color:var(--tm);font-family:var(--mono)}
+</style>
+</head>
+<body>
+
+<div class="bg-wrap"><canvas id="bgCanvas"></canvas></div>
+
+<div class="page">
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="hydromind.html">
+    <div class="nav-logo-icon">HM</div>
+    <span class="nav-logo-text">HYDRO<b>MIND</b>.AI</span>
+  </a>
+  <div class="nav-links">
+    <a href="hydromind.html">Platform</a>
+    <a href="knowledge_base.html" class="active">Knowledge Base</a>
+    <a href="crane_diagnostic.html">Crane Diagnostic</a>
+    <a href="ai_advisor.html">AI Advisor</a>
+    <a href="system_design.html">System Design</a>
+    <a href="pricing.html" class="hl">Pricing</a>
+  </div>
+  <div class="nav-r">
+    <div class="badge badge-green"><span class="dot-pulse"></span> AI ONLINE</div>
+    <button class="btn-login">Login</button>
+    <button class="btn-pro">Get Pro →</button>
+  </div>
+  <button class="nav-toggle" id="navToggle" onclick="document.getElementById('mobileMenu').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="hydromind.html">Platform</a>
+  <a href="knowledge_base.html" class="active hl">Knowledge Base</a>
+  <a href="crane_diagnostic.html">Crane Diagnostic</a>
+  <a href="ai_advisor.html">AI Advisor</a>
+  <a href="pricing.html">Pricing</a>
+  <div class="mobile-menu-btns">
+    <button class="btn-login" style="flex:1;text-align:center;padding:10px">Login</button>
+    <button class="btn-pro" style="flex:1;padding:10px">Get Pro</button>
+  </div>
+</div>
+<div class="ticker container">
+  <div class="ticker-item"><span class="dot-pulse"></span><span>KB: <span class="v">V3.0</span></span></div>
+  <span style="color:var(--tm)">|</span>
+  <div class="ticker-item">ENTRIES: <span class="v">86 INDEXED</span></div>
+  <span style="color:var(--tm)">|</span>
+  <div class="ticker-item">LINES: <span class="v">6,533</span></div>
+  <span style="color:var(--tm)">|</span>
+  <div class="ticker-item">OEM MANUALS: <span class="v">48+</span></div>
+  <span style="color:var(--tm)">|</span>
+  <div class="ticker-item">LAST UPDATED: <span class="v">APRIL 2026</span></div>
+</div>
+
+<!-- KB HERO -->
+<div class="kb-hero">
+  <div class="kb-breadcrumb">
+    <a href="hydromind.html">Home</a>
+    <span>›</span>
+    <span style="color:var(--t)">Knowledge Base</span>
+  </div>
+  <div class="kb-hero-content">
+    <div class="kb-hero-left">
+      <div class="badge badge-orange" style="margin-bottom:14px">
+        <svg width="8" height="8" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></svg>
+        Technical Document Library
+      </div>
+      <h1>Hydraulic <span>Knowledge</span> Base</h1>
+      <p>OEM manuals, field cases, hydraulic system documentation and troubleshooting guides — fully indexed and searchable via AI Advisor.</p>
+    </div>
+    <div class="kb-search-wrap" style="margin-top:8px">
+      <svg class="kb-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="kb-search" id="kbSearch" type="text" placeholder="Search documents, standards, OEM brands…" oninput="filterDocs()">
+      <span class="kb-search-clear" id="kbClear" onclick="clearSearch()">✕</span>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="kb-stats">
+  <div class="kb-stat">
+    <div class="kb-stat-num"><span id="ks1">0</span></div>
+    <div class="kb-stat-lbl">Documents Indexed</div>
+  </div>
+  <div class="kb-stat">
+    <div class="kb-stat-num"><span id="ks2">0</span>+</div>
+    <div class="kb-stat-lbl">OEM Brands</div>
+  </div>
+  <div class="kb-stat">
+    <div class="kb-stat-num">v<span>3.0</span></div>
+    <div class="kb-stat-lbl">KB Version</div>
+  </div>
+  <div class="kb-stat">
+    <div class="kb-stat-num"><span id="ks3">0</span></div>
+    <div class="kb-stat-lbl">Schematics Included</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="kb-main">
+
+  <!-- SIDEBAR -->
+  <aside class="kb-sidebar">
+
+    <!-- Category filter -->
+    <div class="sidebar-card">
+      <div class="sidebar-hdr">Categories</div>
+      <div class="cat-filter" id="catFilter">
+        <button class="cat-btn active" onclick="setCategory('all',this)">
+          All Documents<span class="cat-count" id="cc-all">86</span>
+        </button>
+        <button class="cat-btn" onclick="setCategory('pumps',this)">
+          Pumps<span class="cat-count" id="cc-pumps">0</span>
+        </button>
+        <button class="cat-btn" onclick="setCategory('motors',this)">
+          Motors<span class="cat-count" id="cc-motors">0</span>
+        </button>
+        <button class="cat-btn" onclick="setCategory('valves',this)">
+          Valves<span class="cat-count" id="cc-valves">0</span>
+        </button>
+        <button class="cat-btn" onclick="setCategory('cranes',this)">
+          Cranes<span class="cat-count" id="cc-cranes">0</span>
+        </button>
+        <button class="cat-btn" onclick="setCategory('trouble',this)">
+          Troubleshooting<span class="cat-count" id="cc-trouble">0</span>
+        </button>
+        <button class="cat-btn" onclick="setCategory('electrical',this)">
+          Electrical/PLC<span class="cat-count" id="cc-electrical">0</span>
+        </button>
+        <button class="cat-btn" onclick="setCategory('symbols',this)">
+          Symbols/ISO<span class="cat-count" id="cc-symbols">0</span>
+        </button>
+        <button class="cat-btn" onclick="setCategory('accessories',this)">
+          Accessories<span class="cat-count" id="cc-accessories">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Brand filter -->
+    <div class="sidebar-card">
+      <div class="sidebar-hdr">OEM Brands</div>
+      <div class="brand-list" id="brandList">
+        <label class="brand-item"><input type="checkbox" onchange="filterDocs()"> Rexroth</label>
+        <label class="brand-item"><input type="checkbox" onchange="filterDocs()"> Sauer Danfoss</label>
+        <label class="brand-item"><input type="checkbox" onchange="filterDocs()"> Liebherr</label>
+        <label class="brand-item"><input type="checkbox" onchange="filterDocs()"> MacGregor</label>
+        <label class="brand-item"><input type="checkbox" onchange="filterDocs()"> Eaton</label>
+        <label class="brand-item"><input type="checkbox" onchange="filterDocs()"> Parker</label>
+        <label class="brand-item"><input type="checkbox" onchange="filterDocs()"> NOV</label>
+        <label class="brand-item"><input type="checkbox" onchange="filterDocs()"> Favco</label>
+        <label class="brand-item"><input type="checkbox" onchange="filterDocs()"> SeaTrax</label>
+        <label class="brand-item"><input type="checkbox" onchange="filterDocs()"> DNV / ISO</label>
+      </div>
+    </div>
+
+    <!-- Tags -->
+    <div class="sidebar-card">
+      <div class="sidebar-hdr">Quick Tags</div>
+      <div class="tag-cloud">
+        <span class="tag-pill" onclick="tagSearch('A4VG')">A4VG</span>
+        <span class="tag-pill" onclick="tagSearch('A10VO')">A10VO</span>
+        <span class="tag-pill" onclick="tagSearch('Series 90')">Series 90</span>
+        <span class="tag-pill" onclick="tagSearch('HVOF')">HVOF</span>
+        <span class="tag-pill" onclick="tagSearch('DNV')">DNV</span>
+        <span class="tag-pill" onclick="tagSearch('ISO 4413')">ISO 4413</span>
+        <span class="tag-pill" onclick="tagSearch('offshore')">Offshore</span>
+        <span class="tag-pill" onclick="tagSearch('piston rod')">Piston Rod</span>
+        <span class="tag-pill" onclick="tagSearch('slewing')">Slewing</span>
+        <span class="tag-pill" onclick="tagSearch('seal')">Seals</span>
+        <span class="tag-pill" onclick="tagSearch('VFD')">VFD</span>
+        <span class="tag-pill" onclick="tagSearch('PLC')">PLC</span>
+        <span class="tag-pill" onclick="tagSearch('Verschoof')">Verschoof</span>
+        <span class="tag-pill" onclick="tagSearch('wire rope')">Wire Rope</span>
+      </div>
+    </div>
+
+    <!-- Ask AI -->
+    <div style="background:linear-gradient(135deg,rgba(255,107,26,.1),rgba(255,107,26,.04));border:1px solid var(--bo);border-radius:12px;padding:18px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:6px">Can't find it?</div>
+      <div style="font-size:12px;color:var(--td);margin-bottom:14px;line-height:1.5">Ask the AI Advisor — it searches all 86 KB entries instantly.</div>
+      <button onclick="window.open('#','_blank')" style="width:100%;background:var(--o);color:#000;font-weight:700;font-size:13px;padding:9px;border-radius:8px;border:none;transition:all .15s" onmouseover="this.style.background='#FF8040'" onmouseout="this.style.background='var(--o)'">
+        Ask AI Advisor →
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- CONTENT -->
+  <div class="kb-content">
+
+    <!-- Toolbar -->
+    <div class="kb-toolbar">
+      <div class="kb-result-count">Showing <span id="resultCount">86</span> documents</div>
+      <select class="kb-sort" onchange="sortDocs(this.value)">
+        <option value="num">Sort: KB Number</option>
+        <option value="title">Sort: A–Z</option>
+        <option value="cat">Sort: Category</option>
+      </select>
+      <div class="view-btns">
+        <button class="view-btn active" id="vGrid" onclick="setView('grid')" title="Grid view">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </button>
+        <button class="view-btn" id="vList" onclick="setView('list')" title="List view">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Doc grid -->
+    <div class="doc-grid" id="docGrid"></div>
+
+    <!-- Load more -->
+    <button class="load-more-btn" id="loadMoreBtn" onclick="loadMore()">Load More Documents</button>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h3>HYDRO<span>MIND</span>.AI</h3>
+      <p>AI-powered hydraulic intelligence for offshore engineers and technicians.</p>
+      <div class="badge badge-green"><span class="dot-pulse"></span> AI Online — KB V3.0</div>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="#">AI Advisor</a><a href="#">Crane Diagnostic</a>
+      <a href="#">System Design</a><a href="#">Knowledge Base</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">Pricing</a><a href="#">Feedback</a>
+      <a href="#">Privacy Policy</a><a href="#">Disclaimer</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="/cdn-cgi/l/email-protection#ec9f999c9c839e98ac8495889e83818582888d85c28f8381"><span class="__cf_email__" data-cfemail="ddaea8adadb2afa99db5a4b9afb2b0b4b3b9bcb4f3beb2b0">[email&#160;protected]</span></a>
+      <a href="#">Abu Dhabi, UAE</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 HydroMind.AI — All rights reserved</span>
+    <div style="display:flex;gap:20px"><a href="#">Privacy</a><a href="#">Disclaimer</a></div>
+  </div>
+</footer>
+
+</div><!-- /page -->
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ── FLUID PARTICLE BG (shared)
+(function(){
+  const canvas=document.getElementById('bgCanvas'),ctx=canvas.getContext('2d');
+  const PD=[
+    {c:'hp', pts:[{x:.02,y:.18},{x:.35,y:.14},{x:.65,y:.20},{x:.99,y:.17}]},
+    {c:'hp', pts:[{x:.15,y:0},{x:.14,y:.3},{x:.16,y:.65},{x:.15,y:1}]},
+    {c:'hp', pts:[{x:.55,y:0},{x:.54,y:.28},{x:.56,y:.6},{x:.55,y:1}]},
+    {c:'hp', pts:[{x:.82,y:0},{x:.81,y:.35},{x:.83,y:.7},{x:.82,y:1}]},
+    {c:'suc',pts:[{x:0,y:.55},{x:.28,y:.51},{x:.60,y:.58},{x:.99,y:.54}]},
+    {c:'suc',pts:[{x:.35,y:0},{x:.34,y:.32},{x:.36,y:.68},{x:.35,y:1}]},
+    {c:'suc',pts:[{x:.70,y:0},{x:.69,y:.30},{x:.71,y:.65},{x:.70,y:1}]},
+    {c:'ret',pts:[{x:0,y:.35},{x:.25,y:.38},{x:.55,y:.33},{x:.99,y:.36}]},
+    {c:'ret',pts:[{x:0,y:.78},{x:.22,y:.74},{x:.50,y:.80},{x:.99,y:.77}]},
+    {c:'ret',pts:[{x:.45,y:0},{x:.44,y:.28},{x:.46,y:.62},{x:.45,y:1}]},
+  ];
+  const COL={hp:{r:255,g:107,b:26},suc:{r:74,g:144,b:217},ret:{r:90,g:112,b:128}};
+  let W=0,H=0,parts=[];
+  function spl(pts,t){
+    const n=pts.length-1,seg=Math.min(Math.floor(t*n),n-1),lt=t*n-seg;
+    const p0=pts[Math.max(seg-1,0)],p1=pts[seg],p2=pts[Math.min(seg+1,n)],p3=pts[Math.min(seg+2,n)];
+    return{x:W*(0.5*((2*p1.x)+(-p0.x+p2.x)*lt+(2*p0.x-5*p1.x+4*p2.x-p3.x)*lt*lt+(-p0.x+3*p1.x-3*p2.x+p3.x)*lt*lt*lt)),
+           y:H*(0.5*((2*p1.y)+(-p0.y+p2.y)*lt+(2*p0.y-5*p1.y+4*p2.y-p3.y)*lt*lt+(-p0.y+3*p1.y-3*p2.y+p3.y)*lt*lt*lt))};
+  }
+  function P(pipe){this.pipe=pipe;this.t=Math.random();this.spd=0.00017+Math.random()*0.00022;this.sz=1.2+Math.random()*2;this.op=0.12+Math.random()*0.24;this.trail=[];this.tl=5+Math.floor(Math.random()*9);}
+  P.prototype.tick=function(){this.trail.push(this.t);if(this.trail.length>this.tl)this.trail.shift();this.t=(this.t+this.spd)%1;};
+  P.prototype.draw=function(){const c=COL[this.pipe.c],pos=spl(this.pipe.pts,this.t);
+    this.trail.forEach(function(tr,i){const a=(i/this.tl)*this.op*0.4,tp=spl(this.pipe.pts,tr);ctx.beginPath();ctx.arc(tp.x,tp.y,this.sz*0.5*(i/this.tl),0,Math.PI*2);ctx.fillStyle='rgba('+c.r+','+c.g+','+c.b+','+a+')';ctx.fill();}.bind(this));
+    ctx.beginPath();ctx.arc(pos.x,pos.y,this.sz,0,Math.PI*2);ctx.fillStyle='rgba('+c.r+','+c.g+','+c.b+','+this.op+')';ctx.fill();
+    if(this.pipe.c==='hp'&&this.op>0.2){ctx.beginPath();ctx.arc(pos.x,pos.y,this.sz*3,0,Math.PI*2);ctx.fillStyle='rgba(255,107,26,'+(this.op*0.05)+')';ctx.fill();}
+  };
+  function build(){parts=[];PD.forEach(function(d){for(var i=0;i<9+Math.floor(Math.random()*8);i++)parts.push(new P(d));});}
+  function frame(){
+    ctx.clearRect(0,0,W,H);
+    // grid
+    ctx.strokeStyle='rgba(255,107,26,0.02)';ctx.lineWidth=1;
+    for(var x=0;x<W;x+=56){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(var y=0;y<H;y+=56){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    // radials
+    var g=ctx.createRadialGradient(W*.8,0,0,W*.8,0,W*.5);g.addColorStop(0,'rgba(255,107,26,0.06)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    // pipe lines
+    PD.forEach(function(d){const c=COL[d.c];ctx.beginPath();for(var i=0;i<=60;i++){var p=spl(d.pts,i/60);if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);}ctx.strokeStyle='rgba('+c.r+','+c.g+','+c.b+',0.035)';ctx.lineWidth=1;ctx.stroke();});
+    parts.forEach(function(p){p.tick();p.draw();});
+    requestAnimationFrame(frame);
+  }
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;build();}
+  window.addEventListener('resize',resize);resize();frame();
+})();
+
+// ── KB DATA
+const KB_DATA = [
+  {id:'KB01',title:'Rexroth A4VG Variable Displacement Pump — Service Manual',cat:'pumps',brand:'Rexroth',desc:'Complete overhaul, commissioning, and fault diagnosis for A4VG 28/40/56/71/90/125/180/250 series. Includes servo control, pressure setting, and charge pump specs.',tags:['A4VG','variable pump','servo','Rexroth'],free:true},
+  {id:'KB02',title:'Rexroth A10VO/A10VSO Axial Piston Pump — Technical Manual',cat:'pumps',brand:'Rexroth',desc:'Series 31/52 open circuit axial piston pumps. Displacement 18–140cc/rev. Control types: DRG, DFR, DR, DA.',tags:['A10VO','A10VSO','axial piston','Rexroth'],free:true},
+  {id:'KB03',title:'Sauer Danfoss Series 90 Closed-Circuit Transmission',cat:'pumps',brand:'Sauer Danfoss',desc:'Series 90 variable pumps (42–180cc/rev) in closed-circuit configurations. Start-up, charge pressure, shaft seals, and multifunction valve block.',tags:['Series 90','closed circuit','Sauer Danfoss'],free:true},
+  {id:'KB04',title:'Sauer Danfoss S45 Single/Tandem Pump',cat:'pumps',brand:'Sauer Danfoss',desc:'Gear pumps and tandem configurations for auxiliary circuits. Port plate inspection, pressure relief, and wear analysis.',tags:['S45','gear pump','Sauer Danfoss'],free:false},
+  {id:'KB05',title:'Eaton Vickers Vane Pump — Series V/VQ',cat:'pumps',brand:'Eaton',desc:'Vane pump cartridge replacement, cam ring wear measurement, pressure compensator setting, and flow test procedures.',tags:['vane pump','Eaton','Vickers','cartridge'],free:false},
+  {id:'KB06',title:'Parker Hannifin PV Series Axial Piston Pump',cat:'pumps',brand:'Parker',desc:'PV016–PV360 variable displacement pumps. Proportional control, load sensing, displacement control.',tags:['PV series','Parker','axial piston'],free:false},
+  {id:'KB07',title:'Rexroth A6VM Variable Displacement Motor',cat:'motors',brand:'Rexroth',desc:'A6VM 55–1000cc/rev variable displacement bent-axis motors. Torque, speed, case drain, and minimum displacement adjustment.',tags:['A6VM','variable motor','Rexroth'],free:true},
+  {id:'KB08',title:'Sauer Danfoss Series 90 Motor — Field Service',cat:'motors',brand:'Sauer Danfoss',desc:'Series 90 radial and bent-axis motor disassembly, bearing inspection, charge pressure relief, and flushing procedure.',tags:['Series 90','motor','Sauer Danfoss'],free:false},
+  {id:'KB09',title:'Staffa Radial Piston Motor — MRE/MRS Series',cat:'motors',brand:'Staffa',desc:'High-torque low-speed radial piston motors for crane slew and winch applications. Brake valve integration, shaft seal replacement.',tags:['Staffa','radial piston','low speed','crane'],free:false},
+  {id:'KB10',title:'Rexroth 4WE/4WH Directional Control Valve',cat:'valves',brand:'Rexroth',desc:'NG6/NG10/NG16 solenoid and pilot operated DCVs. Spool configurations, coil replacement, manual override, leakage testing.',tags:['DCV','solenoid valve','WE6','Rexroth'],free:true},
+  {id:'KB11',title:'Rexroth DBDS Pressure Relief Valve — Setting Guide',cat:'valves',brand:'Rexroth',desc:'DBDS 6/10/20/30 direct-acting pressure relief valves. Pressure setting, seat inspection, cracking pressure vs set pressure.',tags:['relief valve','DBDS','pressure','Rexroth'],free:true},
+  {id:'KB12',title:'Counterbalance Valve — CPOM/CKEB Diagnosis',cat:'valves',brand:'Sun Hydraulics',desc:'Counterbalance valve chattering diagnosis, load-induced instability, pilot ratio selection, and port relief integration.',tags:['counterbalance valve','CBV','chattering','Sun'],free:true},
+  {id:'KB13',title:'Load Sensing Pressure Compensator — LUDV System',cat:'valves',brand:'Rexroth',desc:'Load-sensing differential pressure control, LS line diagnostics, standby pressure, and margin pressure setting.',tags:['LUDV','load sensing','LS','Rexroth'],free:false},
+  {id:'KB14',title:'Parker Proportional Valve — D3FH/D31FH Series',cat:'valves',brand:'Parker',desc:'Proportional directional control valves. Amplifier card adjustment (zero, gain, ramp, dither), LVDT feedback, hysteresis.',tags:['proportional valve','Parker','amplifier','LVDT'],free:false},
+  {id:'KB15',title:'Liebherr CBG 350 Litronic Crane — Hydraulic Manual',cat:'cranes',brand:'Liebherr',desc:'CBG 350 pedestal crane hydraulic system. Slew, hoist, luffing circuits. Counterbalance valve settings, hoist brake, relief valves.',tags:['Liebherr','CBG 350','crane','offshore'],free:false},
+  {id:'KB16',title:'MacGregor HMC 400 Crane — Service Documentation',cat:'cranes',brand:'MacGregor',desc:'Hydraulic motor crane HMC 400. Deck crane hydraulic schematic, relief settings, swivel joint inspection, wire rope reeving.',tags:['MacGregor','HMC','deck crane'],free:false},
+  {id:'KB17',title:'NOV AHC Active Heave Compensation — System Guide',cat:'cranes',brand:'NOV',desc:'Active heave compensation hydraulic accumulator system. Accumulators, servo valves, LVDT sensors, control loop tuning.',tags:['NOV','AHC','heave compensation','offshore'],free:false},
+  {id:'KB18',title:'SeaTrax S330 Crane — Hydraulic Fault Codes',cat:'cranes',brand:'SeaTrax',desc:'S330 offshore crane fault code library. PLC diagnostic codes, pressure sensor faults, safety system overrides.',tags:['SeaTrax','S330','fault codes','PLC'],free:false},
+  {id:'KB19',title:'Favelle Favco M440D Crane — Hydraulic Manual',cat:'cranes',brand:'Favco',desc:'Tower crane M440D hydraulic system. Slewing torque calculations, Verschoof formula application, circuit diagram.',tags:['Favco','M440D','slewing','Verschoof'],free:false},
+  {id:'KB20',title:'Hydraulic Cylinder Piston Rod Materials — Offshore Selection',cat:'trouble',brand:'HydroMind',desc:'Material selection for piston rods in salt atmosphere: CK45/C45E steel, HVOF (WC-Co) vs hard chrome, surface finish requirements.',tags:['piston rod','HVOF','offshore','material','CK45'],free:true},
+  {id:'KB21',title:'Hydraulic Pump Cavitation — Diagnosis and Prevention',cat:'trouble',brand:'HydroMind',desc:'Identifying cavitation vs aeration. Suction line sizing, charge pressure checks, fluid viscosity at start-up, noise analysis.',tags:['cavitation','aeration','pump noise','suction'],free:true},
+  {id:'KB22',title:'Hydraulic System Overheating — Root Cause Analysis',cat:'trouble',brand:'HydroMind',desc:'Heat generation sources: relief valve bypassing, pump inefficiency, cooler fouling. Thermal calculations and corrective actions.',tags:['overheating','cooler','thermal','relief valve'],free:true},
+  {id:'KB23',title:'Servo Amplifier Troubleshooting — Rexroth VT-VSPA',cat:'trouble',brand:'Rexroth',desc:'VT-VSPA amplifier card: enable signal, command input, zero adjustment, ramp settings, enable/disable sequence.',tags:['servo amplifier','VT-VSPA','Rexroth','proportional'],free:false},
+  {id:'KB24',title:'Hydraulic Hose Failure Analysis',cat:'trouble',brand:'HydroMind',desc:'Hose failure modes: fatigue, over-pressure, twist, cover abrasion. SAE/ISO pressure ratings, minimum bend radius.',tags:['hose','failure','SAE','ISO','fatigue'],free:true},
+  {id:'KB25',title:'Hydraulic Oil Contamination — ISO 4406 Cleanliness',cat:'trouble',brand:'HydroMind',desc:'ISO 4406 cleanliness codes, particle counting, oil sampling procedures, flushing requirements per component sensitivity.',tags:['contamination','ISO 4406','cleanliness','flushing'],free:true},
+  {id:'KB26',title:'Solenoid Valve Diagnosis — 24VDC/110VAC Coil Testing',cat:'electrical',brand:'HydroMind',desc:'Coil resistance testing (24VDC: 20–40Ω), current draw, manual override procedure, connector and wiring checks.',tags:['solenoid','coil','24VDC','electrical'],free:true},
+  {id:'KB27',title:'Siemens S7-1200 PLC Fault Codes — Hydraulic Systems',cat:'electrical',brand:'Siemens',desc:'S7-1200 diagnostics for hydraulic systems. I/O module faults, CPU error codes, hardware interrupts, watchdog reset.',tags:['PLC','Siemens','S7-1200','fault codes'],free:false},
+  {id:'KB28',title:'4–20mA Pressure Transducer Calibration',cat:'electrical',brand:'HydroMind',desc:'Calibration procedure for 4–20mA pressure transducers: zero/span adjustment, loop resistance, fault detection (3.5mA/22mA).',tags:['4-20mA','pressure sensor','calibration','transducer'],free:true},
+  {id:'KB29',title:'Danfoss FC 302 VFD — Hydraulic Pump Drive Faults',cat:'electrical',brand:'Danfoss',desc:'FC 302 fault codes for hydraulic pump motor drives. Overcurrent (OC), overvoltage (OV), earth fault, brake resistor.',tags:['VFD','Danfoss','FC302','motor drive'],free:false},
+  {id:'KB30',title:'Field Case — A4VG Pump Loss of Pressure, FPSO',cat:'trouble',brand:'HydroMind',desc:'Offshore FPSO: A4VG71 pump losing pressure under load. Root cause: worn servo piston seal. Diagnostic steps and repair.',tags:['A4VG','FPSO','field case','pressure loss'],free:false},
+  {id:'KB31',title:'Field Case — Crane Slew Chattering, Semisubmersible',cat:'trouble',brand:'HydroMind',desc:'Crane slew chattering diagnosis on semi-sub. Counterbalance valve instability, pilot ratio too high. Resolution and settings.',tags:['slew','chattering','field case','crane'],free:false},
+  {id:'KB32',title:'Field Case — Winch Brake Failure, Anchor Handling',cat:'trouble',brand:'HydroMind',desc:'AHV winch spring-applied brake not releasing. Pilot pressure insufficient, check valve stuck. Fault tree and resolution.',tags:['winch','brake','anchor handling','field case'],free:false},
+  {id:'KB40',title:'ISO 4413 — Hydraulic Systems Safety Requirements',cat:'symbols',brand:'ISO',desc:'ISO 4413:2010 general rules for hydraulic power transmission. Safety, fluid selection, contamination, component mounting.',tags:['ISO 4413','safety','standards'],free:true},
+  {id:'KB41',title:'ISO 1219-1 — Hydraulic Schematic Symbols',cat:'symbols',brand:'ISO',desc:'Complete ISO 1219-1 symbol reference: pumps, motors, valves, actuators, conditioning, sensors. With drawings.',tags:['ISO 1219','symbols','schematic'],free:true},
+  {id:'KB42',title:'DNV-ST-0378 — Offshore Crane Standard',cat:'cranes',brand:'DNV',desc:'DNV-ST-0378 offshore crane structural and hydraulic requirements. SWL ratings, proof load, slew torque margins.',tags:['DNV','offshore','crane','structural'],free:true},
+  {id:'KB43',title:'Wire Rope — Sling Angle Design Factors',cat:'accessories',brand:'HydroMind',desc:'Wire rope sling load factors vs angle. Basket hitch, choker, straight pull. Safety factors and inspection criteria.',tags:['wire rope','sling','rigging','angle factor'],free:true},
+  {id:'KB44',title:'Hydraulic Seal Materials — NBR/FKM/PTFE/EPDM',cat:'accessories',brand:'HydroMind',desc:'Seal material selection for hydraulic fluids. Temperature ranges, chemical compatibility, hardness (Shore A).',tags:['seal','NBR','FKM','PTFE','material'],free:true},
+  {id:'KB50',title:'Crane Slewing Torque — Verschoof Formula',cat:'cranes',brand:'HydroMind',desc:'Slewing torque calculation per Verschoof. Bearing friction, wind load, acceleration torque components. Worked example: 50t/40m.',tags:['slewing','Verschoof','torque','crane'],free:true},
+  {id:'KB70',title:'Hydraulic Accumulator Sizing — Bladder/Piston',cat:'accessories',brand:'HydroMind',desc:'Gas-charged accumulator sizing: energy storage, emergency operation, pulsation dampening. Pre-charge pressure calculation.',tags:['accumulator','bladder','sizing','nitrogen'],free:true},
+  {id:'KB71',title:'Rexroth KB71 — A4VG Control Options Reference',cat:'pumps',brand:'Rexroth',desc:'All A4VG control variants: DA, EP, EZ, HD, HW, DG. Wiring diagrams, pilot pressures, failsafe behavior.',tags:['A4VG','KB71','control','Rexroth'],free:false},
+  {id:'KB73',title:'Rod Surface Coatings — HVOF vs Hard Chrome',cat:'trouble',brand:'HydroMind',desc:'HVOF WC-Co vs hard chrome comparison: hardness, corrosion, RoHS compliance, salt spray test, grinding Ra.',tags:['HVOF','hard chrome','coating','KB73'],free:true},
+  {id:'KB78',title:'Offshore Cylinder Rod Material Selection',cat:'trouble',brand:'HydroMind',desc:'CK45/C45E steel properties for hydraulic cylinder piston rods. Yield strength 370–440 MPa, fatigue limits, offshore recommendations.',tags:['piston rod','CK45','offshore','KB78'],free:true},
+  {id:'KB80',title:'Crane Slewing Torque — Verschoof + Field Calculation',cat:'cranes',brand:'HydroMind',desc:'Full Verschoof slewing torque formula with wind and acceleration components. KB80 field case with 50t crane worked example.',tags:['slewing','Verschoof','KB80','torque'],free:true},
+  {id:'KB85',title:'Hydraulic Filtration — Beta Ratio and Filter Selection',cat:'accessories',brand:'HydroMind',desc:'Beta ratio (β) for filter selection, ISO 4406 cleanliness targets, suction/return/pressure line filter ratings.',tags:['filter','beta ratio','ISO 4406','cleanliness'],free:true},
+  {id:'KB86',title:'Field DPR Template — Hydraulic System Daily Report',cat:'accessories',brand:'HydroMind',desc:'Daily Progress Report (DPR) template for offshore hydraulic system maintenance. Parameter log, fault register, action tracking.',tags:['DPR','daily report','maintenance','offshore'],free:true},
+];
+
+let activeCategory = 'all';
+let currentQuery   = '';
+let visibleCount   = 16;
+let currentSort    = 'num';
+let currentView    = 'grid';
+
+function getCatClass(cat) {
+  return 'cat-' + (cat==='trouble'?'trouble':cat);
+}
+function getCatLabel(cat) {
+  const L={pumps:'PUMPS',motors:'MOTORS',valves:'VALVES',cranes:'CRANES',
+    trouble:'FAULT',electrical:'ELEC',symbols:'ISO',accessories:'ACCS'};
+  return L[cat]||cat.toUpperCase();
+}
+
+function getFiltered() {
+  const q  = currentQuery.toLowerCase();
+  const sel = [...document.querySelectorAll('#brandList input:checked')].map(el => el.parentElement.textContent.trim().toLowerCase());
+  return KB_DATA.filter(d => {
+    const matchCat   = activeCategory==='all' || d.cat===activeCategory;
+    const matchQuery = !q || d.title.toLowerCase().includes(q) || d.desc.toLowerCase().includes(q) || d.tags.some(t=>t.toLowerCase().includes(q)) || d.id.toLowerCase().includes(q) || d.brand.toLowerCase().includes(q);
+    const matchBrand = sel.length===0 || sel.some(s=>d.brand.toLowerCase().includes(s));
+    return matchCat && matchQuery && matchBrand;
+  });
+}
+
+function renderDocs() {
+  const data = getFiltered();
+  // Sort
+  if (currentSort==='title') data.sort((a,b)=>a.title.localeCompare(b.title));
+  else if (currentSort==='cat') data.sort((a,b)=>a.cat.localeCompare(b.cat));
+  else data.sort((a,b)=>a.id.localeCompare(b.id));
+
+  const grid = document.getElementById('docGrid');
+  const shown = data.slice(0, visibleCount);
+  document.getElementById('resultCount').textContent = data.length;
+  document.getElementById('loadMoreBtn').style.display = data.length > visibleCount ? 'block':'none';
+
+  if (data.length===0) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <h3>No documents found</h3>
+      <p>Try adjusting your search or filters</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = shown.map(d => `
+    <div class="doc-card${d.free?'':' locked'}">
+      <div class="doc-card-top">
+        <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+          <span class="doc-kb-num">${d.id}</span>
+          <span class="doc-cat-badge ${getCatClass(d.cat)}">${getCatLabel(d.cat)}</span>
+        </div>
+        ${!d.free?'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--tm)" stroke-width="2" style="flex-shrink:0"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>':''}
+      </div>
+      <h3>${d.title}</h3>
+      <p>${d.desc}</p>
+      <div class="doc-card-footer">
+        <div class="doc-brand">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          ${d.brand}
+        </div>
+        <div class="doc-actions">
+          <button class="btn-view">View</button>
+          <button class="btn-ask">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg>
+            Ask AI
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // Update category counts
+  const cats=['pumps','motors','valves','cranes','trouble','electrical','symbols','accessories'];
+  cats.forEach(c=>{
+    const el=document.getElementById('cc-'+c);
+    if(el) el.textContent = KB_DATA.filter(d=>d.cat===c).length;
+  });
+  document.getElementById('cc-all').textContent = KB_DATA.length;
+}
+
+function filterDocs() {
+  currentQuery = document.getElementById('kbSearch').value;
+  document.getElementById('kbClear').style.display = currentQuery ? 'block':'none';
+  visibleCount = 16;
+  renderDocs();
+}
+
+function clearSearch() {
+  document.getElementById('kbSearch').value='';
+  currentQuery='';
+  document.getElementById('kbClear').style.display='none';
+  renderDocs();
+}
+
+function setCategory(cat, btn) {
+  activeCategory = cat;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  visibleCount=16;
+  renderDocs();
+}
+
+function sortDocs(val) { currentSort=val; renderDocs(); }
+
+function setView(v) {
+  currentView=v;
+  document.getElementById('docGrid').className = 'doc-grid' + (v==='list'?' list':'');
+  document.getElementById('vGrid').classList.toggle('active',v==='grid');
+  document.getElementById('vList').classList.toggle('active',v==='list');
+}
+
+function loadMore() { visibleCount+=12; renderDocs(); }
+
+function tagSearch(tag) {
+  document.getElementById('kbSearch').value=tag;
+  document.querySelectorAll('.tag-pill').forEach(p=>{p.classList.toggle('active',p.textContent===tag);});
+  filterDocs();
+}
+
+// ── COUNTERS
+function countUp(id,target,dur){
+  const el=document.getElementById(id);if(!el)return;
+  let n=0,step=target/(dur/16);
+  const t=setInterval(()=>{n=Math.min(n+step,target);el.textContent=Math.floor(n);if(n>=target)clearInterval(t);},16);
+}
+window.addEventListener('load',()=>{
+  setTimeout(()=>{countUp('ks1',86,1000);countUp('ks2',12,800);countUp('ks3',24,900);},300);
+  renderDocs();
+});
+</script>
+
+<!-- ── DOWNLOAD BUTTON ── -->
+<style>
+.dl-fab{position:fixed;bottom:24px;right:24px;z-index:500;
+  width:42px;height:42px;border-radius:11px;
+  background:var(--bg3);border:1px solid var(--b);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(0,0,0,.4);
+  color:var(--td);}
+.dl-fab:hover{background:var(--bg4);border-color:var(--bo);color:var(--o);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.dl-fab title{display:none}
+</style>
+<button class="dl-fab" onclick="downloadPage()" title="Download this page">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+</button>
+<script>
+function downloadPage(){
+  var filename = window.location.pathname.split('/').pop() || 'HydroMind.html';
+  fetch(window.location.href)
+    .then(function(r){return r.text();})
+    .then(function(html){
+      var blob = new Blob([html],{type:'text/html'});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href=url; a.download=filename; a.click();
+      URL.revokeObjectURL(url);
+    });
+}
+</script>
+</body>
+</html>
