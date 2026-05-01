@@ -34,10 +34,30 @@ button{font-family:var(--sans);cursor:pointer}
 .shell{position:relative;z-index:1;display:flex;flex-direction:column;height:100vh}
 
 /* NAV */
-.nav{
-  flex-shrink:0;display:flex;align-items:center;height:var(--nav-h);
-  border-bottom:1px solid var(--b);background:rgba(8,10,12,.92);backdrop-filter:blur(20px);padding:0 32px;z-index:200;
-}
+/* ── UNIFIED NAV ── */
+.nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;height:58px;border-bottom:1px solid var(--b);background:rgba(8,10,12,.97);backdrop-filter:blur(20px);padding:0 32px;gap:0;}
+.nav-logo{display:flex;align-items:center;gap:10px;margin-right:32px;text-decoration:none;}
+.nav-logo-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#FF6B1A,#FF9A4A);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#000;flex-shrink:0;}
+.nav-logo-text{font-size:14px;font-weight:700;letter-spacing:.04em;white-space:nowrap;color:#EEF0F4;}
+.nav-logo-text b{color:#FF6B1A;}
+.nav-links{display:flex;align-items:center;gap:1px;flex:1;}
+.nav-links a{padding:5px 12px;border-radius:6px;font-size:13px;font-weight:500;color:#8A919E;transition:all .15s;text-decoration:none;}
+.nav-links a:hover{color:#EEF0F4;background:#131820;}
+.nav-links a.active{color:#FF6B1A;background:rgba(255,107,26,.12);font-weight:700;}
+.nav-r{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.badge-green{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:100px;font-family:'Space Mono',monospace;font-size:11px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);color:#34D399;}
+.btn-login{font-size:13px;font-weight:500;color:#8A919E;padding:6px 14px;border-radius:6px;border:1px solid rgba(255,255,255,0.07);background:transparent;cursor:pointer;}
+.btn-login:hover{color:#EEF0F4;}
+.btn-pro{font-size:13px;font-weight:700;color:#000;background:#FF6B1A;padding:7px 18px;border-radius:7px;border:none;cursor:pointer;}
+.btn-pro:hover{background:#FF9A4A;}
+.nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none;margin-left:8px;}
+.nav-toggle span{width:22px;height:2px;background:#8A919E;border-radius:2px;}
+.mobile-menu{display:none;position:fixed;top:58px;left:0;right:0;z-index:190;background:rgba(8,10,12,.98);border-bottom:1px solid rgba(255,255,255,0.07);backdrop-filter:blur(20px);flex-direction:column;padding:12px 20px 20px;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{padding:11px 12px;font-size:15px;font-weight:500;color:#8A919E;border-radius:8px;text-decoration:none;}
+.mobile-menu a.active{color:#FF6B1A;}
+.mobile-menu-btns{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.07);}
+@media(max-width:900px){.nav-links{display:none;}.nav-toggle{display:flex;}}
 .nav-logo{display:flex;align-items:center;gap:10px;margin-right:36px}
 .nav-logo-icon{width:30px;height:30px;border-radius:7px;
   background:linear-gradient(135deg,var(--o),var(--o2));
@@ -370,35 +390,38 @@ button{font-family:var(--sans);cursor:pointer}
 
 <!-- NAV -->
 <nav class="nav">
-  <div class="nav-logo">
+  <a class="nav-logo" href="index.html">
     <div class="nav-logo-icon">HM</div>
-    <div class="nav-logo-text"><b>HydroMind</b>.AI</div>
-  </div>
+    <span class="nav-logo-text">HYDRO<b>MIND</b>.AI</span>
+  </a>
   <div class="nav-links">
-    <a href="index.html">Platform</a>
-    <a href="knowledge_base.html">Knowledge Base</a>
+    <a href="index.html">Home</a>
+    <a href="ai_advisor.html" class="active">AI Advisor</a>
     <a href="crane_diagnostic.html">Crane Diagnostic</a>
-    <a href="ai_advisor.html" class="active hl">AI Advisor</a>
     <a href="system_design.html">System Design</a>
+    <a href="knowledge_base.html">Knowledge Base</a>
     <a href="pricing.html">Pricing</a>
   </div>
   <div class="nav-r">
-    <span class="badge badge-green"><span class="dot-pulse"></span>AI Online</span>
-    <button class="btn-login">Login</button>
-    <button class="btn-pro">Get Pro</button>
+    <span class="badge-green"><span class="dot-pulse"></span> AI ONLINE</span>
+    <button class="btn-login" id="btnLogin">Login</button>
+    <button class="btn-pro" id="btnPro">Get Pro &rarr;</button>
   </div>
-  <button class="nav-toggle" onclick="document.getElementById('mobileMenu').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+  <button class="nav-toggle" onclick="document.getElementById('mobileMenu').classList.toggle('open')"><span></span><span></span><span></span></button>
 </nav>
 <div class="mobile-menu" id="mobileMenu">
-  <a href="index.html">Platform</a>
-  <a href="knowledge_base.html">Knowledge Base</a>
+  <a href="index.html">Home</a>
+  <a href="ai_advisor.html">AI Advisor</a>
   <a href="crane_diagnostic.html">Crane Diagnostic</a>
-  <a href="ai_advisor.html" class="active hl">AI Advisor</a>
+  <a href="system_design.html">System Design</a>
+  <a href="knowledge_base.html">Knowledge Base</a>
   <a href="pricing.html">Pricing</a>
   <div class="mobile-menu-btns">
     <button class="btn-login" style="flex:1;text-align:center;padding:10px">Login</button>
-    <button class="btn-pro" style="flex:1;padding:10px">Get Pro</button>
+    <button class="btn-pro" style="flex:1;padding:10px">Get Pro &rarr;</button>
   </div>
+</div>
+</div>
 </div>
 
 <!-- TICKER -->
