@@ -34,30 +34,7 @@ button{font-family:var(--sans);cursor:pointer}
 .shell{position:relative;z-index:1;display:flex;flex-direction:column;height:100vh}
 
 /* NAV */
-/* ── UNIFIED NAV ── */
-.nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;height:58px;border-bottom:1px solid var(--b);background:rgba(8,10,12,.97);backdrop-filter:blur(20px);padding:0 32px;gap:0;}
-.nav-logo{display:flex;align-items:center;gap:10px;margin-right:32px;text-decoration:none;}
-.nav-logo-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#FF6B1A,#FF9A4A);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#000;flex-shrink:0;}
-.nav-logo-text{font-size:14px;font-weight:700;letter-spacing:.04em;white-space:nowrap;color:#EEF0F4;}
-.nav-logo-text b{color:#FF6B1A;}
-.nav-links{display:flex;align-items:center;gap:1px;flex:1;}
-.nav-links a{padding:5px 12px;border-radius:6px;font-size:13px;font-weight:500;color:#8A919E;transition:all .15s;text-decoration:none;}
-.nav-links a:hover{color:#EEF0F4;background:#131820;}
-.nav-links a.active{color:#FF6B1A;background:rgba(255,107,26,.12);font-weight:700;}
-.nav-r{display:flex;align-items:center;gap:10px;flex-shrink:0;}
-.badge-green{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:100px;font-family:'Space Mono',monospace;font-size:11px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);color:#34D399;}
-.btn-login{font-size:13px;font-weight:500;color:#8A919E;padding:6px 14px;border-radius:6px;border:1px solid rgba(255,255,255,0.07);background:transparent;cursor:pointer;}
-.btn-login:hover{color:#EEF0F4;}
-.btn-pro{font-size:13px;font-weight:700;color:#000;background:#FF6B1A;padding:7px 18px;border-radius:7px;border:none;cursor:pointer;}
-.btn-pro:hover{background:#FF9A4A;}
-.nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none;margin-left:8px;}
-.nav-toggle span{width:22px;height:2px;background:#8A919E;border-radius:2px;}
-.mobile-menu{display:none;position:fixed;top:58px;left:0;right:0;z-index:190;background:rgba(8,10,12,.98);border-bottom:1px solid rgba(255,255,255,0.07);backdrop-filter:blur(20px);flex-direction:column;padding:12px 20px 20px;}
-.mobile-menu.open{display:flex;}
-.mobile-menu a{padding:11px 12px;font-size:15px;font-weight:500;color:#8A919E;border-radius:8px;text-decoration:none;}
-.mobile-menu a.active{color:#FF6B1A;}
-.mobile-menu-btns{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.07);}
-@media(max-width:900px){.nav-links{display:none;}.nav-toggle{display:flex;}}
+.nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;height:58px;border-bottom:1px solid var(--b);background:rgba(8,10,12,.97);backdrop-filter:blur(20px);padding:0 32px;}
 .nav-logo{display:flex;align-items:center;gap:10px;margin-right:36px}
 .nav-logo-icon{width:30px;height:30px;border-radius:7px;
   background:linear-gradient(135deg,var(--o),var(--o2));
@@ -403,12 +380,13 @@ button{font-family:var(--sans);cursor:pointer}
     <a href="pricing.html">Pricing</a>
   </div>
   <div class="nav-r">
-    <span class="badge-green"><span class="dot-pulse"></span> AI ONLINE</span>
-    <button class="btn-login" id="btnLogin">Login</button>
-    <button class="btn-pro" id="btnPro">Get Pro &rarr;</button>
+    <span class="badge badge-green"><span class="dot-pulse"></span> AI ONLINE</span>
+    <button class="btn-login">Login</button>
+    <button class="btn-pro">Get Pro &rarr;</button>
   </div>
   <button class="nav-toggle" onclick="document.getElementById('mobileMenu').classList.toggle('open')"><span></span><span></span><span></span></button>
 </nav>
+
 <div class="mobile-menu" id="mobileMenu">
   <a href="index.html">Home</a>
   <a href="ai_advisor.html">AI Advisor</a>
@@ -420,7 +398,6 @@ button{font-family:var(--sans);cursor:pointer}
     <button class="btn-login" style="flex:1;text-align:center;padding:10px">Login</button>
     <button class="btn-pro" style="flex:1;padding:10px">Get Pro &rarr;</button>
   </div>
-</div>
 </div>
 </div>
 
@@ -964,5 +941,33 @@ function exportChat() {
 document.getElementById('ctxPill').classList.add('on');
 </script>
 
+<!-- ── DOWNLOAD BUTTON ── -->
+<style>
+.dl-fab{position:fixed;bottom:24px;right:24px;z-index:500;
+  width:42px;height:42px;border-radius:11px;
+  background:var(--bg3);border:1px solid var(--b);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(0,0,0,.4);
+  color:var(--td);}
+.dl-fab:hover{background:var(--bg4);border-color:var(--bo);color:var(--o);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.dl-fab title{display:none}
+</style>
+<button class="dl-fab" onclick="downloadPage()" title="Download this page">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+</button>
+<script>
+function downloadPage(){
+  var filename = window.location.pathname.split('/').pop() || 'HydroMind.html';
+  fetch(window.location.href)
+    .then(function(r){return r.text();})
+    .then(function(html){
+      var blob = new Blob([html],{type:'text/html'});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href=url; a.download=filename; a.click();
+      URL.revokeObjectURL(url);
+    });
+}
+</script>
 </body>
 </html>

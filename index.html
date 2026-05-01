@@ -259,9 +259,8 @@ button{font-family:var(--sans);cursor:pointer}
 /* ──────────────────────────────────────────
    HERO
 ────────────────────────────────────────── */
-.hero-wrap{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:160px 1fr 500px 160px;gap:0;align-items:start;padding:0;}
-.hero-ad-left,.hero-ad-right{padding:80px 12px 0;}
-.hero{padding:64px 40px 48px;display:grid;grid-template-columns:1fr;gap:52px;align-items:start;}
+.hero{padding:64px 40px 48px;max-width:1340px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 500px;gap:52px;align-items:start}
 
 .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;
   padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:24px;
@@ -641,8 +640,8 @@ footer{
   </div>
   <div class="nav-r">
     <div class="badge badge-green"><span class="dot-pulse"></span> AI ONLINE</div>
-    <button class="btn-login">Login</button>
-    <button class="btn-pro">Get Pro →</button>
+    <button class="btn-login" onclick="openAuth('login')">Login</button>
+    <button class="btn-pro" onclick="openAuth('register');selectPlan('pro')">Get Pro →</button>
   </div>
   <button class="nav-toggle" id="navToggle" onclick="document.getElementById('mobileMenu').classList.toggle('open')" aria-label="Menu">
     <span></span><span></span><span></span>
@@ -1935,11 +1934,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAuth();
 
 // Wire nav buttons
 
-(function(){
-  var bl=document.getElementById('btnLogin'), bp=document.getElementById('btnPro');
-  if(bl) bl.onclick=function(){ openAuth('login'); };
-  if(bp) bp.onclick=function(){ openAuth('register'); selectPlan('pro'); };
-})();
+
  selectPlan('pro'); });
 
 
