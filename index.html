@@ -2179,12 +2179,26 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAuth();
 
 
 function updateNavAuth(email) {
-  var initials = email ? email.charAt(0).toUpperCase() : 'U';
-  var bl = document.getElementById('btnLogin');
-  var bp = document.getElementById('btnPro');
-  if (bl) { bl.textContent = initials; bl.style.cssText = 'width:30px;height:30px;border-radius:50%;background:var(--o);color:#000;font-weight:700;font-size:13px;padding:0;border:none;cursor:pointer;'; }
-  if (bp) { bp.textContent = 'My Account'; bp.style.background = 'var(--bg3)'; bp.style.color = 'var(--t)'; bp.style.border = '1px solid var(--b)'; }
+  if (email) sessionStorage.setItem('hm_user', email);
+  var stored = email || sessionStorage.getItem('hm_user');
+  if (!stored) return;
+  var initials = stored.charAt(0).toUpperCase();
+  // Update ALL login buttons on page
+  document.querySelectorAll('.btn-login').forEach(function(bl) {
+    bl.textContent = initials;
+    bl.style.cssText = 'width:30px;height:30px;border-radius:50%;background:var(--o);color:#000;font-weight:700;font-size:14px;padding:0;border:none;cursor:pointer;font-family:inherit;';
+    bl.onclick = function(){ alert('Signed in as ' + stored); };
+  });
+  document.querySelectorAll('.btn-pro').forEach(function(bp) {
+    bp.textContent = 'Dashboard';
+    bp.style.background = 'var(--bg3,#131820)';
+    bp.style.color = 'var(--t,#EEF0F4)';
+    bp.style.border = '1px solid var(--b,rgba(255,255,255,.07))';
+  });
 }
+
+// Run on page load to restore auth state
+window.addEventListener('DOMContentLoaded', function() { updateNavAuth(null); });
 
 function switchTab(tab) {
   // hide all panels
