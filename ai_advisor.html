@@ -375,7 +375,7 @@ button{font-family:var(--sans);cursor:pointer}
     <div class="nav-logo-text"><b>HydroMind</b>.AI</div>
   </div>
   <div class="nav-links">
-    <a href="hydromind.html">Platform</a>
+    <a href="index.html">Platform</a>
     <a href="knowledge_base.html">Knowledge Base</a>
     <a href="crane_diagnostic.html">Crane Diagnostic</a>
     <a href="ai_advisor.html" class="active hl">AI Advisor</a>
@@ -390,7 +390,7 @@ button{font-family:var(--sans);cursor:pointer}
   <button class="nav-toggle" onclick="document.getElementById('mobileMenu').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 <div class="mobile-menu" id="mobileMenu">
-  <a href="hydromind.html">Platform</a>
+  <a href="index.html">Platform</a>
   <a href="knowledge_base.html">Knowledge Base</a>
   <a href="crane_diagnostic.html">Crane Diagnostic</a>
   <a href="ai_advisor.html" class="active hl">AI Advisor</a>
@@ -941,33 +941,5 @@ function exportChat() {
 document.getElementById('ctxPill').classList.add('on');
 </script>
 
-<!-- ── DOWNLOAD BUTTON ── -->
-<style>
-.dl-fab{position:fixed;bottom:24px;right:24px;z-index:500;
-  width:42px;height:42px;border-radius:11px;
-  background:var(--bg3);border:1px solid var(--b);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(0,0,0,.4);
-  color:var(--td);}
-.dl-fab:hover{background:var(--bg4);border-color:var(--bo);color:var(--o);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.5)}
-.dl-fab title{display:none}
-</style>
-<button class="dl-fab" onclick="downloadPage()" title="Download this page">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-</button>
-<script>
-function downloadPage(){
-  var filename = window.location.pathname.split('/').pop() || 'HydroMind.html';
-  fetch(window.location.href)
-    .then(function(r){return r.text();})
-    .then(function(html){
-      var blob = new Blob([html],{type:'text/html'});
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href=url; a.download=filename; a.click();
-      URL.revokeObjectURL(url);
-    });
-}
-</script>
 </body>
 </html>
