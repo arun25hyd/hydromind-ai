@@ -305,6 +305,11 @@ nav,.nav{position:sticky!important;top:0!important;z-index:200!important;display
 .rating-star{filter:grayscale(1) opacity(.5);font-size:28px;cursor:pointer;}
 .rating-star:hover,.rating-star.active{filter:none;}
 
+
+/* ── Z-INDEX FIX: all content above canvas ── */
+body > *:not(.bg-wrap){position:relative;z-index:1;}
+.ticker,.pricing-hero,.pricing-cards-wrap,.container,.testi-section,.feedback-section,footer,.page{position:relative!important;z-index:2!important;}
+
 </style>
 </head>
 <body>
