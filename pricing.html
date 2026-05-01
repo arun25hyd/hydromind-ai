@@ -96,7 +96,7 @@ button{font-family:var(--sans);cursor:pointer}
 .ticker-sep{color:var(--tm)}
 
 /* HERO */
-.pricing-hero{padding:24px 40px 24px;text-align:center;max-width:1200px;margin:0 auto}
+.pricing-hero{display:none;padding:24px 40px 24px;text-align:center;max-width:1200px;margin:0 auto}
 .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:100px;margin-bottom:20px;font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;background:rgba(255,107,26,.08);border:1px solid var(--bo);color:var(--o)}
 .pricing-hero h1{font-size:clamp(34px,5vw,60px);font-weight:700;letter-spacing:-.025em;line-height:1.1;margin-bottom:16px;text-wrap:balance;color:var(--t,#EEF0F4);}
 .pricing-hero h1 em{font-style:normal;color:var(--o);}
@@ -366,6 +366,17 @@ nav,.nav{position:sticky!important;top:0!important;z-index:200!important;display
   <div class="billing-toggle">
     <button class="billing-opt active" id="billMonthly" onclick="setBilling('monthly')">Monthly</button>
     <button class="billing-opt" id="billAnnual" onclick="setBilling('annual')">Annual <span class="annual-badge">–20%</span></button>
+  </div>
+</div>
+
+<!-- PRICING HEADER -->
+<div style="text-align:center;padding:32px 40px 16px;position:relative;z-index:2;">
+  <div style="display:inline-flex;align-items:center;gap:8px;padding:4px 14px;border-radius:100px;font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;background:rgba(255,107,26,.08);border:1px solid rgba(255,107,26,.25);color:var(--o);margin-bottom:14px;">💳 Plans &amp; Pricing</div>
+  <h1 style="font-size:clamp(28px,4vw,48px);font-weight:700;letter-spacing:-.02em;margin-bottom:10px;color:var(--t);">Plans for Every <span style="color:var(--o);">Offshore Operation</span></h1>
+  <p style="font-size:15px;color:var(--td);max-width:480px;margin:0 auto 20px;line-height:1.6;">From solo technicians on a drillship to full maintenance teams. Start free, upgrade when you need more.</p>
+  <div style="display:flex;gap:6px;justify-content:center;margin-bottom:8px;">
+    <button id="billMonthlyNew" onclick="setBilling('monthly')" style="padding:7px 18px;border-radius:8px;font-size:13px;font-weight:600;background:var(--o);color:#000;border:none;cursor:pointer;">Monthly</button>
+    <button id="billAnnualNew" onclick="setBilling('annual')" style="padding:7px 18px;border-radius:8px;font-size:13px;font-weight:600;background:var(--bg3);color:var(--td);border:1px solid var(--b);cursor:pointer;">Annual <span style="color:var(--o);">–20%</span></button>
   </div>
 </div>
 
