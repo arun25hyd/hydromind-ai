@@ -857,22 +857,24 @@ function exportDPR() {
     +'<div class="foot"><span>HydroMind.AI · Crane Diagnostic v2.1</span><span>ISO 1219-1 · DNV-ST-0378 · '+now.toLocaleString()+'</span></div>'
     +'<script>
 (function(){
-  var u=sessionStorage.getItem('hm_user');
-  if(!u)return;
-  var init=u.charAt(0).toUpperCase();
-  document.querySelectorAll('.btn-login').forEach(function(b){
-    b.textContent=init;
-    b.style.cssText='width:30px;height:30px;border-radius:50%;background:#FF6B1A;color:#000;font-weight:700;font-size:14px;padding:0;border:none;cursor:pointer;font-family:inherit;flex-shrink:0;';
-    b.onclick=function(){alert('Signed in as '+u);};
-  });
-  document.querySelectorAll('.btn-pro').forEach(function(b){
-    if(b.textContent.indexOf('Get Pro')>-1||b.textContent.indexOf('Dashboard')>-1){
+  function restoreAuth(){
+    var u=sessionStorage.getItem('hm_user');
+    if(!u)return;
+    var init=u.charAt(0).toUpperCase();
+    document.querySelectorAll('.btn-login').forEach(function(b){
+      b.textContent=init;
+      b.style.cssText='width:30px;height:30px;border-radius:50%;background:#FF6B1A;color:#000;font-weight:700;font-size:14px;padding:0;border:none;cursor:pointer;font-family:inherit;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;';
+      b.onclick=function(){alert('Signed in as '+u);};
+    });
+    document.querySelectorAll('.btn-pro').forEach(function(b){
       b.textContent='Dashboard';
-      b.style.background='#131820';
-      b.style.color='#EEF0F4';
-      b.style.border='1px solid rgba(255,255,255,0.07)';
-    }
-  });
+      b.style.cssText='font-size:12px;font-weight:700;color:#EEF0F4;background:#131820;padding:6px 16px;border-radius:7px;border:1px solid rgba(255,255,255,0.07);cursor:pointer;font-family:inherit;white-space:nowrap;';
+    });
+  }
+  // Run immediately and again after page fully settles
+  restoreAuth();
+  document.addEventListener('DOMContentLoaded', restoreAuth);
+  window.addEventListener('load', function(){ setTimeout(restoreAuth, 200); });
 })();
 </script>
 </body></html>');
