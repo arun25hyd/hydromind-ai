@@ -7,10 +7,19 @@
     { "source": "/api/feedback", "destination": "/api/feedback.js" }
   ],
   "redirects": [
-    { "source": "/advisor",       "destination": "/ai_advisor.html",      "permanent": false },
-    { "source": "/crane",         "destination": "/crane_diagnostic.html","permanent": false },
-    { "source": "/system-design", "destination": "/system_design.html",  "permanent": false },
-    { "source": "/knowledge",     "destination": "/knowledge_base.html", "permanent": false }
+    { "source": "/pages/ai_advisor.html",      "destination": "/ai_advisor.html",      "permanent": true },
+    { "source": "/pages/crane_diagnostic.html","destination": "/crane_diagnostic.html","permanent": true },
+    { "source": "/pages/system_design.html",   "destination": "/system_design.html",   "permanent": true },
+    { "source": "/pages/knowledge_base.html",  "destination": "/knowledge_base.html",  "permanent": true },
+    { "source": "/pages/pricing.html",         "destination": "/pricing.html",         "permanent": true },
+    { "source": "/pages/privacy.html",         "destination": "/privacy.html",         "permanent": true },
+    { "source": "/pages/disclaimer.html",      "destination": "/disclaimer.html",      "permanent": true },
+    { "source": "/pages/advisor.html",         "destination": "/ai_advisor.html",      "permanent": true },
+    { "source": "/pages/hydromind.html",       "destination": "/",                     "permanent": true },
+    { "source": "/advisor",                    "destination": "/ai_advisor.html",      "permanent": false },
+    { "source": "/crane",                      "destination": "/crane_diagnostic.html","permanent": false },
+    { "source": "/system-design",              "destination": "/system_design.html",  "permanent": false },
+    { "source": "/knowledge",                  "destination": "/knowledge_base.html", "permanent": false }
   ],
   "headers": [
     { "source": "/(.*)", "headers": [
