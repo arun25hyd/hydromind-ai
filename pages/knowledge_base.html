@@ -274,57 +274,76 @@ footer{border-top:1px solid var(--b);padding:40px;max-width:1340px;margin:0 auto
 .footer-col a:hover{color:var(--t)}
 .footer-bottom{display:flex;align-items:center;justify-content:space-between;
   padding-top:20px;border-top:1px solid var(--b);font-size:12px;color:var(--tm);font-family:var(--mono)}
+
+/* HydroMind Layout */
+.hm-nav{position:fixed;top:0;left:0;right:0;height:52px;z-index:9999;background:rgba(13,15,18,.97);border-bottom:1px solid #2a3040;backdrop-filter:blur(16px);display:flex;align-items:center;padding:0 1rem;gap:.75rem;}
+.hm-nav-logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;}
+.hm-nav-icon{width:34px;height:34px;border-radius:8px;background:#f97316;display:flex;align-items:center;justify-content:center;font-family:Syne,sans-serif;font-weight:800;font-size:17px;color:#fff;flex-shrink:0;}
+.hm-nav-brand{font-family:Syne,sans-serif;font-weight:800;font-size:1rem;color:#e2e8f0;letter-spacing:.5px;line-height:1;}
+.hm-nav-brand span{color:#f97316;}
+.hm-nav-sub{font-family:"Share Tech Mono",monospace;font-size:.45rem;color:rgba(249,115,22,.5);letter-spacing:.18em;text-transform:uppercase;}
+.hm-nav-links{flex:1;display:flex;align-items:center;gap:1px;overflow:hidden;}
+.hm-nav-a{padding:5px 9px;border-radius:5px;font-size:.8rem;color:#64748b;text-decoration:none;white-space:nowrap;transition:color .15s;}
+.hm-nav-a:hover,.hm-nav-a.active{color:#f97316;}
+.hm-nav-cta{display:flex;align-items:center;gap:7px;flex-shrink:0;}
+.hm-btn-ghost{background:transparent;border:1px solid #2a3040;color:#94a3b8;padding:5px 12px;border-radius:5px;font-size:.78rem;cursor:pointer;}
+.hm-btn-orange{background:#f97316;color:#fff;border:none;padding:5px 14px;border-radius:5px;font-size:.78rem;font-weight:600;cursor:pointer;}
+.hm-page{margin-top:52px;display:grid;grid-template-columns:220px 1fr 200px;min-height:calc(100vh - 52px);}
+.hm-left-sidebar{position:fixed;top:52px;left:0;width:220px;height:calc(100vh - 52px);overflow-y:auto;background:#13171d;border-right:1px solid #2a3040;padding:.75rem .6rem;display:flex;flex-direction:column;}
+.hm-main-content{grid-column:2;min-width:0;overflow-y:auto;}
+.hm-right-sidebar{position:fixed;top:52px;right:0;width:200px;height:calc(100vh - 52px);overflow-y:auto;background:#13171d;border-left:1px solid #2a3040;padding:.75rem .6rem;display:flex;flex-direction:column;}
+.hm-sidebar-label{font-family:"Share Tech Mono",monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:#64748b;margin-bottom:.4rem;}
+.hm-hist-item{display:flex;align-items:center;gap:.5rem;padding:.4rem .5rem;border-radius:5px;cursor:pointer;transition:background .15s;font-size:.82rem;color:#94a3b8;margin-bottom:2px;}
+.hm-hist-item:hover{background:rgba(249,115,22,.06);color:#e2e8f0;}
 </style>
 </head>
 <body>
 
-<div class="bg-wrap"><canvas id="bgCanvas"></canvas></div>
-
-<div class="page">
-
 <!-- NAV -->
-<nav>
-  <a class="nav-logo" href="hydromind.html">
-    <div class="nav-logo-icon">HM</div>
-    <span class="nav-logo-text">HYDRO<b>MIND</b>.AI</span>
+<nav class="hm-nav hm-topnav">
+  <a href="../index.html" class="hm-nav-logo">
+    <div class="hm-nav-icon">H</div>
+    <div><div class="hm-nav-brand">HYDROMIND<span>.AI</span></div><div class="hm-nav-sub">Hydraulic Intelligence</div></div>
   </a>
-  <div class="nav-links">
-    <a href="hydromind.html">Platform</a>
-    <a href="knowledge_base.html" class="active">Knowledge Base</a>
-    <a href="crane_diagnostic.html">Crane Diagnostic</a>
-    <a href="ai_advisor.html">AI Advisor</a>
-    <a href="system_design.html">System Design</a>
-    <a href="pricing.html" class="hl">Pricing</a>
+  <div class="hm-nav-links">
+    <a href="../index.html" class="hm-nav-a">Home</a>
+    <a href="advisor.html" class="hm-nav-a">AI Advisor</a>
+    <a href="../crane-diagnostic.html" class="hm-nav-a">Crane Diag</a>
+    <a href="system-design.html" class="hm-nav-a">System Design</a>
+    <a href="../knowledge.html" class="hm-nav-a active">Knowledge Base</a>
+    <a href="pricing.html" class="hm-nav-a">Pricing</a>
   </div>
-  <div class="nav-r">
-    <div class="badge badge-green"><span class="dot-pulse"></span> AI ONLINE</div>
-    <button class="btn-login">Login</button>
-    <button class="btn-pro">Get Pro →</button>
+  <div class="hm-nav-cta">
+    <button class="hm-btn-ghost">Login</button>
+    <button class="hm-btn-orange">Get Pro</button>
   </div>
-  <button class="nav-toggle" id="navToggle" onclick="document.getElementById('mobileMenu').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
-<div class="mobile-menu" id="mobileMenu">
-  <a href="hydromind.html">Platform</a>
-  <a href="knowledge_base.html" class="active hl">Knowledge Base</a>
-  <a href="crane_diagnostic.html">Crane Diagnostic</a>
-  <a href="ai_advisor.html">AI Advisor</a>
-  <a href="pricing.html">Pricing</a>
-  <div class="mobile-menu-btns">
-    <button class="btn-login" style="flex:1;text-align:center;padding:10px">Login</button>
-    <button class="btn-pro" style="flex:1;padding:10px">Get Pro</button>
+
+<!-- PAGE LAYOUT -->
+<div class="hm-page">
+
+<!-- LEFT SIDEBAR -->
+<div class="hm-left-sidebar">
+  <div class="hm-sidebar-label">Navigation</div>
+  <div class="hm-hist-item" onclick="location.href='advisor.html'">&#129302; AI Advisor</div>
+  <div class="hm-hist-item" onclick="location.href='../crane-diagnostic.html'">&#9881; Crane Diagnostic</div>
+  <div class="hm-hist-item" onclick="location.href='../knowledge.html'" style="background:rgba(249,115,22,.07);color:#f97316;">&#128218; Knowledge Base</div>
+  <div class="hm-hist-item" onclick="location.href='pricing.html'">&#128179; Upgrade Plan</div>
+  <div style="margin-top:1rem;">
+    <div class="hm-sidebar-label">Filter</div>
+    <div class="hm-hist-item" onclick="filterByTag&&filterByTag('all')">&#127968; All Docs</div>
+    <div class="hm-hist-item" onclick="filterByTag&&filterByTag('pump')">&#9881; Pumps</div>
+    <div class="hm-hist-item" onclick="filterByTag&&filterByTag('motor')">&#128260; Motors</div>
+    <div class="hm-hist-item" onclick="filterByTag&&filterByTag('valve')">&#128196; Valves</div>
+    <div class="hm-hist-item" onclick="filterByTag&&filterByTag('crane')">&#127959; Cranes</div>
+    <div class="hm-hist-item" onclick="filterByTag&&filterByTag('hpu')">&#128736; HPU</div>
   </div>
 </div>
-<div class="ticker container">
-  <div class="ticker-item"><span class="dot-pulse"></span><span>KB: <span class="v">V3.0</span></span></div>
-  <span style="color:var(--tm)">|</span>
-  <div class="ticker-item">ENTRIES: <span class="v">86 INDEXED</span></div>
-  <span style="color:var(--tm)">|</span>
-  <div class="ticker-item">LINES: <span class="v">6,533</span></div>
-  <span style="color:var(--tm)">|</span>
-  <div class="ticker-item">OEM MANUALS: <span class="v">48+</span></div>
-  <span style="color:var(--tm)">|</span>
-  <div class="ticker-item">LAST UPDATED: <span class="v">APRIL 2026</span></div>
-</div>
+
+<!-- MAIN CONTENT -->
+<div class="hm-main-content">
+
+
 
 <!-- KB HERO -->
 <div class="kb-hero">
@@ -519,7 +538,6 @@ footer{border-top:1px solid var(--b);padding:40px;max-width:1340px;margin:0 auto
   </div>
 </footer>
 
-</div><!-- /page -->
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ── FLUID PARTICLE BG (shared)
@@ -781,5 +799,18 @@ function downloadPage(){
     });
 }
 </script>
+</div><!-- /hm-main-content -->
+
+<!-- RIGHT SIDEBAR -->
+<div class="hm-right-sidebar" id="hmAdSidebar">
+  <div class="hm-sidebar-label">Sponsored</div>
+  <div style="background:rgba(249,115,22,.03);border:1px dashed rgba(249,115,22,.14);border-radius:6px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#64748b;font-family:'Share Tech Mono',monospace;font-size:.6rem;text-transform:uppercase;margin-bottom:.55rem;">&#128226;<br>Advertisement</div>
+  <div style="margin-top:auto;padding-top:.5rem;border-top:1px solid #2a3040;text-align:center;">
+    <a href="pricing.html" style="font-family:'Share Tech Mono',monospace;font-size:.56rem;color:rgba(249,115,22,.38);text-transform:uppercase;letter-spacing:.05em;text-decoration:none;">Advertise here &#8594;</a>
+  </div>
+</div>
+
+</div><!-- /hm-page -->
+
 </body>
 </html>

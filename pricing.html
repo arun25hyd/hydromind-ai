@@ -30,8 +30,8 @@ body{background:var(--hm-bg);color:var(--hm-text);font-family:var(--hm-body);mar
 
 /* LAYOUT */
 .hm-page{margin-top:52px;display:grid;grid-template-columns:220px 1fr 200px;min-height:calc(100vh - 52px);}
-.hm-main{overflow-y:auto;}
-.hm-sidebar-right{background:var(--hm-surface);border-left:1px solid var(--hm-border);padding:14px;display:flex;flex-direction:column;gap:10px;position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto;}
+.hm-main-content{overflow-y:auto;}
+.hm-right-sidebar{background:var(--hm-surface);border-left:1px solid var(--hm-border);padding:14px;display:flex;flex-direction:column;gap:10px;position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto;}
 
 /* RIGHT SIDEBAR CARDS */
 .rs-card{background:var(--hm-card);border:1px solid var(--hm-border);border-radius:8px;padding:12px;}
@@ -214,7 +214,7 @@ table.cmp .cmp-section td{background:var(--hm-surface);font-family:var(--hm-cond
     <button class="hm-logout-btn" id="hmLogoutBtn" onclick="doLogout()" style="display:none;">Sign Out</button>
   </div>
 </div>
-  <div class="hm-main">
+  <div class="hm-main-content">
 
     <!-- HERO -->
     <div class="pg-hero">
@@ -408,7 +408,7 @@ table.cmp .cmp-section td{background:var(--hm-surface);font-family:var(--hm-cond
   </div><!-- /hm-main -->
 
   <!-- RIGHT SIDEBAR — Value Panel -->
-  <div class="hm-sidebar-right" id="hmAdSidebar">
+  <div class="hm-right-sidebar" id="hmAdSidebar">
     <div class="rs-card" style="border-color:rgba(249,115,22,.3);">
       <div class="rs-title">Pro Plan</div>
       <div style="font-family:var(--hm-cond);font-size:1.6rem;font-weight:700;color:var(--hm-orange);">$69<span style="font-size:.9rem;color:var(--hm-muted);font-weight:400;">/mo</span></div>
