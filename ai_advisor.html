@@ -208,24 +208,18 @@ button{font-family:var(--sans);cursor:pointer}
 .msgs-wrap{flex:1;overflow-y:auto;padding:24px 32px;display:flex;flex-direction:column;gap:20px}
 
 /* Greeting */
-.greeting{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:48px 24px;text-align:center;flex:1;min-height:0;
-}
+.greeting{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;flex:1;min-height:0;}
 .greeting-icon{
   width:64px;height:64px;border-radius:16px;
   background:linear-gradient(135deg,var(--o),var(--o2));
   display:flex;align-items:center;justify-content:center;
   font-family:var(--mono);font-size:24px;font-weight:700;color:#000;
-  margin-bottom:20px;box-shadow:0 8px 32px rgba(255,107,26,.3);
+  margin-bottom:14px;box-shadow:0 8px 32px rgba(255,107,26,.3);
 }
 .greeting h2{font-size:24px;font-weight:700;letter-spacing:-.015em;margin-bottom:8px}
-.greeting p{font-size:14px;color:var(--td);max-width:420px;line-height:1.65;margin-bottom:28px}
-.suggestion-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:520px;width:100%}
-.sug-card{
-  padding:12px 14px;border-radius:10px;border:1px solid var(--b);
-  background:var(--bg2);cursor:pointer;text-align:left;transition:all .2s;
-}
+.greeting p{font-size:14px;color:var(--td);max-width:440px;line-height:1.6;margin-bottom:20px;}
+.suggestion-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:580px;width:100%;}
+.sug-card{padding:16px 16px;border-radius:10px;border:1px solid var(--b);background:var(--bg2);cursor:pointer;text-align:left;transition:all .2s;}
 .sug-card:hover{border-color:var(--bo);background:rgba(255,107,26,.05);transform:translateY(-1px)}
 .sug-card .sug-icon{font-size:16px;margin-bottom:6px}
 .sug-card .sug-title{font-size:12.5px;font-weight:600;color:var(--t);margin-bottom:2px}

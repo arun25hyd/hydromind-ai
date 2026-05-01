@@ -259,8 +259,7 @@ button{font-family:var(--sans);cursor:pointer}
 /* ──────────────────────────────────────────
    HERO
 ────────────────────────────────────────── */
-.hero{padding:64px 48px 48px;width:100%;box-sizing:border-box;
-  display:grid;grid-template-columns:1fr 480px;gap:52px;align-items:start}
+.hero{padding:56px 48px 40px;width:100%;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) 460px;gap:48px;align-items:start}
 
 .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;
   padding:5px 14px;border-radius:100px;width:fit-content;margin-bottom:24px;
@@ -641,6 +640,12 @@ nav,.nav{position:sticky!important;top:0!important;z-index:200!important;display
 .mobile-menu a.hl{color:var(--o,#FF6B1A)!important;}
 .mobile-menu-btns{display:flex!important;gap:8px!important;margin-top:12px!important;padding-top:12px!important;border-top:1px solid var(--b,rgba(255,255,255,.07))!important;}
 @media(max-width:768px){.nav-links{display:none!important;}.nav-toggle{display:flex!important;}}
+
+/* ── GLOBAL Z-INDEX: everything above fixed canvas ── */
+body > *:not(.bg-wrap){position:relative;z-index:1;}
+.sec,.stats-strip,.hero,.ticker,.container,.page,.elec-section,footer,
+.modal-overlay,.calc-wrap,#calculator,section{position:relative!important;z-index:2!important;}
+
 </style>
 </head>
 <body>
