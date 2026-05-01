@@ -33,7 +33,7 @@ button{font-family:var(--sans);cursor:pointer}
 .shell{position:relative;z-index:1;display:flex;flex-direction:column;height:100vh}
 
 /* NAV */
-.nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;height:58px;border-bottom:1px solid var(--b);background:rgba(8,10,12,.97);backdrop-filter:blur(20px);padding:0 32px;}
+
 .nav-logo{display:flex;align-items:center;gap:10px;margin-right:36px}
 .nav-logo-icon{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--o),var(--o2));display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;font-weight:700;color:#000}
 .nav-logo-text{font-size:14px;font-weight:700;letter-spacing:.04em}
@@ -49,7 +49,7 @@ button{font-family:var(--sans);cursor:pointer}
 .btn-pro:hover{background:var(--o2)}
 .nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none;margin-left:8px}
 .nav-toggle span{width:22px;height:2px;background:var(--td);border-radius:2px}
-.mobile-menu{display:none;position:fixed;top:58px;left:0;right:0;z-index:190;background:rgba(8,10,12,.97);border-bottom:1px solid var(--b);backdrop-filter:blur(20px);flex-direction:column;padding:12px 20px 20px}
+
 .mobile-menu.open{display:flex}
 .mobile-menu a{padding:11px 12px;font-size:15px;font-weight:500;color:var(--td);border-radius:8px}
 .mobile-menu a.active,.mobile-menu a.hl{color:var(--o)}
@@ -298,6 +298,30 @@ select.field-input{cursor:pointer}
 .sd-prompts{padding:8px 12px;display:flex;flex-direction:column;gap:4px;flex-shrink:0;border-bottom:1px solid var(--b)}
 .sd-prompt-btn{font-size:11px;font-family:var(--mono);padding:5px 8px;border-radius:5px;border:1px solid var(--b);background:var(--bg3);color:var(--td);cursor:pointer;text-align:left;transition:all .15s;line-height:1.4}
 .sd-prompt-btn:hover{border-color:var(--bo);color:var(--o)}
+.nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;gap:0;height:58px;border-bottom:1px solid var(--b);background:rgba(8,10,12,.88);backdrop-filter:blur(20px) saturate(1.5);padding:0 32px;}
+.nav-logo{display:flex;align-items:center;gap:10px;margin-right:36px}
+.nav-logo-icon{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--o),var(--o2));display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;font-weight:700;color:#000;}
+.nav-logo-text{font-size:14px;font-weight:700;letter-spacing:.04em;white-space:nowrap}
+.nav-logo-text b{color:var(--o)}
+.nav-links{display:flex;align-items:center;gap:1px;flex:1}
+.nav-links a{padding:5px 13px;border-radius:6px;font-size:13px;font-weight:500;color:var(--td);transition:all .15s;text-decoration:none;}
+.nav-links a:hover{color:var(--t);background:var(--bg3)}
+.nav-links a.active{color:var(--t);background:rgba(255,107,26,.08)}
+.nav-links a.hl{color:var(--o)}
+.nav-r{display:flex;align-items:center;gap:10px}
+.btn-login{font-size:13px;font-weight:500;color:var(--td);padding:6px 14px;border-radius:6px;border:1px solid var(--b);background:transparent;transition:all .15s;cursor:pointer;font-family:inherit;}
+.btn-login:hover{color:var(--t);border-color:rgba(255,255,255,.15)}
+.btn-pro{font-size:13px;font-weight:700;color:#000;background:var(--o);padding:7px 18px;border-radius:7px;border:none;transition:all .15s;cursor:pointer;font-family:inherit;}
+.btn-pro:hover{background:var(--o2);transform:translateY(-1px)}
+.nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none;margin-left:8px}
+.nav-toggle span{width:22px;height:2px;background:var(--td);border-radius:2px;transition:all .3s}
+.mobile-menu{display:none;position:fixed;top:58px;left:0;right:0;z-index:190;background:rgba(8,10,12,.97);border-bottom:1px solid var(--b);backdrop-filter:blur(20px);flex-direction:column;padding:12px 20px 20px}
+.mobile-menu.open{display:flex}
+.mobile-menu a{padding:11px 12px;font-size:15px;font-weight:500;color:var(--td);border-radius:8px;transition:all .15s;text-decoration:none;}
+.mobile-menu a:hover,.mobile-menu a.active{color:var(--t);background:var(--bg3)}
+.mobile-menu a.hl{color:var(--o)}
+.mobile-menu-btns{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--b)}
+@media(max-width:640px){.nav-links,.nav-r .btn-login,.nav-r .badge-green{display:none}.nav-toggle{display:flex}}
 </style>
 </head>
 <body>
@@ -307,7 +331,7 @@ select.field-input{cursor:pointer}
 <div class="shell">
 
 <!-- NAV -->
-<nav class="nav">
+<nav>
   <a class="nav-logo" href="index.html">
     <div class="nav-logo-icon">HM</div>
     <span class="nav-logo-text">HYDRO<b>MIND</b>.AI</span>
@@ -318,27 +342,30 @@ select.field-input{cursor:pointer}
     <a href="crane_diagnostic.html">Crane Diagnostic</a>
     <a href="system_design.html" class="active">System Design</a>
     <a href="knowledge_base.html">Knowledge Base</a>
-    <a href="pricing.html">Pricing</a>
+    <a href="pricing.html" class="hl">Pricing</a>
   </div>
   <div class="nav-r">
-    <span class="badge badge-green"><span class="dot-pulse"></span> AI ONLINE</span>
-    <button class="btn-login">Login</button>
-    <button class="btn-pro">Get Pro &rarr;</button>
+    <div class="badge badge-green"><span class="dot-pulse"></span> AI ONLINE</div>
+    <button class="btn-login" onclick="openAuth&&openAuth('login')">Login</button>
+    <button class="btn-pro" onclick="openAuth&&openAuth('register');selectPlan&&selectPlan('pro')">Get Pro →</button>
   </div>
-  <button class="nav-toggle" onclick="document.getElementById('mobileMenu').classList.toggle('open')"><span></span><span></span><span></span></button>
+  <button class="nav-toggle" id="navToggle" onclick="document.getElementById('mobileMenu').classList.toggle('open')" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <div class="mobile-menu" id="mobileMenu">
   <a href="index.html">Home</a>
   <a href="ai_advisor.html">AI Advisor</a>
   <a href="crane_diagnostic.html">Crane Diagnostic</a>
-  <a href="system_design.html">System Design</a>
+  <a href="system_design.html" class="active">System Design</a>
   <a href="knowledge_base.html">Knowledge Base</a>
-  <a href="pricing.html">Pricing</a>
+  <a href="pricing.html" class="hl">Pricing</a>
   <div class="mobile-menu-btns">
-    <button class="btn-login" style="flex:1;text-align:center;padding:10px">Login</button>
-    <button class="btn-pro" style="flex:1;padding:10px">Get Pro &rarr;</button>
+    <button class="btn-login" style="flex:1;text-align:center;padding:10px" onclick="openAuth&&openAuth('login')">Login</button>
+    <button class="btn-pro" style="flex:1;padding:10px" onclick="openAuth&&openAuth('register')">Get Pro →</button>
   </div>
+</div>
 </div>
 
 <!-- TICKER -->
