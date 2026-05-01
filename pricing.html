@@ -28,7 +28,7 @@ button{font-family:var(--sans);cursor:pointer}
 /* BG */
 .bg-wrap{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:var(--bg)}
 #bgCanvas{position:absolute;inset:0;width:100%;height:100%}
-.page{position:relative;z-index:1}
+.page{position:relative;z-index:1;}html body .page{z-index:2!important;}
 
 /* UTILS */
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.7)}}
@@ -174,7 +174,7 @@ button{font-family:var(--sans);cursor:pointer}
 .testi-role{font-size:11px;color:var(--td);font-family:var(--mono);margin-top:1px}
 
 /* FEEDBACK FORM */
-.feedback-section{background:var(--bg2);border:1px solid var(--b);border-radius:16px;padding:40px;margin-bottom:64px}
+.feedback-section{background:var(--bg2);border:1px solid var(--b);border-radius:16px;padding:40px;margin-bottom:64px;position:relative;z-index:2;}
 .feedback-section h2{font-size:24px;font-weight:700;letter-spacing:-.015em;margin-bottom:6px}
 .feedback-section p{font-size:14px;color:var(--td);margin-bottom:28px}
 .feedback-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -186,7 +186,7 @@ button{font-family:var(--sans);cursor:pointer}
 .field-input::placeholder{color:var(--tm)}
 textarea.field-input{resize:none;min-height:100px}
 .rating-row{display:flex;gap:8px}
-.rating-star{font-size:28px;cursor:pointer;transition:transform .1s;filter:grayscale(1) opacity(.4)}
+.rating-star{font-size:28px;cursor:pointer;transition:transform .1s;color:#555;}
 .rating-star.active,.rating-star:hover{filter:none;transform:scale(1.15)}
 .btn-feedback{padding:12px 28px;border-radius:9px;border:none;background:var(--o);color:#000;font-size:14px;font-weight:700;transition:all .2s;box-shadow:0 4px 20px rgba(255,107,26,.25)}
 .btn-feedback:hover{background:var(--o2);transform:translateY(-1px)}
@@ -298,6 +298,13 @@ nav,.nav{position:sticky!important;top:0!important;z-index:200!important;display
 .mobile-menu a.hl{color:var(--o,#FF6B1A)!important;}
 .mobile-menu-btns{display:flex!important;gap:8px!important;margin-top:12px!important;padding-top:12px!important;border-top:1px solid var(--b,rgba(255,255,255,.07))!important;}
 @media(max-width:768px){.nav-links{display:none!important;}.nav-toggle{display:flex!important;}}
+
+/* ── FEEDBACK FORM ALWAYS VISIBLE ── */
+#feedbackFormWrap{display:block!important;opacity:1!important;visibility:visible!important;}
+.feedback-section{opacity:1!important;visibility:visible!important;}
+.rating-star{filter:grayscale(1) opacity(.5);font-size:28px;cursor:pointer;}
+.rating-star:hover,.rating-star.active{filter:none;}
+
 </style>
 </head>
 <body>
