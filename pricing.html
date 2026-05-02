@@ -782,24 +782,34 @@ function submitFeedback() {
     alert('Please fill in your name and review before submitting.');
     return;
   }
-  // POST to /api/feedback
+  // POST directly to Web3Forms from browser
   var btn = document.querySelector('.btn-feedback');
   if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
 
-  fetch('https://www.hydromindai.com/api/feedback', {
+  fetch('https://api.web3forms.com/submit', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: name, role: role, rating: currentRating, categories: feature, usage: plan, feedback: text })
+    body: JSON.stringify({
+      access_key: '4ac24c17-fe70-4b40-a498-238c616f3f03',
+      subject: '[HydroMind.AI] New Feedback from ' + name + ' — ' + (currentRating || 0) + '/5 stars',
+      from_name: 'HydroMind Feedback',
+      name: name,
+      message: 'Name: ' + name + '\nRole: ' + (role || '—') + '\nRating: ' + (currentRating || 0) + '/5\nFeature: ' + feature + '\nPlan: ' + plan + '\n\nReview:\n' + text
+    })
   })
   .then(function(r){ return r.json(); })
   .then(function(data){
     if (btn) { btn.disabled = false; btn.textContent = 'Submit Review'; }
-    document.getElementById('feedbackFormWrap').style.display = 'none';
-    var succ = document.getElementById('feedbackSuccess');
-    succ.style.display = 'block';
-    succ.innerHTML = '<div style="font-size:36px;margin-bottom:12px">✓</div>'
-      + '<h3 style="margin-bottom:6px">Thank you, ' + name + '!</h3>'
-      + '<p style="font-size:14px;color:var(--td)">Your review has been submitted successfully.</p>';
+    if (data.success) {
+      document.getElementById('feedbackFormWrap').style.display = 'none';
+      var succ = document.getElementById('feedbackSuccess');
+      succ.style.display = 'block';
+      succ.innerHTML = '<div style="font-size:36px;margin-bottom:12px">✓</div>'
+        + '<h3 style="margin-bottom:6px">Thank you, ' + name + '!</h3>'
+        + '<p style="font-size:14px;color:var(--td)">Your review has been submitted successfully.</p>';
+    } else {
+      alert('Submission failed: ' + (data.message || 'Please try again.'));
+    }
   })
   .catch(function(err){
     if (btn) { btn.disabled = false; btn.textContent = 'Submit Review'; }
