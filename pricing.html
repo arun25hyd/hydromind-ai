@@ -782,30 +782,28 @@ function submitFeedback() {
     alert('Please fill in your name and review before submitting.');
     return;
   }
-  // Build mailto
-  var subject = encodeURIComponent('HydroMind Feedback — ' + (currentRating || 'no rating') + '/5 — ' + plan);
-  var body = encodeURIComponent(
-    'Name: ' + name + (role ? ' (' + role + ')' : '') + '
-' +
-    'Rating: ' + currentRating + '/5
-' +
-    'Plan: ' + plan + '
-' +
-    'Feature: ' + feature + '
+  // POST to /api/feedback
+  var btn = document.querySelector('.btn-feedback');
+  if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
 
-' +
-    'Review:
-' + text
-  );
-  window.location.href = 'mailto:support@hydromindai.com?subject=' + subject + '&body=' + body;
-  // Show success
-  document.getElementById('feedbackFormWrap').style.display = 'none';
-  var succ = document.getElementById('feedbackSuccess');
-  succ.style.display = 'block';
-  succ.innerHTML = '<div style="font-size:36px;margin-bottom:12px">✓</div>'
-    + '<h3 style="margin-bottom:6px">Thank you, ' + name + '!</h3>'
-    + '<p style="font-size:14px;color:var(--td);margin-bottom:16px">Your feedback email has been prepared. Please send it from your mail client.</p>'
-    + '<p style="font-size:12px;color:var(--tm);font-family:var(--mono)">Or email directly: <a href="mailto:support@hydromindai.com" style="color:var(--o)">support@hydromindai.com</a></p>';
+  fetch('/api/feedback', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: name, role: role, rating: currentRating, categories: feature, usage: plan, feedback: text })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(){
+    document.getElementById('feedbackFormWrap').style.display = 'none';
+    var succ = document.getElementById('feedbackSuccess');
+    succ.style.display = 'block';
+    succ.innerHTML = '<div style="font-size:36px;margin-bottom:12px">✓</div>'
+      + '<h3 style="margin-bottom:6px">Thank you, ' + name + '!</h3>'
+      + '<p style="font-size:14px;color:var(--td)">Your review has been submitted successfully.</p>';
+  })
+  .catch(function(){
+    if (btn) { btn.disabled = false; btn.textContent = 'Submit Review'; }
+    alert('Submission failed. Please try again.');
+  });
 }
 
 // ── MOBILE MENU

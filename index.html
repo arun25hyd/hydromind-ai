@@ -647,6 +647,13 @@ body > *:not(.bg-wrap){position:relative;z-index:1;}
 .modal-overlay,.calc-wrap,#calculator,section{position:relative!important;z-index:2!important;}
 
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  var _sb = supabase.createClient(
+    'https://frqefpoheewbornozvhc.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZycWVmcG9oZWV3Ym9ybm96dmhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxMTgxMTUsImV4cCI6MjA4ODY5NDExNX0.8wf65p5lmupngAYvxrqKy6PlspJMW1gHZ1dCAtuZGJ8'
+  );
+</script>
 </head>
 <body>
 
@@ -1826,16 +1833,24 @@ function doLogin() {
   btn.disabled = true;
   btn.textContent = 'Signing in…';
 
-  // Simulate auth
-  setTimeout(() => {
-    btn.disabled = false;
-    btn.textContent = 'Sign In';
-    // Demo: show success for any valid input
-    document.getElementById('success-title').textContent = 'Welcome back!';
-    document.getElementById('success-sub').textContent = 'You are now signed in to HydroMind.AI. Your AI advisor is ready.';
-    switchTab('success');
-    updateNavAuth(email);
-  }, 1400);
+  _sb.auth.signInWithPassword({ email: email, password: pw })
+    .then(function(res) {
+      btn.disabled = false;
+      btn.textContent = 'Sign In';
+      if (res.error) {
+        showAlert('login-alert', res.error.message || 'Login failed. Check your credentials.', 'error');
+        return;
+      }
+      document.getElementById('success-title').textContent = 'Welcome back!';
+      document.getElementById('success-sub').textContent = 'You are now signed in to HydroMind.AI. Your AI advisor is ready.';
+      switchTab('success');
+      updateNavAuth(email);
+    })
+    .catch(function(err) {
+      btn.disabled = false;
+      btn.textContent = 'Sign In';
+      showAlert('login-alert', 'Network error. Please try again.', 'error');
+    });
 }
 
 // Register
@@ -1864,13 +1879,23 @@ function doRegister() {
   const origText = btn.textContent;
   btn.textContent = 'Creating account…';
 
-  setTimeout(() => {
-    btn.disabled = false;
-    btn.textContent = origText;
-    document.getElementById('success-title').textContent = 'Account Created!';
-    document.getElementById('success-sub').textContent = `Welcome, ${fname}! Your 14-day free trial is active. Check ${email} to verify your account.`;
-    switchTab('success');
-  }, 1600);
+  _sb.auth.signUp({ email: email, password: pw, options: { data: { full_name: fname } } })
+    .then(function(res) {
+      btn.disabled = false;
+      btn.textContent = origText;
+      if (res.error) {
+        showAlert('reg-alert', res.error.message || 'Registration failed.', 'error');
+        return;
+      }
+      document.getElementById('success-title').textContent = 'Account Created!';
+      document.getElementById('success-sub').textContent = 'Welcome, ' + fname + '! Check ' + email + ' to verify your account before signing in.';
+      switchTab('success');
+    })
+    .catch(function(err) {
+      btn.disabled = false;
+      btn.textContent = origText;
+      showAlert('reg-alert', 'Network error. Please try again.', 'error');
+    });
 }
 
 // Reset
@@ -1881,7 +1906,14 @@ function doReset() {
     showAlert('reset-alert', 'Please enter a valid email address.', 'error'); return;
   }
   document.getElementById('reset-email').classList.remove('error');
-  showAlert('reset-alert', `Reset link sent to ${email}. Check your inbox.`, 'success');
+  _sb.auth.resetPasswordForEmail(email, { redirectTo: 'https://hydromindai.com' })
+    .then(function(res) {
+      if (res.error) {
+        showAlert('reset-alert', res.error.message || 'Reset failed.', 'error');
+      } else {
+        showAlert('reset-alert', 'Reset link sent to ' + email + '. Check your inbox.', 'success');
+      }
+    });
 }
 
 // Social auth (demo)
