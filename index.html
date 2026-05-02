@@ -1846,6 +1846,7 @@ function doLogin() {
       document.getElementById('success-sub').textContent = 'You are now signed in to HydroMind.AI. Your AI advisor is ready.';
       switchTab('success');
       updateNavAuth(email);
+      setTimeout(function(){ closeAuth(); }, 1500);
     })
     .catch(function(err) {
       btn.disabled = false;
