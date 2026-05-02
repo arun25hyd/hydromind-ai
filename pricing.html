@@ -786,7 +786,7 @@ function submitFeedback() {
   var btn = document.querySelector('.btn-feedback');
   if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
 
-  fetch('/api/feedback', {
+  fetch('https://www.hydromindai.com/api/feedback', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name: name, role: role, rating: currentRating, categories: feature, usage: plan, feedback: text })
