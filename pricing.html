@@ -792,7 +792,8 @@ function submitFeedback() {
     body: JSON.stringify({ name: name, role: role, rating: currentRating, categories: feature, usage: plan, feedback: text })
   })
   .then(function(r){ return r.json(); })
-  .then(function(){
+  .then(function(data){
+    if (btn) { btn.disabled = false; btn.textContent = 'Submit Review'; }
     document.getElementById('feedbackFormWrap').style.display = 'none';
     var succ = document.getElementById('feedbackSuccess');
     succ.style.display = 'block';
@@ -800,8 +801,9 @@ function submitFeedback() {
       + '<h3 style="margin-bottom:6px">Thank you, ' + name + '!</h3>'
       + '<p style="font-size:14px;color:var(--td)">Your review has been submitted successfully.</p>';
   })
-  .catch(function(){
+  .catch(function(err){
     if (btn) { btn.disabled = false; btn.textContent = 'Submit Review'; }
+    console.error('Feedback error:', err);
     alert('Submission failed. Please try again.');
   });
 }
