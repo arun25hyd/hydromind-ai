@@ -1523,6 +1523,8 @@ function toggleUnits() {
   t.style.opacity = '1';
   clearTimeout(t._t);
   t._t = setTimeout(function() { t.style.opacity = '0'; }, 2200);
+  // Refresh all calculator results in new unit
+  calcCyl(); calcPump(); calcMotor(); calcPDrop(); calcPipe();
 }
 
 // ── CALCULATOR TABS
@@ -1535,100 +1537,158 @@ function switchCalc(id, btn) {
 
 // ── CYLINDER CALC
 function calcCyl() {
-  const bore = +document.getElementById('cyl-bore').value;
-  const rod  = +document.getElementById('cyl-rod').value;
-  const stk  = +document.getElementById('cyl-stroke').value;
-  const pres = +document.getElementById('cyl-pres').value;
-  const flow = +document.getElementById('cyl-flow').value;
-  const bA = Math.PI * bore**2 / 4 / 100; // cm²
-  const rA = Math.PI * rod**2 / 4 / 100;
+  const isImp = unitMode === 'imp';
+  // Read inputs (already converted by toggleUnits)
+  const bore_raw = +document.getElementById('cyl-bore').value; // mm or in
+  const rod_raw  = +document.getElementById('cyl-rod').value;
+  const stk_raw  = +document.getElementById('cyl-stroke').value;
+  const pres_raw = +document.getElementById('cyl-pres').value; // bar or PSI
+  const flow_raw = +document.getElementById('cyl-flow').value; // L/min or GPM
+
+  // Convert inputs to SI for calculation
+  const bore = isImp ? bore_raw * 25.4 : bore_raw; // mm
+  const rod  = isImp ? rod_raw  * 25.4 : rod_raw;
+  const stk  = isImp ? stk_raw  * 25.4 : stk_raw;
+  const pres = isImp ? pres_raw * 0.06895 : pres_raw; // bar
+  const flow = isImp ? flow_raw * 3.785  : flow_raw;  // L/min
+
+  const bA   = Math.PI * bore**2 / 4 / 100; // cm²
+  const rA   = Math.PI * rod**2  / 4 / 100;
   const annA = bA - rA;
-  const extF = pres * bA / 10; // kN
-  const retF = pres * annA / 10;
-  const extV = flow * 1000 / 60 / (bA * 1e-4) * 1e-3; // mm/s ... let me redo
-  // velocity: v = Q[cm³/s] / A[cm²] = mm/s
-  const Qcm3s = flow * 1000 / 60;
-  const extSpd = Qcm3s / bA * 10; // mm/s
-  const retSpd = Qcm3s / annA * 10;
-  const extVol = bA * stk / 1000; // L
-  const retVol = annA * stk / 1000;
+  const extF_kN  = pres * bA / 10;
+  const retF_kN  = pres * annA / 10;
+  const Qcm3s    = flow * 1000 / 60;
+  const extSpd   = Qcm3s / bA * 10;  // mm/s
+  const retSpd   = Qcm3s / annA * 10;
+  const extVol_L = bA * stk / 1000;
+  const retVol_L = annA * stk / 1000;
+
   const set = (id,v,u) => { document.getElementById(id).textContent = isFinite(v) ? v.toFixed(2)+' '+u : '—'; };
   set('cyl-r-boreA', bA, 'cm²');
-  set('cyl-r-rodA', annA, 'cm²');
-  set('cyl-r-extF', extF, 'kN');
-  set('cyl-r-retF', retF, 'kN');
-  set('cyl-r-extV', extSpd, 'mm/s');
-  set('cyl-r-retV', retSpd, 'mm/s');
-  set('cyl-r-extVol', extVol, 'L');
-  set('cyl-r-retVol', retVol, 'L');
+  set('cyl-r-rodA',  annA, 'cm²');
+
+  if (isImp) {
+    set('cyl-r-extF',   extF_kN  * 224.809, 'lbf');
+    set('cyl-r-retF',   retF_kN  * 224.809, 'lbf');
+    set('cyl-r-extV',   extSpd   * 0.03937, 'in/s');
+    set('cyl-r-retV',   retSpd   * 0.03937, 'in/s');
+    set('cyl-r-extVol', extVol_L * 0.2642,  'gal');
+    set('cyl-r-retVol', retVol_L * 0.2642,  'gal');
+  } else {
+    set('cyl-r-extF',   extF_kN,  'kN');
+    set('cyl-r-retF',   retF_kN,  'kN');
+    set('cyl-r-extV',   extSpd,   'mm/s');
+    set('cyl-r-retV',   retSpd,   'mm/s');
+    set('cyl-r-extVol', extVol_L, 'L');
+    set('cyl-r-retVol', retVol_L, 'L');
+  }
 }
 calcCyl();
 
 // ── PUMP CALC
 function calcPump() {
-  const D    = +document.getElementById('p-disp').value;
+  const isImp = unitMode === 'imp';
+  const D    = +document.getElementById('p-disp').value; // cc/rev always
   const n    = +document.getElementById('p-rpm').value;
   const veff = +document.getElementById('p-veff').value / 100;
-  const p    = +document.getElementById('p-pres').value;
-  const Q  = D * n * veff / 1000; // L/min
-  const kW = p * Q / 600;
+  const p_raw = +document.getElementById('p-pres').value;
+  const p    = isImp ? p_raw * 0.06895 : p_raw; // bar
+  const Q_lpm = D * n * veff / 1000; // L/min
+  const kW   = p * Q_lpm / 600;
   const kWin = kW / veff;
-  const torq = p * D / (20 * Math.PI);
+  const torq_Nm = p * D / (20 * Math.PI);
   const set = (id,v,u) => { document.getElementById(id).textContent = v.toFixed(2)+' '+u; };
-  set('p-r-flow', Q, 'L/min');
-  set('p-r-hpow', kW, 'kW');
-  set('p-r-ipow', kWin, 'kW');
-  set('p-r-torq', torq, 'Nm');
+  if (isImp) {
+    set('p-r-flow', Q_lpm  * 0.2642, 'GPM');
+    set('p-r-hpow', kW     * 1.341,  'HP');
+    set('p-r-ipow', kWin   * 1.341,  'HP');
+    set('p-r-torq', torq_Nm * 0.7376,'ft·lbf');
+  } else {
+    set('p-r-flow', Q_lpm,   'L/min');
+    set('p-r-hpow', kW,      'kW');
+    set('p-r-ipow', kWin,    'kW');
+    set('p-r-torq', torq_Nm, 'Nm');
+  }
 }
 calcPump();
 
 // ── MOTOR CALC
 function calcMotor() {
-  const D    = +document.getElementById('m-disp').value;
-  const p    = +document.getElementById('m-pres').value;
-  const Q    = +document.getElementById('m-flow').value;
+  const isImp = unitMode === 'imp';
+  const D    = +document.getElementById('m-disp').value; // cc/rev always
+  const p_raw = +document.getElementById('m-pres').value;
+  const Q_raw = +document.getElementById('m-flow').value;
   const meff = +document.getElementById('m-meff').value / 100;
-  const torq = p * D * meff / (20 * Math.PI);
+  const p    = isImp ? p_raw * 0.06895 : p_raw; // bar
+  const Q    = isImp ? Q_raw * 3.785   : Q_raw;  // L/min
+  const torq_Nm = p * D * meff / (20 * Math.PI);
   const rpm  = Q * 1000 / D;
-  const pow  = p * Q / 600;
+  const pow_kW = p * Q / 600;
   const set = (id,v,u) => { document.getElementById(id).textContent = v.toFixed(2)+' '+u; };
-  set('m-r-torq', torq, 'Nm');
-  set('m-r-rpm', rpm, 'rpm');
-  set('m-r-pow', pow, 'kW');
+  if (isImp) {
+    set('m-r-torq', torq_Nm * 0.7376, 'ft·lbf');
+    set('m-r-rpm',  rpm,               'rpm');
+    set('m-r-pow',  pow_kW  * 1.341,   'HP');
+  } else {
+    set('m-r-torq', torq_Nm, 'Nm');
+    set('m-r-rpm',  rpm,     'rpm');
+    set('m-r-pow',  pow_kW,  'kW');
+  }
 }
 calcMotor();
 
 // ── PRESSURE DROP
 function calcPDrop() {
-  const Q    = +document.getElementById('pd-flow').value;
-  const d    = +document.getElementById('pd-dia').value / 1000; // m
-  const L    = +document.getElementById('pd-len').value;
-  const vis  = +document.getElementById('pd-visc').value * 1e-6; // m²/s
+  const isImp = unitMode === 'imp';
+  const Q_raw = +document.getElementById('pd-flow').value;
+  const d_raw = +document.getElementById('pd-dia').value;
+  const L_raw = +document.getElementById('pd-len').value;
+  const vis  = +document.getElementById('pd-visc').value * 1e-6;
   const rho  = +document.getElementById('pd-dens').value;
-  const A    = Math.PI * d**2 / 4;
-  const v    = Q / 60000 / A;
-  const Re   = v * d / vis;
-  const f    = Re < 2300 ? 64/Re : 0.316/Math.pow(Re, 0.25);
-  const dP   = f * L/d * rho * v**2 / 2 / 1e5;
+  // Convert to SI
+  const Q_lpm = isImp ? Q_raw * 3.785  : Q_raw;
+  const d_mm  = isImp ? d_raw * 25.4   : d_raw;
+  const L_m   = isImp ? L_raw * 0.3048 : L_raw;
+  const d = d_mm / 1000;
+  const A = Math.PI * d**2 / 4;
+  const v = Q_lpm / 60000 / A;
+  const Re = v * d / vis;
+  const f  = Re < 2300 ? 64/Re : 0.316/Math.pow(Re, 0.25);
+  const dP_bar = f * L_m/d * rho * v**2 / 2 / 1e5;
   const set = (id,v2,u) => { document.getElementById(id).textContent = isFinite(v2) ? v2.toFixed(3)+' '+u : '—'; };
-  set('pd-r-vel', v, 'm/s');
-  document.getElementById('pd-r-re').textContent = isFinite(Re) ? Math.round(Re).toLocaleString() : '—';
-  set('pd-r-dp', dP, 'bar');
+  if (isImp) {
+    set('pd-r-vel', v * 3.281, 'ft/s');
+    document.getElementById('pd-r-re').textContent = isFinite(Re) ? Math.round(Re).toLocaleString() : '—';
+    set('pd-r-dp',  dP_bar * 14.504, 'PSI');
+  } else {
+    set('pd-r-vel', v, 'm/s');
+    document.getElementById('pd-r-re').textContent = isFinite(Re) ? Math.round(Re).toLocaleString() : '—';
+    set('pd-r-dp',  dP_bar, 'bar');
+  }
 }
 calcPDrop();
 
 // ── PIPING
 function calcPipe() {
-  const Q    = +document.getElementById('pp-flow').value;
-  const d    = +document.getElementById('pp-dia').value / 1000;
+  const isImp = unitMode === 'imp';
+  const Q_raw = +document.getElementById('pp-flow').value;
+  const d_raw = +document.getElementById('pp-dia').value;
   const vis  = +document.getElementById('pp-visc').value * 1e-6;
   const rho  = +document.getElementById('pp-dens').value;
-  const A    = Math.PI * d**2 / 4;
-  const v    = Q / 60000 / A;
-  const Re   = v * d / vis;
+  const Q_lpm = isImp ? Q_raw * 3.785 : Q_raw;
+  const d_mm  = isImp ? d_raw * 25.4  : d_raw;
+  const d = d_mm / 1000;
+  const A = Math.PI * d**2 / 4;
+  const v = Q_lpm / 60000 / A;
+  const Re = v * d / vis;
   const set = (id,v2,u) => { document.getElementById(id).textContent = isFinite(v2) ? v2.toFixed(3)+' '+u : '—'; };
-  set('pp-r-vel', v, 'm/s');
-  document.getElementById('pp-r-area').textContent = isFinite(A) ? (A*1e6).toFixed(2)+' mm²' : '—';
+  if (isImp) {
+    set('pp-r-vel', v * 3.281, 'ft/s');
+    document.getElementById('pp-r-area').textContent = isFinite(A) ? (A * 1550).toFixed(4)+' in²' : '—';
+  } else {
+    set('pp-r-vel', v, 'm/s');
+    document.getElementById('pp-r-area').textContent = isFinite(A) ? (A*1e6).toFixed(2)+' mm²' : '—';
+  }
   document.getElementById('pp-r-re').textContent = isFinite(Re) ? Math.round(Re).toLocaleString() : '—';
   document.getElementById('pp-r-regime').textContent = !isFinite(Re) ? '—' : Re < 2300 ? 'Laminar' : Re < 4000 ? 'Transitional' : 'Turbulent';
 }
