@@ -130,7 +130,7 @@ button{font-family:var(--sans);cursor:pointer}
 
 /* ── SIDEBAR ── */
 .sidebar{
-  width:280px;flex-shrink:0;border-right:1px solid var(--b);
+  width:220px;flex-shrink:0;border-right:1px solid var(--b);
   display:flex;flex-direction:column;background:rgba(13,16,20,.96);overflow:hidden;
 }
 .sidebar-top{
@@ -217,8 +217,8 @@ button{font-family:var(--sans);cursor:pointer}
   margin-bottom:14px;box-shadow:0 8px 32px rgba(255,107,26,.3);
 }
 .greeting h2{font-size:24px;font-weight:700;letter-spacing:-.015em;margin-bottom:8px}
-.greeting p{font-size:14px;color:var(--td);max-width:440px;line-height:1.6;margin-bottom:20px;}
-.suggestion-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:580px;width:100%;}
+.greeting p{font-size:14px;color:var(--td);max-width:560px;line-height:1.6;margin-bottom:20px;}
+.suggestion-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:700px;width:100%;}
 .sug-card{padding:16px 16px;border-radius:10px;border:1px solid var(--b);background:var(--bg2);cursor:pointer;text-align:left;transition:all .2s;}
 .sug-card:hover{border-color:var(--bo);background:rgba(255,107,26,.05);transform:translateY(-1px)}
 .sug-card .sug-icon{font-size:16px;margin-bottom:6px}
@@ -237,7 +237,7 @@ button{font-family:var(--sans);cursor:pointer}
 .av-ai{background:linear-gradient(135deg,var(--o),var(--o2));color:#000;font-family:var(--mono);font-size:11px}
 .av-user{background:var(--bg4);border:1px solid var(--b);color:var(--td);font-size:12px}
 
-.msg-body{flex:1;min-width:0;max-width:720px}
+.msg-body{flex:1;min-width:0;max-width:860px}
 .msg.user .msg-body{align-items:flex-end;display:flex;flex-direction:column}
 
 .msg-bubble{
@@ -361,7 +361,7 @@ button{font-family:var(--sans);cursor:pointer}
 
 /* ── CONTEXT PANEL (right) ── */
 .ctx-panel{
-  width:260px;flex-shrink:0;border-left:1px solid var(--b);
+  width:200px;flex-shrink:0;border-left:1px solid var(--b);
   display:flex;flex-direction:column;background:rgba(13,16,20,.96);
   overflow-y:auto;
 }
