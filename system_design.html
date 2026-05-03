@@ -240,7 +240,7 @@ select.field-input{cursor:pointer}
 
 /* ── BOM PANEL ── */
 .bom-panel{
-  width:280px;flex-shrink:0;border-left:1px solid var(--b);
+  width:420px;flex-shrink:0;border-left:1px solid var(--b);
   background:rgba(13,16,20,.96);display:flex;flex-direction:column;overflow:hidden;
 }
 .bom-header{
@@ -295,7 +295,7 @@ select.field-input{cursor:pointer}
 .sd-av{width:24px;height:24px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;font-weight:700}
 .sd-av.ai{background:linear-gradient(135deg,var(--o),var(--o2));color:#000}
 .sd-av.user{background:var(--bg4);border:1px solid var(--b);color:var(--td)}
-.sd-bubble{padding:9px 12px;border-radius:9px;font-size:12.5px;line-height:1.6;max-width:200px}
+.sd-bubble{padding:10px 14px;border-radius:9px;font-size:13.5px;line-height:1.65;max-width:340px}
 .sd-msg.ai .sd-bubble{background:var(--bg3);border:1px solid var(--b);color:var(--t);border-radius:3px 9px 9px 9px}
 .sd-msg.user .sd-bubble{background:rgba(255,107,26,.1);border:1px solid rgba(255,107,26,.2);color:var(--t);border-radius:9px 3px 9px 9px;text-align:right}
 .sd-bubble strong{color:var(--o2)}
@@ -307,15 +307,15 @@ select.field-input{cursor:pointer}
 .sd-typing span:nth-child(3){animation:blink .9s .4s infinite}
 @keyframes blink{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.sd-inp-row{flex-shrink:0;padding:10px 12px;border-top:1px solid var(--b);display:flex;gap:7px;align-items:center}
-.sd-inp{flex:1;background:var(--bg3);border:1px solid var(--b);border-radius:7px;padding:7px 10px;font-family:var(--sans);font-size:12px;color:var(--t);outline:none;transition:border-color .15s}
+.sd-inp-row{flex-shrink:0;padding:12px 14px;border-top:1px solid var(--b);display:flex;gap:8px;align-items:center}
+.sd-inp{flex:1;background:var(--bg3);border:1px solid var(--b);border-radius:7px;padding:9px 12px;font-family:var(--sans);font-size:13px;color:var(--t);outline:none;transition:border-color .15s}
 .sd-inp:focus{border-color:var(--bo)}
 .sd-inp::placeholder{color:var(--tm)}
-.sd-send{width:28px;height:28px;background:var(--o);border:none;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;cursor:pointer}
+.sd-send{width:32px;height:32px;background:var(--o);border:none;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;cursor:pointer}
 .sd-send:hover{background:var(--o2)}
 .sd-send:disabled{opacity:.4;cursor:not-allowed}
-.sd-prompts{padding:8px 12px;display:flex;flex-direction:column;gap:4px;flex-shrink:0;border-bottom:1px solid var(--b)}
-.sd-prompt-btn{font-size:11px;font-family:var(--mono);padding:5px 8px;border-radius:5px;border:1px solid var(--b);background:var(--bg3);color:var(--td);cursor:pointer;text-align:left;transition:all .15s;line-height:1.4}
+.sd-prompts{padding:10px 14px;display:flex;flex-direction:column;gap:5px;flex-shrink:0;border-bottom:1px solid var(--b)}
+.sd-prompt-btn{font-size:12px;font-family:var(--mono);padding:7px 10px;border-radius:6px;border:1px solid var(--b);background:var(--bg3);color:var(--td);cursor:pointer;text-align:left;transition:all .15s;line-height:1.4}
 .sd-prompt-btn:hover{border-color:var(--bo);color:var(--o)}
 </style>
 </head>
