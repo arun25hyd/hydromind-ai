@@ -1577,10 +1577,21 @@ async function sdSend() {
   sdMessages.push({role:'user', content: text});
 
   try {
-    var reply = await window.claude.complete({
-      system: sdGetContext(),
-      messages: sdMessages.slice(-8)
+    var sdMsgs  = sdMessages.slice(-8);
+    var sdLastQ = sdMsgs[sdMsgs.length - 1].content;
+    var sdHist  = sdMsgs.slice(0, -1);
+
+    var sdRes = await fetch('https://hydromind-backend.onrender.com/api/kb/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: sdLastQ, history: sdHist, system: sdGetContext() })
     });
+
+    if (!sdRes.ok) throw new Error('Server error ' + sdRes.status);
+    var sdData = await sdRes.json();
+    var reply = (sdData.content && sdData.content[0] && sdData.content[0].text)
+      ? sdData.content[0].text
+      : (sdData.reply || sdData.message || 'No response received.');
     document.getElementById('sdTyping').remove();
     sdMessages.push({role:'assistant', content: reply});
 

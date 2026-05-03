@@ -811,10 +811,20 @@ async function sendMessage() {
       fullSystem += '\n\nKB context: You have access to 86 knowledge base entries covering Rexroth, Sauer Danfoss, Parker, Eaton, Liebherr, MacGregor, NOV, SeaTrax, Favco and more. Reference KB entry numbers where relevant.';
     }
 
-    var response = await window.claude.complete({
-      system: fullSystem,
-      messages: claudeMsgs
+    var lastMsg  = claudeMsgs[claudeMsgs.length - 1].content;
+    var history  = claudeMsgs.slice(0, -1);
+
+    var res = await fetch('https://hydromind-backend.onrender.com/api/kb/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: lastMsg, history: history, system: fullSystem })
     });
+
+    if (!res.ok) throw new Error('Server error ' + res.status);
+    var data = await res.json();
+    var response = (data.content && data.content[0] && data.content[0].text)
+      ? data.content[0].text
+      : (data.reply || data.message || 'No response received.');
 
     hideTyping();
     messages.push({ role: 'assistant', content: response });
