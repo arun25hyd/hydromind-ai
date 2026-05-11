@@ -4,7 +4,9 @@
   "framework": null,
   "rewrites": [
     { "source": "/api/chat",     "destination": "/api/chat.js" },
-    { "source": "/api/feedback", "destination": "/api/feedback.js" }
+    { "source": "/api/feedback", "destination": "/api/feedback.js" },
+    { "source": "/maintenance.html", "destination": "/maintenance.html" },
+    { "source": "/((?!maintenance\\.html|api/).*)", "destination": "/maintenance.html" }
   ],
   "redirects": [
     {

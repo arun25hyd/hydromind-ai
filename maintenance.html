@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HydroMind.AI — Under Maintenance</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --o:#FF6B1A;--o2:#FF9A4A;--og:rgba(255,107,26,0.12);
+  --bg:#080A0C;--bg2:#0D1014;--bg3:#131820;--bg4:#1A2028;
+  --b:rgba(255,255,255,0.07);--bo:rgba(255,107,26,0.25);
+  --t:#EEF0F4;--td:#8A919E;
+  --sans:'Space Grotesk',sans-serif;--mono:'Space Mono',monospace;
+}
+html{font-family:var(--sans);background:var(--bg);color:var(--t);height:100%}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;position:relative;overflow:hidden}
+
+/* ── GRID BACKGROUND ── */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;
+  background-image:
+    linear-gradient(rgba(255,107,26,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,107,26,0.04) 1px,transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 40%,transparent 100%);
+}
+
+/* ── GLOW ── */
+.glow{position:fixed;width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,107,26,0.08) 0%,transparent 70%);
+  top:50%;left:50%;transform:translate(-50%,-50%);z-index:0;pointer-events:none}
+
+/* ── CARD ── */
+.card{
+  position:relative;z-index:1;
+  background:var(--bg3);
+  border:1px solid var(--bo);
+  border-radius:20px;
+  padding:3rem 3.5rem;
+  max-width:560px;width:100%;
+  text-align:center;
+  box-shadow:0 0 60px rgba(255,107,26,0.08),0 24px 64px rgba(0,0,0,0.4);
+}
+
+/* ── LOGO ── */
+.logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:2.5rem}
+.logo-icon{
+  width:44px;height:44px;border-radius:10px;
+  background:linear-gradient(135deg,var(--o),var(--o2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;box-shadow:0 4px 16px rgba(255,107,26,0.35);
+}
+.logo-text{font-size:1.3rem;font-weight:700;letter-spacing:-0.02em}
+.logo-text span{color:var(--o)}
+
+/* ── ICON ── */
+.main-icon{
+  width:80px;height:80px;border-radius:50%;
+  background:var(--og);border:1px solid var(--bo);
+  display:flex;align-items:center;justify-content:center;
+  font-size:36px;margin:0 auto 1.5rem;
+  animation:pulse 2.5s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,26,0.2)}50%{box-shadow:0 0 0 16px rgba(255,107,26,0)}}
+
+/* ── TEXT ── */
+h1{font-size:1.8rem;font-weight:700;letter-spacing:-0.03em;margin-bottom:0.75rem}
+h1 span{color:var(--o)}
+.subtitle{font-size:1rem;color:var(--td);line-height:1.6;margin-bottom:2rem}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--b);margin:1.75rem 0}
+
+/* ── STATUS ROW ── */
+.status-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:1.75rem}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--o);animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.status-text{font-family:var(--mono);font-size:0.78rem;color:var(--o);letter-spacing:0.08em;text-transform:uppercase}
+
+/* ── CHECKLIST ── */
+.checklist{text-align:left;display:flex;flex-direction:column;gap:0.65rem;margin-bottom:2rem}
+.check-item{display:flex;align-items:center;gap:10px;font-size:0.88rem;color:var(--td)}
+.check-item .dot{width:6px;height:6px;border-radius:50%;background:var(--o);flex-shrink:0}
+
+/* ── FOOTER NOTE ── */
+.footer-note{font-size:0.78rem;color:var(--td);margin-top:1.5rem;line-height:1.6}
+.footer-note a{color:var(--o);text-decoration:none}
+.footer-note a:hover{text-decoration:underline}
+
+/* ── BADGE ── */
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--og);border:1px solid var(--bo);
+  border-radius:20px;padding:6px 14px;
+  font-size:0.75rem;font-family:var(--mono);
+  color:var(--o);letter-spacing:0.05em;
+  margin-bottom:1.5rem;
+}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+
+<div class="card">
+
+  <!-- Logo -->
+  <div class="logo">
+    <div class="logo-icon">⚙</div>
+    <div class="logo-text">Hydro<span>Mind</span>.AI</div>
+  </div>
+
+  <!-- Status Badge -->
+  <div class="badge">🔧 &nbsp;SCHEDULED MAINTENANCE</div>
+
+  <!-- Icon -->
+  <div class="main-icon">🛠</div>
+
+  <!-- Heading -->
+  <h1>We'll Be Back <span>Shortly</span></h1>
+  <p class="subtitle">
+    HydroMind AI is currently undergoing scheduled maintenance to improve performance and reliability. We apologise for the inconvenience.
+  </p>
+
+  <!-- Status -->
+  <div class="status-row">
+    <div class="status-dot"></div>
+    <div class="status-text">Maintenance in progress</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- What's happening -->
+  <div class="checklist">
+    <div class="check-item"><div class="dot"></div>Platform upgrades and optimisation</div>
+    <div class="check-item"><div class="dot"></div>Knowledge base indexing and improvements</div>
+    <div class="check-item"><div class="dot"></div>Performance and stability enhancements</div>
+    <div class="check-item"><div class="dot"></div>Security and infrastructure updates</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Footer -->
+  <div class="footer-note">
+    Expected downtime: <strong style="color:var(--t)">A few hours</strong><br>
+    For urgent queries contact us at
+    <a href="mailto:support@hydromindai.com">support@hydromindai.com</a>
+  </div>
+
+</div>
+</body>
+</html>
