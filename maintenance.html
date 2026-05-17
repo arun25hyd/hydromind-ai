@@ -101,6 +101,22 @@ h1 span{color:var(--o)}
 </style>
 </head>
 <body>
+<!-- LEFT AD SIDEBAR -->
+<div class="hm-left-sidebar" id="hmLeftSidebar">
+  <div style="display:flex;flex-direction:column;align-items:center;padding-top:40px;gap:16px;pointer-events:none">
+    <div style="width:108px;min-height:240px;background:rgba(249,115,22,.04);border:1px dashed rgba(249,115,22,.2);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10px 6px;pointer-events:auto;font-family:monospace;gap:5px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span style="font-size:8px;color:#404855;text-transform:uppercase;letter-spacing:.06em;">Advertisement</span>
+      <span style="font-size:7.5px;color:#404855;opacity:.7;">120×240</span>
+      <a href="pricing.html" style="font-size:8px;color:rgba(249,115,22,.4);text-decoration:none;letter-spacing:.04em;margin-top:4px;display:block;">Advertise →</a>
+    </div>
+  </div>
+</div>
+<style>
+.hm-left-sidebar{position:fixed;left:0;top:52px;width:130px;height:calc(100vh - 52px);z-index:90;display:flex;flex-direction:column;align-items:center;pointer-events:none;}
+@media(max-width:1300px){.hm-left-sidebar{display:none;}}
+</style>
+
 <div class="glow"></div>
 
 <div class="card">
