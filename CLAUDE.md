@@ -1,122 +1,158 @@
 # CLAUDE.md — HydroMind AI Master Memory File
-# Single source of truth. Read this before any HydroMind coding task.
-# Last updated: May 2026
+# Single source of truth. Read this FIRST before any HydroMind task.
+# Last updated: May 17 2026 — post cleanup session
 
 ---
 
-## 1. CANONICAL FILE PATHS (EXACT — NO GUESSING)
+## ⚠️ SESSION START CHECKLIST — DO THIS BEFORE ANYTHING ELSE
 
-### Active Web Frontend (USE THIS — has git token)
+1. Read this file completely
+2. Confirm working directory = /Users/admin/HydroMind-Platform/web-frontend
+3. Never edit any file without running grep/read on it first
+4. Never push without browser screenshot confirmation
+
+---
+
+## 1. CANONICAL FILE PATHS — EXACT, NO GUESSING, NO EXCEPTIONS
+
+### Web Frontend (LIVE — Vercel deploys from here)
 /Users/admin/HydroMind-Platform/web-frontend
 
-### Backend
+### Backend (Node.js — Render deploys from here)
 /Users/admin/HydroMind-Platform/backend
 
-### Android App
-/Users/admin/hydromind
+### Android App (Expo — EAS builds from here)
+/Users/admin/HydroMind-Platform/android-app
 
 ### HydroFit App
 /Users/admin/hydrofit
 
-### SKILL files (live agent path)
-/Users/admin/Library/Application Support/Claude/local-agent-mode-sessions/skills-plugin/79127e5e-8536-4092-8009-a9f6a4eb6153/0977525d-7d10-490d-becf-d09f9b5769e0/skills/
-
-### STALE PATHS — NEVER USE THESE
-# /Users/admin/Desktop/HydroMind/hydromind-frontend  ← OLD COPY
-# /Users/admin/HydroMind-Platform/docs/old-user-skills  ← OLD COPY
-# /Users/admin/HydroMind-Platform/web-frontend/Desktop/... ← GHOST PATH
-
----
-
-## 2. PLATFORM URLS
-
-| Service | URL |
-|---|---|
-| Frontend (live) | https://hydromindai.com |
-| Backend | https://hydromind-backend.onrender.com |
-| GitHub repo | https://github.com/arun25hyd/hydromind-ai |
-| Supabase project | frqefpoheewbornozvhc |
+### STALE / DELETED PATHS — THESE NO LONGER EXIST — NEVER USE
+# /Users/admin/Desktop/HydroMind/hydromind-frontend  ← DELETED May 17 2026
+# /Users/admin/hydromind                              ← WRONG, use android-app
+# /Users/admin/HydroMind-Platform/web-frontend/Desktop/  ← DELETED
+# /Users/admin/HydroMind-Platform/web-frontend/build/    ← DELETED
+# /Users/admin/HydroMind-Platform/web-frontend/src/      ← DELETED
+# /Users/admin/HydroMind-Platform/web-frontend/pages/*.bak ← ALL DELETED
+# /Users/admin/HydroMind-Platform/web-frontend/public/pages/ ← DELETED
 
 ---
 
-## 3. TECH STACK
+## 2. CLEAN FOLDER STRUCTURE (after May 17 2026 cleanup)
+
+### web-frontend/ — ONLY these files/folders exist:
+  CLAUDE.md, ads.txt, robots.txt, sitemap.xml, vercel.json
+  index.html, ai_advisor.html, crane_diagnostic.html, system_design.html
+  knowledge_base.html, pricing.html, maintenance.html, disclaimer.html, privacy.html
+  api/        ← Vercel serverless functions
+  css/        ← style.css
+  js/         ← auth.js, main.js
+  data/       ← kb-data.json
+  public/     ← public assets (NO /pages/ subfolder)
+  skills/     ← ai-advisor SKILL.md
+  pages/      ← empty (all .bak files deleted)
+  node_modules/, package.json, package-lock.json
+
+### android-app/ — ONLY these exist:
+  App.js, app.json, eas.json, tsconfig.json, eslint.config.js
+  app/        ← screens and components
+  assets/     ← images, icons
+  node_modules/, package.json
+
+### backend/ — ONLY these exist:
+  server.js, security.js, crane-agent-prompt.js, CLAUDE.md, SKILL.md
+  node_modules/, package.json
+
+---
+
+## 3. PLATFORM URLS
+
+| Service     | URL                                      |
+|-------------|------------------------------------------|
+| Frontend    | https://hydromindai.com                  |
+| Backend     | https://hydromind-backend.onrender.com   |
+| GitHub (FE) | https://github.com/arun25hyd/hydromind-ai |
+| Supabase    | frqefpoheewbornozvhc                     |
+
+---
+
+## 4. TECH STACK
 
 ### Web Frontend
-- Pure HTML/CSS/JS (no framework) — 8 pages
+- Pure HTML/CSS/JS — NO React, NO framework
 - Design: bg #0d0f12, surface #13171d, orange #f97316
-- Pages: index.html, ai_advisor.html, crane_diagnostic.html, system_design.html,
-         knowledge_base.html, pricing.html, maintenance.html, disclaimer.html
+- 8 live pages (listed in section 2 above)
+- Nav height: 52px fixed
 
 ### Backend (Node.js / Express)
-- File: server.js
-- Model: claude-sonnet-4-5 (locked — do NOT change)
+- server.js — model: claude-sonnet-4-5 (LOCKED — never change)
 - Max tokens: 2000
-- Security: helmet, rate limiters, CSP/HSTS/XSS headers
+- Security: helmet, rate limiters, CSP/HSTS/XSS via security.js
 
-### Android App (React Native / Expo)
-- SDK: Expo 54
+### Android App (React Native / Expo SDK 54)
 - Package: com.hydromind.app
 - EAS account: arun25hyd
-- Next versionCode: 35 (always set via `eas build:version:set` first)
-- Play Store: Closed testing active — 12 Gmail testers
+- Next versionCode: 35
+- ALWAYS run: eas build:version:set → 35 BEFORE any build
+- Play Store: closed testing, 12 Gmail testers
 
-### HydroFit App
+### HydroFit App (Expo SDK 54)
 - Package: com.hydrofit.app
-- Expo SDK 54
-- DB: 1,456 hose fittings + 284 tube fittings + 80 hoses
+- DB: 1,456 hose + 284 tube + 80 hose fittings
 
 ---
 
-## 4. HTML PAGE ARCHITECTURE — CRITICAL
+## 5. HTML PAGE ARCHITECTURE — CRITICAL
 
-### Two page types exist — ALWAYS CHECK BEFORE EDITING:
+### Two page types — CHECK BEFORE EVERY EDIT:
 
-**TYPE A — Shell Layout pages** (ai_advisor, crane_diagnostic, system_design)
-- Wrap content in `<div class="shell">`
-- Has `</body></html>` INSIDE JS strings (for iframe/print export)
-- Real `</body>` is at line 893 (crane_diagnostic) and 1669 (system_design)
-- Nav replacement MUST be line-number based — NOT regex (will eat shell closing div)
+TYPE A — Shell Layout (ai_advisor, crane_diagnostic, system_design)
+- Content wrapped in <div class="shell">
+- Contains </body></html> INSIDE JS strings — do NOT use regex replace
+- Nav replacement MUST be line-number based
 
-**TYPE B — Scroll pages** (index, knowledge_base, pricing, maintenance, disclaimer)
-- Standard scroll layout — no shell wrapper
-- Safe to use regex nav replacement
+TYPE B — Scroll pages (index, knowledge_base, pricing, maintenance, disclaimer, privacy)
+- Standard scroll layout, no shell wrapper
+- Safe for regex replace
 
 ### Z-index Rule (NON-NEGOTIABLE)
-- `bg-wrap` canvas = `position:fixed; z-index:0`
-- ALL content sections need `position:relative; z-index:2`
-- Forgetting this = content disappears behind canvas
+- bg-wrap canvas = position:fixed; z-index:0
+- ALL content = position:relative; z-index:2
+- Forgetting this = content vanishes behind canvas
 
-### Standard Page Layout (all pages must have):
-1. `hm-topnav` (52px fixed top)
-2. `hm-left-sidebar`
-3. `hm-right-sidebar` (hmAdSidebar)
-4. `hm-main-content`
-
----
-
-## 5. REPEATED MISTAKES REGISTRY — NEVER REPEAT
-
-| # | Mistake | Fix |
-|---|---|---|
-| 1 | Edit HTML without reading structure first | grep shell/nav/div counts FIRST |
-| 2 | Nav regex consuming closing shell div | Line-number based replace on shell pages |
-| 3 | Claim "fixed" without browser screenshot | Screenshot = only proof |
-| 4 | Patching broken patch | Restore from /Users/admin/Downloads/ clean source |
-| 5 | Using bash_tool for Mac filesystem | bash_tool = container only. Use Desktop Commander for Mac |
-| 6 | Guessing file paths | Read CLAUDE.md section 1 first |
-| 7 | Multiple questions to Arun | Max ONE question per response |
-| 8 | python str.replace() returning unchanged | Always verify with assert or print before writing |
-| 9 | Editing stale Desktop copy | ALWAYS use /Users/admin/HydroMind-Platform/web-frontend |
-| 10 | node --check skipped before backend push | ALWAYS run node --check server.js before git push |
-| 11 | Auth restore not in 3 places | Auth restore script runs at: DOMContentLoaded + setTimeout 100ms + setTimeout 500ms |
-| 12 | Re-doing tasks Arun confirmed ✅ | If Arun gave 👍 — NEVER touch it again |
-| 13 | index.html hero SVG replaced with canvas | Hero is hydraulic schematic SVG in <div class="circuit-bg"> — NEVER replace |
-| 14 | window.claude.complete() on live site | Use mailto: or Supabase — not claude API in browser |
-| 15 | EAS build without version set | Always: eas build:version:set → 35 FIRST, then build |
+### Ad Sidebars (all pages must have both)
+- .hm-left-sidebar  — fixed left, 160px, top:52px
+- .hm-right-sidebar — fixed right, 160px, top:52px (id=hmAdSidebar)
+- Hidden on screens < 1400px via media query
 
 ---
 
-## 6. GIT WORKFLOW (EXACT COMMANDS)
+## 6. REPEATED MISTAKES REGISTRY — NEVER REPEAT
+
+| #  | Mistake                                   | Fix                                                        |
+|----|-------------------------------------------|------------------------------------------------------------|
+| 1  | Edit HTML without reading structure first | grep shell/nav/div counts FIRST                            |
+| 2  | Nav regex eating closing shell div        | Line-number replace on shell pages                         |
+| 3  | Claim "fixed" without screenshot          | Browser screenshot = only proof                            |
+| 4  | Patching a broken patch                   | Hard reset to last good git commit                         |
+| 5  | bash_tool for Mac filesystem              | bash_tool = container only. Use Desktop Commander for Mac  |
+| 6  | Guessing file paths                       | Read CLAUDE.md section 1 — no exceptions                  |
+| 7  | Multiple questions to Arun                | Max ONE question per response                              |
+| 8  | python str.replace() not verifying        | Always print/assert before writing file                    |
+| 9  | Editing wrong repo/folder                 | ALWAYS cd /Users/admin/HydroMind-Platform/web-frontend     |
+| 10 | node --check skipped before backend push  | MANDATORY: node --check server.js before every push        |
+| 11 | Auth restore missing locations            | Must be at: DOMContentLoaded + setTimeout 100ms + 500ms    |
+| 12 | Re-doing Arun-confirmed ✅ tasks           | If Arun gave thumbs up — NEVER touch again                 |
+| 13 | Hero SVG replaced with canvas             | Hero = hydraulic schematic SVG in .circuit-bg — NEVER swap |
+| 14 | window.claude.complete() in browser       | Use mailto: or Supabase — never Claude API client-side     |
+| 15 | EAS build without version bump            | eas build:version:set → 35 FIRST, then build               |
+| 16 | Edited stale Desktop clone (May 17 2026)  | That folder is DELETED. Only canonical paths exist now.    |
+| 17 | Python script damaged pricing.html        | Never run bulk scripts on HTML — edit surgically           |
+| 18 | Force push without verifying deployment   | After force push: empty commit → wait 30s → screenshot     |
+
+---
+
+## 7. GIT WORKFLOW (EXACT COMMANDS)
 
 ### Frontend
 ```bash
@@ -127,39 +163,47 @@ git add -A && git commit -m "fix: description" && git push origin main
 ### Backend
 ```bash
 cd /Users/admin/HydroMind-Platform/backend
-node --check server.js   # MANDATORY before push
+node --check server.js
 git add -A && git commit -m "fix: description" && git push origin main
 ```
 
-### After push: wait 20s → browser verify → screenshot to Arun
+### Emergency rollback
+```bash
+cd /Users/admin/HydroMind-Platform/web-frontend
+git reset --hard <last-good-commit>
+git push origin main --force
+git commit --allow-empty -m "chore: force redeploy" && git push origin main
+```
+
+### After every push: wait 30s → browser screenshot → confirm with Arun
 
 ---
 
-## 7. QUERY ROUTING — WHAT TO LOAD
+## 8. QUERY ROUTING
 
-| Query Type | Action |
-|---|---|
-| Hydraulic fault / crane / KB / HPU | Load hydromind-ai-advisor SKILL.md |
-| Web platform bug / page fix / HTML | Read this CLAUDE.md → inspect actual file → fix |
-| Android / Expo / React Native | Direct coding — no skill needed |
-| AI building / Claude API / LLM | Direct — general AI knowledge |
-| Money / monetisation / SaaS / Play Store | Direct — general business knowledge |
-| General chat / writing / research | Direct — no skill needed |
+| Query type                          | Action                                              |
+|-------------------------------------|-----------------------------------------------------|
+| Hydraulic / crane / HPU / fault     | Load skills/hydromind-ai-advisor/SKILL.md           |
+| Web platform / HTML / CSS / JS fix  | Read this CLAUDE.md → inspect file → fix            |
+| Android / Expo / React Native       | Direct coding — no skill needed                     |
+| Backend / API / server.js           | Direct — always node --check before push            |
+| AI / Claude API / LLM               | Direct — general knowledge                          |
+| Money / SaaS / Play Store           | Direct — general business knowledge                 |
+| General chat / research / writing   | Direct — no skill needed                            |
 
 ---
 
-## 8. EXECUTION PROTOCOL (NON-NEGOTIABLE)
+## 9. EXECUTION PROTOCOL — NON-NEGOTIABLE EVERY TIME
 
-INSPECT → PLAN → CONFIRM → EXECUTE → VERIFY → COMMIT
+INSPECT → PLAN → EXECUTE → VERIFY → COMMIT
 
-1. INSPECT: Read actual file — count divs, grep structure
-2. PLAN: State exactly what will change + which files
-3. CONFIRM: If risky, one sentence to Arun before acting
-4. EXECUTE: Single clean pass — never patch a broken patch
-5. VERIFY: Browser screenshot of changed page
-6. COMMIT: Only after browser confirms correct
+1. INSPECT  : Read CLAUDE.md → grep actual file → count divs/structure
+2. PLAN     : State exactly what changes, which files, which lines
+3. EXECUTE  : Single clean surgical edit — never patch a broken patch
+4. VERIFY   : Browser screenshot of the changed page — no exceptions
+5. COMMIT   : Only after screenshot confirms correct result
 
-NEVER claim done without browser screenshot.
-NEVER edit without reading file structure first.
-NEVER guess a file path — check CLAUDE.md section 1.
-
+NEVER claim done without a browser screenshot.
+NEVER edit without reading the file first.
+NEVER use a path not listed in Section 1.
+NEVER run bulk Python/regex scripts on HTML files.
