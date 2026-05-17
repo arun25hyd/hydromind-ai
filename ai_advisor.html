@@ -386,6 +386,44 @@ button{font-family:var(--sans);cursor:pointer}
 .rel-doc:hover .rel-doc-title{color:var(--o)}
 .rel-doc-num{font-family:var(--mono);font-size:10px;color:var(--blue);flex-shrink:0;padding-top:2px}
 .rel-doc-title{font-size:12px;color:var(--td);line-height:1.4;transition:color .15s}
+
+/* ── UNIFIED RESPONSIVE AD SIDEBAR LAYOUT ── */
+/* Right ad rail: visible >1200px, content pushed right */
+/* Left sidebar: visible >1400px, content pushed left */
+/* Below 1200px: both hidden, full width content — no overlap ever */
+
+.hm-left-sidebar{
+  position:fixed;left:0;top:52px;
+  width:130px;height:calc(100vh - 52px);
+  z-index:90;display:flex;flex-direction:column;
+  align-items:center;padding-top:40px;
+  pointer-events:none;
+}
+#hm-ad-rail{
+  position:fixed;right:0;top:52px;
+  width:120px;height:calc(100vh - 52px);
+  z-index:90;display:flex;flex-direction:column;
+  align-items:center;padding-top:40px;gap:16px;
+  pointer-events:none;
+}
+
+/* Hide both below 1200px */
+@media(max-width:1200px){
+  .hm-left-sidebar{display:none!important;}
+  #hm-ad-rail{display:none!important;}
+}
+
+/* Right rail visible 1200-1400px: push content right only */
+@media(min-width:1201px) and (max-width:1400px){
+  .shell{padding-right:130px!important;}
+  .page{padding-right:130px!important;}
+}
+
+/* Both visible >1400px: push content both sides */
+@media(min-width:1401px){
+  .shell{padding-left:140px!important;padding-right:130px!important;}
+  .page{padding-left:140px!important;padding-right:130px!important;}
+}
 </style>
 </head>
 <body>
@@ -405,8 +443,7 @@ button{font-family:var(--sans);cursor:pointer}
   </div>
 </div>
 <style>
-.hm-left-sidebar{position:fixed;left:0;top:52px;width:130px;height:calc(100vh - 52px);z-index:90;display:flex;flex-direction:column;align-items:center;pointer-events:none;}
-@media(max-width:1300px){.hm-left-sidebar{display:none;}}
+@media(max-width:1300px){}
 </style>
 
 
@@ -1034,12 +1071,6 @@ document.getElementById('ctxPill').classList.add('on');
 
 <!-- ── FIXED RIGHT AD SIDEBAR ── -->
 <style>
-#hm-ad-rail{
-  position:fixed;top:72px;right:0;width:120px;height:calc(100vh - 84px);
-  display:flex;flex-direction:column;gap:12px;align-items:center;
-  padding:12px 8px;z-index:90;pointer-events:none;
-}
-@media(min-width:1201px){.shell{padding-right:120px;}}
 .hm-ad-unit{
   width:108px;background:rgba(249,115,22,.04);
   border:1px dashed rgba(249,115,22,.2);border-radius:8px;
@@ -1055,7 +1086,7 @@ document.getElementById('ctxPill').classList.add('on');
   letter-spacing:.04em;margin-top:4px;display:block;
 }
 .hm-ad-unit-link:hover{color:rgba(249,115,22,.8);}
-@media(max-width:1200px){#hm-ad-rail{display:none;}}
+@media(max-width:1200px){}
 </style>
 <div id="hm-ad-rail">
   <div class="hm-ad-unit" style="min-height:240px;">

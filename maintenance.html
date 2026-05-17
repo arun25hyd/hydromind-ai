@@ -98,6 +98,44 @@ h1 span{color:var(--o)}
   color:var(--o);letter-spacing:0.05em;
   margin-bottom:1.5rem;
 }
+
+/* ── UNIFIED RESPONSIVE AD SIDEBAR LAYOUT ── */
+/* Right ad rail: visible >1200px, content pushed right */
+/* Left sidebar: visible >1400px, content pushed left */
+/* Below 1200px: both hidden, full width content — no overlap ever */
+
+.hm-left-sidebar{
+  position:fixed;left:0;top:52px;
+  width:130px;height:calc(100vh - 52px);
+  z-index:90;display:flex;flex-direction:column;
+  align-items:center;padding-top:40px;
+  pointer-events:none;
+}
+#hm-ad-rail{
+  position:fixed;right:0;top:52px;
+  width:120px;height:calc(100vh - 52px);
+  z-index:90;display:flex;flex-direction:column;
+  align-items:center;padding-top:40px;gap:16px;
+  pointer-events:none;
+}
+
+/* Hide both below 1200px */
+@media(max-width:1200px){
+  .hm-left-sidebar{display:none!important;}
+  #hm-ad-rail{display:none!important;}
+}
+
+/* Right rail visible 1200-1400px: push content right only */
+@media(min-width:1201px) and (max-width:1400px){
+  .shell{padding-right:130px!important;}
+  .page{padding-right:130px!important;}
+}
+
+/* Both visible >1400px: push content both sides */
+@media(min-width:1401px){
+  .shell{padding-left:140px!important;padding-right:130px!important;}
+  .page{padding-left:140px!important;padding-right:130px!important;}
+}
 </style>
 </head>
 <body>
@@ -113,8 +151,7 @@ h1 span{color:var(--o)}
   </div>
 </div>
 <style>
-.hm-left-sidebar{position:fixed;left:0;top:52px;width:130px;height:calc(100vh - 52px);z-index:90;display:flex;flex-direction:column;align-items:center;pointer-events:none;}
-@media(max-width:1300px){.hm-left-sidebar{display:none;}}
+@media(max-width:1300px){}
 </style>
 
 <div class="glow"></div>
