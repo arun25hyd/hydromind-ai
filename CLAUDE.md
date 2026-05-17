@@ -149,6 +149,7 @@ TYPE B — Scroll pages (index, knowledge_base, pricing, maintenance, disclaimer
 | 16 | Edited stale Desktop clone (May 17 2026)  | That folder is DELETED. Only canonical paths exist now.    |
 | 17 | Python script damaged pricing.html        | Never run bulk scripts on HTML — edit surgically           |
 | 18 | Force push without verifying deployment   | After force push: empty commit → wait 30s → screenshot     |
+| 19 | hm-ad-rail HTML injected inside JS string | ad-rail broke out of document.write() string in system_design + crane_diagnostic — ALWAYS place ad rail AFTER </script> as real HTML, never inside a JS string |
 
 ---
 
