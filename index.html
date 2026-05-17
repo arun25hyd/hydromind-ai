@@ -217,7 +217,7 @@ button{font-family:var(--sans);cursor:pointer}
 .mobile-menu-btns{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--b)}
 
 /* ── RESPONSIVE ── */
-@media(max-width:900px){
+@media(max-width:768px){
   .hero{grid-template-columns:1fr;gap:32px}
   .hero-right{display:none}
   .stats-strip{position:relative;z-index:2;grid-template-columns:repeat(3,1fr)}
@@ -754,43 +754,14 @@ body > *:not(.bg-wrap){position:relative;z-index:1;}
     <div class="rpanel">
       <!-- Tabs -->
       <div class="rpanel-tabs">
-        <button class="rpanel-tab active" id="rTab-circuit" onclick="switchRPanel('circuit')">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
-          CIRCUIT DIAGRAM
-        </button>
-        <button class="rpanel-tab" id="rTab-chat" onclick="switchRPanel('chat')">
+        <button class="rpanel-tab active" id="rTab-chat" onclick="switchRPanel('chat')">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           AI ADVISOR
         </button>
       </div>
 
-      <!-- Circuit animation panel -->
-      <div class="rpanel-body active" id="rpanel-circuit">
-        <div class="circuit-frame-wrap" id="circuitWrap">
-          <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:rgba(255,107,26,.3);font-family:monospace;font-size:13px;letter-spacing:.05em;">HYDRAULIC CIRCUIT — Coming Soon</div>
-          <div class="circuit-badge">
-            <span style="width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 1.8s infinite;display:inline-block"></span>
-            LIVE · ISO 1219-1
-          </div>
-          <button class="circuit-expand-btn" onclick="document.getElementById('circuitSVG')&&document.getElementById('circuitSVG').requestFullscreen&&document.getElementById('circuitSVG').requestFullscreen()">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-            EXPAND
-          </button>
-        </div>
-        <!-- Mini status bar -->
-        <div style="display:flex;align-items:center;gap:20px;padding:10px 16px;border-top:1px solid var(--b);background:var(--bg3);font-family:var(--mono);font-size:11px;color:var(--td)">
-          <span>PRESS: <span style="color:var(--o);font-weight:700" id="livePres">285 bar</span></span>
-          <span>FLOW: <span style="color:var(--blue)">106 L/min</span></span>
-          <span>TEMP: <span id="liveTemp">42°C</span></span>
-          <span style="margin-left:auto;display:flex;align-items:center;gap:5px;color:var(--green)">
-            <span style="width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 1.8s infinite;display:inline-block"></span>
-            SYSTEM OK
-          </span>
-        </div>
-      </div>
-
       <!-- Chat panel -->
-      <div class="rpanel-body" id="rpanel-chat">
+      <div class="rpanel-body active" id="rpanel-chat">
         <div class="chat-bar" style="background:var(--bg3);padding:11px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--b)">
           <div class="tl-wrap"><div class="tl r"></div><div class="tl y"></div><div class="tl g"></div></div>
           <div class="chat-bar-title">HYDROMIND AI ADVISOR — KB V3.0</div>
