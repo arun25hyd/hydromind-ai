@@ -800,8 +800,19 @@ body > *:not(.bg-wrap){position:relative;z-index:1;}
 var billing = 'monthly';
 function setBilling(mode) {
   billing = mode;
+  // Old CSS-class buttons
   document.getElementById('billMonthly').classList.toggle('active', mode==='monthly');
   document.getElementById('billAnnual').classList.toggle('active', mode==='annual');
+  // New inline-styled buttons — must set styles directly
+  var mNew = document.getElementById('billMonthlyNew');
+  var aNew = document.getElementById('billAnnualNew');
+  if (mNew && aNew) {
+    var ON  = 'padding:7px 18px;border-radius:8px;font-size:13px;font-weight:600;background:#FF6B1A;color:#000;border:none;cursor:pointer;';
+    var OFF = 'padding:7px 18px;border-radius:8px;font-size:13px;font-weight:600;background:#131820;color:#8A919E;border:1px solid rgba(255,255,255,0.07);cursor:pointer;';
+    mNew.style.cssText = mode==='monthly' ? ON : OFF;
+    aNew.style.cssText = mode==='annual'  ? ON : OFF;
+  }
+  // Update prices
   document.querySelectorAll('.p-val').forEach(function(el){
     el.textContent = mode==='annual' ? el.dataset.a : el.dataset.m;
   });
