@@ -518,16 +518,16 @@ footer{border-top:1px solid var(--b);padding:40px;max-width:1340px;margin:0 auto
     <div class="sidebar-card">
       <div class="sidebar-hdr">OEM Brands</div>
       <div class="brand-list" id="brandList">
-        <label class="brand-item"><input type="checkbox" onchange="filterDocs()"> Rexroth</label>
-        <label class="brand-item"><input type="checkbox" onchange="filterDocs()"> Sauer Danfoss</label>
-        <label class="brand-item"><input type="checkbox" onchange="filterDocs()"> Liebherr</label>
-        <label class="brand-item"><input type="checkbox" onchange="filterDocs()"> MacGregor</label>
-        <label class="brand-item"><input type="checkbox" onchange="filterDocs()"> Eaton</label>
-        <label class="brand-item"><input type="checkbox" onchange="filterDocs()"> Parker</label>
-        <label class="brand-item"><input type="checkbox" onchange="filterDocs()"> NOV</label>
-        <label class="brand-item"><input type="checkbox" onchange="filterDocs()"> Favco</label>
-        <label class="brand-item"><input type="checkbox" onchange="filterDocs()"> SeaTrax</label>
-        <label class="brand-item"><input type="checkbox" onchange="filterDocs()"> DNV / ISO</label>
+        <label class="brand-item"><input type="checkbox" value="rexroth" onchange="filterDocs()"> Rexroth</label>
+        <label class="brand-item"><input type="checkbox" value="sauer danfoss" onchange="filterDocs()"> Sauer Danfoss</label>
+        <label class="brand-item"><input type="checkbox" value="liebherr" onchange="filterDocs()"> Liebherr</label>
+        <label class="brand-item"><input type="checkbox" value="macgregor" onchange="filterDocs()"> MacGregor</label>
+        <label class="brand-item"><input type="checkbox" value="eaton" onchange="filterDocs()"> Eaton</label>
+        <label class="brand-item"><input type="checkbox" value="parker" onchange="filterDocs()"> Parker</label>
+        <label class="brand-item"><input type="checkbox" value="nov" onchange="filterDocs()"> NOV</label>
+        <label class="brand-item"><input type="checkbox" value="favco" onchange="filterDocs()"> Favco</label>
+        <label class="brand-item"><input type="checkbox" value="seatrax" onchange="filterDocs()"> SeaTrax</label>
+        <label class="brand-item"><input type="checkbox" value="dnv" onchange="filterDocs()"> DNV / ISO</label>
       </div>
     </div>
 
@@ -556,7 +556,7 @@ footer{border-top:1px solid var(--b);padding:40px;max-width:1340px;margin:0 auto
     <div style="background:linear-gradient(135deg,rgba(255,107,26,.1),rgba(255,107,26,.04));border:1px solid var(--bo);border-radius:12px;padding:18px">
       <div style="font-size:13px;font-weight:600;margin-bottom:6px">Can't find it?</div>
       <div style="font-size:12px;color:var(--td);margin-bottom:14px;line-height:1.5">Ask the AI Advisor — it searches all 86 KB entries instantly.</div>
-      <button onclick="window.open('#','_blank')" style="width:100%;background:var(--o);color:#000;font-weight:700;font-size:13px;padding:9px;border-radius:8px;border:none;transition:all .15s" onmouseover="this.style.background='#FF8040'" onmouseout="this.style.background='var(--o)'">
+      <button onclick="window.location.href='ai_advisor.html'" style="width:100%;background:var(--o);color:#000;font-weight:700;font-size:13px;padding:9px;border-radius:8px;border:none;transition:all .15s" onmouseover="this.style.background='#FF8040'" onmouseout="this.style.background='var(--o)'">
         Ask AI Advisor →
       </button>
     </div>
@@ -740,11 +740,11 @@ function getCatLabel(cat) {
 
 function getFiltered() {
   const q  = currentQuery.toLowerCase();
-  const sel = [...document.querySelectorAll('#brandList input:checked')].map(el => el.parentElement.textContent.trim().toLowerCase());
+  const sel = [...document.querySelectorAll('#brandList input:checked')].map(el => el.value || el.parentElement.textContent.trim().toLowerCase());
   return KB_DATA.filter(d => {
     const matchCat   = activeCategory==='all' || d.cat===activeCategory;
     const matchQuery = !q || d.title.toLowerCase().includes(q) || d.desc.toLowerCase().includes(q) || d.tags.some(t=>t.toLowerCase().includes(q)) || d.id.toLowerCase().includes(q) || d.brand.toLowerCase().includes(q);
-    const matchBrand = sel.length===0 || sel.some(s=>d.brand.toLowerCase().includes(s));
+    const matchBrand = sel.length===0 || sel.some(s=>d.brand.toLowerCase().includes(s) || (s==='dnv' && (d.brand.toLowerCase().includes('dnv') || d.brand.toLowerCase().includes('iso'))));
     return matchCat && matchQuery && matchBrand;
   });
 }
@@ -787,8 +787,8 @@ function renderDocs() {
           ${d.brand}
         </div>
         <div class="doc-actions">
-          <button class="btn-view">View</button>
-          <button class="btn-ask">
+          <button class="btn-view" onclick="viewDoc('${d.id}','${d.title.replace(/'/g,'&apos;')}')">View</button>
+          <button class="btn-ask" onclick="askDoc('${d.id}','${d.title.replace(/'/g,'&apos;')}')">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg>
             Ask AI
           </button>
@@ -804,6 +804,13 @@ function renderDocs() {
     if(el) el.textContent = KB_DATA.filter(d=>d.cat===c).length;
   });
   document.getElementById('cc-all').textContent = KB_DATA.length;
+}
+
+function viewDoc(id, title) {
+  window.location.href = 'ai_advisor.html?q=' + encodeURIComponent('Show me the details for ' + id + ': ' + title);
+}
+function askDoc(id, title) {
+  window.location.href = 'ai_advisor.html?q=' + encodeURIComponent('Explain ' + id + ' — ' + title);
 }
 
 function filterDocs() {
@@ -860,6 +867,11 @@ window.addEventListener('load',()=>{
 <!-- ── DOWNLOAD BUTTON ── -->
 <script>
 (function(){
+  function openAuth(tab){ window.location.href='index.html?auth='+(tab||'login'); }
+  function selectPlan(plan){ sessionStorage.setItem('hm_selected_plan', plan||'pro'); }
+  window.openAuth = openAuth;
+  window.selectPlan = selectPlan;
+
   function restoreAuth(){
     var u=sessionStorage.getItem('hm_user');
     if(!u)return;

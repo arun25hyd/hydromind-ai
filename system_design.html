@@ -423,8 +423,8 @@ select.field-input{cursor:pointer}
   <a href="System Design.html" class="active hl">System Design</a>
   <a href="pricing.html">Pricing</a>
   <div class="mobile-menu-btns">
-    <button class="btn-login" style="flex:1;text-align:center;padding:10px">Login</button>
-    <button class="btn-pro" style="flex:1;padding:10px">Get Pro</button>
+    <button class="btn-login" style="flex:1;text-align:center;padding:10px" onclick="openAuth&&openAuth('login')">Login</button>
+    <button class="btn-pro" style="flex:1;padding:10px" onclick="openAuth&&openAuth('register')">Get Pro</button>
   </div>
 </div>
 
@@ -1727,6 +1727,11 @@ renderUI();
 <!-- ── DOWNLOAD BUTTON ── -->
 <script>
 (function(){
+  function openAuth(tab){ window.location.href='index.html?auth='+(tab||'login'); }
+  function selectPlan(plan){ sessionStorage.setItem('hm_selected_plan', plan||'pro'); }
+  window.openAuth = openAuth;
+  window.selectPlan = selectPlan;
+
   function restoreAuth(){
     var u=sessionStorage.getItem('hm_user');
     if(!u)return;

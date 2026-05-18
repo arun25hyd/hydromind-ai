@@ -988,6 +988,11 @@ animateInstruments();
 <!-- DOWNLOAD FAB -->
 <script>
 (function(){
+  function openAuth(tab){ window.location.href='index.html?auth='+(tab||'login'); }
+  function selectPlan(plan){ sessionStorage.setItem('hm_selected_plan', plan||'pro'); }
+  window.openAuth = openAuth;
+  window.selectPlan = selectPlan;
+
   function restoreAuth(){
     var u=sessionStorage.getItem('hm_user');
     if(!u)return;

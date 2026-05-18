@@ -504,8 +504,8 @@ button{font-family:var(--sans);cursor:pointer}
   <a href="ai_advisor.html" class="active hl">AI Advisor</a>
   <a href="pricing.html">Pricing</a>
   <div class="mobile-menu-btns">
-    <button class="btn-login" style="flex:1;text-align:center;padding:10px">Login</button>
-    <button class="btn-pro" style="flex:1;padding:10px">Get Pro</button>
+    <button class="btn-login" style="flex:1;text-align:center;padding:10px" onclick="openAuth&&openAuth('login')">Login</button>
+    <button class="btn-pro" style="flex:1;padding:10px" onclick="openAuth&&openAuth('register')">Get Pro</button>
   </div>
 </div>
 
@@ -880,6 +880,10 @@ async function sendMessage() {
     if (kbCtxOn) {
       fullSystem += '\n\nKB context: You have access to 86 knowledge base entries covering Rexroth, Sauer Danfoss, Parker, Eaton, Liebherr, MacGregor, NOV, SeaTrax, Favco and more. Reference KB entry numbers where relevant.';
     }
+    var activeTags = [...document.querySelectorAll('.ctx-tag.active')].map(function(el){return el.dataset.ctx;});
+    if (activeTags.length) {
+      fullSystem += '\n\nActive session focus areas: ' + activeTags.join(', ') + '. Prioritise answers relevant to these topics.';
+    }
 
     var lastMsg  = claudeMsgs[claudeMsgs.length - 1].content;
     var history  = claudeMsgs.slice(0, -1);
@@ -1057,11 +1061,38 @@ function exportChat() {
 
 // ── INIT
 document.getElementById('ctxPill').classList.add('on');
+
+// Handle ?q= deep-link from KB page
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var q = params.get('q');
+  if (q) {
+    window.addEventListener('load', function(){
+      setTimeout(function(){
+        var inp = document.getElementById('chatInput');
+        if (inp) {
+          inp.value = q;
+          document.getElementById('sendBtn').disabled = false;
+          sendMessage();
+        }
+      }, 600);
+    });
+  }
+})();
 </script>
 
 <!-- ── DOWNLOAD BUTTON ── -->
 <script>
 (function(){
+  function openAuth(tab){
+    window.location.href='index.html?auth='+(tab||'login');
+  }
+  function selectPlan(plan){
+    sessionStorage.setItem('hm_selected_plan', plan||'pro');
+  }
+  window.openAuth = openAuth;
+  window.selectPlan = selectPlan;
+
   function restoreAuth(){
     var u=sessionStorage.getItem('hm_user');
     if(!u)return;

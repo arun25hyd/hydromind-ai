@@ -1109,7 +1109,7 @@ body > *:not(.bg-wrap){position:relative;z-index:1;}
         <div class="price-feature yes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Formula quick reference</div>
         <div class="price-feature no"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tm)" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Full OEM KB (48+ docs)</div>
         <div class="price-feature no"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--tm)" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Crane Diagnostic Agent</div>
-        <button class="btn-plan outline">Get Basic</button>
+        <button class="btn-plan outline" onclick="openAuth('register');selectPlan('free')">Get Basic</button>
         <div style="text-align:center;font-size:11px;color:var(--tm);margin-top:8px;font-family:var(--mono)">No credit card required</div>
       </div>
 
@@ -1126,7 +1126,7 @@ body > *:not(.bg-wrap){position:relative;z-index:1;}
         <div class="price-feature yes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> System Design — 12-step + BOM</div>
         <div class="price-feature yes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Priority support — 4hr response</div>
         <div class="price-feature yes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Ad-free experience</div>
-        <button class="btn-plan primary">Get Pro — $69/mo</button>
+        <button class="btn-plan primary" onclick="openAuth('register');selectPlan('pro')">Get Pro — $69/mo</button>
         <div style="text-align:center;font-size:11px;color:var(--td);margin-top:8px;font-family:var(--mono)">7-day free trial included</div>
       </div>
 
@@ -1143,7 +1143,7 @@ body > *:not(.bg-wrap){position:relative;z-index:1;}
         <div class="price-feature yes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> API access for integration</div>
         <div class="price-feature yes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Dedicated account manager</div>
         <div class="price-feature yes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> SLA — 2hr response time</div>
-        <button class="btn-plan outline">Get Enterprise</button>
+        <button class="btn-plan outline" onclick="window.location.href='mailto:support@hydromindai.com?subject=Enterprise%20Enquiry'">Get Enterprise</button>
         <div style="text-align:center;font-size:11px;color:var(--tm);margin-top:8px;font-family:var(--mono)">7-day free trial included</div>
       </div>
     </div>
@@ -1784,6 +1784,7 @@ setInterval(() => {
 
 // ── CHAT
 function sendChat() {
+  const inp = document.getElementById('chatInp');
   const msgs = document.getElementById('chatMsgs');
   const val = inp.value.trim();
   if (!val) return;
@@ -1800,14 +1801,29 @@ function sendChat() {
   msgs.appendChild(typing);
   msgs.scrollTop = msgs.scrollHeight;
 
-  setTimeout(() => {
+  fetch('https://hydromind-backend.onrender.com/api/kb/chat', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({question: val, history: [], system: null})
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data) {
     typing.remove();
     const bm = document.createElement('div');
     bm.className = 'cmsg b';
-    bm.innerHTML = `<div class="bot-hdr"><div class="bot-av">H</div><span class="bot-nm">HydroMind · KB Response</span></div><div class="cbubble">Analyzing against hydraulic knowledge base…<br><br><span style="color:var(--o);font-weight:600;">Retrieving relevant standards and field cases from KB86.</span><div class="tag-row"><span class="t-tag t-o">KB86</span><span class="t-tag t-g">Verified</span></div></div>`;
+    const answer = (data.answer || data.response || data.message || 'For detailed hydraulic diagnostics, use the full <a href="ai_advisor.html" style="color:var(--o)">AI Advisor</a>.').replace(/</g,'&lt;').replace(/&lt;a /g,'<a ').replace(/&lt;\/a>/g,'</a>');
+    bm.innerHTML = `<div class="bot-hdr"><div class="bot-av">H</div><span class="bot-nm">HydroMind · AI Advisor</span></div><div class="cbubble">${answer}<div class="tag-row"><span class="t-tag t-o">KB86</span><span class="t-tag t-g">Live</span></div></div>`;
     msgs.appendChild(bm);
     msgs.scrollTop = msgs.scrollHeight;
-  }, 1800);
+  })
+  .catch(function() {
+    typing.remove();
+    const bm = document.createElement('div');
+    bm.className = 'cmsg b';
+    bm.innerHTML = `<div class="bot-hdr"><div class="bot-av">H</div><span class="bot-nm">HydroMind · AI Advisor</span></div><div class="cbubble">Use the full <a href="ai_advisor.html" style="color:var(--o)">AI Advisor</a> for complete hydraulic diagnostics with KB86 access.</div>`;
+    msgs.appendChild(bm);
+    msgs.scrollTop = msgs.scrollHeight;
+  });
 }
 document.getElementById('chatInp').addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
 
@@ -2047,6 +2063,19 @@ function socialAuth(provider) {
   restoreAuth();
   document.addEventListener('DOMContentLoaded', restoreAuth);
   window.addEventListener('load', function(){ setTimeout(restoreAuth, 200); });
+
+  // Auto-open auth modal if redirected from secondary page with ?auth= param
+  window.addEventListener('load', function(){
+    var params = new URLSearchParams(window.location.search);
+    var authTab = params.get('auth');
+    var plan    = sessionStorage.getItem('hm_selected_plan');
+    if (authTab) {
+      setTimeout(function(){
+        openAuth(authTab);
+        if (plan) { selectPlan(plan); sessionStorage.removeItem('hm_selected_plan'); }
+      }, 300);
+    }
+  });
 })();
 </script>
 
