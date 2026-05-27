@@ -276,7 +276,7 @@ button{font-family:var(--sans);cursor:pointer}
 /* Below 1200px: both hidden, full width content — no overlap ever */
 
 .hm-left-sidebar{
-  position:fixed;left:0;top:52px;
+  position:fixed!important;left:0;top:52px;
   width:140px;height:calc(100vh - 52px);
   z-index:99!important;display:flex;flex-direction:column;
   align-items:center;padding:16px 11px;
@@ -291,12 +291,13 @@ button{font-family:var(--sans);cursor:pointer}
 }
 
 /* Hide both below 1200px */
+.hm-right-sidebar{position:fixed!important;right:0;top:52px;width:140px;height:calc(100vh - 52px);display:flex;flex-direction:column;align-items:center;padding:20px 11px;gap:0;z-index:99!important;overflow:hidden;pointer-events:none;}
 @media(max-width:1200px){
   .hm-left-sidebar{display:none!important;}
-.hm-right-sidebar{position:fixed;right:0;top:52px;width:140px;height:calc(100vh - 52px);display:flex;flex-direction:column;align-items:center;padding:20px 11px;gap:0;z-index:10;overflow:hidden;pointer-events:none;}
-@media(max-width:1300px){.hm-right-sidebar{display:none!important;}}
+  .hm-right-sidebar{display:none!important;}
   #hm-ad-rail{display:none!important;}
 }
+@media(max-width:1300px){.hm-right-sidebar{display:none!important;}}
 
 /* Right rail visible 1200-1400px: push content right only */
 @media(min-width:1201px) and (max-width:1400px){
@@ -313,7 +314,6 @@ button{font-family:var(--sans);cursor:pointer}
 </head>
 <body>
 
-<div class="shell">
 <!-- LEFT AD SIDEBAR -->
 <div class="hm-left-sidebar" id="hmLeftSidebar">
   <div style="width:118px;height:250px;flex-shrink:0;background:linear-gradient(180deg,rgba(249,115,22,0.10) 0%,rgba(249,115,22,0.04) 100%);border:1px solid rgba(249,115,22,0.35);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:14px 8px;font-family:'Space Mono',monospace;gap:8px;pointer-events:auto;box-shadow:0 0 0 1px rgba(249,115,22,0.05) inset;">
@@ -369,6 +369,7 @@ button{font-family:var(--sans);cursor:pointer}
 @media(max-width:1300px){}
 </style>
 
+<div class="shell">
 
 <!-- NAV -->
 <nav>
