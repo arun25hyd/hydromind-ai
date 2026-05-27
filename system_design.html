@@ -360,6 +360,9 @@ select.field-input{cursor:pointer}
   .shell{padding-left:150px!important;padding-right:150px!important;}
   .page{padding-left:150px!important;padding-right:150px!important;}
 }
+@media(min-width:1301px){
+  .shell,.page{margin-right:160px!important;}
+}
 </style>
 </head>
 <body>
@@ -1820,6 +1823,25 @@ renderUI();
   </div>
 </div>
 <!-- ── /FIXED RIGHT AD SIDEBAR ── -->
+
+<!-- HydroMind App Promo Banner -->
+<style>
+@keyframes hmBadgePulse{0%,100%{opacity:1}50%{opacity:0.45}}
+@media(max-width:768px){#hmAppBanner .hm-banner-pills{display:none!important}}
+</style>
+<div id="hmAppBanner" style="flex-shrink:0;padding:0 24px;height:56px;background:linear-gradient(90deg,rgba(255,107,26,0.08) 0%,rgba(13,16,20,0) 35%,rgba(13,16,20,0) 65%,rgba(255,107,26,0.08) 100%);border-top:1px solid rgba(255,107,26,0.18);border-bottom:1px solid rgba(255,107,26,0.12);display:flex;align-items:center;gap:14px;overflow:hidden;position:relative;">
+  <div style="width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#FF6B1A,#FF9A4A);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:#000;flex-shrink:0;box-shadow:0 2px 10px rgba(255,107,26,0.35);">HM</div>
+  <div style="flex:1;min-width:0;">
+    <div style="font-size:12px;font-weight:700;color:#EEF0F4;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">HydroMind AI <span style="color:#FF6B1A;">Android App</span> &mdash; Now Live on Google Play</div>
+    <div style="font-size:10px;color:#8A919E;font-family:'Space Mono',monospace;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">AI Advisor &middot; Voice DPR &middot; Valve Tuner &middot; Fault Lookup &middot; Calculator &mdash; Free Download</div>
+  </div>
+  <div class="hm-banner-pills" style="display:flex;gap:6px;flex-shrink:0;">
+    <span style="padding:3px 9px;border-radius:10px;font-size:9px;font-family:'Space Mono',monospace;background:rgba(255,107,26,0.1);border:1px solid rgba(255,107,26,0.25);color:#FF9A4A;white-space:nowrap;">6 Installs &middot; 177 Countries</span>
+    <span style="padding:3px 9px;border-radius:10px;font-size:9px;font-family:'Space Mono',monospace;background:rgba(52,211,153,0.07);border:1px solid rgba(52,211,153,0.2);color:#34D399;white-space:nowrap;animation:hmBadgePulse 2s ease-in-out infinite;">&#9679; Production v1.0.39</span>
+  </div>
+  <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" style="flex-shrink:0;padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;color:#000;background:#FF6B1A;text-decoration:none;letter-spacing:.02em;white-space:nowrap;" onmouseover="this.style.background='#FF9A4A'" onmouseout="this.style.background='#FF6B1A'">&#8599; Get App</a>
+  <button onclick="document.getElementById('hmAppBanner').style.display='none'" style="flex-shrink:0;width:22px;height:22px;border-radius:5px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#8A919E;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;font-family:inherit;">&#10005;</button>
+</div>
 
 </body>
 </html>
