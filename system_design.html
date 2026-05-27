@@ -349,19 +349,8 @@ select.field-input{cursor:pointer}
 }
 @media(max-width:1300px){.hm-right-sidebar{display:none!important;}}
 
-/* Right rail visible 1200-1400px: push content right only */
-@media(min-width:1201px) and (max-width:1400px){
-  .shell{padding-left:150px!important;padding-right:150px!important;}
-  .page{padding-left:150px!important;padding-right:150px!important;}
-}
-
-/* Both visible >1400px: push content both sides */
-@media(min-width:1401px){
-  .shell{padding-left:150px!important;padding-right:150px!important;}
-  .page{padding-left:150px!important;padding-right:150px!important;}
-}
-@media(min-width:1301px){
-  .shell,.page{margin-right:160px!important;}
+@media(min-width:1201px){
+  .shell,.page{margin-left:150px!important;margin-right:150px!important;}
 }
 </style>
 </head>
