@@ -353,22 +353,11 @@ body > *:not(.bg-wrap){position:relative;z-index:1;}
 }
 @media(max-width:1300px){.hm-right-sidebar{display:none!important;}}
 
-/* Sidebars visible: push page content away from sidebar edges */
 @media(min-width:1201px){
-  .shell{margin-left:150px!important;margin-right:150px!important;}
-  .page{margin-left:150px!important;margin-right:150px!important;}
-  /* CRITICAL: Remove container double-centering — fill the full available width */
-  .page .container{
-    max-width:none!important;
-    margin-left:0!important;
-    margin-right:0!important;
-    padding-left:16px!important;
-    padding-right:16px!important;
-  }
+  .shell,.page{margin-left:150px!important;margin-right:150px!important;}
 }
-@media(min-width:1301px){
-  .page,.shell{margin-right:160px!important;}
-}
+@keyframes hmBadgePulse{0%,100%{opacity:1}50%{opacity:0.45}}
+@media(max-width:768px){#hmAppBanner .hm-banner-pills{display:none!important}}
 </style>
 </head>
 <body>
@@ -1025,10 +1014,6 @@ function toggleMobileMenu() {
 <!-- ── /FIXED RIGHT AD SIDEBAR ── -->
 
 <!-- HydroMind App Promo Banner -->
-<style>
-@keyframes hmBadgePulse{0%,100%{opacity:1}50%{opacity:0.45}}
-@media(max-width:768px){#hmAppBanner .hm-banner-pills{display:none!important}}
-</style>
 <div id="hmAppBanner" style="flex-shrink:0;padding:0 24px;height:56px;background:linear-gradient(90deg,rgba(255,107,26,0.08) 0%,rgba(13,16,20,0) 35%,rgba(13,16,20,0) 65%,rgba(255,107,26,0.08) 100%);border-top:1px solid rgba(255,107,26,0.18);border-bottom:1px solid rgba(255,107,26,0.12);display:flex;align-items:center;gap:14px;overflow:hidden;position:relative;">
   <div style="width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#FF6B1A,#FF9A4A);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:#000;flex-shrink:0;box-shadow:0 2px 10px rgba(255,107,26,0.35);">HM</div>
   <div style="flex:1;min-width:0;">
