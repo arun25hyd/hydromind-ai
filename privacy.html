@@ -76,20 +76,13 @@ nav,.nav{position:sticky!important;top:0!important;z-index:200!important;display
   align-items:center;padding:16px 11px;
   pointer-events:none;
 }
-#hm-ad-rail{
-  position:fixed;right:0;top:58px;
-  width:120px;height:calc(100vh - 58px);
-  z-index:99!important;display:flex;flex-direction:column;
-  align-items:center;padding:20px 11px;gap:0;
-  pointer-events:none;
-}
 
 /* Hide both below 1200px */
 @media(max-width:1200px){
   .hm-left-sidebar{display:none!important;}
 .hm-right-sidebar{position:fixed;right:0;top:58px;width:140px;height:calc(100vh - 58px);display:flex;flex-direction:column;align-items:center;padding:20px 11px;gap:0;z-index:10;overflow:hidden;pointer-events:none;}
 @media(max-width:1300px){.hm-right-sidebar{display:none!important;}}
-  #hm-ad-rail{display:none!important;}
+  
 }
 
 /* Right rail visible 1200-1400px: push content right only */
@@ -302,53 +295,6 @@ nav,.nav{position:sticky!important;top:0!important;z-index:200!important;display
   window.addEventListener('load', function(){ setTimeout(restoreAuth, 200); });
 })();
 </script>
-<!-- hm-ad-rail-injected -->
-
-<!-- ── FIXED RIGHT AD SIDEBAR ── -->
-<style>
-.hm-ad-unit{
-  width:108px;background:rgba(249,115,22,.04);
-  border:1px dashed rgba(249,115,22,.2);border-radius:8px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:10px 6px;pointer-events:auto;
-  font-family:'Space Mono',monospace;gap:5px;
-}
-.hm-ad-unit svg{opacity:.25;}
-.hm-ad-unit-label{font-size:8px;color:#404855;text-transform:uppercase;letter-spacing:.06em;}
-.hm-ad-unit-size{font-size:7.5px;color:#404855;opacity:.7;}
-.hm-ad-unit-link{
-  font-size:8px;color:rgba(249,115,22,.4);text-decoration:none;
-  letter-spacing:.04em;margin-top:4px;display:block;
-}
-.hm-ad-unit-link:hover{color:rgba(249,115,22,.8);}
-@media(max-width:1200px){}
-</style>
-<div id="hm-ad-rail">
-  <div style="width:118px;height:250px;flex-shrink:0;background:linear-gradient(180deg,rgba(249,115,22,0.10) 0%,rgba(249,115,22,0.04) 100%);border:1px solid rgba(249,115,22,0.35);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:14px 8px;font-family:'Space Mono',monospace;gap:8px;pointer-events:auto;box-shadow:0 0 0 1px rgba(249,115,22,0.05) inset;">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(249,115,22,0.7)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-    <div style="font-size:9px;color:#FF6B1A;font-weight:700;letter-spacing:.08em;">YOUR AD HERE</div>
-    <div style="font-size:8px;color:#8A919E;text-transform:uppercase;letter-spacing:.05em;line-height:1.4;">120 × 240<br>IAB Skyscraper</div>
-    <div style="height:1px;width:60%;background:rgba(249,115,22,0.25);"></div>
-    <a href="pricing.html" style="font-size:8.5px;color:#FF6B1A;text-decoration:none;letter-spacing:.04em;font-weight:600;border:1px solid rgba(249,115,22,0.5);padding:4px 10px;border-radius:4px;background:rgba(249,115,22,0.05);">Advertise →</a>
-  </div>
-  <div style="height:12px;flex-shrink:0;"></div>
-  <div style="width:118px;height:250px;flex-shrink:0;background:linear-gradient(180deg,rgba(249,115,22,0.10) 0%,rgba(249,115,22,0.04) 100%);border:1px solid rgba(249,115,22,0.35);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:14px 8px;font-family:'Space Mono',monospace;gap:8px;pointer-events:auto;box-shadow:0 0 0 1px rgba(249,115,22,0.05) inset;">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(249,115,22,0.7)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-    <div style="font-size:9px;color:#FF6B1A;font-weight:700;letter-spacing:.08em;">YOUR AD HERE</div>
-    <div style="font-size:8px;color:#8A919E;text-transform:uppercase;letter-spacing:.05em;line-height:1.4;">120 × 240<br>IAB Skyscraper</div>
-    <div style="height:1px;width:60%;background:rgba(249,115,22,0.25);"></div>
-    <a href="pricing.html" style="font-size:8.5px;color:#FF6B1A;text-decoration:none;letter-spacing:.04em;font-weight:600;border:1px solid rgba(249,115,22,0.5);padding:4px 10px;border-radius:4px;background:rgba(249,115,22,0.05);">Advertise →</a>
-  </div>
-  <div style="height:12px;flex-shrink:0;"></div>
-  <div style="width:118px;height:250px;flex-shrink:0;background:linear-gradient(180deg,rgba(249,115,22,0.10) 0%,rgba(249,115,22,0.04) 100%);border:1px solid rgba(249,115,22,0.35);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:14px 8px;font-family:'Space Mono',monospace;gap:8px;pointer-events:auto;box-shadow:0 0 0 1px rgba(249,115,22,0.05) inset;">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(249,115,22,0.7)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-    <div style="font-size:9px;color:#FF6B1A;font-weight:700;letter-spacing:.08em;">YOUR AD HERE</div>
-    <div style="font-size:8px;color:#8A919E;text-transform:uppercase;letter-spacing:.05em;line-height:1.4;">120 × 240<br>IAB Skyscraper</div>
-    <div style="height:1px;width:60%;background:rgba(249,115,22,0.25);"></div>
-    <a href="pricing.html" style="font-size:8.5px;color:#FF6B1A;text-decoration:none;letter-spacing:.04em;font-weight:600;border:1px solid rgba(249,115,22,0.5);padding:4px 10px;border-radius:4px;background:rgba(249,115,22,0.05);">Advertise →</a>
-  </div>
-</div>
-<!-- ── /FIXED RIGHT AD SIDEBAR ── -->
 
 </body>
 </html>
