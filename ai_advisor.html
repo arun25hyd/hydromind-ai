@@ -434,27 +434,6 @@ button{font-family:var(--sans);cursor:pointer}
 <div class="bg-wrap"><canvas id="bgCanvas"></canvas></div>
 
 <div class="shell">
-<!-- LEFT AD SIDEBAR -->
-
-  <div style="height:1px;width:80%;background:rgba(255,107,26,0.25);flex-shrink:0;"></div>
-  <div style="font-size:7px;color:#34D399;letter-spacing:.04em;border:1px solid rgba(52,211,153,0.25);padding:2px 7px;border-radius:8px;background:rgba(52,211,153,0.06);animation:hmBadgePulse 2s ease-in-out infinite;flex-shrink:0;">&#9679; FREE DOWNLOAD</div>
-  <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" style="font-size:8px;font-weight:700;color:#000;background:#FF6B1A;padding:6px 0;border-radius:6px;text-decoration:none;letter-spacing:.04em;width:100%;text-align:center;display:block;flex-shrink:0;" onmouseover="this.style.background='#FF9A4A'" onmouseout="this.style.background='#FF6B1A'">Get App &#8594;</a>
-</div>
-</div>
-
-  <div style="height:1px;width:80%;background:rgba(255,107,26,0.3);flex-shrink:0;"></div>
-  <div style="font-size:7.5px;color:#34D399;letter-spacing:.04em;border:1px solid rgba(52,211,153,0.3);padding:3px 8px;border-radius:10px;background:rgba(52,211,153,0.07);animation:hmBadgePulse 2s ease-in-out infinite;flex-shrink:0;">&#9679; LIVE ON PLAY</div>
-  <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" style="font-size:8.5px;font-weight:700;color:#000;background:#FF6B1A;padding:7px 0;border-radius:7px;text-decoration:none;letter-spacing:.04em;width:100%;text-align:center;display:block;flex-shrink:0;" onmouseover="this.style.background='#FF9A4A'" onmouseout="this.style.background='#FF6B1A'">Download Free &#8594;</a>
-</div>
-</div>
-<style>
-@media(max-width:1300px){}
-@keyframes hmAdPulse{0%,100%{box-shadow:0 0 14px rgba(255,107,26,0.08),inset 0 0 0 1px rgba(255,107,26,0.04)}50%{box-shadow:0 0 30px rgba(255,107,26,0.22),inset 0 0 0 1px rgba(255,107,26,0.1)}}
-@keyframes hmBadgePulse{0%,100%{opacity:1}50%{opacity:0.45}}
-@media(max-width:768px){#hmAppBanner .hm-banner-pills{display:none!important}}
-</style>
-
-<!-- NAV -->
 <nav class="nav">
   <a class="nav-logo" href="index.html">
     <div class="nav-logo-icon">HM</div>
@@ -496,8 +475,6 @@ button{font-family:var(--sans);cursor:pointer}
     <button class="btn-pro" id="hmMobRegister" style="flex:1;padding:10px" onclick="openAuth('register');selectPlan('pro')">Get Pro →</button>
   </div>
 </div>
-
-<!-- TICKER -->
 <div class="ticker">
   <div class="ticker-item"><span>MODEL</span><span class="v">Claude Haiku 4.5</span></div>
   <div class="ticker-sep">·</div>
@@ -507,8 +484,6 @@ button{font-family:var(--sans);cursor:pointer}
   <div class="ticker-sep">·</div>
   <div class="ticker-item"><span>SESSION</span><span class="g" id="msgCountLabel">0 messages</span></div>
 </div>
-
-<!-- MAIN -->
 <div class="main">
 
   <!-- SIDEBAR: history + prompts -->
@@ -739,7 +714,9 @@ button{font-family:var(--sans);cursor:pointer}
 
   </div>
 
-</div><!-- /main -->
+</div>
+</div>
+<!-- /main -->
 </div><!-- /shell -->
 
 <script>
