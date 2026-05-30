@@ -347,29 +347,63 @@ body > *:not(.bg-wrap){position:relative;z-index:1;}
 }
 </style>
 <style id="hm-sidebar-offset">
-/* ── Sidebar content offset — keeps content clear of 140px fixed sidebars ── */
+/* ── Sidebar offset: keeps ALL content clear of 140px fixed sidebars ── */
+
+/* Nav: pad inward so links never hide behind sidebars */
 nav.nav, nav {
-  padding-left: 155px !important;
-  padding-right: 155px !important;
+  padding-left: 150px !important;
+  padding-right: 150px !important;
   box-sizing: border-box !important;
+  margin: 0 !important;
+  width: 100% !important;
 }
-.page, .shell, .main, .hm-footer {
+
+/* Pages using .page wrapper: push whole block inward */
+.page {
   margin-left: 150px !important;
   margin-right: 150px !important;
   width: auto !important;
   max-width: none !important;
   box-sizing: border-box !important;
 }
-/* Ticker full width — runs edge to edge between sidebars */
-.ticker {
-  left: 150px !important;
-  right: 150px !important;
-  width: auto !important;
-}
-/* Nav sticky stays full viewport width */
-nav.nav, nav {
+
+/* Pages using .shell (3-col flex): full width with internal padding */
+/* Shell must stay full width so its 3 internal columns have room */
+.shell {
   margin-left: 0 !important;
   margin-right: 0 !important;
+  padding-left: 150px !important;
+  padding-right: 150px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* .main inside .shell: no extra margin (shell already pads) */
+.shell .main {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Top-level .main (outside .shell): push inward like .page */
+body > .main {
+  margin-left: 150px !important;
+  margin-right: 150px !important;
+  width: auto !important;
+}
+
+/* Ticker: spans full width between sidebars */
+.ticker {
+  margin-left: 150px !important;
+  margin-right: 150px !important;
+  width: auto !important;
+  box-sizing: border-box !important;
+}
+
+/* Footer: spans content width */
+.hm-footer {
+  margin-left: 150px !important;
+  margin-right: 150px !important;
+  width: auto !important;
 }
 </style>
 </head>
