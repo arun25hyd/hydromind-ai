@@ -679,6 +679,27 @@ body > *:not(.bg-wrap){position:relative;z-index:1;}
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZycWVmcG9oZWV3Ym9ybm96dmhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxMTgxMTUsImV4cCI6MjA4ODY5NDExNX0.8wf65p5lmupngAYvxrqKy6PlspJMW1gHZ1dCAtuZGJ8'
   );
 </script>
+<style id="hm-sidebar-offset">
+/* ── Sidebar content offset — keeps content clear of 140px fixed sidebars ── */
+.page, .shell, .main, .hm-footer {
+  margin-left: 150px !important;
+  margin-right: 150px !important;
+  width: auto !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+}
+/* Ticker full width — runs edge to edge between sidebars */
+.ticker {
+  left: 150px !important;
+  right: 150px !important;
+  width: auto !important;
+}
+/* Nav sticky stays full viewport width */
+nav.nav, nav {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+</style>
 </head>
 <body>
 <!-- ══ HM LEFT SIDEBAR ══ -->

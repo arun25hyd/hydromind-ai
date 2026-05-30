@@ -325,6 +325,27 @@ select.field-input{cursor:pointer}
   .hm-right-sidebar,#hmAdSidebar,
 }
 </style>
+<style id="hm-sidebar-offset">
+/* ── Sidebar content offset — keeps content clear of 140px fixed sidebars ── */
+.page, .shell, .main, .hm-footer {
+  margin-left: 150px !important;
+  margin-right: 150px !important;
+  width: auto !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+}
+/* Ticker full width — runs edge to edge between sidebars */
+.ticker {
+  left: 150px !important;
+  right: 150px !important;
+  width: auto !important;
+}
+/* Nav sticky stays full viewport width */
+nav.nav, nav {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+</style>
 </head>
 <body>
 <!-- ══ HM LEFT SIDEBAR ══ -->
@@ -1552,7 +1573,28 @@ function exportDesignReport() {
     +'thead td{padding:9px 12px;font-size:10px;font-family:"Space Mono",monospace;letter-spacing:.06em;color:#8A919E;background:#131820}'
     +'tbody td{padding:8px 12px;font-size:12px;border-bottom:1px solid #1a2028}'
     +'.footer{margin-top:40px;padding-top:14px;border-top:1px solid rgba(255,255,255,.07);font-size:11px;color:#404855;font-family:"Space Mono",monospace;display:flex;justify-content:space-between}'
-    +'</style></head><body>'
+    +'</style><style id="hm-sidebar-offset">
+/* ── Sidebar content offset — keeps content clear of 140px fixed sidebars ── */
+.page, .shell, .main, .hm-footer {
+  margin-left: 150px !important;
+  margin-right: 150px !important;
+  width: auto !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+}
+/* Ticker full width — runs edge to edge between sidebars */
+.ticker {
+  left: 150px !important;
+  right: 150px !important;
+  width: auto !important;
+}
+/* Nav sticky stays full viewport width */
+nav.nav, nav {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+</style>
+</head><body>'
     +'<div style="display:flex;align-items:center;gap:14px;margin-bottom:24px">'
     +'<div style="width:40px;height:40px;border-radius:9px;background:linear-gradient(135deg,#FF6B1A,#FF9A4A);display:flex;align-items:center;justify-content:center;font-family:Space Mono,monospace;font-size:13px;font-weight:700;color:#000">HM</div>'
     +'<div><div style="font-size:12px;color:#8A919E;font-family:Space Mono,monospace">HYDROMIND.AI — SYSTEM DESIGN REPORT</div><h1>'+D.projectName+'</h1></div>'
