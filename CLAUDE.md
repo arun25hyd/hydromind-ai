@@ -1,119 +1,146 @@
-# CLAUDE.md — HydroMind AI | Master System Protocol
-# STATUS: ONLINE | PRECISION MODE: ACTIVE | Last updated: May 18 2026
+# CLAUDE.md — HydroMind AI | Master System Protocol v3.0
+# STATUS: ONLINE | PRECISION MODE: ACTIVE | Last updated: May 30 2026
 # READ THIS FIRST. Every session. No exceptions.
 
 ---
 
 ## ▶ ROLE & MANDATE
 
-You are an elite AI engineering engine operating on the HydroMind AI platform.
-Mandate: flawless execution, surgical precision, zero-tolerance for errors or assumptions.
-Every task is mission-critical. Treat correctness as baseline, not a target.
+Elite AI engineering engine for HydroMind AI platform.
+Mandate: flawless execution, zero errors, no excuses, no apologies — results only.
+Every task is mission-critical. Screenshot = only proof of done. Never claim fixed without seeing it.
 
 ---
 
-## ▶ SESSION START — DO THIS BEFORE ANYTHING ELSE
+## ▶ SESSION START — MANDATORY CHECKLIST (every session, no skip)
 
-1. Read this file completely (every section)
-2. Confirm CWD = /Users/admin/HydroMind-Platform/web-frontend
-3. Inspect target file BEFORE any edit (grep/read — never assume structure)
-4. No push without browser screenshot confirmation
-5. Ask max ONE question per response if clarification needed
+1. Read this entire file
+2. Confirm CWD = /Users/Apple/Documents/HydroMind-Platform/web-frontend
+3. Check git status — know current branch and last commit
+4. Inspect target file BEFORE any edit (read/grep — never assume structure)
+5. Take browser screenshot AFTER any push to verify
+6. Never push more than once without a verified screenshot in between
 
 ---
 
 ## ▶ CORE OPERATING PRINCIPLES
 
-| Principle              | Rule                                                                          |
-|------------------------|-------------------------------------------------------------------------------|
-| Deep Think First       | Multi-step internal analysis before any action. Output only after reasoning.  |
-| Clarify Before Execute | Ambiguous requirement? Ask ONE precise question. Wait. Never assume.          |
-| No Guessing            | Missing info → request it. Risk detected → state it, then fix deterministically.|
-| Zero Redundancy        | Track completed work. Never redo confirmed ✅ tasks. Never reinvent modules.   |
-| Perfection Standard    | Every output: production-ready, functional, optimized, documented, error-free.|
+| Principle          | Rule                                                                        |
+|--------------------|-----------------------------------------------------------------------------|
+| No Assumptions     | Never guess file structure — read it first                                  |
+| No Patch-on-Patch  | Broken? Hard reset to last good commit. Never patch a broken patch.         |
+| Screenshot First   | Browser screenshot = only proof of "done". curl is insufficient.            |
+| One Push Per Fix   | One change, one push, one screenshot verify. Never batch unverified changes.|
+| No Excuses         | Arun wants results, not explanations. Deliver or escalate honestly.         |
+| Browser Available  | Claude in Chrome is connected — USE IT to verify live pages directly.       |
+| Read Before Edit   | Always read the full file or at minimum the target section before any edit. |
 
 ---
 
-## ▶ EXECUTION PROTOCOL — NON-NEGOTIABLE EVERY TIME
+## ▶ EXECUTION PROTOCOL — NON-NEGOTIABLE
 
 **INSPECT → PLAN → EXECUTE → VERIFY → COMMIT**
 
-1. **INSPECT**  → Read CLAUDE.md → grep/read target file → map div/nav/shell structure
-2. **PLAN**     → State exact changes, exact files, exact lines — before touching anything
-3. **EXECUTE**  → Single clean surgical edit. Never patch a broken patch. Hard reset if needed.
-4. **VERIFY**   → Browser screenshot of changed page. This is the ONLY proof of "done".
-5. **COMMIT**   → Only after screenshot confirms. Use exact git commands from Section 7.
-
----
-
-## ▶ WORKFLOW STEPS (per task)
-
-1. Parse & Deconstruct — inputs, outputs, constraints, hidden requirements
-2. Clarify — one focused question if unclear; confirm before proceeding
-3. Plan — architecture, step sequence, edge-case handling
-4. Execute — complete, modular, optimized code/artifact
-5. Self-Verify — dry-run logic; check off-by-one, race conditions, security, performance
-6. Deliver — final polished validated solution only. No drafts. No placeholders.
+1. INSPECT  → Read CLAUDE.md → read actual file → identify exact structure
+2. PLAN     → State exactly what changes, exactly which files, exact lines
+3. EXECUTE  → Single clean edit. If structure is damaged, git reset first.
+4. VERIFY   → Browser screenshot via Claude in Chrome. Check every changed page.
+5. COMMIT   → Only after screenshot confirms correct. Exact git commands below.
 
 ---
 
 ## ▶ SECTION 1 — CANONICAL PATHS (NO GUESSING, NO EXCEPTIONS)
 
-| Component       | Canonical Path                                              |
-|-----------------|-------------------------------------------------------------|
-| Web Frontend    | /Users/admin/HydroMind-Platform/web-frontend  ← LIVE/Vercel|
-| Backend         | /Users/admin/HydroMind-Platform/backend       ← Render      |
-| Android App     | /Users/admin/HydroMind-Platform/android-app   ← EAS builds  |
-| HydroFit App    | /Users/admin/hydrofit                                       |
-| Master Memory   | /Users/admin/HydroMind-Platform/web-frontend/CLAUDE.md      |
+| Component       | Canonical Path                                               |
+|-----------------|--------------------------------------------------------------|
+| Web Frontend    | /Users/Apple/Documents/HydroMind-Platform/web-frontend       |
+| Backend         | /Users/Apple/Documents/HydroMind-Platform/backend            |
+| Android App     | /Users/Apple/Documents/HydroMind-Platform/android-app        |
+| CLAUDE.md       | /Users/Apple/Documents/HydroMind-Platform/CLAUDE.md          |
+| SKILL.md        | /Users/Apple/Documents/HydroMind-Platform/SKILL.md           |
+| web CLAUDE.md   | /Users/Apple/Documents/HydroMind-Platform/web-frontend/CLAUDE.md |
 
-### STALE / DELETED PATHS — NEVER USE (all deleted May 17 2026)
-# /Users/admin/Desktop/HydroMind/hydromind-frontend
-# /Users/admin/hydromind
-# /Users/admin/HydroMind-Platform/web-frontend/Desktop/
-# /Users/admin/HydroMind-Platform/web-frontend/build/
-# /Users/admin/HydroMind-Platform/web-frontend/src/
-# /Users/admin/HydroMind-Platform/web-frontend/pages/*.bak
-# /Users/admin/HydroMind-Platform/web-frontend/public/pages/
+### DEAD PATHS — NEVER USE
+# /Users/admin/  ← OLD MACBOOK — DOES NOT EXIST ON NEW MACHINE
+# All /Users/admin/ paths are dead. Always /Users/Apple/
 
 ---
 
-## ▶ SECTION 2 — CLEAN FOLDER STRUCTURE (post May 17 2026 cleanup)
+## ▶ SECTION 2 — DESIGN SYSTEM v2.0 (May 30 2026)
 
-### web-frontend/ — ONLY these files/folders exist:
-  CLAUDE.md, ads.txt, robots.txt, sitemap.xml, vercel.json
-  index.html, ai_advisor.html, crane_diagnostic.html, system_design.html
-  knowledge_base.html, pricing.html, maintenance.html, disclaimer.html, privacy.html
-  api/        ← Vercel serverless functions
-  css/        ← style.css
-  js/         ← auth.js, main.js
-  data/       ← kb-data.json
-  public/     ← public assets (NO /pages/ subfolder)
-  skills/     ← ai-advisor SKILL.md
-  pages/      ← empty (all .bak deleted)
-  node_modules/, package.json, package-lock.json
+### CSS Variables (from css/hm-design.css — global stylesheet)
+```
+--bg:         #08090b
+--surface:    #0f1117
+--card:       #14171f
+--border:     rgba(255,255,255,0.07)
+--border-md:  rgba(255,255,255,0.12)
+--orange:     #f97316
+--green:      #22c55e
+--text1:      #f1f3f6
+--text2:      #8891a4
+--text3:      #4b5568
+--nav-h:      60px
+--sb-w:       160px    ← sidebar width
+--sans:       'Inter'
+--mono:       'Space Mono'
+```
 
-### android-app/ — ONLY these exist:
-  App.js, app.json, eas.json, tsconfig.json, eslint.config.js
-  app/        ← screens and components
-  assets/     ← images, icons
-  node_modules/, package.json
-
-### backend/ — ONLY these exist:
-  server.js, security.js, crane-agent-prompt.js, CLAUDE.md, SKILL.md
-  node_modules/, package.json
+### Layout (PRECISE — never guess)
+- Sidebar: `160px` wide, `position:fixed`, `top:60px`, `height:calc(100vh - 60px)`
+- Sidebars visible: `≥1280px` only — hidden via `@media (max-width:1279px)`
+- Body: `padding-left:160px; padding-right:160px` (applied in hm-design.css)
+- Nav height: `60px`, `width:100vw`, `margin-left:calc(-1 * 160px)` (spans full viewport)
+- Shell pages: body `display:flex; flex-direction:column; height:100vh; overflow:hidden`
+- The `.shell` div fills remaining height via `flex:1; min-height:0; overflow:hidden`
 
 ---
 
-## ▶ SECTION 3 — PLATFORM URLS & KEYS
+## ▶ SECTION 3 — HTML PAGE ARCHITECTURE
 
-| Service        | URL / ID                                       |
-|----------------|------------------------------------------------|
-| Frontend       | https://hydromindai.com                        |
-| Backend        | https://hydromind-backend.onrender.com         |
-| GitHub FE      | https://github.com/arun25hyd/hydromind-ai      |
-| GitHub BE      | https://github.com/arun25hyd/hydromind-backend |
-| Supabase       | frqefpoheewbornozvhc                           |
+### TWO PAGE TYPES — IDENTIFY BEFORE TOUCHING ANYTHING
+
+#### TYPE A — Shell Pages (fixed height, 3-column flex layout)
+Files: ai_advisor.html, crane_diagnostic.html, system_design.html
+- Body is flex column, shell fills viewport height
+- Shell has 3 columns: left-panel | main-area | right-panel
+- DO NOT add margin/padding to .shell — it kills the 3-col layout
+- Nav is sticky, shell-ticker is below nav, shell fills remaining height
+
+#### TYPE B — Scroll Pages (standard document flow)
+Files: index.html, knowledge_base.html, pricing.html, privacy.html, disclaimer.html
+- Standard scroll layout
+- Body has padding-left/right from hm-design.css (160px each)
+- .page wrapper, .container, sections use standard flow
+- Footer at bottom via margin-top:auto
+
+### HTML Structure (every page must have exactly these, in this order):
+```html
+<body>
+  <aside class="hm-sidebar-left">...</aside>   ← position:fixed, CSS-only
+  <aside class="hm-sidebar-right">...</aside>  ← position:fixed, CSS-only
+  <nav class="hm-nav" id="hmNav">...</nav>     ← sticky, full viewport width
+  <div class="shell-ticker">...</div>          ← shell pages only
+  <div class="shell">...</div>                 ← shell pages only
+  <div class="hm-page">...</div>               ← scroll pages only
+  <footer class="hm-footer">...</footer>       ← all pages
+  <div id="hmAuthOverlay">...</div>            ← all pages
+  <script src="js/auth.js"></script>           ← all pages
+</body>
+```
+
+### SIDEBAR RULES (hard lessons — never repeat)
+1. Sidebars are `<aside>` elements, NOT `<div>` — semantic HTML
+2. Position is controlled entirely by `css/hm-design.css` — NO inline position:fixed
+3. No JavaScript injects the sidebars — they are static HTML at body level
+4. No `hm-sidebar-offset` CSS block ever — that was the broken approach
+5. Each page has exactly 1 left sidebar and 1 right sidebar — verify with grep
+
+### NAV RULES
+1. Nav is `width:100vw; margin-left:calc(-1 * var(--content-pl))` — spans full viewport
+2. Nav has `position:sticky; top:0; z-index:200`
+3. Shell pages: body overflow is hidden — nav is flex-shrink:0
+4. ONE nav per page — verify after any shell page edit
 
 ---
 
@@ -121,172 +148,106 @@ Every task is mission-critical. Treat correctness as baseline, not a target.
 
 ### Web Frontend
 - Pure HTML/CSS/JS — NO React, NO framework
-- Design: bg #0d0f12 | surface #13171d | orange #f97316 | text #e2e8f0 | muted #64748b
-- card #1a1f28 | border #2a3040
-- Fonts: Syne 800 (logo) | Barlow Condensed 700 | Barlow 400 | Share Tech Mono
-- Nav class: hm-topnav | height: 52px fixed
-- 8 live pages (see Section 2)
+- Global CSS: css/hm-design.css (v2.0) — import first in every page
+- Fonts: Inter (body/headings) + Space Mono (code/labels/mono)
+- Auth: js/auth.js — handles login, register, session, sidebar user display
+- KB data: data/kb-data.json
 
-### Backend (Node.js / Express)
-- server.js — model: claude-sonnet-4-5 (LOCKED — never change)
-- security.js — helmet, rate limiters, CSP/HSTS/XSS headers
-- max_tokens: 2000
-- KB v3.0: 223 docs | KB_ROUTE_MAP routes 30+ model names in server.js
+### Backend
+- server.js — model: claude-sonnet-4-5 (LOCKED)
+- node --check server.js BEFORE every backend push (mandatory)
 
-### Android App (React Native / Expo SDK 54)
-- Package: com.hydromind.app | EAS: arun25hyd | Next versionCode: 35
-- MANDATORY: eas build:version:set → 35 BEFORE any build
-- Play Store: closed testing | 12 Gmail testers | Wait 14d → apply production
-- DPRScreen.tsx: expo-speech-recognition v3.1.2
-
-### HydroFit App (Expo SDK 54)
-- Package: com.hydrofit.app
-- DB: 1,456 hose fittings + 284 tube + 80 hoses | AdMob wired
+### Android
+- versionCode: 44 (next build)
+- Package: com.hydromind.app | EAS: arun25hyd
 
 ---
 
-## ▶ SECTION 5 — HTML PAGE ARCHITECTURE (CRITICAL — CHECK EVERY EDIT)
+## ▶ SECTION 5 — FATAL MISTAKES REGISTRY (never repeat any of these)
 
-### Two Page Types — IDENTIFY BEFORE TOUCHING ANYTHING
-
-**TYPE A — Shell Layout** (ai_advisor, crane_diagnostic, system_design)
-- Content wrapped in `<div class="shell">`
-- Contains `</body></html>` INSIDE JS strings → regex replace will CORRUPT
-- Nav replacement MUST be line-number based only
-
-**TYPE B — Scroll Pages** (index, knowledge_base, pricing, maintenance, disclaimer, privacy)
-- Standard scroll layout, no shell wrapper
-- Safe for careful regex replace
-
-### Z-index Rule (NON-NEGOTIABLE)
-- bg-wrap canvas → position:fixed; z-index:0
-- ALL content → position:relative; z-index:2
-- Skip this → content vanishes behind canvas. No exceptions.
-
-### Ad Sidebars — ALL pages must have BOTH
-- .hm-left-sidebar  → fixed left, 160px wide, top:52px
-- .hm-right-sidebar → fixed right, 160px wide, top:52px (id=hmAdSidebar)
-- Hidden on screens < 1400px via media query
-
-### Page Grid (3-col)
-- hm-page layout: grid `220px 1fr 200px`
-
-### Hero Index Rule
-- index.html hero = hydraulic schematic SVG in `<div class="circuit-bg">`
-- Contains: reservoir, pump A4VG (rotating), DCV, motor A6VM, gauge, filter, cooler
-- Orange #f97316 strokes | Recoverable: git commit 8d71d1eb | Working: 257a6080
-- NEVER replace SVG with canvas particles. Ever.
-
-### Ad Rail Placement Rule
-- hm-ad-rail HTML must be placed AFTER `</script>` as real HTML
-- NEVER inject ad-rail inside a JS document.write() string
-
-### nav.navbar & circuit-bg (global CSS)
-- nav.navbar { display:none !important }
-- circuit-bg { display:none !important }
+| # | Mistake | Correct Action |
+|---|---------|----------------|
+| 1 | Editing without reading file structure first | Always read/grep before touch |
+| 2 | Using inline `position:fixed!important` to fight CSS | Fix the CSS, not the symptom |
+| 3 | Adding `hm-sidebar-offset` CSS block to patch body padding | Use body padding in global CSS |
+| 4 | Adding `margin-left:150px` to `.shell` — kills 3-col layout | Shell uses padding, not margin |
+| 5 | Patching a patch: applying new fix on top of broken code | Hard reset to last known good commit |
+| 6 | Claiming "fixed" without browser screenshot | NEVER. Screenshot = only proof. |
+| 7 | Pushing the omelette/artifact preview code to production | Strip all `data-omelette-injected` before push |
+| 8 | Multiple rounds of incremental CSS fixes on live site | Full redesign from scratch with clean CSS |
+| 9 | Using /Users/admin/ paths on new MacBook | All paths: /Users/Apple/ |
+| 10 | `head` command failing — macOS BSD head is different | Use `python3 -c "..."` for quick operations |
+| 11 | Duplicate nav inside shell page (from bak2 extraction) | After shell extraction, remove inner nav.nav |
+| 12 | Shell pages: body padding overrides from hm-design.css collide with shell overflow | Shell pages override: body{height:100vh;overflow:hidden} |
+| 13 | Not using Claude in Chrome to verify — guessing from curl | Always use browser to verify live pages |
+| 14 | `bash_tool` for Mac filesystem operations | Desktop Commander MCP only for Mac files |
+| 15 | Bulk Python regex on HTML — damages structure | Surgical targeted replacements only |
+| 16 | Claiming confirmed ✅ tasks need re-doing | Never redo Arun-confirmed tasks |
 
 ---
 
-## ▶ SECTION 6 — REPEATED MISTAKES REGISTRY (NEVER REPEAT)
+## ▶ SECTION 6 — PLATFORM URLS
 
-| #  | Mistake                                    | Fix                                                             |
-|----|--------------------------------------------|-----------------------------------------------------------------|
-| 1  | Edit HTML without reading structure first  | grep shell/nav/div counts FIRST                                 |
-| 2  | Nav regex eating closing shell div         | Line-number replace on TYPE A shell pages only                  |
-| 3  | Claim "fixed" without screenshot           | Browser screenshot = ONLY proof. No exceptions.                 |
-| 4  | Patching a broken patch                    | Hard reset to last good git commit                              |
-| 5  | bash_tool for Mac filesystem               | bash_tool = container only. Desktop Commander = Mac filesystem  |
-| 6  | Guessing file paths                        | Read Section 1 of this file. No exceptions.                     |
-| 7  | Multiple questions to Arun                 | Max ONE question per response                                   |
-| 8  | python str.replace() without verifying     | Always print/assert before writing file                         |
-| 9  | Editing wrong repo/folder                  | ALWAYS cd /Users/admin/HydroMind-Platform/web-frontend          |
-| 10 | node --check skipped before backend push   | MANDATORY: node --check server.js before EVERY push             |
-| 11 | Auth restore missing locations             | Must be at: DOMContentLoaded + setTimeout 100ms + 500ms         |
-| 12 | Re-doing Arun-confirmed ✅ tasks            | If Arun gave thumbs up — NEVER touch again                      |
-| 13 | Hero SVG replaced with canvas              | Hero = hydraulic schematic SVG — NEVER swap to canvas           |
-| 14 | window.claude.complete() in browser        | Use mailto: or Supabase — never Claude API client-side          |
-| 15 | EAS build without version bump             | eas build:version:set → 35 FIRST, then build                    |
-| 16 | Editing the deleted Desktop clone          | That folder is DELETED. Only canonical paths exist.             |
-| 17 | Python bulk script on HTML                 | Never run bulk scripts on HTML — always surgical edit           |
-| 18 | Force push without verifying deployment    | After force push: empty commit → wait 30s → screenshot          |
-| 19 | Ad-rail HTML injected inside JS string     | Place ad-rail AFTER </script> as real HTML — never inside string|
+| Service     | URL                                         |
+|-------------|---------------------------------------------|
+| Frontend    | https://hydromindai.com                     |
+| Backend     | https://hydromind-backend.onrender.com      |
+| GitHub FE   | https://github.com/arun25hyd/hydromind-ai   |
+| GitHub BE   | https://github.com/arun25hyd/hydromind-backend |
+| Supabase    | frqefpoheewbornozvhc                        |
 
 ---
 
-## ▶ SECTION 7 — GIT WORKFLOW (EXACT COMMANDS ONLY)
+## ▶ SECTION 7 — GIT WORKFLOW (EXACT COMMANDS)
 
-### Frontend Push
+### Frontend
 ```bash
-cd /Users/admin/HydroMind-Platform/web-frontend
-git add -A && git commit -m "fix: <description>" && git push origin main
+cd /Users/Apple/Documents/HydroMind-Platform/web-frontend
+git add -A && git commit -m "fix: description" && git push origin main
 ```
 
-### Backend Push (node --check is MANDATORY before push)
+### Backend (ALWAYS node --check first)
 ```bash
-cd /Users/admin/HydroMind-Platform/backend
+cd /Users/Apple/Documents/HydroMind-Platform/backend
 node --check server.js
-git add -A && git commit -m "fix: <description>" && git push origin main
+git add -A && git commit -m "fix: description" && git push origin main
 ```
 
-### Emergency Rollback
+### Emergency rollback
 ```bash
-cd /Users/admin/HydroMind-Platform/web-frontend
+cd /Users/Apple/Documents/HydroMind-Platform/web-frontend
 git reset --hard <last-good-commit>
 git push origin main --force
 git commit --allow-empty -m "chore: force redeploy" && git push origin main
 ```
 
-### Post-Push Rule
-After EVERY push: wait 30s → browser screenshot → confirm with Arun before closing task.
+### After every push
+Wait 65 seconds → Claude in Chrome browser screenshot → confirm with Arun
 
 ---
 
-## ▶ SECTION 8 — QUERY ROUTING TABLE
+## ▶ SECTION 8 — VERIFICATION PROTOCOL
 
-| Query Type                           | Action                                              |
-|--------------------------------------|-----------------------------------------------------|
-| Hydraulic / crane / HPU / fault      | Load skills/hydromind-ai-advisor/SKILL.md           |
-| Web platform / HTML / CSS / JS fix   | Read CLAUDE.md → inspect file → fix surgically      |
-| Android / Expo / React Native        | Direct coding — no skill load needed                |
-| Backend / API / server.js            | Direct — mandatory node --check before push         |
-| Claude API / LLM / AI architecture   | Direct — general knowledge                          |
-| Revenue / SaaS / Play Store          | Direct — general business knowledge                 |
-| General chat / research / writing    | Direct — no skill load needed                       |
+After every single push:
+1. Use Claude in Chrome (deviceId: 9fe113fe-7ad7-495c-9172-f361594b26a5)
+2. Navigate to the changed page
+3. Hard refresh: cmd+shift+r
+4. Wait 4 seconds for full load
+5. Take screenshot
+6. Report exactly what is visible — no assumptions
 
----
-
-## ▶ SECTION 9 — CONTEXT & MEMORY MANAGEMENT
-
-- **Job Folder Awareness**: Always track active paths, dependencies, module relationships. Never lose folder context mid-session.
-- **Continuous Self-Audit**: After each major step, evaluate progress, update state, refine approach.
-- **75% Context Compaction Rule**: If conversation approaches ~75% of context window, proactively summarize:
-  - Key architecture decisions made
-  - Active state and current progress
-  - Critical constraints and dependencies
-  - Remaining work and next steps
-  Preserve exact logic, file references, and variable state. Never drop critical context.
+If page looks wrong:
+1. Check git log — confirm push went through
+2. Check Vercel deployment in logs if needed
+3. Hard refresh again (browser may have cached old version)
+4. NEVER claim fixed without seeing it
 
 ---
 
-## ▶ SECTION 10 — OUTPUT STANDARDS & STRICT ENFORCEMENT
+## ▶ SECTION 9 — APP BANNER PLACEMENT (v2.0 rule)
 
-### Output Standards
-- **Code**: Modern, idiomatic, modular, error-handled, documented, performance-optimized
-- **Structure**: Clear headings, bullet logic, explicit step references. No fluff, no filler.
-- **Validation**: Brief verification notes where applicable (edge cases, complexity, safety checks)
-- **Continuity**: Reference prior work, update progress state, cross-task consistency
-
-### Strict Enforcement (Non-Negotiable)
-- Prioritize correctness over speed
-- Zero-error execution — non-negotiable
-- Never output incomplete, speculative, or unverified solutions
-- If a requirement is impossible or unsafe → state why → provide deterministic secure alternative
-- If Arun confirmed ✅ → that task is FROZEN. Never revisit without explicit instruction.
-- Never claim done without browser screenshot verification
-- Never edit a file without reading it first
-- Never use a path not listed in Section 1
-
-**ACKNOWLEDGE → INTERNALIZE → EXECUTE. NO DEVIATIONS.**
-
----
-# END OF CLAUDE.md — HydroMind AI Master System Protocol
+- Homepage hero section: YES — with QR code, app description, Google Play link
+- Pricing page: YES — CTA section at bottom only
+- AI Advisor sidebar: NO
+- Other pages: NO
+- All sidebars: "YOUR AD HERE" placeholder boxes only (3 per side)
