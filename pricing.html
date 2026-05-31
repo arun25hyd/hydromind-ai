@@ -538,6 +538,11 @@ function setRating(val) {
     b.classList.toggle('active', parseInt(b.dataset.val) <= val);
   });
 }
+/* ── EmailJS credentials — update these when ready ── */
+const EJS_PUBLIC_KEY  = 'EMAILJS_PUBLIC_KEY';
+const EJS_SERVICE_ID  = 'EMAILJS_SERVICE_ID';
+const EJS_TEMPLATE_ID = 'EMAILJS_TEMPLATE_ID';
+
 async function submitFeedback() {
   const name    = document.getElementById('fb-name').value.trim();
   const email   = document.getElementById('fb-email').value.trim();
@@ -555,28 +560,24 @@ async function submitFeedback() {
   btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Sending…';
 
   try {
-    // Call Web3Forms directly from browser (client-side required — server-side blocked on free plan)
-    const res = await fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        access_key:  '62d90809-7b89-45da-91bd-8fbda051eeef',
-        subject:     `[HydroMind.AI Feedback] ${topic || 'General'} — ${fbRating ? fbRating + '/5 ⭐' : 'No rating'} from ${name}`,
-        from_name:   'HydroMind Feedback Form',
-        replyto:     email,
-        name,
-        message: `Name: ${name}\nEmail: ${email}\nRole: ${role || '—'}\nTopic: ${topic || 'General'}\nRating: ${fbRating ? fbRating + '/5' : 'Not rated'}\n\nMessage:\n${message}`
-      })
-    });
+    const result = await emailjs.send(
+      EJS_SERVICE_ID,
+      EJS_TEMPLATE_ID,
+      {
+        from_name: name,
+        reply_to:  email,
+        role:      role    || 'Not specified',
+        topic:     topic   || 'General',
+        rating:    fbRating ? fbRating + '/5 ⭐' : 'Not rated',
+        message:   message
+      },
+      EJS_PUBLIC_KEY
+    );
 
-    const data = await res.json();
-
-    if (res.ok && data.success) {
-      // Success
+    if (result.status === 200) {
       document.getElementById('fb-success').classList.add('visible');
       btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Sent!';
       btn.style.background = 'var(--success)';
-      // Reset form
       document.getElementById('fb-name').value = '';
       document.getElementById('fb-email').value = '';
       document.getElementById('fb-message').value = '';
@@ -585,15 +586,15 @@ async function submitFeedback() {
       fbRating = 0;
       document.querySelectorAll('.star-btn').forEach(b => b.classList.remove('active'));
     } else {
-      throw new Error(data.error || 'Submission failed');
+      throw new Error('EmailJS returned status ' + result.status);
     }
 
   } catch (err) {
-    console.error('Feedback error:', err);
+    console.error('EmailJS error:', err);
     btn.disabled = false;
     btn.style.background = '';
     btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send Feedback';
-    alert('Sorry, there was an error sending your feedback. Please email us directly at support@hydromindai.com');
+    alert('Could not send feedback. Please email us directly: support@hydromindai.com');
   }
 }
 
@@ -603,6 +604,7 @@ function toggleFAQ(el) {
   if (!isOpen) { el.classList.add('open'); el.nextElementSibling.classList.add('open'); }
 }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="js/auth.js"></script>
 </body>
 </html>
