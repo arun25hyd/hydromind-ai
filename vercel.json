@@ -50,8 +50,8 @@
       "permanent": true
     },
     {
-      "source": "/pages/privacy.html",
-      "destination": "/privacy.html",
+      "source": "/privacy.html",
+      "destination": "/pages/privacy.html",
       "permanent": true
     },
     {

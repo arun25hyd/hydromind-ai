@@ -3,25 +3,767 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HydroMind.AI — Under Maintenance</title>
+<title>AI Advisor — HydroMind.AI</title>
+<link rel="stylesheet" href="css/hm-design.css">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:#08090b;font-family:'Space Mono',monospace;display:flex;align-items:center;justify-content:center;min-height:100vh;color:#f1f3f6;}
-.wrap{text-align:center;padding:40px 20px;}
-.logo{font-size:13px;font-weight:700;letter-spacing:.12em;color:#f97316;margin-bottom:32px;}
-.logo span{color:#f1f3f6;}
-h1{font-size:20px;font-weight:700;letter-spacing:.06em;color:#f97316;margin-bottom:12px;}
-p{font-size:12px;color:#8891a4;line-height:1.8;max-width:360px;margin:0 auto 28px;}
-.badge{display:inline-flex;align-items:center;gap:7px;background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.25);border-radius:20px;padding:6px 16px;font-size:10px;color:#f97316;letter-spacing:.06em;}
-.dot{width:6px;height:6px;border-radius:50%;background:#f97316;}
+/* ── Full-height shell ── */
+body { overflow: hidden; }
+.hm-page { padding: 0; display: flex; flex-direction: column; height: calc(100vh - var(--nav-h)); overflow: hidden; }
+
+/* ── Three-column layout ── */
+.advisor-shell {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  height: 100%;
+}
+
+/* ── Left context panel ── */
+.ctx-panel {
+  width: 230px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border-md);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 16px 12px;
+  gap: 4px;
+}
+.ctx-section { margin-bottom: 6px; }
+.ctx-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding: 6px 8px 4px;
+}
+.ctx-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+.ctx-item:hover { background: var(--accent-dim); color: var(--accent); }
+.ctx-item.active { background: var(--accent-dim); color: var(--accent); font-weight: 600; }
+.ctx-item.active::after { content: "✓"; font-size: 10px; }
+.ctx-item .ctx-mfr { font-size: 10px; color: var(--text3); }
+.ctx-item.active .ctx-mfr { color: var(--accent); opacity: 0.7; }
+.ctx-divider { height: 1px; background: var(--border); margin: 8px 4px; }
+
+/* ── Centre chat column ── */
+.chat-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* Mode tab bar */
+.mode-bar {
+  display: flex;
+  background: var(--card);
+  border-bottom: 1px solid var(--border-md);
+  padding: 0 16px;
+  flex-shrink: 0;
+  overflow-x: auto;
+}
+.mode-tab {
+  padding: 13px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text2);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: all 0.15s;
+  user-select: none;
+  background: none;
+}
+.mode-tab:hover { color: var(--text1); }
+.mode-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+
+/* Messages area */
+.chat-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Welcome screen */
+.welcome-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 28px;
+  padding: 48px 32px;
+  text-align: center;
+}
+.welcome-icon {
+  width: 72px; height: 72px;
+  background: var(--accent);
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 26px; font-weight: 700; color: #fff;
+  box-shadow: 0 12px 32px rgba(8,145,178,0.28);
+}
+.welcome-title { font-size: 26px; font-weight: 800; color: var(--text1); }
+.welcome-sub { font-size: 15.5px; color: var(--text2); max-width: 500px; line-height: 1.65; margin-top: -8px; }
+.suggestion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; max-width: 700px; }
+.suggestion-card {
+  background: var(--card);
+  border: 1px solid var(--border-md);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.18s;
+  font-size: 13.5px;
+  color: var(--text2);
+  line-height: 1.6;
+  box-shadow: var(--card-shadow);
+}
+.suggestion-card:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); transform: translateY(-2px); box-shadow: var(--card-shadow-hover); }
+.suggestion-card strong { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 7px; background: var(--accent-dim); display: inline-block; padding: 3px 9px; border-radius: 20px; }
+.suggestion-card:hover strong { background: rgba(255,255,255,0.25); color: #fff; }
+
+/* Chat bubbles */
+.msg-row { display: flex; flex-direction: column; gap: 4px; max-width: 80%; }
+.msg-row.user { align-self: flex-end; align-items: flex-end; }
+.msg-row.ai { align-self: flex-start; align-items: flex-start; }
+.msg-sender { font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text3); padding: 0 4px; }
+.msg-bubble {
+  padding: 11px 15px;
+  border-radius: 14px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  word-break: break-word;
+}
+.msg-row.user .msg-bubble {
+  background: var(--accent);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.msg-row.ai .msg-bubble {
+  background: var(--card);
+  color: var(--text1);
+  border: 1px solid var(--border-md);
+  border-left: 3px solid var(--accent);
+  border-bottom-left-radius: 4px;
+  box-shadow: var(--card-shadow);
+}
+.msg-bubble strong { font-weight: 700; }
+.msg-bubble ul { padding-left: 18px; margin-top: 8px; }
+.msg-bubble ul li { margin-bottom: 4px; }
+.msg-bubble ol { padding-left: 18px; margin-top: 8px; }
+.msg-bubble ol li { margin-bottom: 4px; }
+.msg-bubble p { margin-top: 8px; }
+.msg-bubble p:first-child { margin-top: 0; }
+.msg-kb {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  padding: 0 4px;
+  margin-top: 2px;
+}
+.msg-kb-chip {
+  font-size: 10.5px; font-weight: 600;
+  background: var(--accent-dim); color: var(--accent);
+  border: 1px solid var(--accent-glow);
+  border-radius: 4px; padding: 2px 8px;
+  font-family: var(--mono);
+}
+.msg-time { font-size: 10px; color: var(--text3); padding: 0 4px; }
+
+/* Typing indicator */
+.typing-dots { display: flex; align-items: center; gap: 4px; padding: 4px 0; }
+.typing-dots span {
+  width: 7px; height: 7px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: bounce-dot 1.2s ease-in-out infinite;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce-dot {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+  40% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* Input bar */
+.input-bar {
+  padding: 12px 16px;
+  background: var(--card);
+  border-top: 1px solid var(--border-md);
+  flex-shrink: 0;
+}
+.input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  background: var(--surface);
+  border: 1.5px solid var(--border-md);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.input-row:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+#chat-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--text1);
+  resize: none;
+  max-height: 120px;
+  line-height: 1.5;
+  font-family: var(--sans);
+}
+#chat-input::placeholder { color: var(--text3); }
+.send-btn {
+  width: 34px; height: 34px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, transform 0.15s;
+}
+.send-btn:hover { background: var(--accent-hover); transform: scale(1.05); }
+.send-btn:disabled { background: var(--border-md); cursor: not-allowed; transform: none; }
+.send-btn svg { width: 15px; height: 15px; color: #fff; }
+.input-hints {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 7px;
+  padding: 0 2px;
+  font-size: 11px;
+  color: var(--text3);
+}
+.input-hints span { display: flex; align-items: center; gap: 5px; }
+.input-hints kbd {
+  background: var(--surface);
+  border: 1px solid var(--border-md);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 10.5px;
+  font-family: var(--mono);
+  color: var(--text2);
+}
+
+/* ── Right info panel ── */
+.info-panel {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-left: 1px solid var(--border-md);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 16px 12px;
+  gap: 16px;
+}
+.info-section h4 {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 10px;
+}
+.stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.stat-row:last-child { border-bottom: none; }
+.stat-row .s-label { color: var(--text2); }
+.stat-row .s-val { font-weight: 700; color: var(--text1); font-family: var(--mono); font-size: 11.5px; }
+.stat-row .s-val.teal { color: var(--accent); }
+
+.kb-list { display: flex; flex-direction: column; gap: 6px; }
+.kb-ref-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  font-size: 11.5px;
+}
+.kb-ref-item .kb-num { font-family: var(--mono); font-weight: 700; color: var(--accent); font-size: 10.5px; }
+.kb-ref-item .kb-title { color: var(--text1); margin-top: 2px; font-size: 11px; line-height: 1.4; }
+.kb-ref-item .kb-mfr { color: var(--text3); font-size: 10px; margin-top: 3px; }
+
+.model-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  font-size: 11px;
+}
+.model-dot { width: 7px; height: 7px; background: var(--success); border-radius: 50%; flex-shrink: 0; }
+.model-name { font-weight: 600; color: var(--text1); }
+.model-sub { color: var(--text3); font-size: 10px; margin-top: 1px; }
+
+@media (max-width: 1100px) {
+  .ctx-panel { width: 180px; }
+  .info-panel { display: none; }
+}
+@media (max-width: 800px) {
+  .ctx-panel { display: none; }
+  .mode-bar { padding: 0 8px; }
+}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="logo">HM HYDRO<span>MIND</span>.AI</div>
-  <h1>UNDER MAINTENANCE</h1>
-  <p>Scheduled improvements in progress. Back online shortly.</p>
-  <div class="badge"><div class="dot"></div>MAINTENANCE IN PROGRESS</div>
-</div>
+
+<!-- NAV -->
+<nav class="hm-nav">
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon">HM</div>
+    <span>HydroMind<span class="logo-ai">.AI</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="ai_advisor.html" class="active">AI Advisor</a>
+    <a href="system_design.html">System Design</a>
+    <a href="crane_diagnostic.html">Crane Diagnostic</a>
+    <a href="knowledge_base.html">Knowledge Base</a>
+    <a href="pricing.html">Pricing</a>
+  </div>
+  <div class="nav-right">
+    <span class="nav-status"><span class="nav-status-dot"></span>ONLINE</span>
+    <a href="#" class="btn btn-ghost btn-sm">Log In</a>
+    <a href="pricing.html" class="btn btn-primary btn-sm">Get Pro</a>
+  </div>
+</nav>
+
+<!-- LEFT SIDEBAR -->
+<aside class="hm-sidebar-left">
+  <div class="sb-profile" id="sb-profile">
+    <div class="sb-avatar" id="sb-avatar">U</div>
+    <span class="sb-username" id="sb-username">User</span>
+    <span class="badge badge-teal" id="sb-plan">Free</span>
+  </div>
+  <div>
+    <div class="sb-section-label">Platform</div>
+    <a href="ai_advisor.html" class="sb-nav-link active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>
+      AI Advisor
+    </a>
+    <a href="system_design.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+      System Design
+    </a>
+    <a href="crane_diagnostic.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      Crane Diag.
+    </a>
+    <a href="knowledge_base.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+      KB Library
+    </a>
+    <a href="pricing.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      Pricing
+    </a>
+  </div>
+  <div class="sb-ad mt-auto">
+    <div class="sb-ad-label">Advertise Here</div>
+    <div class="sb-ad-sub">Reach offshore hydraulic engineers worldwide</div>
+    <a href="mailto:ads@hydromind.ai" class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">Contact Us</a>
+  </div>
+</aside>
+
+<!-- RIGHT SIDEBAR -->
+<aside class="hm-sidebar-right">
+  <div class="sb-pro-cta">
+    <h4>Upgrade to Pro</h4>
+    <ul>
+      <li>Unlimited AI queries</li>
+      <li>All 6 advisor modes</li>
+      <li>Full 223-doc KB</li>
+      <li>BOM export</li>
+    </ul>
+    <a href="pricing.html" class="btn btn-primary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">View Plans</a>
+  </div>
+  <div class="sb-ad mt-auto">
+    <div class="sb-ad-label">Advertise Here</div>
+    <div class="sb-ad-sub">138×220 placement</div>
+    <a href="mailto:ads@hydromind.ai" class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">Contact Us</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="hm-page">
+  <div class="advisor-shell">
+
+    <!-- LEFT CONTEXT PANEL -->
+    <div class="ctx-panel">
+      <div class="ctx-section">
+        <div class="ctx-label">Cranes</div>
+        <div class="ctx-item active" data-ctx="Liebherr BOS 47000">
+          <span>Liebherr BOS 47000</span>
+        </div>
+        <div class="ctx-item" data-ctx="NOV RAM 500">
+          <span>NOV RAM 500</span>
+        </div>
+        <div class="ctx-item" data-ctx="MacGregor TM35">
+          <span>MacGregor TM35</span>
+        </div>
+        <div class="ctx-item" data-ctx="SeaTrax S1280">
+          <span>SeaTrax S1280</span>
+        </div>
+        <div class="ctx-item" data-ctx="Favelle Favco M250T">
+          <span>Favelle Favco M250T</span>
+        </div>
+      </div>
+
+      <div class="ctx-divider"></div>
+
+      <div class="ctx-section">
+        <div class="ctx-label">Components</div>
+        <div class="ctx-item" data-ctx="Rexroth A10V">
+          <span>Rexroth A10V</span>
+        </div>
+        <div class="ctx-item" data-ctx="Rexroth A6VM">
+          <span>Rexroth A6VM</span>
+        </div>
+        <div class="ctx-item" data-ctx="Rexroth M7">
+          <span>Rexroth M7 Valve</span>
+        </div>
+        <div class="ctx-item" data-ctx="Eaton PVXS">
+          <span>Eaton PVXS</span>
+        </div>
+        <div class="ctx-item" data-ctx="Danfoss 90 Series">
+          <span>Danfoss 90 Series</span>
+        </div>
+      </div>
+
+      <div class="ctx-divider"></div>
+
+      <div class="ctx-section">
+        <div class="ctx-label">Standards</div>
+        <div class="ctx-item" data-ctx="ISO 4413:2010">
+          <span>ISO 4413:2010</span>
+        </div>
+        <div class="ctx-item" data-ctx="DNV-ST-0378">
+          <span>DNV-ST-0378</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAT CENTRE -->
+    <div class="chat-col">
+
+      <!-- Mode tabs -->
+      <div class="mode-bar">
+        <button class="mode-tab active" data-mode="General">General</button>
+        <button class="mode-tab" data-mode="Fault Diagnosis">Fault Diagnosis</button>
+        <button class="mode-tab" data-mode="Pressure Analysis">Pressure Analysis</button>
+        <button class="mode-tab" data-mode="Maintenance">Maintenance</button>
+        <button class="mode-tab" data-mode="Component Sizing">Component Sizing</button>
+        <button class="mode-tab" data-mode="Commissioning">Commissioning</button>
+      </div>
+
+      <!-- Messages -->
+      <div class="chat-area" id="chat-area">
+        <!-- Welcome screen shown when empty -->
+        <div class="welcome-screen" id="welcome-screen">
+          <div class="welcome-icon">HM</div>
+          <div class="welcome-title">HydroMind AI Advisor</div>
+          <p class="welcome-sub">Expert hydraulic guidance for industrial, marine, and offshore systems. Select equipment context on the left, choose a mode above, then ask your question.</p>
+          <div class="suggestion-grid">
+            <div class="suggestion-card" onclick="useSuggestion(this)">
+              <strong>Fault Diagnosis</strong>
+              Case drain pressure on A10V reading 4.8 bar during hoisting — shaft seal or internal bypass?
+            </div>
+            <div class="suggestion-card" onclick="useSuggestion(this)">
+              <strong>Pressure Analysis</strong>
+              What is the correct relief valve setting for a Liebherr BOS 47000 main hoist circuit?
+            </div>
+            <div class="suggestion-card" onclick="useSuggestion(this)">
+              <strong>Component Sizing</strong>
+              Size an A10V pump for 250 bar, 180 L/min open circuit — what displacement and drive power?
+            </div>
+            <div class="suggestion-card" onclick="useSuggestion(this)">
+              <strong>Maintenance</strong>
+              What are the DNV-ST-0378 inspection intervals for offshore crane hydraulic hoses?
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input bar -->
+      <div class="input-bar">
+        <div class="input-row">
+          <textarea id="chat-input" rows="1" placeholder="Ask about any hydraulic fault, component sizing, pressure analysis, or system design…" maxlength="2000"></textarea>
+          <button class="send-btn" id="send-btn" onclick="sendMessage()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+        <div class="input-hints">
+          <span>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+            223 KB docs indexed
+          </span>
+          <span>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            claude-sonnet-4-6
+          </span>
+          <span style="margin-left:auto;"><kbd>Shift+Enter</kbd> new line &nbsp;·&nbsp; <kbd>Enter</kbd> send</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT INFO PANEL -->
+    <div class="info-panel">
+
+      <div class="info-section">
+        <h4>AI Model</h4>
+        <div class="model-badge">
+          <span class="model-dot"></span>
+          <div>
+            <div class="model-name">Claude Sonnet</div>
+            <div class="model-sub">4.6 · Hydraulic Expert</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <h4>Session Stats</h4>
+        <div class="stat-row"><span class="s-label">Messages</span><span class="s-val teal" id="stat-msgs">0</span></div>
+        <div class="stat-row"><span class="s-label">Mode</span><span class="s-val" id="stat-mode">General</span></div>
+        <div class="stat-row"><span class="s-label">Context</span><span class="s-val" id="stat-ctx">BOS 47000</span></div>
+        <div class="stat-row"><span class="s-label">KB Hits</span><span class="s-val teal" id="stat-kb">0</span></div>
+        <div class="stat-row"><span class="s-label">Queries Left</span><span class="s-val" id="stat-ql">10</span></div>
+      </div>
+
+      <div class="info-section">
+        <h4>Active KB References</h4>
+        <div class="kb-list" id="kb-list">
+          <div style="font-size:11px;color:var(--text3);font-style:italic;">KB references appear here after your first query.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<script>
+/* ── State ── */
+const BACKEND = 'https://hydromind-backend.onrender.com/api/advisor';
+let history = [];
+let msgCount = 0;
+let kbHits = 0;
+let queriesLeft = 10;
+let activeCtx = 'Liebherr BOS 47000';
+let activeMode = 'General';
+
+/* ── Context selector ── */
+document.querySelectorAll('.ctx-item').forEach(el => {
+  el.addEventListener('click', () => {
+    document.querySelectorAll('.ctx-item').forEach(x => x.classList.remove('active'));
+    el.classList.add('active');
+    activeCtx = el.dataset.ctx;
+    document.getElementById('stat-ctx').textContent = activeCtx.substring(0, 12) + (activeCtx.length > 12 ? '…' : '');
+  });
+});
+
+/* ── Mode tabs ── */
+document.querySelectorAll('.mode-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    activeMode = tab.dataset.mode;
+    document.getElementById('stat-mode').textContent = activeMode.substring(0, 10) + (activeMode.length > 10 ? '…' : '');
+  });
+});
+
+/* ── Auto-resize textarea ── */
+const input = document.getElementById('chat-input');
+input.addEventListener('input', () => {
+  input.style.height = 'auto';
+  input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+});
+input.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+
+/* ── Suggestion cards ── */
+function useSuggestion(el) {
+  const text = el.innerText.replace(/^[A-Z ]+\n/, '').trim();
+  input.value = text;
+  input.dispatchEvent(new Event('input'));
+  input.focus();
+}
+
+/* ── Add message to DOM ── */
+function addMessage(role, content, kbRefs) {
+  const welcome = document.getElementById('welcome-screen');
+  if (welcome) welcome.remove();
+
+  const area = document.getElementById('chat-area');
+  const row = document.createElement('div');
+  row.className = `msg-row ${role}`;
+
+  const sender = document.createElement('div');
+  sender.className = 'msg-sender';
+  sender.textContent = role === 'user' ? 'YOU' : 'HYDROMIND AI';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+
+  if (role === 'ai') {
+    bubble.innerHTML = formatAIResponse(content);
+  } else {
+    bubble.textContent = content;
+  }
+
+  const time = document.createElement('div');
+  time.className = 'msg-time';
+  time.textContent = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+
+  row.appendChild(sender);
+  row.appendChild(bubble);
+
+  if (role === 'ai' && kbRefs && kbRefs.length) {
+    const kbRow = document.createElement('div');
+    kbRow.className = 'msg-kb';
+    kbRefs.forEach(ref => {
+      const chip = document.createElement('span');
+      chip.className = 'msg-kb-chip';
+      chip.textContent = ref;
+      kbRow.appendChild(chip);
+    });
+    row.appendChild(kbRow);
+    updateKBPanel(kbRefs);
+  }
+
+  row.appendChild(time);
+  area.appendChild(row);
+  area.scrollTop = area.scrollHeight;
+}
+
+function formatAIResponse(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n(\d+)\. /g, '</p><ol start="$1"><li>')
+    .replace(/\n- /g, '</p><ul><li>')
+    .replace(/^/, '<p>')
+    .replace(/$/, '</p>');
+}
+
+/* ── Typing indicator ── */
+function showTyping() {
+  const area = document.getElementById('chat-area');
+  const row = document.createElement('div');
+  row.className = 'msg-row ai';
+  row.id = 'typing-indicator';
+  row.innerHTML = `
+    <div class="msg-sender">HYDROMIND AI</div>
+    <div class="msg-bubble" style="padding:12px 16px;">
+      <div class="typing-dots"><span></span><span></span><span></span></div>
+    </div>`;
+  area.appendChild(row);
+  area.scrollTop = area.scrollHeight;
+}
+function hideTyping() {
+  const t = document.getElementById('typing-indicator');
+  if (t) t.remove();
+}
+
+/* ── Update KB panel ── */
+function updateKBPanel(refs) {
+  const list = document.getElementById('kb-list');
+  kbHits += refs.length;
+  document.getElementById('stat-kb').textContent = kbHits;
+  refs.slice(0, 4).forEach(ref => {
+    const item = document.createElement('div');
+    item.className = 'kb-ref-item';
+    item.innerHTML = `<div class="kb-num">${ref}</div><div class="kb-title">Referenced document</div>`;
+    list.prepend(item);
+    // keep max 6 items
+    while (list.children.length > 6) list.lastChild.remove();
+  });
+}
+
+/* ── Send message ── */
+async function sendMessage() {
+  const text = input.value.trim();
+  if (!text) return;
+  if (queriesLeft <= 0) {
+    addMessage('ai', 'You have reached your free tier query limit. Please upgrade to Pro for unlimited access.', []);
+    return;
+  }
+
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('send-btn').disabled = true;
+
+  addMessage('user', text);
+  msgCount++;
+  queriesLeft--;
+  document.getElementById('stat-msgs').textContent = msgCount;
+  document.getElementById('stat-ql').textContent = queriesLeft;
+
+  history.push({ role: 'user', content: text });
+  showTyping();
+
+  const question = `[Context: ${activeCtx}] [Mode: ${activeMode}] ${text}`;
+
+  try {
+    const res = await fetch(BACKEND, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question, history: history.slice(-10) })
+    });
+
+    hideTyping();
+
+    if (!res.ok) throw new Error(`Server error ${res.status}`);
+    const data = await res.json();
+    const answer = data.answer || data.response || data.text || JSON.stringify(data);
+
+    // extract KB refs from answer text (pattern: KB-\d+)
+    const kbRefs = [...new Set((answer.match(/KB-\d+/g) || []))];
+
+    history.push({ role: 'assistant', content: answer });
+    if (history.length > 20) history = history.slice(-20);
+
+    addMessage('ai', answer, kbRefs);
+
+  } catch (err) {
+    hideTyping();
+    addMessage('ai', `⚠️ Connection error: ${err.message}. Please check your internet connection and try again.`, []);
+    history.pop();
+    queriesLeft++;
+    document.getElementById('stat-ql').textContent = queriesLeft;
+  }
+
+  document.getElementById('send-btn').disabled = false;
+  input.focus();
+}
+</script>
+<script src="js/auth.js"></script>
 </body>
 </html>

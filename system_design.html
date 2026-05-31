@@ -3,25 +3,795 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HydroMind.AI — Under Maintenance</title>
+<title>System Design — HydroMind.AI</title>
+<link rel="stylesheet" href="css/hm-design.css">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:#08090b;font-family:'Space Mono',monospace;display:flex;align-items:center;justify-content:center;min-height:100vh;color:#f1f3f6;}
-.wrap{text-align:center;padding:40px 20px;}
-.logo{font-size:13px;font-weight:700;letter-spacing:.12em;color:#f97316;margin-bottom:32px;}
-.logo span{color:#f1f3f6;}
-h1{font-size:20px;font-weight:700;letter-spacing:.06em;color:#f97316;margin-bottom:12px;}
-p{font-size:12px;color:#8891a4;line-height:1.8;max-width:360px;margin:0 auto 28px;}
-.badge{display:inline-flex;align-items:center;gap:7px;background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.25);border-radius:20px;padding:6px 16px;font-size:10px;color:#f97316;letter-spacing:.06em;}
-.dot{width:6px;height:6px;border-radius:50%;background:#f97316;}
+/* ── Layout ── */
+.design-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ── Stepper ── */
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 32px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 6px;
+  box-shadow: var(--card-shadow);
+}
+.step-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.15s;
+  user-select: none;
+}
+.step-item:hover:not(.active) { background: var(--surface); }
+.step-item.active { background: var(--accent-dim); }
+.step-item.done .step-circle { background: var(--success); border-color: var(--success); }
+.step-item.done .step-circle svg { display: block; }
+.step-item.done .step-circle span { display: none; }
+.step-circle {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border-md);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; font-family: var(--mono);
+  color: var(--text3);
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.step-item.active .step-circle { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+.step-circle svg { display: none; width: 13px; height: 13px; color: #fff; }
+.step-label { font-size: 12.5px; font-weight: 600; color: var(--text3); }
+.step-item.active .step-label { color: var(--accent); }
+.step-item.done .step-label { color: var(--success); }
+.step-connector { width: 1px; height: 24px; background: var(--border-md); flex-shrink: 0; }
+
+/* ── Form sections ── */
+.form-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--card-shadow);
+  margin-bottom: 20px;
+}
+.form-section-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 22px;
+}
+.form-section-num {
+  width: 28px; height: 28px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; font-family: var(--mono); color: #fff;
+  flex-shrink: 0;
+}
+.form-section-title { font-size: 15px; font-weight: 700; color: var(--text1); }
+.form-section-sub { font-size: 12px; color: var(--text3); margin-top: 1px; }
+
+/* Chip selector */
+.chip-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border-md);
+  background: var(--surface);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+.chip:hover { border-color: var(--accent); color: var(--accent); }
+.chip.selected { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+
+/* Form grid */
+.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.form-field { display: flex; flex-direction: column; gap: 6px; }
+.field-unit {
+  position: relative;
+}
+.field-unit .hm-input { padding-right: 52px; }
+.field-unit .unit-tag {
+  position: absolute;
+  right: 12px; top: 50%; transform: translateY(-50%);
+  font-size: 11px; font-weight: 600; color: var(--text3);
+  font-family: var(--mono);
+  pointer-events: none;
+}
+
+/* Range slider */
+.hm-range {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border-md);
+  outline: none;
+  margin-top: 4px;
+}
+.hm-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(8,145,178,0.3);
+}
+.range-labels { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--text3); margin-top: 4px; }
+
+/* Action buttons */
+.form-actions {
+  display: flex; gap: 12px; justify-content: flex-end;
+  margin-top: 8px;
+}
+
+/* ── Right summary panel ── */
+.summary-panel {
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.calc-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+.calc-card-header {
+  background: var(--accent);
+  padding: 14px 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+.calc-card-header h3 { font-size: 13px; font-weight: 700; color: #fff; }
+.calc-card-header svg { width: 16px; height: 16px; color: rgba(255,255,255,0.8); }
+.calc-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 0; }
+.calc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 8px;
+}
+.calc-row:last-child { border-bottom: none; }
+.calc-label { font-size: 12px; color: var(--text2); flex: 1; }
+.calc-val {
+  font-size: 15px; font-weight: 800;
+  color: var(--accent); font-family: var(--mono);
+  text-align: right;
+}
+.calc-val .calc-unit { font-size: 10px; font-weight: 500; color: var(--text3); margin-left: 3px; }
+
+/* BOM Table */
+.bom-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+.bom-header {
+  padding: 14px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border-md);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.bom-header h3 { font-size: 13px; font-weight: 700; color: var(--text1); }
+.bom-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.bom-table th {
+  text-align: left; padding: 8px 16px;
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text3); background: var(--surface); border-bottom: 1px solid var(--border-md);
+}
+.bom-table td { padding: 10px 16px; border-bottom: 1px solid var(--border); color: var(--text1); }
+.bom-table tr:last-child td { border-bottom: none; }
+.bom-table tr:hover td { background: var(--accent-dim); }
+.bom-model { font-family: var(--mono); font-size: 11.5px; font-weight: 700; color: var(--accent); }
+.bom-spec { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+/* ISO Notes */
+.iso-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+.iso-card-header {
+  padding: 14px 20px;
+  background: var(--success-dim);
+  border-bottom: 1px solid rgba(13,148,136,0.15);
+  display: flex; align-items: center; gap: 8px;
+}
+.iso-card-header h3 { font-size: 13px; font-weight: 700; color: var(--success); }
+.iso-card-header svg { width: 15px; height: 15px; color: var(--success); }
+.iso-list { padding: 12px 20px; display: flex; flex-direction: column; gap: 0; }
+.iso-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 12.5px;
+}
+.iso-item:last-child { border-bottom: none; }
+.iso-item-icon { width: 18px; height: 18px; background: var(--success-dim); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.iso-item-icon svg { width: 10px; height: 10px; color: var(--success); }
+.iso-item-text strong { display: block; font-size: 12px; font-weight: 600; color: var(--text1); margin-bottom: 2px; }
+.iso-item-text span { font-size: 11.5px; color: var(--text2); line-height: 1.5; }
+
+@media (max-width: 1100px) {
+  .design-layout { grid-template-columns: 1fr; }
+  .summary-panel { position: static; }
+}
+@media (max-width: 700px) {
+  .form-grid-2, .form-grid-3 { grid-template-columns: 1fr; }
+  .stepper { flex-wrap: wrap; }
+  .step-connector { display: none; }
+}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="logo">HM HYDRO<span>MIND</span>.AI</div>
-  <h1>UNDER MAINTENANCE</h1>
-  <p>Scheduled improvements in progress. Back online shortly.</p>
-  <div class="badge"><div class="dot"></div>MAINTENANCE IN PROGRESS</div>
-</div>
+
+<!-- NAV -->
+<nav class="hm-nav">
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon">HM</div>
+    <span>HydroMind<span class="logo-ai">.AI</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="ai_advisor.html">AI Advisor</a>
+    <a href="system_design.html" class="active">System Design</a>
+    <a href="crane_diagnostic.html">Crane Diagnostic</a>
+    <a href="knowledge_base.html">Knowledge Base</a>
+    <a href="pricing.html">Pricing</a>
+  </div>
+  <div class="nav-right">
+    <span class="nav-status"><span class="nav-status-dot"></span>ONLINE</span>
+    <a href="#" class="btn btn-ghost btn-sm">Log In</a>
+    <a href="pricing.html" class="btn btn-primary btn-sm">Get Pro</a>
+  </div>
+</nav>
+
+<!-- LEFT SIDEBAR -->
+<aside class="hm-sidebar-left">
+  <div class="sb-profile" id="sb-profile">
+    <div class="sb-avatar" id="sb-avatar">U</div>
+    <span class="sb-username" id="sb-username">User</span>
+    <span class="badge badge-teal" id="sb-plan">Free</span>
+  </div>
+  <div>
+    <div class="sb-section-label">Platform</div>
+    <a href="ai_advisor.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>AI Advisor
+    </a>
+    <a href="system_design.html" class="sb-nav-link active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>System Design
+    </a>
+    <a href="crane_diagnostic.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Crane Diag.
+    </a>
+    <a href="knowledge_base.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>KB Library
+    </a>
+    <a href="pricing.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Pricing
+    </a>
+  </div>
+  <div class="sb-ad mt-auto">
+    <div class="sb-ad-label">Advertise Here</div>
+    <div class="sb-ad-sub">Reach hydraulic engineers worldwide</div>
+    <a href="mailto:ads@hydromind.ai" class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">Contact Us</a>
+  </div>
+</aside>
+
+<!-- RIGHT SIDEBAR -->
+<aside class="hm-sidebar-right">
+  <div class="sb-pro-cta">
+    <h4>Unlock Full Design</h4>
+    <ul>
+      <li>BOM Excel export</li>
+      <li>Full pipe sizing</li>
+      <li>Heat exchanger calc</li>
+      <li>Save & share designs</li>
+    </ul>
+    <a href="pricing.html" class="btn btn-primary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">View Plans</a>
+  </div>
+  <div class="sb-ad mt-auto">
+    <div class="sb-ad-label">Advertise Here</div>
+    <div class="sb-ad-sub">138×220 placement</div>
+    <a href="mailto:ads@hydromind.ai" class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">Contact Us</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="hm-page">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a> › <span>System Design</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <h1>Hydraulic System Design Tool</h1>
+      <span class="badge badge-teal">AI-Powered</span>
+      <span class="badge badge-green">ISO 4413 Compliant</span>
+    </div>
+    <p>Generate a complete system specification with live calculations and preliminary BOM. Fill in your parameters and the design updates automatically.</p>
+  </div>
+
+  <!-- Stepper -->
+  <div class="stepper">
+    <div class="step-item active" id="step-1">
+      <div class="step-circle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>1</span>
+      </div>
+      <div><div class="step-label">Application</div></div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" id="step-2">
+      <div class="step-circle"><span>2</span></div>
+      <div><div class="step-label">Circuit</div></div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" id="step-3">
+      <div class="step-circle"><span>3</span></div>
+      <div><div class="step-label">Flow & Pressure</div></div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" id="step-4">
+      <div class="step-circle"><span>4</span></div>
+      <div><div class="step-label">Actuator</div></div>
+    </div>
+  </div>
+
+  <div class="design-layout">
+    <!-- LEFT: FORM -->
+    <div>
+
+      <!-- Section 1: Application Type -->
+      <div class="form-section">
+        <div class="form-section-header">
+          <div class="form-section-num">1</div>
+          <div>
+            <div class="form-section-title">Application Type</div>
+            <div class="form-section-sub">Select the primary application for this hydraulic system</div>
+          </div>
+        </div>
+        <div class="chip-grid" id="app-chips">
+          <div class="chip selected" data-val="Offshore Crane">Offshore Crane</div>
+          <div class="chip" data-val="Marine Deck Equipment">Marine Deck Equipment</div>
+          <div class="chip" data-val="Industrial Press">Industrial Press</div>
+          <div class="chip" data-val="Mobile Plant">Mobile Plant</div>
+          <div class="chip" data-val="Winch / Tensioner">Winch / Tensioner</div>
+          <div class="chip" data-val="Steering System">Steering System</div>
+          <div class="chip" data-val="HPU / Power Pack">HPU / Power Pack</div>
+          <div class="chip" data-val="Test Rig">Test Rig</div>
+        </div>
+      </div>
+
+      <!-- Section 2: Circuit Architecture -->
+      <div class="form-section">
+        <div class="form-section-header">
+          <div class="form-section-num">2</div>
+          <div>
+            <div class="form-section-title">Circuit Architecture</div>
+            <div class="form-section-sub">Select the hydraulic circuit topology</div>
+          </div>
+        </div>
+        <div class="chip-grid" id="circuit-chips">
+          <div class="chip selected" data-val="Open Circuit">Open Circuit</div>
+          <div class="chip" data-val="Closed Circuit">Closed Circuit</div>
+          <div class="chip" data-val="Load Sensing">Load Sensing</div>
+          <div class="chip" data-val="Constant Pressure">Constant Pressure</div>
+        </div>
+      </div>
+
+      <!-- Section 3: Flow & Pressure -->
+      <div class="form-section">
+        <div class="form-section-header">
+          <div class="form-section-num">3</div>
+          <div>
+            <div class="form-section-title">Flow & Pressure Parameters</div>
+            <div class="form-section-sub">Enter the operating conditions for your system</div>
+          </div>
+        </div>
+        <div class="form-grid-2" style="margin-bottom:16px;">
+          <div class="form-field">
+            <label class="hm-label">System Pressure</label>
+            <div class="field-unit">
+              <input class="hm-input" type="number" id="pressure" value="250" min="10" max="700" oninput="recalc()">
+              <span class="unit-tag">BAR</span>
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="hm-label">Relief Valve Setting</label>
+            <div class="field-unit">
+              <input class="hm-input" type="number" id="relief" value="280" min="10" max="750" oninput="recalc()">
+              <span class="unit-tag">BAR</span>
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="hm-label">Required Flow Rate</label>
+            <div class="field-unit">
+              <input class="hm-input" type="number" id="flow" value="180" min="1" max="2000" oninput="recalc()">
+              <span class="unit-tag">L/MIN</span>
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="hm-label">Duty Cycle</label>
+            <select class="hm-input hm-select" id="duty" onchange="recalc()">
+              <option value="0.5">Intermittent (50%)</option>
+              <option value="0.7">Moderate (70%)</option>
+              <option value="1.0" selected>Continuous (100%)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="hm-label">Pump Speed (RPM) — <span id="rpm-val" style="color:var(--accent);font-family:var(--mono);">1480</span> RPM</label>
+          <input class="hm-range" type="range" id="rpm" min="900" max="3000" value="1480" step="20" oninput="document.getElementById('rpm-val').textContent=this.value;recalc()">
+          <div class="range-labels"><span>900 RPM</span><span>1500 RPM</span><span>3000 RPM</span></div>
+        </div>
+      </div>
+
+      <!-- Section 4: Actuator -->
+      <div class="form-section">
+        <div class="form-section-header">
+          <div class="form-section-num">4</div>
+          <div>
+            <div class="form-section-title">Actuator Details</div>
+            <div class="form-section-sub">Describe the primary actuator or load requirement</div>
+          </div>
+        </div>
+        <div class="form-grid-3" style="margin-bottom:16px;">
+          <div class="form-field">
+            <label class="hm-label">Actuator Type</label>
+            <select class="hm-input hm-select" id="actuator-type">
+              <option>Hydraulic Motor</option>
+              <option>Hydraulic Cylinder</option>
+              <option>Rotary Actuator</option>
+              <option>Hydraulic Winch</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="hm-label">Load / Torque</label>
+            <div class="field-unit">
+              <input class="hm-input" type="number" id="load" value="45" min="1" oninput="recalc()">
+              <span class="unit-tag">kN·m</span>
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="hm-label">Efficiency Target</label>
+            <select class="hm-input hm-select">
+              <option>85% (Standard)</option>
+              <option selected>87% (Good)</option>
+              <option>90% (High)</option>
+              <option>92% (Premium)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="hm-label">Additional Notes / Special Requirements</label>
+          <textarea class="hm-input" rows="3" placeholder="e.g. ATEX zone 2, subsea rated to 300m, DNV class notation required, specific manufacturer preference…" style="resize:vertical;"></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-ghost" onclick="resetForm()">Reset</button>
+          <button class="btn btn-secondary" onclick="recalc()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+            Recalculate
+          </button>
+          <button class="btn btn-primary" onclick="exportBOM()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export BOM
+          </button>
+        </div>
+      </div>
+
+      <!-- BOM Table -->
+      <div class="bom-card">
+        <div class="bom-header">
+          <h3>Preliminary Bill of Materials</h3>
+          <span class="badge badge-teal">Auto-Generated</span>
+        </div>
+        <table class="bom-table" id="bom-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Model / Spec</th>
+              <th>Parameter</th>
+              <th>Standard</th>
+            </tr>
+          </thead>
+          <tbody id="bom-body">
+            <!-- populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ISO Notes -->
+      <div class="iso-card" style="margin-top:20px;">
+        <div class="iso-card-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <h3>ISO 4413 Engineering Notes</h3>
+        </div>
+        <div class="iso-list">
+          <div class="iso-item">
+            <div class="iso-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="iso-item-text">
+              <strong>Relief Valve Margin (§6.3.2)</strong>
+              <span>Relief valve must be set minimum 10% above max operating pressure. Verify <span id="iso-rv-check" style="font-family:var(--mono);color:var(--success);font-weight:700;">280 BAR ≥ 275 BAR ✓</span></span>
+            </div>
+          </div>
+          <div class="iso-item">
+            <div class="iso-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="iso-item-text">
+              <strong>Tank Volume Minimum (§6.7.1)</strong>
+              <span>Reservoir must be minimum 3× pump flow rate per minute. Calculated: <span id="iso-tank-note" style="font-family:var(--mono);color:var(--accent);font-weight:700;">540 L</span></span>
+            </div>
+          </div>
+          <div class="iso-item">
+            <div class="iso-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="iso-item-text">
+              <strong>Pressure Line Velocity (§6.4.3)</strong>
+              <span>Pressure lines: max 4 m/s. Return lines: max 2 m/s. Pipe IDs calculated and shown in BOM above.</span>
+            </div>
+          </div>
+          <div class="iso-item">
+            <div class="iso-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="iso-item-text">
+              <strong>Filtration (§6.6.2)</strong>
+              <span>Return line: β₁₀ ≥ 200 (10 micron absolute). High-pressure inline: β₆ ≥ 200 recommended for servo/proportional valves.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: SUMMARY PANEL -->
+    <div class="summary-panel">
+
+      <!-- Live Calculations -->
+      <div class="calc-card">
+        <div class="calc-card-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+          <h3>Live Calculations</h3>
+        </div>
+        <div class="calc-body">
+          <div class="calc-row">
+            <span class="calc-label">Pump Displacement</span>
+            <span class="calc-val" id="calc-disp">—<span class="calc-unit">cc/rev</span></span>
+          </div>
+          <div class="calc-row">
+            <span class="calc-label">Drive Power (continuous)</span>
+            <span class="calc-val" id="calc-power">—<span class="calc-unit">kW</span></span>
+          </div>
+          <div class="calc-row">
+            <span class="calc-label">Min. Tank Volume</span>
+            <span class="calc-val" id="calc-tank">—<span class="calc-unit">L</span></span>
+          </div>
+          <div class="calc-row">
+            <span class="calc-label">Pressure Line ID</span>
+            <span class="calc-val" id="calc-pipe-p">—<span class="calc-unit">mm</span></span>
+          </div>
+          <div class="calc-row">
+            <span class="calc-label">Return Line ID</span>
+            <span class="calc-val" id="calc-pipe-r">—<span class="calc-unit">mm</span></span>
+          </div>
+          <div class="calc-row">
+            <span class="calc-label">Heat Rejection Est.</span>
+            <span class="calc-val" id="calc-heat">—<span class="calc-unit">kW</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Design Parameters -->
+      <div class="calc-card">
+        <div class="calc-card-header" style="background:var(--surface);border-bottom:1px solid var(--border-md);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+          <h3 style="color:var(--text1);">Design Parameters</h3>
+        </div>
+        <div class="calc-body">
+          <div class="calc-row">
+            <span class="calc-label">Application</span>
+            <span class="calc-val" style="font-size:11px;color:var(--text1);font-family:var(--sans);" id="dp-app">Offshore Crane</span>
+          </div>
+          <div class="calc-row">
+            <span class="calc-label">Circuit</span>
+            <span class="calc-val" style="font-size:11px;color:var(--text1);font-family:var(--sans);" id="dp-circuit">Open Circuit</span>
+          </div>
+          <div class="calc-row">
+            <span class="calc-label">Max Pressure</span>
+            <span class="calc-val" id="dp-pressure">250<span class="calc-unit">BAR</span></span>
+          </div>
+          <div class="calc-row">
+            <span class="calc-label">Flow Rate</span>
+            <span class="calc-val" id="dp-flow">180<span class="calc-unit">L/min</span></span>
+          </div>
+          <div class="calc-row">
+            <span class="calc-label">Pump Speed</span>
+            <span class="calc-val" id="dp-rpm">1480<span class="calc-unit">RPM</span></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<script>
+/* ── Chip selectors ── */
+function initChips(containerId, dpId) {
+  document.querySelectorAll(`#${containerId} .chip`).forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll(`#${containerId} .chip`).forEach(c => c.classList.remove('selected'));
+      chip.classList.add('selected');
+      if (dpId) document.getElementById(dpId).textContent = chip.dataset.val;
+      recalc();
+    });
+  });
+}
+initChips('app-chips', 'dp-app');
+initChips('circuit-chips', 'dp-circuit');
+
+/* ── Calculations ── */
+function recalc() {
+  const P  = parseFloat(document.getElementById('pressure').value) || 250;
+  const Q  = parseFloat(document.getElementById('flow').value) || 180;
+  const N  = parseFloat(document.getElementById('rpm').value) || 1480;
+  const DC = parseFloat(document.getElementById('duty').value) || 1.0;
+  const RV = parseFloat(document.getElementById('relief').value) || 280;
+  const EFF = 0.87;
+
+  // Pump displacement cc/rev
+  const disp = ((Q * 1000) / N).toFixed(1);
+
+  // Drive power kW
+  const power = ((P * Q) / (600 * EFF) * DC).toFixed(1);
+
+  // Tank volume L
+  const tank = (3 * Q).toFixed(0);
+
+  // Pipe IDs
+  const Q_m3s = Q / 60000;
+  const pipeP = (Math.sqrt((4 * Q_m3s) / (Math.PI * 4)) * 1000).toFixed(1);
+  const pipeR = (Math.sqrt((4 * Q_m3s) / (Math.PI * 2)) * 1000).toFixed(1);
+
+  // Heat rejection (~30% of power lost as heat)
+  const heat = (parseFloat(power) * 0.30).toFixed(1);
+
+  // Update display
+  document.getElementById('calc-disp').innerHTML  = `${disp}<span class="calc-unit">cc/rev</span>`;
+  document.getElementById('calc-power').innerHTML = `${power}<span class="calc-unit">kW</span>`;
+  document.getElementById('calc-tank').innerHTML  = `${tank}<span class="calc-unit">L</span>`;
+  document.getElementById('calc-pipe-p').innerHTML= `${pipeP}<span class="calc-unit">mm</span>`;
+  document.getElementById('calc-pipe-r').innerHTML= `${pipeR}<span class="calc-unit">mm</span>`;
+  document.getElementById('calc-heat').innerHTML  = `${heat}<span class="calc-unit">kW</span>`;
+
+  document.getElementById('dp-pressure').innerHTML = `${P}<span class="calc-unit">BAR</span>`;
+  document.getElementById('dp-flow').innerHTML     = `${Q}<span class="calc-unit">L/min</span>`;
+  document.getElementById('dp-rpm').innerHTML      = `${N}<span class="calc-unit">RPM</span>`;
+
+  // ISO notes
+  const minRV = (P * 1.1).toFixed(0);
+  const isOk = RV >= P * 1.1;
+  document.getElementById('iso-rv-check').style.color = isOk ? 'var(--success)' : 'var(--danger)';
+  document.getElementById('iso-rv-check').textContent = `${RV} BAR ${isOk ? '≥' : '<'} ${minRV} BAR ${isOk ? '✓' : '✗'}`;
+  document.getElementById('iso-tank-note').textContent = `${tank} L`;
+
+  // BOM
+  updateBOM(disp, P, Q, tank, pipeP, pipeR, power);
+}
+
+function updateBOM(disp, P, Q, tank, pipeP, pipeR, power) {
+  const rows = [
+    {
+      item: 'Variable Displacement Pump',
+      model: `Rexroth A10V${disp > 100 ? 'O140' : 'O71'}`,
+      spec: `${disp} cc/rev · ${P} bar rated`,
+      standard: 'ISO 4413 §6.2'
+    },
+    {
+      item: 'Main Relief Valve',
+      model: 'Rexroth DBDS 20',
+      spec: `Set: ${document.getElementById('relief').value} BAR`,
+      standard: 'ISO 4413 §6.3'
+    },
+    {
+      item: 'Return Line Filter',
+      model: 'Hydac RF BN/HC',
+      spec: `β₁₀ ≥ 200 · ${Math.ceil(Q * 1.3)} L/min rated`,
+      standard: 'ISO 4413 §6.6'
+    },
+    {
+      item: 'Hydraulic Reservoir',
+      model: 'Custom SS/MS Tank',
+      spec: `${tank} L minimum · with breather`,
+      standard: 'ISO 4413 §6.7'
+    },
+    {
+      item: 'Heat Exchanger',
+      model: 'Hydac HEX Series',
+      spec: `${power} kW rejection capacity`,
+      standard: 'ISO 4413 §6.8'
+    },
+    {
+      item: 'Pressure Line Pipe',
+      model: 'Seamless ST52 / 316SS',
+      spec: `ID ≥ ${pipeP} mm · PN ${Math.ceil(P * 1.5)} bar`,
+      standard: 'ISO 4413 §6.4'
+    },
+    {
+      item: 'Return Line Pipe',
+      model: 'Seamless ST52 / ERW',
+      spec: `ID ≥ ${pipeR} mm · PN 16 bar`,
+      standard: 'ISO 4413 §6.4'
+    }
+  ];
+
+  const tbody = document.getElementById('bom-body');
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td>${r.item}</td>
+      <td>
+        <div class="bom-model">${r.model}</div>
+        <div class="bom-spec">${r.spec}</div>
+      </td>
+      <td><span class="badge badge-teal" style="font-family:var(--mono);font-size:10px;">${r.spec.split('·')[0].trim()}</span></td>
+      <td><span class="badge badge-green">${r.standard}</span></td>
+    </tr>
+  `).join('');
+}
+
+function resetForm() {
+  document.getElementById('pressure').value = 250;
+  document.getElementById('relief').value = 280;
+  document.getElementById('flow').value = 180;
+  document.getElementById('rpm').value = 1480;
+  document.getElementById('rpm-val').textContent = 1480;
+  document.getElementById('duty').value = '1.0';
+  document.querySelectorAll('#app-chips .chip').forEach((c,i) => c.classList.toggle('selected', i===0));
+  document.querySelectorAll('#circuit-chips .chip').forEach((c,i) => c.classList.toggle('selected', i===0));
+  recalc();
+}
+
+function exportBOM() {
+  alert('BOM export is a Pro feature. Upgrade to download Excel/PDF output.');
+}
+
+// Stepper click nav
+document.querySelectorAll('.step-item').forEach((item, idx) => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.step-item').forEach((s, i) => {
+      s.classList.toggle('active', i === idx);
+      s.classList.toggle('done', i < idx);
+    });
+    const sections = document.querySelectorAll('.form-section');
+    if (sections[idx]) sections[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+// Init on load
+recalc();
+</script>
+<script src="js/auth.js"></script>
 </body>
 </html>
