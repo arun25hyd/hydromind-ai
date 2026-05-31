@@ -4,7 +4,8 @@
   "private": true,
   "dependencies": {
     "@supabase/supabase-js": "^2.99.3",
-    "pdf-parse": "^2.4.5",
+    "adm-zip": "^0.5.17",
+    "pdf-parse": "^1.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",

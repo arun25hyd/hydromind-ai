@@ -5,3 +5,7 @@ build/
 .env
 .env.local
 .DS_Store
+.vercel
+
+# Upload scripts (contain local paths)
+scripts/

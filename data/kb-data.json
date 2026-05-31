@@ -1,80 +1,1411 @@
 {
-  "version": "v2.4",
-  "lastUpdated": "Mar 2026",
+  "version": "v4.0",
+  "lastUpdated": "31 May 2026",
   "maintainer": "Arun Tiwari — Crane Supervisor / Hydraulic Systems Specialist",
-  "oemBrands": ["Bosch Rexroth", "Danfoss Power Solutions", "Favelle Favco", "SeaTrax Inc.", "National Oilwell Varco", "Parker Hannifin"],
+  "stats": {
+    "totalDocuments": 155,
+    "totalPages": 29475,
+    "totalChunks": 23963,
+    "categories": {
+      "Cranes": 37,
+      "Engines": 8,
+      "Hydraulics": 20,
+      "HydroMind KB": 1,
+      "Maintenance": 8,
+      "Marine": 13,
+      "PLC": 5,
+      "Pumps": 19,
+      "Standards": 4,
+      "Valves": 40
+    },
+    "manufacturers": 33
+  },
   "entries": [
     {
-      "num": "KB01",
-      "title": "Rexroth A4VG Series 40 — Variable Displacement Axial Piston Pump",
-      "desc": "Closed-loop pump reference: charge pressure specs, servo control, variable displacement diagnostics, fault isolation for A4VG028–180 variants.",
-      "cat": "pump",
-      "brand": "Bosch Rexroth",
-      "icon": "⚙️",
-      "url": ""
+      "num": "KB001",
+      "title": "Crane Design Wire Ropes Drives Calculations Brakes Standards Manual",
+      "desc": "349 pages · 205 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 349,
+      "chunks": 205
     },
     {
-      "num": "KB02-03",
-      "title": "Rexroth A2FO / A7VO — Fixed & Variable Displacement Open Circuit Pumps",
-      "desc": "Open-circuit pump selection guide, pressure/flow sizing, shaft options, port identifications, commissioning procedure and case drain limits.",
-      "cat": "pump",
-      "brand": "Bosch Rexroth",
-      "icon": "⚙️",
-      "url": ""
+      "num": "KB002",
+      "title": "Cranes Design Practice and Maintenance",
+      "desc": "349 pages · 205 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 349,
+      "chunks": 205
     },
     {
-      "num": "KB04",
-      "title": "Danfoss Series 90 — Closed-Loop Pump Full Reference",
-      "desc": "S90 pump/motor integration: charge circuit, servo pressure, EDC/HDC control, brake valve settings and fault diagnostic flow charts.",
-      "cat": "pump",
-      "brand": "Danfoss Power Solutions",
-      "icon": "⚙️",
-      "url": ""
+      "num": "KB003",
+      "title": "Handbook of Rigging",
+      "desc": "790 pages · 774 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 790,
+      "chunks": 774
     },
     {
-      "num": "KB30",
-      "title": "Favelle Favco Field Case — Rig Al-Hail ADNOC Drilling Jan 2026",
-      "desc": "Offshore field case: main hoist HPU low charge pressure fault, root cause analysis, corrective actions and preventive maintenance recommendations.",
-      "cat": "field",
-      "brand": "Favelle Favco",
-      "icon": "🛢️",
-      "url": ""
+      "num": "KB004",
+      "title": "Hydraulic Crane Operating Manual General",
+      "desc": "324 pages · 154 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 324,
+      "chunks": 154
     },
     {
-      "num": "KB34",
-      "title": "Rexroth A10VO / A10VSO — Variable Displacement Open Circuit Pump",
-      "desc": "DR/DRG/EP control types, case drain limits (1 bar abs max), EP signal 350–1000 mA, filtration requirements, fault table and cross-reference to equivalent pumps.",
-      "cat": "pump",
-      "brand": "Bosch Rexroth",
-      "icon": "⚙️",
-      "url": ""
+      "num": "KB005",
+      "title": "IHI Deck Crane Electrical Equipment Manual",
+      "desc": "19 pages · 9 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 19,
+      "chunks": 9
     },
     {
-      "num": "KB35",
-      "title": "Danfoss Series 90 — Closed-Circuit Axial Piston Pump/Motor (75cc Frame)",
-      "desc": "EDC neutral 12 mA reference, charge pressure thresholds (min 17 bar), case drain rebuild limits per frame size, loop flushing valve fault guide.",
-      "cat": "pump",
-      "brand": "Danfoss Power Solutions",
-      "icon": "⚙️",
-      "url": ""
+      "num": "KB006",
+      "title": "Jumbo Crane Operator Manual Marine",
+      "desc": "264 pages · 245 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 264,
+      "chunks": 245
     },
     {
-      "num": "KB36",
-      "title": "SeaTrax Marine Hydraulic Crane — Model 4228",
-      "desc": "Open-circuit LS system, pilot pressure 400–600 psi critical range, CBV luffing circuit settings, LMI fault guide and maintenance intervals.",
-      "cat": "crane",
-      "brand": "SeaTrax Inc.",
-      "icon": "🏗️",
-      "url": ""
+      "num": "KB007",
+      "title": "Liebherr 165068 Operation Manual",
+      "desc": "386 pages · 250 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 386,
+      "chunks": 250
     },
     {
-      "num": "KB37",
-      "title": "NOV AHC Knuckle Boom Crane — T6047-Z-MA-001",
-      "desc": "Active heave compensation system, servo valve response requirements, accumulator N₂ pre-charge data, ISO 16/14/11 cleanliness mandate, AHC heat load guide.",
-      "cat": "crane",
-      "brand": "National Oilwell Varco",
-      "icon": "🏗️",
-      "url": ""
+      "num": "KB008",
+      "title": "Liebherr 165083 Spare Parts Catalogue",
+      "desc": "540 pages · 413 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 540,
+      "chunks": 413
+    },
+    {
+      "num": "KB009",
+      "title": "Liebherr 165083 Technical Details Manual",
+      "desc": "235 pages · 200 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 235,
+      "chunks": 200
+    },
+    {
+      "num": "KB010",
+      "title": "Liebherr CBG 30-28 Litronic Crane Training Manual Part 1",
+      "desc": "149 pages · 112 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 149,
+      "chunks": 112
+    },
+    {
+      "num": "KB011",
+      "title": "Liebherr CBG 30-28 Litronic Crane Training Manual Part 2",
+      "desc": "140 pages · 62 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 140,
+      "chunks": 62
+    },
+    {
+      "num": "KB012",
+      "title": "Liebherr CBG Crane Training Center Manual",
+      "desc": "6 pages · 3 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 6,
+      "chunks": 3
+    },
+    {
+      "num": "KB013",
+      "title": "Liebherr CBW 45-40 Technical Information",
+      "desc": "97 pages · 1 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 97,
+      "chunks": 1
+    },
+    {
+      "num": "KB014",
+      "title": "Liebherr Crane 165068 165083 Document Set",
+      "desc": "29 pages · 26 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 29,
+      "chunks": 26
+    },
+    {
+      "num": "KB015",
+      "title": "Liebherr Crane DataBook 165068",
+      "desc": "33 pages · 1 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 33,
+      "chunks": 1
+    },
+    {
+      "num": "KB016",
+      "title": "Liebherr Crane DataBook 165083 165085",
+      "desc": "74 pages · 14 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 74,
+      "chunks": 14
+    },
+    {
+      "num": "KB017",
+      "title": "Liebherr Crane Parts Catalog",
+      "desc": "615 pages · 526 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 615,
+      "chunks": 526
+    },
+    {
+      "num": "KB018",
+      "title": "Liebherr FCC CBG 25 Crane Manual",
+      "desc": "123 pages · 18 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 123,
+      "chunks": 18
+    },
+    {
+      "num": "KB019",
+      "title": "Liebherr LHM 500 Mobile Harbour Crane Operating Manual",
+      "desc": "576 pages · 311 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 576,
+      "chunks": 311
+    },
+    {
+      "num": "KB020",
+      "title": "MacGregor Crane GL4028-2S Manual",
+      "desc": "371 pages · 146 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 371,
+      "chunks": 146
+    },
+    {
+      "num": "KB021",
+      "title": "MacGregor Crane GL4524 4028-2S Manual 1",
+      "desc": "366 pages · 143 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 366,
+      "chunks": 143
+    },
+    {
+      "num": "KB022",
+      "title": "MacGregor Crane GL4524 4028-2S Manual 2",
+      "desc": "370 pages · 145 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 370,
+      "chunks": 145
+    },
+    {
+      "num": "KB023",
+      "title": "MacGregor Crane GL4526 Manual 1",
+      "desc": "494 pages · 218 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 494,
+      "chunks": 218
+    },
+    {
+      "num": "KB024",
+      "title": "MacGregor Crane GL4526 Manual 2",
+      "desc": "475 pages · 211 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 475,
+      "chunks": 211
+    },
+    {
+      "num": "KB025",
+      "title": "MacGregor Crane GL4528-2 Manual",
+      "desc": "475 pages · 248 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 475,
+      "chunks": 248
+    },
+    {
+      "num": "KB026",
+      "title": "MacGregor K3028-4HD Crane Manual",
+      "desc": "693 pages · 528 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 693,
+      "chunks": 528
+    },
+    {
+      "num": "KB027",
+      "title": "NMF Crane OVIMU Hydraulic System Manual",
+      "desc": "455 pages · 336 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 455,
+      "chunks": 336
+    },
+    {
+      "num": "KB028",
+      "title": "NMF Deck Crane Service Manual",
+      "desc": "366 pages · 224 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 366,
+      "chunks": 224
+    },
+    {
+      "num": "KB029",
+      "title": "NMF DK II 45t Crane Manual",
+      "desc": "320 pages · 192 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 320,
+      "chunks": 192
+    },
+    {
+      "num": "KB030",
+      "title": "NOV ST-80 Service Manual Rev E",
+      "desc": "80 pages · 67 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 80,
+      "chunks": 67
+    },
+    {
+      "num": "KB031",
+      "title": "NOV ST-80C Iron Roughneck Manual",
+      "desc": "233 pages · 107 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 233,
+      "chunks": 107
+    },
+    {
+      "num": "KB032",
+      "title": "NOV ST-80CL Iron Roughneck Manual",
+      "desc": "225 pages · 130 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 225,
+      "chunks": 130
+    },
+    {
+      "num": "KB033",
+      "title": "NOV ST-80R Iron Roughneck Manual",
+      "desc": "99 pages · 48 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 99,
+      "chunks": 48
+    },
+    {
+      "num": "KB034",
+      "title": "OVIMU Crane Lifeboat Davit Hydraulic Manual",
+      "desc": "80 pages · 47 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 80,
+      "chunks": 47
+    },
+    {
+      "num": "KB035",
+      "title": "SeaTrax Crane Volume 1 Manual",
+      "desc": "660 pages · 506 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 660,
+      "chunks": 506
+    },
+    {
+      "num": "KB036",
+      "title": "Ship Hydraulic Deck Crane Manual O-3",
+      "desc": "608 pages · 304 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 608,
+      "chunks": 304
+    },
+    {
+      "num": "KB037",
+      "title": "SMAG Hydraulic Grabs Technical Manual IHI",
+      "desc": "90 pages · 35 searchable chunks",
+      "cat": "cranes",
+      "brand": "",
+      "pages": 90,
+      "chunks": 35
+    },
+    {
+      "num": "KB038",
+      "title": "CAT 3500B 3500C Marine Engine Specifications",
+      "desc": "176 pages · 149 searchable chunks",
+      "cat": "engines",
+      "brand": "",
+      "pages": 176,
+      "chunks": 149
+    },
+    {
+      "num": "KB039",
+      "title": "CAT 3500B 3500C Marine Propulsion Engine Operation Maintenance Manual",
+      "desc": "148 pages · 242 searchable chunks",
+      "cat": "engines",
+      "brand": "",
+      "pages": 148,
+      "chunks": 242
+    },
+    {
+      "num": "KB040",
+      "title": "CAT 3500C Marine Engine Disassembly and Assembly",
+      "desc": "132 pages · 159 searchable chunks",
+      "cat": "engines",
+      "brand": "",
+      "pages": 132,
+      "chunks": 159
+    },
+    {
+      "num": "KB041",
+      "title": "CAT 3500C Marine Propulsion Engine Troubleshooting",
+      "desc": "216 pages · 267 searchable chunks",
+      "cat": "engines",
+      "brand": "",
+      "pages": 216,
+      "chunks": 267
+    },
+    {
+      "num": "KB042",
+      "title": "CAT 3516B Engine Manual",
+      "desc": "392 pages · 579 searchable chunks",
+      "cat": "engines",
+      "brand": "",
+      "pages": 392,
+      "chunks": 579
+    },
+    {
+      "num": "KB043",
+      "title": "CAT 3516B Troubleshooting Guide",
+      "desc": "164 pages · 207 searchable chunks",
+      "cat": "engines",
+      "brand": "",
+      "pages": 164,
+      "chunks": 207
+    },
+    {
+      "num": "KB044",
+      "title": "CAT C27 C32 Disassembly Assembly Manual",
+      "desc": "108 pages · 106 searchable chunks",
+      "cat": "engines",
+      "brand": "",
+      "pages": 108,
+      "chunks": 106
+    },
+    {
+      "num": "KB045",
+      "title": "Caterpillar C32 Marine Engine Parts Manual",
+      "desc": "533 pages · 241 searchable chunks",
+      "cat": "engines",
+      "brand": "",
+      "pages": 533,
+      "chunks": 241
+    },
+    {
+      "num": "KB046",
+      "title": "Bosch Rexroth Mobile Hydraulics Catalogue 1987760101",
+      "desc": "46 pages · 32 searchable chunks",
+      "cat": "hydraulics",
+      "brand": "",
+      "pages": 46,
+      "chunks": 32
+    },
+    {
+      "num": "KB047",
+      "title": "Bosch Rexroth Mobile Hydraulics Catalogue 1987760401",
+      "desc": "67 pages · 32 searchable chunks",
+      "cat": "hydraulics",
+      "brand": "",
+      "pages": 67,
+      "chunks": 32
+    },
+    {
+      "num": "KB048",
+      "title": "Cameron Hydraulic Data Handbook 16th Edition",
+      "desc": "231 pages · 332 searchable chunks",
+      "cat": "hydraulics",
+      "brand": "",
+      "pages": 231,
+      "chunks": 332
+    },
+    {
+      "num": "KB049",
+      "title": "Diaphragm Accumulator AMW Type 1.1 Catalogue",
+      "desc": "6 pages · 7 searchable chunks",
+      "cat": "hydraulics",
+      "brand": "",
+      "pages": 6,
+      "chunks": 7
+    },
+    {
+      "num": "KB050",
+      "title": "Hydac Cooling Systems Hydraulic Heat Exchangers Catalogue",
+      "desc": "64 pages · 54 searchable chunks",
+      "cat": "hydraulics",
+      "brand": "",
+      "pages": 64,
+      "chunks": 54
+    },
+    {
+      "num": "KB051",
+      "title": "Hydac Hydraulic Accumulator Product Catalogue",
+      "desc": "158 pages · 167 searchable chunks",
+      "cat": "hydraulics",
+      "brand": "",
+      "pages": 158,
+      "chunks": 167
+    },
+    {
+      "num": "KB052",
+      "title": "Hydraulic Motor Reference Catalogue",
+      "desc": "294 pages · 8 searchable chunks",
+      "cat": "hydraulics",
+      "brand": "",
+      "pages": 294,
+      "chunks": 8
+    },
+    {
+      "num": "KB053",
+      "title": "Hydraulic Piston Accumulators Technical Reference 6.189E",
+      "desc": "4 pages · 3 searchable chunks",
+      "cat": "hydraulics",
+      "brand": "",
+      "pages": 4,
+      "chunks": 3
+    },
+    {
+      "num": "KB054",
+      "title": "Hydraulic Trainer Volume 1 Basic Principles and Components",
+      "desc": "327 pages · 223 searchable chunks",
+      "cat": "hydraulics",
+      "brand": "",
+      "pages": 327,
+      "chunks": 223
+    },
+    {
+      "num": "KB055",
+      "title": "Hydraulic Trainer Volume 3 Planning and Design of Hydraulic Power Systems",
+      "desc": "0 pages · 420 searchable chunks",
+      "cat": "hydraulics",
+      "brand": "",
+      "pages": 0,
+      "chunks": 420
+    },
+    {
+      "num": "KB056",
+      "title": "Hydraulic Trainer Volume 4 Logic Element Technology",
+      "desc": "0 pages · 82 searchable chunks",
+      "cat": "hydraulics",
+      "brand": "",
+      "pages": 0,
+      "chunks": 82
+    },
+    {
+      "num": "KB057",
+      "title": "Hydraulic Trainer Volume 6 Hydrostatic Drive Secondary Unit Control",
+      "desc": "0 pages · 288 searchable chunks",
+      "cat": "hydraulics",
+      "brand": "",
+      "pages": 0,
+      "chunks": 288
+    },
+    {
+      "num": "KB058",
+      "title": "Industrial Hydraulic Mechanic Certification Study Guide",
+      "desc": "116 pages · 146 searchable chunks",
+      "cat": "hydraulics",
+      "brand": "",
+      "pages": 116,
+      "chunks": 146
+    },
+    {
+      "num": "KB059",
+      "title": "Industrial Hydraulics Manual Comprehensive Reference",
+      "desc": "337 pages · 284 searchable chunks",
+      "cat": "hydraulics",
+      "brand": "",
+      "pages": 337,
+      "chunks": 284
+    },
+    {
+      "num": "KB060",
+      "title": "Orbital Hydraulic Motors Technical Reference",
+      "desc": "123 pages · 118 searchable chunks",
+      "cat": "hydraulics",
+      "brand": "",
+      "pages": 123,
+      "chunks": 118
+    },
+    {
+      "num": "KB061",
+      "title": "Plate Type Heat Exchanger Manual Marine",
+      "desc": "27 pages · 19 searchable chunks",
+      "cat": "hydraulics",
+      "brand": "",
+      "pages": 27,
+      "chunks": 19
+    },
+    {
+      "num": "KB062",
+      "title": "Rexroth Hydraulics ATEX Units Potentially Explosive Atmospheres Catalogue",
+      "desc": "826 pages · 780 searchable chunks",
+      "cat": "hydraulics",
+      "brand": "",
+      "pages": 826,
+      "chunks": 780
+    },
+    {
+      "num": "KB063",
+      "title": "Rexroth Industrial Hydraulics Catalogue RE00112 Cylinders",
+      "desc": "642 pages · 560 searchable chunks",
+      "cat": "hydraulics",
+      "brand": "",
+      "pages": 642,
+      "chunks": 560
+    },
+    {
+      "num": "KB064",
+      "title": "Rexroth Industrial Hydraulics Catalogue RE00112 Systems",
+      "desc": "326 pages · 327 searchable chunks",
+      "cat": "hydraulics",
+      "brand": "",
+      "pages": 326,
+      "chunks": 327
+    },
+    {
+      "num": "KB065",
+      "title": "Study of Hydraulic Accessories Volume 4",
+      "desc": "70 pages · 76 searchable chunks",
+      "cat": "hydraulics",
+      "brand": "",
+      "pages": 70,
+      "chunks": 76
+    },
+    {
+      "num": "KB066",
+      "title": "Hallite Transeals Hydraulic Seals Catalogue 2003",
+      "desc": "260 pages · 297 searchable chunks",
+      "cat": "maintenance",
+      "brand": "",
+      "pages": 260,
+      "chunks": 297
+    },
+    {
+      "num": "KB067",
+      "title": "Hydac Hydraulic Filter Catalogue",
+      "desc": "464 pages · 489 searchable chunks",
+      "cat": "maintenance",
+      "brand": "",
+      "pages": 464,
+      "chunks": 489
+    },
+    {
+      "num": "KB068",
+      "title": "Hydraulic Contamination Control Whitepaper",
+      "desc": "10 pages · 13 searchable chunks",
+      "cat": "maintenance",
+      "brand": "",
+      "pages": 10,
+      "chunks": 13
+    },
+    {
+      "num": "KB069",
+      "title": "Hydraulic Fitting Identification Guide and Thread Charts",
+      "desc": "5 pages · 1 searchable chunks",
+      "cat": "maintenance",
+      "brand": "",
+      "pages": 5,
+      "chunks": 1
+    },
+    {
+      "num": "KB070",
+      "title": "MP Filtri Hydraulic Filter Catalogue",
+      "desc": "48 pages · 51 searchable chunks",
+      "cat": "maintenance",
+      "brand": "",
+      "pages": 48,
+      "chunks": 51
+    },
+    {
+      "num": "KB071",
+      "title": "Parker Hydraulic Hose and Fittings ParkerStore Catalogue 2012",
+      "desc": "68 pages · 54 searchable chunks",
+      "cat": "maintenance",
+      "brand": "",
+      "pages": 68,
+      "chunks": 54
+    },
+    {
+      "num": "KB072",
+      "title": "Rexroth Hydraulic Filters Catalogue",
+      "desc": "564 pages · 518 searchable chunks",
+      "cat": "maintenance",
+      "brand": "",
+      "pages": 564,
+      "chunks": 518
+    },
+    {
+      "num": "KB073",
+      "title": "Rexroth Industrial Hydraulics Catalogue RE00112 Filters",
+      "desc": "564 pages · 518 searchable chunks",
+      "cat": "maintenance",
+      "brand": "",
+      "pages": 564,
+      "chunks": 518
+    },
+    {
+      "num": "KB074",
+      "title": "Electro Hydraulic Steering Gear Manual O-1",
+      "desc": "92 pages · 4 searchable chunks",
+      "cat": "marine",
+      "brand": "",
+      "pages": 92,
+      "chunks": 4
+    },
+    {
+      "num": "KB075",
+      "title": "Framo Marine Hydraulics Manual 2005",
+      "desc": "145 pages · 123 searchable chunks",
+      "cat": "marine",
+      "brand": "",
+      "pages": 145,
+      "chunks": 123
+    },
+    {
+      "num": "KB076",
+      "title": "Hydraulic Deck Machinery Manual",
+      "desc": "240 pages · 81 searchable chunks",
+      "cat": "marine",
+      "brand": "",
+      "pages": 240,
+      "chunks": 81
+    },
+    {
+      "num": "KB077",
+      "title": "Propulsion Azimuth Thruster Technical Manual",
+      "desc": "504 pages · 406 searchable chunks",
+      "cat": "marine",
+      "brand": "",
+      "pages": 504,
+      "chunks": 406
+    },
+    {
+      "num": "KB078",
+      "title": "Pusnes Deck Machinery Hydraulic Winches Quick Guide",
+      "desc": "22 pages · 10 searchable chunks",
+      "cat": "marine",
+      "brand": "",
+      "pages": 22,
+      "chunks": 10
+    },
+    {
+      "num": "KB079",
+      "title": "Rolls Royce CPP Controllable Pitch Propeller Maintenance Manual Part 1",
+      "desc": "80 pages · 56 searchable chunks",
+      "cat": "marine",
+      "brand": "",
+      "pages": 80,
+      "chunks": 56
+    },
+    {
+      "num": "KB080",
+      "title": "Rolls Royce CPP Controllable Pitch Propeller Maintenance Manual Part 2",
+      "desc": "81 pages · 55 searchable chunks",
+      "cat": "marine",
+      "brand": "",
+      "pages": 81,
+      "chunks": 55
+    },
+    {
+      "num": "KB081",
+      "title": "Rolls Royce CPP Controllable Pitch Propeller Maintenance Manual Part 3",
+      "desc": "90 pages · 59 searchable chunks",
+      "cat": "marine",
+      "brand": "",
+      "pages": 90,
+      "chunks": 59
+    },
+    {
+      "num": "KB082",
+      "title": "Rolls Royce Steering Gear User Manual",
+      "desc": "216 pages · 93 searchable chunks",
+      "cat": "marine",
+      "brand": "",
+      "pages": 216,
+      "chunks": 93
+    },
+    {
+      "num": "KB083",
+      "title": "Schottel Bow Thruster ENVC 230 Manual",
+      "desc": "176 pages · 89 searchable chunks",
+      "cat": "marine",
+      "brand": "",
+      "pages": 176,
+      "chunks": 89
+    },
+    {
+      "num": "KB084",
+      "title": "Schottel Bow Thruster Manual 14301674",
+      "desc": "408 pages · 248 searchable chunks",
+      "cat": "marine",
+      "brand": "",
+      "pages": 408,
+      "chunks": 248
+    },
+    {
+      "num": "KB085",
+      "title": "Wartsila Bow Thruster Installation Manual",
+      "desc": "140 pages · 127 searchable chunks",
+      "cat": "marine",
+      "brand": "",
+      "pages": 140,
+      "chunks": 127
+    },
+    {
+      "num": "KB086",
+      "title": "Wartsila WLBC Marine Hydraulic System Manual",
+      "desc": "374 pages · 318 searchable chunks",
+      "cat": "marine",
+      "brand": "",
+      "pages": 374,
+      "chunks": 318
+    },
+    {
+      "num": "KB087",
+      "title": "Introduction to Industrial Automation",
+      "desc": "458 pages · 622 searchable chunks",
+      "cat": "plc",
+      "brand": "",
+      "pages": 458,
+      "chunks": 622
+    },
+    {
+      "num": "KB088",
+      "title": "PLC for Electrical Engineers",
+      "desc": "113 pages · 34 searchable chunks",
+      "cat": "plc",
+      "brand": "",
+      "pages": 113,
+      "chunks": 34
+    },
+    {
+      "num": "KB089",
+      "title": "PLC Programming for Industrial Automation",
+      "desc": "117 pages · 36 searchable chunks",
+      "cat": "plc",
+      "brand": "",
+      "pages": 117,
+      "chunks": 36
+    },
+    {
+      "num": "KB090",
+      "title": "PLC SCADA Troubleshooting Guide",
+      "desc": "54 pages · 7 searchable chunks",
+      "cat": "plc",
+      "brand": "",
+      "pages": 54,
+      "chunks": 7
+    },
+    {
+      "num": "KB091",
+      "title": "Siemens SIMATIC PLC Reference",
+      "desc": "1292 pages · 1253 searchable chunks",
+      "cat": "plc",
+      "brand": "",
+      "pages": 1292,
+      "chunks": 1253
+    },
+    {
+      "num": "KB092",
+      "title": "Danfoss OMP OMR OMH Orbital Motor Technical Manual",
+      "desc": "116 pages · 94 searchable chunks",
+      "cat": "pumps",
+      "brand": "",
+      "pages": 116,
+      "chunks": 94
+    },
+    {
+      "num": "KB093",
+      "title": "Danfoss Series 90 Variable Pumps Service Manual 2520L0818",
+      "desc": "72 pages · 79 searchable chunks",
+      "cat": "pumps",
+      "brand": "",
+      "pages": 72,
+      "chunks": 79
+    },
+    {
+      "num": "KB094",
+      "title": "Denison Vane Pumps Industrial Catalogue T6",
+      "desc": "5 pages · 4 searchable chunks",
+      "cat": "pumps",
+      "brand": "",
+      "pages": 5,
+      "chunks": 4
+    },
+    {
+      "num": "KB095",
+      "title": "HAWE Hydraulic Pumps Catalogue",
+      "desc": "73 pages · 48 searchable chunks",
+      "cat": "pumps",
+      "brand": "",
+      "pages": 73,
+      "chunks": 48
+    },
+    {
+      "num": "KB096",
+      "title": "Metaris Orbital Hydraulic Motors Technical Catalogue",
+      "desc": "88 pages · 79 searchable chunks",
+      "cat": "pumps",
+      "brand": "",
+      "pages": 88,
+      "chunks": 79
+    },
+    {
+      "num": "KB097",
+      "title": "Parker Vane Pump T7 Hydraulic Pump Manual HY29-0001",
+      "desc": "76 pages · 110 searchable chunks",
+      "cat": "pumps",
+      "brand": "",
+      "pages": 76,
+      "chunks": 110
+    },
+    {
+      "num": "KB098",
+      "title": "Rexroth A10VO Variable Displacement Piston Pump",
+      "desc": "23 pages · 14 searchable chunks",
+      "cat": "pumps",
+      "brand": "",
+      "pages": 23,
+      "chunks": 14
+    },
+    {
+      "num": "KB099",
+      "title": "Rexroth A4VG Pump Technical Data Sheet",
+      "desc": "68 pages · 70 searchable chunks",
+      "cat": "pumps",
+      "brand": "",
+      "pages": 68,
+      "chunks": 70
+    },
+    {
+      "num": "KB100",
+      "title": "Rexroth A4VG Variable Displacement Axial Piston Pump Full Manual",
+      "desc": "60 pages · 62 searchable chunks",
+      "cat": "pumps",
+      "brand": "",
+      "pages": 60,
+      "chunks": 62
+    },
+    {
+      "num": "KB101",
+      "title": "Rexroth A4VG71-180 Pump Adjustment Manual RDE92003",
+      "desc": "5 pages · 4 searchable chunks",
+      "cat": "pumps",
+      "brand": "",
+      "pages": 5,
+      "chunks": 4
+    },
+    {
+      "num": "KB102",
+      "title": "Rexroth A6VM200 Variable Displacement Motor Datasheet",
+      "desc": "21 pages · 13 searchable chunks",
+      "cat": "pumps",
+      "brand": "",
+      "pages": 21,
+      "chunks": 13
+    },
+    {
+      "num": "KB103",
+      "title": "Rexroth A6VM250 Variable Displacement Motor Datasheet",
+      "desc": "19 pages · 12 searchable chunks",
+      "cat": "pumps",
+      "brand": "",
+      "pages": 19,
+      "chunks": 12
+    },
+    {
+      "num": "KB104",
+      "title": "Rexroth Hydraulic Training Axial Piston Units",
+      "desc": "29 pages · 34 searchable chunks",
+      "cat": "pumps",
+      "brand": "",
+      "pages": 29,
+      "chunks": 34
+    },
+    {
+      "num": "KB105",
+      "title": "Rexroth Industrial Hydraulics Catalogue RE00112 Motors",
+      "desc": "438 pages · 458 searchable chunks",
+      "cat": "pumps",
+      "brand": "",
+      "pages": 438,
+      "chunks": 458
+    },
+    {
+      "num": "KB106",
+      "title": "Rexroth Power Pack Pump Catalogue",
+      "desc": "24 pages · 35 searchable chunks",
+      "cat": "pumps",
+      "brand": "",
+      "pages": 24,
+      "chunks": 35
+    },
+    {
+      "num": "KB107",
+      "title": "Sauer Danfoss Orbital Motors Catalogue",
+      "desc": "32 pages · 34 searchable chunks",
+      "cat": "pumps",
+      "brand": "",
+      "pages": 32,
+      "chunks": 34
+    },
+    {
+      "num": "KB108",
+      "title": "Sauer-Danfoss Product Overview Hydrostatic Transmissions Orbital Motors",
+      "desc": "16 pages · 20 searchable chunks",
+      "cat": "pumps",
+      "brand": "",
+      "pages": 16,
+      "chunks": 20
+    },
+    {
+      "num": "KB109",
+      "title": "Sauer-Danfoss Series 90 Axial Piston Pumps and Motors Service Manual",
+      "desc": "88 pages · 106 searchable chunks",
+      "cat": "pumps",
+      "brand": "",
+      "pages": 88,
+      "chunks": 106
+    },
+    {
+      "num": "KB110",
+      "title": "Yuken Hydraulic Pumps Catalogue",
+      "desc": "188 pages · 225 searchable chunks",
+      "cat": "pumps",
+      "brand": "",
+      "pages": 188,
+      "chunks": 225
+    },
+    {
+      "num": "KB111",
+      "title": "DNV-ST-0378 Offshore Lifting Appliances Standard 2020",
+      "desc": "168 pages · 196 searchable chunks",
+      "cat": "standards",
+      "brand": "",
+      "pages": 168,
+      "chunks": 196
+    },
+    {
+      "num": "KB112",
+      "title": "DNVGL-ST-0377 Standard for Shipboard Lifting Appliances",
+      "desc": "281 pages · 377 searchable chunks",
+      "cat": "standards",
+      "brand": "",
+      "pages": 281,
+      "chunks": 377
+    },
+    {
+      "num": "KB113",
+      "title": "ISO 1219 Hydraulic Pneumatic Symbols and Circuit Diagrams Reference",
+      "desc": "4 pages · 5 searchable chunks",
+      "cat": "standards",
+      "brand": "",
+      "pages": 4,
+      "chunks": 5
+    },
+    {
+      "num": "KB114",
+      "title": "ISO 4413 Fluid Power Safety Standard",
+      "desc": "76 pages · 150 searchable chunks",
+      "cat": "standards",
+      "brand": "",
+      "pages": 76,
+      "chunks": 150
+    },
+    {
+      "num": "KB115",
+      "title": "ATOS Hydraulic Components Catalogue",
+      "desc": "100 pages · 104 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 100,
+      "chunks": 104
+    },
+    {
+      "num": "KB116",
+      "title": "CETOP Hydraulic Valves Technical Reference",
+      "desc": "45 pages · 16 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 45,
+      "chunks": 16
+    },
+    {
+      "num": "KB117",
+      "title": "Counterbalance Valves Catalogue Hydraulic",
+      "desc": "42 pages · 27 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 42,
+      "chunks": 27
+    },
+    {
+      "num": "KB118",
+      "title": "Danfoss Joystick PVRES PVREL Reference",
+      "desc": "16 pages · 9 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 16,
+      "chunks": 9
+    },
+    {
+      "num": "KB119",
+      "title": "Danfoss PVG100 Proportional Valve System",
+      "desc": "68 pages · 59 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 68,
+      "chunks": 59
+    },
+    {
+      "num": "KB120",
+      "title": "Danfoss PVG120 Proportional Valve",
+      "desc": "44 pages · 36 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 44,
+      "chunks": 36
+    },
+    {
+      "num": "KB121",
+      "title": "Danfoss PVG32 Proportional Valve Group Technical Information",
+      "desc": "80 pages · 67 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 80,
+      "chunks": 67
+    },
+    {
+      "num": "KB122",
+      "title": "DANSON Hydraulic Jupiter 500 Driver Manual",
+      "desc": "23 pages · 20 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 23,
+      "chunks": 20
+    },
+    {
+      "num": "KB123",
+      "title": "DANSON Hydraulic Pro DCV Manual",
+      "desc": "23 pages · 21 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 23,
+      "chunks": 21
+    },
+    {
+      "num": "KB124",
+      "title": "Eaton AxisPro Servo Performance Directional Valve Manual",
+      "desc": "254 pages · 217 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 254,
+      "chunks": 217
+    },
+    {
+      "num": "KB125",
+      "title": "Eaton Industrial Valves Catalogue",
+      "desc": "203 pages · 199 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 203,
+      "chunks": 199
+    },
+    {
+      "num": "KB126",
+      "title": "Eaton Vickers Counterbalance Valve Catalogue",
+      "desc": "10 pages · 8 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 10,
+      "chunks": 8
+    },
+    {
+      "num": "KB127",
+      "title": "HAWE Hydraulic Valves Catalogue",
+      "desc": "184 pages · 130 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 184,
+      "chunks": 130
+    },
+    {
+      "num": "KB128",
+      "title": "Hydraulic Control System Manual",
+      "desc": "147 pages · 72 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 147,
+      "chunks": 72
+    },
+    {
+      "num": "KB129",
+      "title": "Hydraulic Proportional and Servo Technologies",
+      "desc": "37 pages · 10 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 37,
+      "chunks": 10
+    },
+    {
+      "num": "KB130",
+      "title": "Hydraulic Proportional Closed Loop System Design",
+      "desc": "86 pages · 28 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 86,
+      "chunks": 28
+    },
+    {
+      "num": "KB131",
+      "title": "Hydraulic Trainer Volume 2 Proportional and Servo Valve Technology",
+      "desc": "289 pages · 1 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 289,
+      "chunks": 1
+    },
+    {
+      "num": "KB132",
+      "title": "Moog Hydraulic Valve Technical Reference",
+      "desc": "76 pages · 70 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 76,
+      "chunks": 70
+    },
+    {
+      "num": "KB133",
+      "title": "Moog ServoValves Technical Overview",
+      "desc": "36 pages · 36 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 36,
+      "chunks": 36
+    },
+    {
+      "num": "KB134",
+      "title": "NACHI America Hydraulic Valves Catalogue",
+      "desc": "112 pages · 110 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 112,
+      "chunks": 110
+    },
+    {
+      "num": "KB135",
+      "title": "NACHI America Proportional Control Valves Catalogue",
+      "desc": "25 pages · 17 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 25,
+      "chunks": 17
+    },
+    {
+      "num": "KB136",
+      "title": "Parker Flow Check Pressure Control and Sandwich Valves Catalogue HY14-2533",
+      "desc": "177 pages · 142 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 177,
+      "chunks": 142
+    },
+    {
+      "num": "KB137",
+      "title": "Parker Industrial Electrohydraulic Servo Valves Catalogue",
+      "desc": "86 pages · 78 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 86,
+      "chunks": 78
+    },
+    {
+      "num": "KB138",
+      "title": "Proportional Valve Troubleshooting Guide",
+      "desc": "48 pages · 23 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 48,
+      "chunks": 23
+    },
+    {
+      "num": "KB139",
+      "title": "Rexroth 2-Way Logic Control Valve",
+      "desc": "12 pages · 12 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 12,
+      "chunks": 12
+    },
+    {
+      "num": "KB140",
+      "title": "Rexroth 4WEH 4WH Directional Valves RE24751",
+      "desc": "40 pages · 42 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 40,
+      "chunks": 42
+    },
+    {
+      "num": "KB141",
+      "title": "Rexroth 4WS2EM Servo Valve Technical Data",
+      "desc": "16 pages · 3 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 16,
+      "chunks": 3
+    },
+    {
+      "num": "KB142",
+      "title": "Rexroth Hydraulic Technical Reference",
+      "desc": "12 pages · 12 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 12,
+      "chunks": 12
+    },
+    {
+      "num": "KB143",
+      "title": "Rexroth Pressure and Flow Control System",
+      "desc": "40 pages · 37 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 40,
+      "chunks": 37
+    },
+    {
+      "num": "KB144",
+      "title": "Rexroth VT-HACD1 Axis Controller",
+      "desc": "44 pages · 33 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 44,
+      "chunks": 33
+    },
+    {
+      "num": "KB145",
+      "title": "Rexroth VT-MSPA Valve Amplifier Proportional Valves",
+      "desc": "12 pages · 12 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 12,
+      "chunks": 12
+    },
+    {
+      "num": "KB146",
+      "title": "Rexroth VT-VARP1 Amplifier Card",
+      "desc": "16 pages · 14 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 16,
+      "chunks": 14
+    },
+    {
+      "num": "KB147",
+      "title": "Rexroth VTVPCD Proportional Controller Card",
+      "desc": "108 pages · 83 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 108,
+      "chunks": 83
+    },
+    {
+      "num": "KB148",
+      "title": "Sauer Danfoss PVG32 Proportional Valve Group Technical Data",
+      "desc": "72 pages · 52 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 72,
+      "chunks": 52
+    },
+    {
+      "num": "KB149",
+      "title": "Sauer-Danfoss PVE Series 4 Electrohydraulic Actuator",
+      "desc": "52 pages · 44 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 52,
+      "chunks": 44
+    },
+    {
+      "num": "KB150",
+      "title": "Sun Hydraulics Cartridge Valves Catalogue",
+      "desc": "176 pages · 186 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 176,
+      "chunks": 186
+    },
+    {
+      "num": "KB151",
+      "title": "Valve Selection Handbook P Smith 2004",
+      "desc": "413 pages · 347 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 413,
+      "chunks": 347
+    },
+    {
+      "num": "KB152",
+      "title": "Yuken Hydraulic Valves Catalogue",
+      "desc": "454 pages · 492 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 454,
+      "chunks": 492
+    },
+    {
+      "num": "KB153",
+      "title": "Yuken Proportional Valve Amplifier Catalogue",
+      "desc": "142 pages · 165 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 142,
+      "chunks": 165
+    },
+    {
+      "num": "KB154",
+      "title": "Yuken Servo Valve Catalogue",
+      "desc": "8 pages · 12 searchable chunks",
+      "cat": "valves",
+      "brand": "",
+      "pages": 8,
+      "chunks": 12
     }
   ]
 }
