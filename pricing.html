@@ -538,38 +538,63 @@ function setRating(val) {
     b.classList.toggle('active', parseInt(b.dataset.val) <= val);
   });
 }
-function submitFeedback() {
+async function submitFeedback() {
   const name    = document.getElementById('fb-name').value.trim();
   const email   = document.getElementById('fb-email').value.trim();
   const role    = document.getElementById('fb-role').value;
   const topic   = document.getElementById('fb-topic').value;
   const message = document.getElementById('fb-message').value.trim();
+
   if (!name || !email || !message) {
     alert('Please fill in your name, email, and message before submitting.');
     return;
   }
+
   const btn = document.getElementById('fb-btn');
   btn.disabled = true;
-  btn.textContent = 'Sending…';
-  // Build mailto with pre-filled subject + body
-  const subject = encodeURIComponent(`[HydroMind Feedback] ${topic || 'General'} — ${fbRating ? fbRating + '/5 stars' : 'No rating'}`);
-  const body = encodeURIComponent(
-    `Name: ${name}\nEmail: ${email}\nRole: ${role || 'Not specified'}\nTopic: ${topic || 'General'}\nRating: ${fbRating ? fbRating + '/5' : 'Not rated'}\n\nMessage:\n${message}`
-  );
-  window.location.href = `mailto:support@hydromindai.com?subject=${subject}&body=${body}`;
-  // Show success after short delay
-  setTimeout(() => {
-    document.getElementById('fb-success').classList.add('visible');
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Sending…';
+
+  try {
+    // Call Web3Forms directly from browser (client-side required — server-side blocked on free plan)
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        access_key:  '4ac24c17-fe70-4b40-a498-238c616f3f03',
+        subject:     `[HydroMind.AI Feedback] ${topic || 'General'} — ${fbRating ? fbRating + '/5 ⭐' : 'No rating'} from ${name}`,
+        from_name:   'HydroMind Feedback Form',
+        replyto:     email,
+        name,
+        message: `Name: ${name}\nEmail: ${email}\nRole: ${role || '—'}\nTopic: ${topic || 'General'}\nRating: ${fbRating ? fbRating + '/5' : 'Not rated'}\n\nMessage:\n${message}`
+      })
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      // Success
+      document.getElementById('fb-success').classList.add('visible');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Sent!';
+      btn.style.background = 'var(--success)';
+      // Reset form
+      document.getElementById('fb-name').value = '';
+      document.getElementById('fb-email').value = '';
+      document.getElementById('fb-message').value = '';
+      document.getElementById('fb-role').selectedIndex = 0;
+      document.getElementById('fb-topic').selectedIndex = 0;
+      fbRating = 0;
+      document.querySelectorAll('.star-btn').forEach(b => b.classList.remove('active'));
+    } else {
+      throw new Error(data.error || 'Submission failed');
+    }
+
+  } catch (err) {
+    console.error('Feedback error:', err);
     btn.disabled = false;
-    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Sent!';
-    document.getElementById('fb-name').value = '';
-    document.getElementById('fb-email').value = '';
-    document.getElementById('fb-message').value = '';
-    document.getElementById('fb-role').selectedIndex = 0;
-    document.getElementById('fb-topic').selectedIndex = 0;
-    fbRating = 0;
-    document.querySelectorAll('.star-btn').forEach(b => b.classList.remove('active'));
-  }, 800);
+    btn.style.background = '';
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send Feedback';
+    alert('Sorry, there was an error sending your feedback. Please email us directly at support@hydromindai.com');
+  }
 }
 
 function toggleFAQ(el) {
