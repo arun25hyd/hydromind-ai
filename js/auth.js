@@ -404,6 +404,12 @@ function _wireAuthButtons(){
       btn.addEventListener('click',e=>{e.preventDefault();openAuthModal('login');});
     }
   });
+  // Wire "Register" buttons
+  document.querySelectorAll('a.btn-secondary, button.btn-secondary').forEach(btn=>{
+    if((btn.textContent||'').trim()==='Register'){
+      btn.addEventListener('click',e=>{e.preventDefault();openAuthModal('register');});
+    }
+  });
   // Wire "Get Pro" / "Get Pro Now" buttons
   document.querySelectorAll('a.btn-primary').forEach(btn=>{
     const t=(btn.textContent||'').trim();
