@@ -123,6 +123,71 @@
 .faq-a.open { display: block; }
 
 @media (max-width: 900px) { .plans-row { grid-template-columns: 1fr; } .plan-card.featured { transform: none; } }
+
+/* ── Feedback Form ── */
+.feedback-section { margin-bottom: 64px; }
+.feedback-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+}
+.feedback-header {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+  padding: 28px 36px;
+  display: flex; align-items: center; gap: 16px;
+}
+.feedback-header-icon {
+  width: 44px; height: 44px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.feedback-header-icon svg { width: 22px; height: 22px; color: #fff; }
+.feedback-header h2 { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+.feedback-header p { font-size: 13.5px; color: rgba(255,255,255,0.8); }
+.feedback-body { padding: 32px 36px; }
+.feedback-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+.fb-field { display: flex; flex-direction: column; gap: 6px; }
+.fb-label { font-size: 12px; font-weight: 700; color: var(--text2); letter-spacing: 0.03em; }
+.fb-input {
+  width: 100%; padding: 10px 14px;
+  background: var(--surface); border: 1.5px solid var(--border-md);
+  border-radius: var(--radius); font-size: 13.5px; color: var(--text1);
+  outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+  font-family: var(--sans);
+}
+.fb-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+.fb-input::placeholder { color: var(--text3); }
+.fb-select { appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%237a9e9e' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center; padding-right: 34px; }
+.fb-textarea { resize: vertical; min-height: 110px; }
+.rating-row { display: flex; gap: 8px; margin-top: 4px; }
+.star-btn {
+  width: 36px; height: 36px; font-size: 22px; line-height: 1;
+  background: none; border: 1.5px solid var(--border-md);
+  border-radius: var(--radius-sm); cursor: pointer;
+  transition: all 0.15s; display: flex; align-items: center; justify-content: center;
+}
+.star-btn:hover, .star-btn.active { background: var(--warning-dim); border-color: var(--warning); transform: scale(1.1); }
+.fb-submit {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap; margin-top: 24px;
+  padding-top: 20px; border-top: 1px solid var(--border);
+}
+.fb-note { font-size: 12px; color: var(--text3); display: flex; align-items: center; gap: 6px; }
+.fb-note svg { width: 13px; height: 13px; color: var(--success); flex-shrink: 0; }
+.fb-success {
+  display: none; background: var(--success-dim); border: 1px solid var(--success);
+  border-radius: var(--radius); padding: 14px 18px; margin-top: 16px;
+  font-size: 14px; font-weight: 600; color: var(--success);
+  align-items: center; gap: 10px;
+}
+.fb-success.visible { display: flex; }
+@media (max-width: 700px) { .feedback-grid { grid-template-columns: 1fr; } .feedback-body { padding: 24px 20px; } .feedback-header { padding: 22px 20px; } }
 </style>
 </head>
 <body>
@@ -160,13 +225,13 @@
     <a href="knowledge_base.html" class="sb-nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>KB Library</a>
     <a href="pricing.html" class="sb-nav-link active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Pricing</a>
   </div>
-  <div class="sb-ad mt-auto"><div class="sb-ad-label">Advertise Here</div><div class="sb-ad-sub">Reach hydraulic engineers worldwide</div><a href="mailto:ads@hydromind.ai" class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">Contact Us</a></div>
+  <div class="sb-ad mt-auto"><div class="sb-ad-label">Advertise Here</div><div class="sb-ad-sub">Reach hydraulic engineers worldwide</div><a href="mailto:support@hydromindai.com" class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">Contact Us</a></div>
 </aside>
 
 <!-- RIGHT SIDEBAR -->
 <aside class="hm-sidebar-right">
   <div class="sb-pro-cta"><h4>Pro — Most Popular</h4><ul><li>Unlimited queries</li><li>All 6 advisor modes</li><li>Full 223-doc KB</li><li>BOM export</li></ul><a href="#pro" class="btn btn-primary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">Get Pro →</a></div>
-  <div class="sb-ad mt-auto"><div class="sb-ad-label">Advertise Here</div><div class="sb-ad-sub">138×220 placement</div><a href="mailto:ads@hydromind.ai" class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">Contact Us</a></div>
+  <div class="sb-ad mt-auto"><div class="sb-ad-label">Advertise Here</div><div class="sb-ad-sub">138×220 placement</div><a href="mailto:support@hydromindai.com" class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">Contact Us</a></div>
 </aside>
 
 <!-- MAIN -->
@@ -258,7 +323,7 @@
         <li><span class="fi yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>Dedicated account manager</li>
         <li><span class="fi yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>SLA & data residency options</li>
       </ul>
-      <a href="mailto:enterprise@hydromind.ai" class="btn btn-secondary w-full" style="justify-content:center;">Get Enterprise →</a>
+      <a href="mailto:support@hydromindai.com" class="btn btn-secondary w-full" style="justify-content:center;">Get Enterprise →</a>
       <div style="text-align:center;margin-top:10px;font-size:11.5px;color:var(--text3);">Billed monthly · Annual saves 20%</div>
     </div>
 
@@ -347,6 +412,96 @@
     </div>
   </div>
 
+  <!-- FEEDBACK FORM -->
+  <div class="feedback-section">
+    <div class="feedback-card">
+
+      <div class="feedback-header">
+        <div class="feedback-header-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        </div>
+        <div>
+          <h2>Share Your Feedback</h2>
+          <p>Help us improve HydroMind.AI — your feedback goes directly to the team. Takes less than 2 minutes.</p>
+        </div>
+      </div>
+
+      <div class="feedback-body">
+        <div class="feedback-grid">
+          <div class="fb-field">
+            <label class="fb-label">Your Name</label>
+            <input class="fb-input" type="text" id="fb-name" placeholder="James McAllister">
+          </div>
+          <div class="fb-field">
+            <label class="fb-label">Email Address</label>
+            <input class="fb-input" type="email" id="fb-email" placeholder="engineer@company.com">
+          </div>
+          <div class="fb-field">
+            <label class="fb-label">Your Role</label>
+            <select class="fb-input fb-select" id="fb-role">
+              <option value="">Select your role…</option>
+              <option>Hydraulic Engineer</option>
+              <option>Crane Technician</option>
+              <option>Rig / Vessel Superintendent</option>
+              <option>Maintenance Engineer</option>
+              <option>HSE / Compliance Engineer</option>
+              <option>Engineering Manager</option>
+              <option>Student / Trainee</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="fb-field">
+            <label class="fb-label">Topic</label>
+            <select class="fb-input fb-select" id="fb-topic">
+              <option value="">Select topic…</option>
+              <option>AI Advisor Quality</option>
+              <option>System Design Tool</option>
+              <option>Crane Diagnostic</option>
+              <option>Knowledge Base</option>
+              <option>Pricing / Plans</option>
+              <option>App Performance</option>
+              <option>Feature Request</option>
+              <option>Bug Report</option>
+              <option>General Feedback</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="fb-field" style="margin-bottom:18px;">
+          <label class="fb-label">Overall Rating</label>
+          <div class="rating-row" id="star-row">
+            <button class="star-btn" data-val="1" onclick="setRating(1)">⭐</button>
+            <button class="star-btn" data-val="2" onclick="setRating(2)">⭐</button>
+            <button class="star-btn" data-val="3" onclick="setRating(3)">⭐</button>
+            <button class="star-btn" data-val="4" onclick="setRating(4)">⭐</button>
+            <button class="star-btn" data-val="5" onclick="setRating(5)">⭐</button>
+          </div>
+        </div>
+
+        <div class="fb-field">
+          <label class="fb-label">Your Message</label>
+          <textarea class="fb-input fb-textarea" id="fb-message" placeholder="Tell us what you think — what's working well, what could be better, or any feature you'd like to see…"></textarea>
+        </div>
+
+        <div class="fb-submit">
+          <div class="fb-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Your feedback is private and sent directly to support@hydromindai.com
+          </div>
+          <button class="btn btn-primary" onclick="submitFeedback()" id="fb-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Send Feedback
+          </button>
+        </div>
+
+        <div class="fb-success" id="fb-success">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Thank you! Your feedback has been sent to the HydroMind team. We'll review it and respond if needed.
+        </div>
+      </div>
+    </div>
+  </div>
+
 </main>
 
 <!-- FOOTER -->
@@ -358,7 +513,7 @@
     </div>
     <div class="footer-col"><h4>Platform</h4><a href="ai_advisor.html">AI Advisor</a><a href="system_design.html">System Design</a><a href="crane_diagnostic.html">Crane Diagnostic</a><a href="knowledge_base.html">Knowledge Base</a></div>
     <div class="footer-col"><h4>Resources</h4><a href="knowledge_base.html">KB Library</a><a href="knowledge_base.html?filter=standards">ISO Standards</a><a href="pricing.html">Pricing Plans</a></div>
-    <div class="footer-col"><h4>Company</h4><a href="pages/privacy.html">Privacy Policy</a><a href="mailto:support@hydromind.ai">Support</a><a href="mailto:enterprise@hydromind.ai">Enterprise</a></div>
+    <div class="footer-col"><h4>Company</h4><a href="pages/privacy.html">Privacy Policy</a><a href="mailto:support@hydromindai.com">Support</a><a href="mailto:support@hydromindai.com">Enterprise</a></div>
   </div>
   <div class="footer-bottom">
     <span>© 2025 HydroMind.AI</span>
@@ -373,6 +528,48 @@ function toggleBilling() {
   document.getElementById('ent-price').textContent = annual ? '239' : '299';
   document.getElementById('label-monthly').classList.toggle('active', !annual);
   document.getElementById('label-annual').classList.toggle('active', annual);
+}
+
+/* ── Feedback ── */
+let fbRating = 0;
+function setRating(val) {
+  fbRating = val;
+  document.querySelectorAll('.star-btn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.val) <= val);
+  });
+}
+function submitFeedback() {
+  const name    = document.getElementById('fb-name').value.trim();
+  const email   = document.getElementById('fb-email').value.trim();
+  const role    = document.getElementById('fb-role').value;
+  const topic   = document.getElementById('fb-topic').value;
+  const message = document.getElementById('fb-message').value.trim();
+  if (!name || !email || !message) {
+    alert('Please fill in your name, email, and message before submitting.');
+    return;
+  }
+  const btn = document.getElementById('fb-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  // Build mailto with pre-filled subject + body
+  const subject = encodeURIComponent(`[HydroMind Feedback] ${topic || 'General'} — ${fbRating ? fbRating + '/5 stars' : 'No rating'}`);
+  const body = encodeURIComponent(
+    `Name: ${name}\nEmail: ${email}\nRole: ${role || 'Not specified'}\nTopic: ${topic || 'General'}\nRating: ${fbRating ? fbRating + '/5' : 'Not rated'}\n\nMessage:\n${message}`
+  );
+  window.location.href = `mailto:support@hydromindai.com?subject=${subject}&body=${body}`;
+  // Show success after short delay
+  setTimeout(() => {
+    document.getElementById('fb-success').classList.add('visible');
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Sent!';
+    document.getElementById('fb-name').value = '';
+    document.getElementById('fb-email').value = '';
+    document.getElementById('fb-message').value = '';
+    document.getElementById('fb-role').selectedIndex = 0;
+    document.getElementById('fb-topic').selectedIndex = 0;
+    fbRating = 0;
+    document.querySelectorAll('.star-btn').forEach(b => b.classList.remove('active'));
+  }, 800);
 }
 
 function toggleFAQ(el) {
