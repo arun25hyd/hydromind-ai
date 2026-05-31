@@ -570,7 +570,7 @@ body { overflow: hidden; }
 
 <script>
 /* ── State ── */
-const BACKEND = 'https://hydromind-backend.onrender.com/api/advisor';
+const BACKEND = 'https://hydromind-backend.onrender.com/api/chat';
 let history = [];
 let msgCount = 0;
 let kbHits = 0;
@@ -729,20 +729,28 @@ async function sendMessage() {
   history.push({ role: 'user', content: text });
   showTyping();
 
-  const question = `[Context: ${activeCtx}] [Mode: ${activeMode}] ${text}`;
+  const systemPrompt = `You are HydroMind AI, an expert hydraulic engineer specialising in offshore cranes, marine hydraulic systems, and industrial hydraulics. Current context: ${activeCtx}. Mode: ${activeMode}. Provide precise, technically accurate answers referencing relevant standards (ISO 4413, DNV-ST-0378) where applicable.`;
+
+  // Build messages array for /api/chat
+  const msgs = [
+    { role: 'user', content: systemPrompt },
+    { role: 'assistant', content: 'Understood. I am HydroMind AI, ready to assist with hydraulic engineering questions.' },
+    ...history.slice(-8),
+    { role: 'user', content: text }
+  ];
 
   try {
     const res = await fetch(BACKEND, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question, history: history.slice(-10) })
+      body: JSON.stringify({ messages: msgs })
     });
 
     hideTyping();
 
     if (!res.ok) throw new Error(`Server error ${res.status}`);
     const data = await res.json();
-    const answer = data.answer || data.response || data.text || JSON.stringify(data);
+    const answer = data.content?.[0]?.text || data.answer || data.response || data.text || JSON.stringify(data);
 
     // extract KB refs from answer text (pattern: KB-\d+)
     const kbRefs = [...new Set((answer.match(/KB-\d+/g) || []))];

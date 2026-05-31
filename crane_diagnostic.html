@@ -516,7 +516,7 @@ body { overflow: hidden; }
 </main>
 
 <script>
-const BACKEND = 'https://hydromind-backend.onrender.com/api/advisor';
+const BACKEND = 'https://hydromind-backend.onrender.com/api/chat';
 let history = [];
 let activeCrane = 'Liebherr BOS 47000';
 let activeCraneType = 'Offshore Pedestal';
@@ -635,17 +635,23 @@ async function diagSend() {
   history.push({ role: 'user', content: text });
   showTyping();
   const gauges = `System: ${document.getElementById('g-sys-val').textContent} BAR | Case Drain: ${document.getElementById('g-drain-val').textContent} BAR | Temp: ${document.getElementById('g-temp-val').textContent}°C | Flow: ${document.getElementById('g-flow-val').textContent} L/min`;
-  const question = `[Crane: ${activeCrane}] [Type: ${activeCraneType}] [Live Gauges: ${gauges}] ${text}`;
+  const systemContext = `You are HydroMind AI, an expert hydraulic engineer for offshore cranes. Active crane: ${activeCrane} (${activeCraneType}). Live gauges: ${gauges}. Provide precise fault diagnosis with actionable steps, referencing ISO 4413 and DNV-ST-0378 where applicable.`;
+  const msgs = [
+    { role: 'user', content: systemContext },
+    { role: 'assistant', content: 'Understood. I am monitoring the crane hydraulic system and ready to diagnose faults.' },
+    ...history.slice(-8),
+    { role: 'user', content: text }
+  ];
   try {
     const res = await fetch(BACKEND, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question, history: history.slice(-10) })
+      body: JSON.stringify({ messages: msgs })
     });
     hideTyping();
     if (!res.ok) throw new Error(`Server ${res.status}`);
     const data = await res.json();
-    const answer = data.answer || data.response || data.text || JSON.stringify(data);
+    const answer = data.content?.[0]?.text || data.answer || data.response || data.text || JSON.stringify(data);
     const kbRefs = [...new Set((answer.match(/KB-\d+/g) || []))];
     history.push({ role: 'assistant', content: answer });
     if (history.length > 20) history = history.slice(-20);
