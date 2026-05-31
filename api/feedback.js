@@ -20,7 +20,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        access_key: '4ac24c17-fe70-4b40-a498-238c616f3f03',
+        access_key: '62d90809-7b89-45da-91bd-8fbda051eeef',
         subject: `[HydroMind.AI] New Feedback from ${name} — ${rating}/5 stars`,
         from_name: 'HydroMind Feedback',
         name: name,
