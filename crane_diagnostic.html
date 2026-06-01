@@ -168,10 +168,11 @@ body { overflow: hidden; }
 /* Chat messages */
 .diag-chat-area {
   flex: 1; min-height: 0; overflow-y: auto;
-  overscroll-behavior: contain;   /* stops scroll momentum leaking to parent */
+  overscroll-behavior: contain;
   padding: 20px 18px;
   display: flex; flex-direction: column; gap: 14px;
 }
+.diag-chat-area:focus { outline: none; }
 .msg-row { display: flex; flex-direction: column; gap: 4px; max-width: 82%; }
 .msg-row.user { align-self: flex-end; align-items: flex-end; }
 .msg-row.ai   { align-self: flex-start; align-items: flex-start; max-width: 96%; width: 96%; }
@@ -576,8 +577,8 @@ body { overflow: hidden; }
       </button>
     </div>
 
-    <!-- Chat area -->
-    <div class="diag-chat-area" id="diag-chat-area">
+    <!-- Chat area — tabindex lets focus() work so scroll events route here -->
+    <div class="diag-chat-area" id="diag-chat-area" tabindex="-1">
       <!-- Welcome state -->
       <div id="diag-welcome" style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;gap:16px;padding:32px 20px;">
         <div style="width:60px;height:60px;background:var(--accent);border-radius:16px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:22px;font-weight:800;color:#fff;box-shadow:0 8px 24px rgba(8,145,178,0.25);">⚙</div>
@@ -903,6 +904,9 @@ function addMsg(role, content, kbRefs) {
                  - area.getBoundingClientRect().top
                  + area.scrollTop;
       area.scrollTop = Math.max(0, rowTop - 8);
+      /* Give the chat area scroll-focus so trackpad/wheel works immediately
+         without the user needing to hover over it first. */
+      area.focus();
     } else {
       area.scrollTop = area.scrollHeight;
     }
@@ -926,23 +930,30 @@ async function diagSend() {
   if (!text) return;
   dinput.value = ''; dinput.style.height = 'auto';
   setUIBusy(true);
-  addMsg('user', text);
-  history.push({ role: 'user', content: text });
-  showTyping();
 
-  /* AbortController: if backend takes >35s (Render cold-start), abort and
-     unblock the UI automatically — no permanent freeze. */
-  var controller = new AbortController();
-  var reqTimer = setTimeout(function() { controller.abort(); }, 35000);
-
-  var gauges = 'System: ' + document.getElementById('g-sys-val').textContent + ' BAR | Case Drain: ' + document.getElementById('g-drain-val').textContent + ' BAR | Temp: ' + document.getElementById('g-temp-val').textContent + 'C | Flow: ' + document.getElementById('g-flow-val').textContent + ' L/min';
-  var systemContext = 'You are HydroMind AI, an expert hydraulic engineer for offshore cranes. Active crane: ' + activeCrane + ' (' + activeCraneType + '). Live gauges: ' + gauges + '. Provide precise fault diagnosis with actionable steps, referencing ISO 4413 and DNV-ST-0378 where applicable.';
-  var msgs = [
-    { role: 'user', content: systemContext },
-    { role: 'assistant', content: 'Understood. I am monitoring the crane hydraulic system and ready to diagnose faults.' }
-  ].concat(history.slice(-8)).concat([{ role: 'user', content: text }]);
+  /* Declare outside try so catch can always clearTimeout safely */
+  var controller = null;
+  var reqTimer = null;
 
   try {
+    /* Everything is inside try — any error here still reaches finally
+       so setUIBusy(false) is GUARANTEED to run, no permanent freeze. */
+    addMsg('user', text);
+    history.push({ role: 'user', content: text });
+    showTyping();
+
+    controller = new AbortController();
+    reqTimer = setTimeout(function() { controller.abort(); }, 35000);
+
+    /* Safe gauge reads — fall back to '?' if element missing */
+    function gval(id) { var el = document.getElementById(id); return el ? el.textContent : '?'; }
+    var gauges = 'System: ' + gval('g-sys-val') + ' BAR | Case Drain: ' + gval('g-drain-val') + ' BAR | Temp: ' + gval('g-temp-val') + 'C | Flow: ' + gval('g-flow-val') + ' L/min';
+    var systemContext = 'You are HydroMind AI, an expert hydraulic engineer for offshore cranes. Active crane: ' + activeCrane + ' (' + activeCraneType + '). Live gauges: ' + gauges + '. Provide precise fault diagnosis with actionable steps, referencing ISO 4413 and DNV-ST-0378 where applicable.';
+    var msgs = [
+      { role: 'user', content: systemContext },
+      { role: 'assistant', content: 'Understood. I am monitoring the crane hydraulic system and ready to diagnose faults.' }
+    ].concat(history.slice(-8)).concat([{ role: 'user', content: text }]);
+
     var res = await fetch(BACKEND, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -958,17 +969,18 @@ async function diagSend() {
     history.push({ role: 'assistant', content: answer });
     if (history.length > 20) history = history.slice(-20);
     addMsg('ai', answer, kbRefs);
+
   } catch (err) {
-    clearTimeout(reqTimer);
+    if (reqTimer) clearTimeout(reqTimer);
     hideTyping();
-    var errMsg = (err.name === 'AbortError')
+    var errMsg = (err && err.name === 'AbortError')
       ? 'Request timed out (35 s). The server may be waking up — please try again in a moment.'
-      : 'Connection error: ' + err.message + '. Check connection and retry.';
+      : 'Connection error: ' + (err ? err.message : 'unknown') + '. Check connection and retry.';
     addMsg('ai', errMsg, []);
-    history.pop();
+    if (history.length && history[history.length - 1].role === 'user') history.pop();
+
   } finally {
-    /* Re-enable UI. Do NOT steal focus here — user may be scrolling
-       the response. They can click the input when ready. */
+    /* ALWAYS runs — even if addMsg, showTyping, or gauges threw above */
     setUIBusy(false);
   }
 }
