@@ -11,7 +11,7 @@ body { overflow: hidden; }
 .hm-page { padding: 0; display: flex; flex-direction: column; height: calc(100vh - var(--nav-h)); overflow: hidden; }
 
 /* ── Three-column layout ── */
-.diag-shell { display: flex; flex: 1; overflow: hidden; height: 100%; }
+.diag-shell { display: flex; flex: 1; overflow: hidden; min-height: 0; }
 
 /* ══════════════════════════
    LEFT — Fleet Panel
@@ -165,7 +165,7 @@ body { overflow: hidden; }
 
 /* Chat messages */
 .diag-chat-area {
-  flex: 1; overflow-y: auto;
+  flex: 1; min-height: 0; overflow-y: auto;
   padding: 20px 18px;
   display: flex; flex-direction: column; gap: 14px;
 }
@@ -179,6 +179,23 @@ body { overflow: hidden; }
 .msg-bubble strong { font-weight: 700; }
 .msg-bubble ul, .msg-bubble ol { padding-left: 18px; margin-top: 6px; }
 .msg-bubble li { margin-bottom: 3px; }
+
+/* ── Markdown render styles ── */
+.msg-h2 { font-size: 13.5px; font-weight: 800; color: var(--accent); margin: 10px 0 4px; letter-spacing: 0.01em; }
+.msg-h3 { font-size: 12.5px; font-weight: 700; color: var(--text1); margin: 8px 0 3px; border-bottom: 1px solid var(--border); padding-bottom: 2px; }
+.msg-h4 { font-size: 12px; font-weight: 700; color: var(--text2); margin: 6px 0 2px; }
+.msg-hr { border: none; border-top: 1px solid var(--border-md); margin: 8px 0; }
+.msg-p { margin: 3px 0; line-height: 1.6; }
+.msg-gap { height: 5px; }
+.msg-ul { padding-left: 18px; margin: 4px 0; }
+.msg-ol { padding-left: 20px; margin: 4px 0; }
+.msg-ul li, .msg-ol li { margin-bottom: 3px; line-height: 1.5; }
+.msg-table { width: 100%; border-collapse: collapse; font-size: 11px; margin: 8px 0; border-radius: 4px; overflow: hidden; }
+.msg-table th { background: var(--surface); color: var(--accent); font-weight: 700; padding: 5px 8px; border: 1px solid var(--border-md); text-align: left; font-size: 10.5px; }
+.msg-table td { padding: 4px 8px; border: 1px solid var(--border); color: var(--text1); font-size: 11px; }
+.msg-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+.msg-code { background: var(--surface); border: 1px solid var(--border-md); border-left: 3px solid var(--accent); border-radius: 4px; padding: 10px 12px; font-family: var(--mono); font-size: 11px; overflow-x: auto; white-space: pre; margin: 6px 0; color: var(--text1); line-height: 1.5; }
+.msg-inline-code { background: var(--surface); border: 1px solid var(--border); border-radius: 3px; padding: 1px 5px; font-family: var(--mono); font-size: 11px; color: var(--accent); }
 .msg-kb { display: flex; gap: 5px; flex-wrap: wrap; padding: 0 4px; margin-top: 2px; }
 .msg-kb-chip { font-size: 10px; font-weight: 600; background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-glow); border-radius: 4px; padding: 2px 7px; font-family: var(--mono); }
 .msg-time { font-size: 10px; color: var(--text3); padding: 0 4px; }
@@ -236,6 +253,68 @@ body { overflow: hidden; }
 @media (max-width: 1100px) { .data-panel { display: none; } }
 @media (max-width: 800px)  { .fleet-panel { width: 160px; } .plc-bar { display: none; } }
 @media (max-width: 650px)  { .fleet-panel { display: none; } }
+
+/* ── How to Use Panel ── */
+.how-to-use-panel {
+  background: var(--card);
+  border-bottom: 2px solid var(--accent-glow);
+  flex-shrink: 0;
+  width: 100%;
+  z-index: 1;
+}
+.htu-header {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 16px;
+  background: none; border: none; cursor: pointer;
+  gap: 10px;
+}
+.htu-header:hover { background: var(--surface); }
+.htu-title {
+  font-size: 12px; font-weight: 700; color: var(--text2);
+  letter-spacing: 0.02em; text-align: left;
+}
+.htu-arrow {
+  font-size: 9px; color: var(--accent); flex-shrink: 0;
+  transition: transform 0.22s ease;
+}
+.htu-arrow.open { transform: rotate(90deg); }
+.htu-body {
+  display: none;
+  padding: 4px 16px 14px;
+  border-top: 1px solid var(--border);
+}
+.htu-body.open { display: block; }
+.htu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+.htu-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+.htu-item-warn {
+  border-color: var(--warning);
+  background: var(--warning-dim);
+}
+.htu-step {
+  font-family: var(--mono); font-size: 11px; font-weight: 800;
+  color: var(--accent); flex-shrink: 0; min-width: 22px;
+  margin-top: 1px;
+}
+.htu-step-warn { color: var(--warning); }
+.htu-heading {
+  font-size: 11.5px; font-weight: 700; color: var(--text1);
+  margin-bottom: 3px;
+}
+.htu-heading-warn { color: var(--warning); }
+.htu-text {
+  font-size: 11px; color: var(--text2); line-height: 1.55;
+}
 </style>
 </head>
 <body>
@@ -284,6 +363,61 @@ body { overflow: hidden; }
 
 <!-- MAIN -->
 <main class="hm-page">
+
+<!-- How to Use panel — spans full width above the diagnostic shell -->
+<div class="how-to-use-panel" id="how-to-use-panel">
+  <button class="htu-header" id="htu-toggle" onclick="toggleHowToUse()" aria-expanded="false">
+    <span class="htu-title">📋 How to Use the Crane Diagnostic Agent</span>
+    <span class="htu-arrow" id="htu-arrow">▶</span>
+  </button>
+  <div class="htu-body" id="htu-body">
+    <div class="htu-grid">
+      <div class="htu-item">
+        <div class="htu-step">01</div>
+        <div class="htu-content">
+          <div class="htu-heading">Describe the Fault Clearly</div>
+          <div class="htu-text">Enter the crane symptom or fault in plain language (e.g., boom hoist slow on raise, normal on lower). Include which motion is affected and under what load condition.</div>
+        </div>
+      </div>
+      <div class="htu-item">
+        <div class="htu-step">02</div>
+        <div class="htu-content">
+          <div class="htu-heading">Specify the Crane Model</div>
+          <div class="htu-text">Mention the manufacturer and model if known (e.g., Liebherr RL-K 600, MacGregor AHC). This helps the AI narrow the hydraulic circuit context.</div>
+        </div>
+      </div>
+      <div class="htu-item">
+        <div class="htu-step">03</div>
+        <div class="htu-content">
+          <div class="htu-heading">Include Observed Readings</div>
+          <div class="htu-text">Add any gauge readings, temperatures, noises, or abnormal behaviors you have already noted. The more data you provide, the more precise the diagnosis.</div>
+        </div>
+      </div>
+      <div class="htu-item">
+        <div class="htu-step">04</div>
+        <div class="htu-content">
+          <div class="htu-heading">Review the Diagnostic Steps</div>
+          <div class="htu-text">The AI will return a structured fault analysis. Follow the steps in sequence — each step isolates a specific part of the hydraulic circuit.</div>
+        </div>
+      </div>
+      <div class="htu-item">
+        <div class="htu-step">05</div>
+        <div class="htu-content">
+          <div class="htu-heading">Cross-Reference Your Schematic</div>
+          <div class="htu-text">Always have the physical hydraulic schematic available. The AI will reference circuit paths, test points, and ISO symbols — verify against your drawing.</div>
+        </div>
+      </div>
+      <div class="htu-item htu-item-warn">
+        <div class="htu-step htu-step-warn">⚠</div>
+        <div class="htu-content">
+          <div class="htu-heading htu-heading-warn">Safety Warning</div>
+          <div class="htu-text">Never perform live pressure testing without proper LOTO isolation. Identify accumulator dump points before opening any circuit.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="diag-shell">
 
   <!-- LEFT: FLEET PANEL -->
@@ -517,10 +651,33 @@ body { overflow: hidden; }
 </main>
 
 <script>
+function toggleHowToUse() {
+  var body = document.getElementById('htu-body');
+  var arrow = document.getElementById('htu-arrow');
+  var btn = document.getElementById('htu-toggle');
+  var isOpen = body.classList.contains('open');
+  if (isOpen) {
+    body.classList.remove('open');
+    arrow.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+  } else {
+    body.classList.add('open');
+    arrow.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+  }
+}
+
 const BACKEND = 'https://hydromind-backend.onrender.com/api/chat';
 let history = [];
 let activeCrane = 'Liebherr BOS 47000';
 let activeCraneType = 'Offshore Pedestal';
+let isLoading = false;
+
+function setUIBusy(busy) {
+  isLoading = busy;
+  document.getElementById('diag-send').disabled = busy;
+  document.querySelectorAll('.qa-btn').forEach(function(b) { b.disabled = busy; });
+}
 
 /* ── Show fault banner on load ── */
 window.addEventListener('DOMContentLoaded', () => {
@@ -570,42 +727,146 @@ dinput.addEventListener('keydown', e => {
 
 /* ── Quick actions ── */
 function quickAction(text) {
+  if (isLoading) return;
   dinput.value = text;
   dinput.dispatchEvent(new Event('input'));
   diagSend();
 }
 
+/* ══════════════════════════
+   Markdown Renderer
+══════════════════════════ */
+var FENCE = String.fromCharCode(96, 96, 96);
+
+function escHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function inlineFmt(s) {
+  return s
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/`([^`]+)`/g, '<code class="msg-inline-code">$1</code>');
+}
+
+function renderMd(text) {
+  var lines = text.split('\n');
+  var out = '';
+  var inCode = false;
+  var inTable = false;
+  var tableIsHeader = true;
+  var inUl = false;
+  var inOl = false;
+
+  function closeLists() {
+    if (inUl) { out += '</ul>'; inUl = false; }
+    if (inOl) { out += '</ol>'; inOl = false; }
+  }
+
+  for (var i = 0; i < lines.length; i++) {
+    var raw = lines[i];
+    var line = raw.trim();
+
+    /* — Code fence — */
+    if (line.indexOf(FENCE) === 0) {
+      if (!inCode) {
+        closeLists();
+        if (inTable) { out += '</tbody></table>'; inTable = false; }
+        out += '<pre class="msg-code">';
+        inCode = true;
+      } else {
+        out += '</pre>';
+        inCode = false;
+      }
+      continue;
+    }
+    if (inCode) { out += escHtml(raw) + '\n'; continue; }
+
+    /* — Table — */
+    if (line.charAt(0) === '|') {
+      if (/^\|[\s\-|:]+\|$/.test(line)) { tableIsHeader = false; continue; }
+      if (!inTable) {
+        closeLists();
+        out += '<table class="msg-table"><tbody>';
+        inTable = true;
+        tableIsHeader = true;
+      }
+      var cells = line.replace(/^\||\|$/g, '').split('|');
+      out += '<tr>';
+      for (var c = 0; c < cells.length; c++) {
+        var ctag = tableIsHeader ? 'th' : 'td';
+        out += '<' + ctag + '>' + inlineFmt(cells[c].trim()) + '</' + ctag + '>';
+      }
+      out += '</tr>';
+      tableIsHeader = false;
+      continue;
+    }
+    if (inTable) { out += '</tbody></table>'; inTable = false; tableIsHeader = true; }
+
+    /* — Headings — */
+    if (line.indexOf('#### ') === 0) { closeLists(); out += '<h4 class="msg-h4">' + inlineFmt(line.slice(5)) + '</h4>'; continue; }
+    if (line.indexOf('### ') === 0)  { closeLists(); out += '<h3 class="msg-h3">' + inlineFmt(line.slice(4)) + '</h3>'; continue; }
+    if (line.indexOf('## ') === 0)   { closeLists(); out += '<h2 class="msg-h2">' + inlineFmt(line.slice(3)) + '</h2>'; continue; }
+    if (line.indexOf('# ') === 0)    { closeLists(); out += '<h2 class="msg-h2">' + inlineFmt(line.slice(2)) + '</h2>'; continue; }
+
+    /* — Horizontal rule — */
+    if (line === '---' || line === '***' || line === '___') { closeLists(); out += '<hr class="msg-hr">'; continue; }
+
+    /* — Unordered list (-, *, •) — */
+    if (/^[-*•]\s/.test(line)) {
+      if (!inUl) { if (inOl) { out += '</ol>'; inOl = false; } out += '<ul class="msg-ul">'; inUl = true; }
+      out += '<li>' + inlineFmt(line.replace(/^[-*•]\s+/, '')) + '</li>';
+      continue;
+    }
+
+    /* — Ordered list — */
+    if (/^\d+[.)]\s/.test(line)) {
+      if (!inOl) { if (inUl) { out += '</ul>'; inUl = false; } out += '<ol class="msg-ol">'; inOl = true; }
+      out += '<li>' + inlineFmt(line.replace(/^\d+[.)]\s+/, '')) + '</li>';
+      continue;
+    }
+
+    /* — Blank line — */
+    if (line === '') { closeLists(); out += '<div class="msg-gap"></div>'; continue; }
+
+    /* — Normal paragraph — */
+    closeLists();
+    out += '<p class="msg-p">' + inlineFmt(line) + '</p>';
+  }
+
+  closeLists();
+  if (inTable) out += '</tbody></table>';
+  if (inCode)  out += '</pre>';
+  return out;
+}
+
 /* ── Add message ── */
 function addMsg(role, content, kbRefs) {
-  const welcome = document.getElementById('diag-welcome');
+  var welcome = document.getElementById('diag-welcome');
   if (welcome) welcome.remove();
-  const area = document.getElementById('diag-chat-area');
-  const row = document.createElement('div');
-  row.className = `msg-row ${role}`;
-  const sender = document.createElement('div');
+  var area = document.getElementById('diag-chat-area');
+  var row = document.createElement('div');
+  row.className = 'msg-row ' + role;
+  var sender = document.createElement('div');
   sender.className = 'msg-sender';
   sender.textContent = role === 'user' ? 'YOU' : 'HYDROMIND AI';
-  const bubble = document.createElement('div');
+  var bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
   if (role === 'ai') {
-    bubble.innerHTML = content
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\n\n/g, '</p><p>')
-      .replace(/\n- /g, '</p><ul><li>')
-      .replace(/^/, '<p>').replace(/$/, '</p>');
+    bubble.innerHTML = renderMd(content);
   } else {
     bubble.textContent = content;
   }
-  const time = document.createElement('div');
+  var time = document.createElement('div');
   time.className = 'msg-time';
-  time.textContent = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  time.textContent = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
   row.appendChild(sender);
   row.appendChild(bubble);
   if (role === 'ai' && kbRefs && kbRefs.length) {
-    const kbRow = document.createElement('div');
+    var kbRow = document.createElement('div');
     kbRow.className = 'msg-kb';
-    kbRefs.forEach(r => {
-      const chip = document.createElement('span');
+    kbRefs.forEach(function(r) {
+      var chip = document.createElement('span');
       chip.className = 'msg-kb-chip';
       chip.textContent = r;
       kbRow.appendChild(chip);
@@ -614,35 +875,35 @@ function addMsg(role, content, kbRefs) {
   }
   row.appendChild(time);
   area.appendChild(row);
-  area.scrollTop = area.scrollHeight;
+  setTimeout(function() { area.scrollTop = area.scrollHeight; }, 0);
 }
 
 function showTyping() {
   const area = document.getElementById('diag-chat-area');
   const row = document.createElement('div');
   row.className = 'msg-row ai'; row.id = 'typing-ind';
-  row.innerHTML = `<div class="msg-sender">HYDROMIND AI</div><div class="msg-bubble" style="padding:12px 16px;"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
-  area.appendChild(row); area.scrollTop = area.scrollHeight;
+  row.innerHTML = '<div class="msg-sender">HYDROMIND AI</div><div class="msg-bubble" style="padding:12px 16px;"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
+  area.appendChild(row);
+  setTimeout(function() { area.scrollTop = area.scrollHeight; }, 0);
 }
 function hideTyping() { const t = document.getElementById('typing-ind'); if (t) t.remove(); }
 
 /* ── Send ── */
 async function diagSend() {
+  if (isLoading) return;
   const text = dinput.value.trim();
   if (!text) return;
   dinput.value = ''; dinput.style.height = 'auto';
-  document.getElementById('diag-send').disabled = true;
+  setUIBusy(true);
   addMsg('user', text);
   history.push({ role: 'user', content: text });
   showTyping();
-  const gauges = `System: ${document.getElementById('g-sys-val').textContent} BAR | Case Drain: ${document.getElementById('g-drain-val').textContent} BAR | Temp: ${document.getElementById('g-temp-val').textContent}°C | Flow: ${document.getElementById('g-flow-val').textContent} L/min`;
-  const systemContext = `You are HydroMind AI, an expert hydraulic engineer for offshore cranes. Active crane: ${activeCrane} (${activeCraneType}). Live gauges: ${gauges}. Provide precise fault diagnosis with actionable steps, referencing ISO 4413 and DNV-ST-0378 where applicable.`;
+  const gauges = 'System: ' + document.getElementById('g-sys-val').textContent + ' BAR | Case Drain: ' + document.getElementById('g-drain-val').textContent + ' BAR | Temp: ' + document.getElementById('g-temp-val').textContent + 'C | Flow: ' + document.getElementById('g-flow-val').textContent + ' L/min';
+  const systemContext = 'You are HydroMind AI, an expert hydraulic engineer for offshore cranes. Active crane: ' + activeCrane + ' (' + activeCraneType + '). Live gauges: ' + gauges + '. Provide precise fault diagnosis with actionable steps, referencing ISO 4413 and DNV-ST-0378 where applicable.';
   const msgs = [
     { role: 'user', content: systemContext },
-    { role: 'assistant', content: 'Understood. I am monitoring the crane hydraulic system and ready to diagnose faults.' },
-    ...history.slice(-8),
-    { role: 'user', content: text }
-  ];
+    { role: 'assistant', content: 'Understood. I am monitoring the crane hydraulic system and ready to diagnose faults.' }
+  ].concat(history.slice(-8)).concat([{ role: 'user', content: text }]);
   try {
     const res = await fetch(BACKEND, {
       method: 'POST',
@@ -650,20 +911,21 @@ async function diagSend() {
       body: JSON.stringify({ messages: msgs })
     });
     hideTyping();
-    if (!res.ok) throw new Error(`Server ${res.status}`);
+    if (!res.ok) throw new Error('Server ' + res.status);
     const data = await res.json();
-    const answer = data.content?.[0]?.text || data.answer || data.response || data.text || JSON.stringify(data);
+    const answer = (data.content && data.content[0] && data.content[0].text) || data.answer || data.response || data.text || JSON.stringify(data);
     const kbRefs = [...new Set((answer.match(/KB-\d+/g) || []))];
     history.push({ role: 'assistant', content: answer });
     if (history.length > 20) history = history.slice(-20);
     addMsg('ai', answer, kbRefs);
   } catch (err) {
     hideTyping();
-    addMsg('ai', `⚠️ Connection error: ${err.message}. Check connection and retry.`, []);
+    addMsg('ai', 'Connection error: ' + err.message + '. Check connection and retry.', []);
     history.pop();
+  } finally {
+    setUIBusy(false);
+    dinput.focus();
   }
-  document.getElementById('diag-send').disabled = false;
-  dinput.focus();
 }
 </script>
 <script src="js/auth.js"></script>
