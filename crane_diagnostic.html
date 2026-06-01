@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Crane Diagnostic — HydroMind.AI</title>
+<!-- build: v3 2026-06-01 -->
 <link rel="stylesheet" href="css/hm-design.css">
 <style>
 /* ── Full-height shell ── */
@@ -161,6 +162,7 @@ body { overflow: hidden; }
   flex-shrink: 0;
 }
 .qa-btn:hover { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.qa-btn:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
 .qa-btn svg { width: 13px; height: 13px; }
 
 /* Chat messages */
@@ -269,6 +271,8 @@ body { overflow: hidden; }
   gap: 10px;
 }
 .htu-header:hover { background: var(--surface); }
+.htu-header.htu-pulse { animation: htu-glow 1.8s ease-in-out 2; }
+@keyframes htu-glow { 0%,100%{background:transparent} 50%{background:var(--accent-dim);} }
 .htu-title {
   font-size: 12px; font-weight: 700; color: var(--text2);
   letter-spacing: 0.02em; text-align: left;
@@ -679,12 +683,16 @@ function setUIBusy(busy) {
   document.querySelectorAll('.qa-btn').forEach(function(b) { b.disabled = busy; });
 }
 
-/* ── Show fault banner on load ── */
-window.addEventListener('DOMContentLoaded', () => {
-  const banner = document.getElementById('fault-banner');
+/* ── Init on load ── */
+window.addEventListener('DOMContentLoaded', function() {
+  var banner = document.getElementById('fault-banner');
   banner.classList.add('visible');
   document.getElementById('fault-ts').textContent = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
   buildSparkline();
+  /* Pulse the How-To-Use header so users notice it */
+  var htuBtn = document.getElementById('htu-toggle');
+  htuBtn.classList.add('htu-pulse');
+  htuBtn.addEventListener('animationend', function() { htuBtn.classList.remove('htu-pulse'); }, {once: true});
 });
 
 /* ── Sparkline data ── */
