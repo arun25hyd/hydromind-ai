@@ -3,14 +3,15 @@
   "outputDirectory": ".",
   "framework": null,
   "rewrites": [
-    {
-      "source": "/api/chat",
-      "destination": "/api/chat.js"
-    },
-    {
-      "source": "/api/feedback",
-      "destination": "/api/feedback.js"
-    }
+    { "source": "/api/chat", "destination": "/api/chat.js" },
+    { "source": "/api/feedback", "destination": "/api/feedback.js" },
+    { "source": "/", "destination": "/maintenance.html" },
+    { "source": "/index.html", "destination": "/maintenance.html" },
+    { "source": "/ai_advisor.html", "destination": "/maintenance.html" },
+    { "source": "/crane_diagnostic.html", "destination": "/maintenance.html" },
+    { "source": "/system_design.html", "destination": "/maintenance.html" },
+    { "source": "/knowledge_base.html", "destination": "/maintenance.html" },
+    { "source": "/pricing.html", "destination": "/maintenance.html" }
   ],
   "redirects": [
     {
