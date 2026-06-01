@@ -168,6 +168,7 @@ body { overflow: hidden; }
 /* Chat messages */
 .diag-chat-area {
   flex: 1; min-height: 0; overflow-y: auto;
+  overscroll-behavior: contain;   /* stops scroll momentum leaking to parent */
   padding: 20px 18px;
   display: flex; flex-direction: column; gap: 14px;
 }
@@ -688,10 +689,16 @@ window.addEventListener('DOMContentLoaded', function() {
   banner.classList.add('visible');
   document.getElementById('fault-ts').textContent = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
   buildSparkline();
+
   /* Pulse the How-To-Use header so users notice it */
   var htuBtn = document.getElementById('htu-toggle');
   htuBtn.classList.add('htu-pulse');
   htuBtn.addEventListener('animationend', function() { htuBtn.classList.remove('htu-pulse'); }, {once: true});
+
+  /* Hard-reset scrollTop on every overflow:hidden container.
+     Prevents any stale browser scroll state from hiding the PLC bar / nav. */
+  var lockedEls = document.querySelectorAll('.hm-page, .diag-shell, .diag-chat-col');
+  lockedEls.forEach(function(el) { el.scrollTop = 0; });
 });
 
 /* ── Sparkline data ── */
@@ -882,12 +889,20 @@ function addMsg(role, content, kbRefs) {
   }
   row.appendChild(time);
   area.appendChild(row);
-  /* Scroll: user msgs → go to bottom so user sees what they sent.
-     AI msgs → scroll new message TOP into view so user reads from start,
-     not stuck at the end of a long response. */
+  /* ── Safe scroll: ONLY modify area.scrollTop, never scrollIntoView().
+     scrollIntoView() also scrolls every overflow:hidden ancestor
+     (diag-chat-col, diag-shell, hm-page) which shifts the flex layout
+     off-screen — causing the PLC bar / Quick Actions to "vanish".
+     Direct scrollTop calculation avoids all of that. ── */
   setTimeout(function() {
     if (role === 'ai') {
-      row.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      /* Scroll chat area so the TOP of the new AI message is visible.
+         Formula: viewport-relative position of row minus viewport-relative
+         position of the chat area top, plus current scrollTop offset. */
+      var rowTop = row.getBoundingClientRect().top
+                 - area.getBoundingClientRect().top
+                 + area.scrollTop;
+      area.scrollTop = Math.max(0, rowTop - 8);
     } else {
       area.scrollTop = area.scrollHeight;
     }
