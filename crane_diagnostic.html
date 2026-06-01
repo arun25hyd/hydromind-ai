@@ -173,11 +173,11 @@ body { overflow: hidden; }
 }
 .msg-row { display: flex; flex-direction: column; gap: 4px; max-width: 82%; }
 .msg-row.user { align-self: flex-end; align-items: flex-end; }
-.msg-row.ai   { align-self: flex-start; align-items: flex-start; }
+.msg-row.ai   { align-self: flex-start; align-items: flex-start; max-width: 96%; width: 96%; }
 .msg-sender { font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text3); padding: 0 4px; }
 .msg-bubble { padding: 10px 14px; border-radius: 14px; font-size: 13px; line-height: 1.6; word-break: break-word; }
 .msg-row.user .msg-bubble { background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
-.msg-row.ai   .msg-bubble { background: var(--card); color: var(--text1); border: 1px solid var(--border-md); border-left: 3px solid var(--accent); border-bottom-left-radius: 4px; box-shadow: var(--card-shadow); }
+.msg-row.ai   .msg-bubble { background: var(--card); color: var(--text1); border: 1px solid var(--border-md); border-left: 3px solid var(--accent); border-bottom-left-radius: 4px; box-shadow: var(--card-shadow); overflow-x: auto; }
 .msg-bubble strong { font-weight: 700; }
 .msg-bubble ul, .msg-bubble ol { padding-left: 18px; margin-top: 6px; }
 .msg-bubble li { margin-bottom: 3px; }
@@ -262,7 +262,6 @@ body { overflow: hidden; }
   border-bottom: 2px solid var(--accent-glow);
   flex-shrink: 0;
   width: 100%;
-  z-index: 1;
 }
 .htu-header {
   width: 100%; display: flex; align-items: center; justify-content: space-between;
@@ -883,56 +882,79 @@ function addMsg(role, content, kbRefs) {
   }
   row.appendChild(time);
   area.appendChild(row);
-  setTimeout(function() { area.scrollTop = area.scrollHeight; }, 0);
+  /* Scroll: user msgs → go to bottom so user sees what they sent.
+     AI msgs → scroll new message TOP into view so user reads from start,
+     not stuck at the end of a long response. */
+  setTimeout(function() {
+    if (role === 'ai') {
+      row.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      area.scrollTop = area.scrollHeight;
+    }
+  }, 60);
 }
 
 function showTyping() {
-  const area = document.getElementById('diag-chat-area');
-  const row = document.createElement('div');
+  var area = document.getElementById('diag-chat-area');
+  var row = document.createElement('div');
   row.className = 'msg-row ai'; row.id = 'typing-ind';
   row.innerHTML = '<div class="msg-sender">HYDROMIND AI</div><div class="msg-bubble" style="padding:12px 16px;"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
   area.appendChild(row);
   setTimeout(function() { area.scrollTop = area.scrollHeight; }, 0);
 }
-function hideTyping() { const t = document.getElementById('typing-ind'); if (t) t.remove(); }
+function hideTyping() { var t = document.getElementById('typing-ind'); if (t) t.remove(); }
 
 /* ── Send ── */
 async function diagSend() {
   if (isLoading) return;
-  const text = dinput.value.trim();
+  var text = dinput.value.trim();
   if (!text) return;
   dinput.value = ''; dinput.style.height = 'auto';
   setUIBusy(true);
   addMsg('user', text);
   history.push({ role: 'user', content: text });
   showTyping();
-  const gauges = 'System: ' + document.getElementById('g-sys-val').textContent + ' BAR | Case Drain: ' + document.getElementById('g-drain-val').textContent + ' BAR | Temp: ' + document.getElementById('g-temp-val').textContent + 'C | Flow: ' + document.getElementById('g-flow-val').textContent + ' L/min';
-  const systemContext = 'You are HydroMind AI, an expert hydraulic engineer for offshore cranes. Active crane: ' + activeCrane + ' (' + activeCraneType + '). Live gauges: ' + gauges + '. Provide precise fault diagnosis with actionable steps, referencing ISO 4413 and DNV-ST-0378 where applicable.';
-  const msgs = [
+
+  /* AbortController: if backend takes >35s (Render cold-start), abort and
+     unblock the UI automatically — no permanent freeze. */
+  var controller = new AbortController();
+  var reqTimer = setTimeout(function() { controller.abort(); }, 35000);
+
+  var gauges = 'System: ' + document.getElementById('g-sys-val').textContent + ' BAR | Case Drain: ' + document.getElementById('g-drain-val').textContent + ' BAR | Temp: ' + document.getElementById('g-temp-val').textContent + 'C | Flow: ' + document.getElementById('g-flow-val').textContent + ' L/min';
+  var systemContext = 'You are HydroMind AI, an expert hydraulic engineer for offshore cranes. Active crane: ' + activeCrane + ' (' + activeCraneType + '). Live gauges: ' + gauges + '. Provide precise fault diagnosis with actionable steps, referencing ISO 4413 and DNV-ST-0378 where applicable.';
+  var msgs = [
     { role: 'user', content: systemContext },
     { role: 'assistant', content: 'Understood. I am monitoring the crane hydraulic system and ready to diagnose faults.' }
   ].concat(history.slice(-8)).concat([{ role: 'user', content: text }]);
+
   try {
-    const res = await fetch(BACKEND, {
+    var res = await fetch(BACKEND, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: msgs })
+      body: JSON.stringify({ messages: msgs }),
+      signal: controller.signal
     });
+    clearTimeout(reqTimer);
     hideTyping();
     if (!res.ok) throw new Error('Server ' + res.status);
-    const data = await res.json();
-    const answer = (data.content && data.content[0] && data.content[0].text) || data.answer || data.response || data.text || JSON.stringify(data);
-    const kbRefs = [...new Set((answer.match(/KB-\d+/g) || []))];
+    var data = await res.json();
+    var answer = (data.content && data.content[0] && data.content[0].text) || data.answer || data.response || data.text || JSON.stringify(data);
+    var kbRefs = [...new Set((answer.match(/KB-\d+/g) || []))];
     history.push({ role: 'assistant', content: answer });
     if (history.length > 20) history = history.slice(-20);
     addMsg('ai', answer, kbRefs);
   } catch (err) {
+    clearTimeout(reqTimer);
     hideTyping();
-    addMsg('ai', 'Connection error: ' + err.message + '. Check connection and retry.', []);
+    var errMsg = (err.name === 'AbortError')
+      ? 'Request timed out (35 s). The server may be waking up — please try again in a moment.'
+      : 'Connection error: ' + err.message + '. Check connection and retry.';
+    addMsg('ai', errMsg, []);
     history.pop();
   } finally {
+    /* Re-enable UI. Do NOT steal focus here — user may be scrolling
+       the response. They can click the input when ready. */
     setUIBusy(false);
-    dinput.focus();
   }
 }
 </script>
