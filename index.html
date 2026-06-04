@@ -3,1658 +3,1019 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HydroMind.AI — Hydraulic Intelligence for Industry, Marine &amp; Offshore</title>
-<meta name="description" content="AI-powered fault diagnosis, system design, and crane diagnostics for hydraulic engineers across industry, marine, and offshore.">
+<title>HydroMind.AI — Hydraulic Intelligence for Marine &amp; Offshore</title>
+<meta name="description" content="AI-powered hydraulic fault diagnosis, crane diagnostics, system design and knowledge base for marine and offshore engineers.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="css/hm-design.css">
 <style>
-/* ── Hero ── */
-.hero {
-  padding: 72px 0 64px;
+/* ══ INDEX PAGE STYLES ══ */
+
+/* Hero */
+.hero-section {
+  padding: 60px 0 48px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 60px;
+  gap: 56px;
   align-items: center;
 }
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--accent-dim);
-  border: 1px solid var(--accent-glow);
-  border-radius: 20px;
-  padding: 5px 14px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--accent);
-  margin-bottom: 24px;
-  letter-spacing: 0.04em;
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent-dim); border: 1px solid var(--accent-glow);
+  border-radius: 20px; padding: 5px 14px;
+  font-size: 11.5px; font-weight: 700; color: var(--accent-bright);
+  margin-bottom: 22px; letter-spacing: .06em; text-transform: uppercase;
 }
-.hero-badge .dot { width: 6px; height: 6px; background: var(--accent-bright); border-radius: 50%; }
-.hero h1 { margin-bottom: 20px; }
-.hero .hero-sub {
-  font-size: 17px;
-  color: var(--text2);
-  line-height: 1.65;
-  margin-bottom: 36px;
-  max-width: 480px;
+.hero-eyebrow .pulse { width: 6px; height: 6px; background: var(--accent-bright); border-radius: 50%; animation: pulse-dot 2s ease-in-out infinite; }
+.hero-h1 {
+  font-family: var(--syne); font-size: clamp(30px,4vw,48px);
+  font-weight: 800; color: var(--text1); line-height: 1.1;
+  letter-spacing: -.025em; margin-bottom: 18px;
 }
-.hero-ctas { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-.hero-note {
-  margin-top: 20px;
-  font-size: 12px;
-  color: var(--text3);
-  display: flex; align-items: center; gap: 8px;
-}
-.hero-note::before { content: ""; width: 20px; height: 1px; background: var(--text3); }
+.hero-h1 .hl { color: var(--accent-bright); }
+.hero-sub { font-size: 15px; color: var(--text2); line-height: 1.7; max-width: 440px; margin-bottom: 30px; }
+.hero-btns { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.hero-note { margin-top: 18px; font-size: 11.5px; color: var(--text3); display: flex; align-items: center; gap: 8px; }
+.hero-note::before { content: ""; width: 18px; height: 1px; background: var(--text3); }
 
-/* Hero chat preview */
-.hero-visual {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+/* Hero chat card */
+.hero-visual { display: flex; align-items: center; justify-content: center; }
 .hero-chat {
-  width: 100%;
-  max-width: 460px;
-  background: var(--card);
-  border: 1px solid var(--border-md);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--card-shadow);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  width: 100%; max-width: 420px;
+  background: var(--card); border: 1px solid var(--border-md);
+  border-radius: 16px; overflow: hidden; box-shadow: var(--card-shadow), 0 0 32px rgba(6,182,212,.08);
 }
-.chat-topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  background: var(--surface);
+.hc-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 15px; background: var(--surface);
   border-bottom: 1px solid var(--border-md);
-  flex-shrink: 0;
 }
-.chat-topbar-left { display: flex; align-items: center; gap: 10px; }
-.chat-topbar-icon {
-  width: 28px; height: 28px;
-  background: var(--accent);
-  border-radius: 7px;
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: 11px; font-weight: 700; font-family: var(--mono);
+.hc-bar-left { display: flex; align-items: center; gap: 9px; }
+.hc-icon { width: 28px; height: 28px; background: linear-gradient(135deg,var(--accent),var(--accent-deep)); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 10px; font-weight: 700; color: #fff; }
+.hc-title { font-size: 12.5px; font-weight: 700; color: var(--text1); }
+.hc-sub { font-size: 10px; color: var(--text3); margin-top: 1px; }
+.hc-live { display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 600; color: var(--success); }
+.hc-live .d { width: 5px; height: 5px; background: var(--success); border-radius: 50%; animation: pulse-dot 2s infinite; }
+.hc-modes { display: flex; gap: 4px; padding: 8px 12px; background: var(--bg); border-bottom: 1px solid var(--border); overflow-x: auto; }
+.hc-chip { padding: 3px 10px; border-radius: 20px; font-size: 10.5px; font-weight: 600; color: var(--text3); background: transparent; border: 1px solid transparent; cursor: pointer; white-space: nowrap; transition: all .15s; }
+.hc-chip.on { background: var(--accent-dim); color: var(--accent-bright); border-color: var(--accent-glow); }
+.hc-msgs { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.hc-bubble { display: flex; flex-direction: column; gap: 3px; max-width: 90%; }
+.hc-bubble.u { align-self: flex-end; align-items: flex-end; }
+.hc-bubble.a { align-self: flex-start; align-items: flex-start; }
+.bl { font-size: 9.5px; font-weight: 600; color: var(--text3); letter-spacing: .04em; }
+.bb { padding: 9px 12px; border-radius: 11px; font-size: 12px; line-height: 1.55; }
+.hc-bubble.u .bb { background: var(--accent-deep); color: #fff; border-bottom-right-radius: 3px; }
+.hc-bubble.a .bb { background: var(--surface); color: var(--text1); border: 1px solid var(--border-md); border-left: 3px solid var(--accent); border-bottom-left-radius: 3px; }
+.bb strong { color: var(--accent-bright); font-weight: 700; }
+.hc-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 4px; }
+.hc-tag { font-size: 9.5px; font-weight: 600; background: var(--accent-dim); color: var(--accent); border-radius: 4px; padding: 2px 6px; font-family: var(--mono); }
+.hc-input-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px; border-top: 1px solid var(--border-md); background: var(--card);
 }
-.chat-topbar-title { font-size: 13px; font-weight: 700; color: var(--text1); }
-.chat-topbar-sub { font-size: 10.5px; color: var(--text3); margin-top: 1px; }
-.chat-topbar-live { display: flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 600; color: var(--success); }
-.chat-topbar-live .dot { width: 6px; height: 6px; background: var(--success); border-radius: 50%; animation: pulse-dot 2s infinite; }
+.hc-inp { flex: 1; background: var(--surface); border: 1.5px solid var(--border-md); border-radius: 7px; padding: 7px 11px; font-size: 11.5px; color: var(--text3); font-family: var(--sans); font-style: italic; }
+.hc-send { width: 30px; height: 30px; background: var(--accent); border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.hc-send svg { width: 13px; height: 13px; color: #fff; }
 
-.chat-mode-bar {
-  display: flex;
-  gap: 4px;
-  padding: 8px 12px;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
-  overflow-x: auto;
-}
-.chat-mode-chip {
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 10.5px;
-  font-weight: 600;
-  color: var(--text3);
-  background: transparent;
-  white-space: nowrap;
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition: all 0.15s;
-}
-.chat-mode-chip.active { background: var(--accent-dim); color: var(--accent); border-color: var(--accent-glow); }
-
-.chat-messages {
-  padding: 14px 14px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  flex: 1;
-}
-.chat-bubble {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  max-width: 88%;
-}
-.chat-bubble.user { align-self: flex-end; align-items: flex-end; }
-.chat-bubble.ai { align-self: flex-start; align-items: flex-start; }
-.bubble-label { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: 0.04em; }
-.bubble-body {
-  padding: 9px 13px;
-  border-radius: 12px;
-  font-size: 12.5px;
-  line-height: 1.55;
-}
-.chat-bubble.user .bubble-body {
-  background: var(--accent);
-  color: #fff;
-  border-bottom-right-radius: 3px;
-}
-.chat-bubble.ai .bubble-body {
-  background: var(--surface);
-  color: var(--text1);
-  border: 1px solid var(--border-md);
-  border-left: 3px solid var(--accent);
-  border-bottom-left-radius: 3px;
-}
-.bubble-kb {
-  display: flex; gap: 5px; flex-wrap: wrap; margin-top: 4px;
-}
-.bubble-kb span {
-  font-size: 10px; font-weight: 600;
-  background: var(--accent-dim); color: var(--accent);
-  border-radius: 4px; padding: 2px 7px;
-  font-family: var(--mono);
-}
-
-.chat-input-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  border-top: 1px solid var(--border-md);
-  background: var(--card);
-}
-.chat-input-mock {
-  flex: 1;
-  background: var(--surface);
-  border: 1.5px solid var(--border-md);
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 12px;
-  color: var(--text3);
-  font-style: italic;
-}
-.chat-send-btn {
-  width: 32px; height: 32px;
-  background: var(--accent);
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.chat-send-btn svg { width: 14px; height: 14px; color: #fff; }
-
-/* ── Stats bar ── */
+/* Stats bar */
 .stats-bar {
-  background: var(--surface);
-  border-top: 1px solid var(--border-md);
+  background: var(--surface); border-top: 1px solid var(--border-md);
   border-bottom: 1px solid var(--border-md);
-  padding: 28px 20px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
-  margin: 0 -20px;
+  padding: 26px 24px; margin: 0 -24px;
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 20px;
 }
-.stats-bar .hm-stat { align-items: center; text-align: center; }
-
-/* ── Features ── */
-.section { padding: 64px 0; }
-.features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px; }
-.feature-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 28px;
-  box-shadow: var(--card-shadow);
-  transition: all 0.2s;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.feature-card:hover {
-  box-shadow: var(--card-shadow-hover);
-  border-color: var(--accent-glow);
-  transform: translateY(-2px);
-}
-.feature-icon {
-  width: 44px; height: 44px;
-  background: var(--accent-dim);
-  border-radius: var(--radius);
-  display: flex; align-items: center; justify-content: center;
-}
-.feature-icon svg { width: 22px; height: 22px; color: var(--accent); }
-.feature-card h3 { font-size: 16px; font-weight: 700; color: var(--text1); }
-.feature-card p { font-size: 13.5px; color: var(--text2); line-height: 1.6; flex: 1; }
-.feature-link { font-size: 13px; font-weight: 600; color: var(--accent); display: inline-flex; align-items: center; gap: 5px; }
-.feature-link:hover { color: var(--accent-hover); }
-
-/* ── How It Works ── */
-.how-section { padding: 64px 0; }
-.steps-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 40px; position: relative; }
-.steps-row::before {
-  content: "";
-  position: absolute;
-  top: 28px; left: calc(33.33% - 12px);
-  width: calc(33.33%); height: 1px;
-  background: var(--accent-glow);
-}
-.steps-row::after {
-  content: "";
-  position: absolute;
-  top: 28px; left: calc(66.66% - 12px);
-  width: calc(33.33%); height: 1px;
-  background: var(--accent-glow);
-}
-.step { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
-.step-num {
-  width: 44px; height: 44px;
-  background: var(--accent);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px; font-weight: 800; color: #fff;
-  font-family: var(--mono);
-  flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(8,145,178,0.3);
-}
-.step h3 { font-size: 15px; font-weight: 700; color: var(--text1); }
-.step p { font-size: 13.5px; color: var(--text2); line-height: 1.6; }
-
-/* ── Testimonials ── */
-.testi-section { padding: 64px 0; }
-.testi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 40px; }
-.testi-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 28px;
-  box-shadow: var(--card-shadow);
-}
-.testi-quote { font-size: 15px; color: var(--text1); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
-.testi-quote::before { content: "\201C"; color: var(--accent); font-size: 40px; line-height: 0; vertical-align: -14px; margin-right: 4px; font-style: normal; }
-.testi-author { display: flex; align-items: center; gap: 12px; }
-.testi-avatar {
-  width: 38px; height: 38px;
-  background: var(--accent);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-weight: 700; font-size: 14px;
-}
-.testi-name { font-size: 13px; font-weight: 700; color: var(--text1); }
-.testi-role { font-size: 12px; color: var(--text3); margin-top: 2px; }
-
-/* ── App Banner ── */
-.app-banner {
-  background: linear-gradient(135deg, #0891b2 0%, #0e7490 60%, #0d9488 100%);
-  border-radius: var(--radius-lg);
-  padding: 36px 44px;
-  display: flex;
-  align-items: center;
-  gap: 40px;
-  margin: 40px 0 0;
-  position: relative;
-  overflow: hidden;
-}
-.app-banner::before {
-  content: "";
-  position: absolute;
-  top: -60px; right: -60px;
-  width: 260px; height: 260px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.05);
-  pointer-events: none;
-}
-.app-banner::after {
-  content: "";
-  position: absolute;
-  bottom: -40px; right: 160px;
-  width: 160px; height: 160px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.04);
-  pointer-events: none;
-}
-.app-banner-icon {
-  width: 60px; height: 60px;
-  background: rgba(255,255,255,0.15);
-  border: 1.5px solid rgba(255,255,255,0.25);
-  border-radius: 16px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  backdrop-filter: blur(4px);
-}
-.app-banner-icon svg { width: 30px; height: 30px; color: #fff; }
-.app-banner-text { flex: 1; }
-.app-banner-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.65);
-  margin-bottom: 6px;
-}
-.app-banner-title {
-  font-size: 22px;
-  font-weight: 800;
-  color: #fff;
-  line-height: 1.2;
-  margin-bottom: 8px;
-}
-.app-banner-sub {
-  font-size: 13.5px;
-  color: rgba(255,255,255,0.75);
-  line-height: 1.55;
-  max-width: 440px;
-}
-.app-banner-stores {
-  display: flex;
-  gap: 10px;
-  margin-top: 18px;
-  flex-wrap: wrap;
-}
-.store-btn {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  background: rgba(255,255,255,0.15);
-  border: 1.5px solid rgba(255,255,255,0.3);
-  border-radius: 10px;
-  padding: 9px 16px;
-  color: #fff;
-  backdrop-filter: blur(4px);
-  transition: background 0.18s, border-color 0.18s, transform 0.18s;
-  cursor: pointer;
-}
-.store-btn:hover { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.5); transform: translateY(-1px); }
-.store-btn svg { width: 20px; height: 20px; color: #fff; flex-shrink: 0; }
-.store-btn-text .s-sub { font-size: 10px; color: rgba(255,255,255,0.7); letter-spacing: 0.02em; }
-.store-btn-text .s-name { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.2; }
-.app-banner-qr {
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
-.qr-wrap {
-  background: #fff;
-  border-radius: 12px;
-  padding: 10px;
-  width: 108px; height: 108px;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-}
-.qr-wrap img { width: 88px; height: 88px; border-radius: 4px; display: block; }
-.qr-wrap:hover { opacity: 0.9; transform: scale(1.03); transition: all 0.2s; }
-.qr-label { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.75); text-align: center; }
-.app-banner-badge {
-  position: absolute;
-  top: 16px; right: 16px;
-  background: rgba(255,255,255,0.18);
-  border: 1px solid rgba(255,255,255,0.3);
-  border-radius: 20px;
-  padding: 4px 12px;
-  font-size: 11px;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: 0.04em;
-}
-
-/* ── Quick Calculator Section ── */
-.calc-section {
-  padding: 56px 0 48px;
-}
-.calc-section-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 24px;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-.calc-section-title {
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--text1);
-  margin: 0;
-}
-
-/* Unit toggle switch */
-.unit-toggle-wrap {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--card);
-  border: 1px solid var(--border-md);
-  border-radius: 30px;
-  padding: 6px 16px;
-  box-shadow: var(--card-shadow);
-}
-.unit-toggle-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  color: var(--text3);
-  font-family: var(--mono);
-  user-select: none;
-}
-.unit-toggle {
-  position: relative;
-  width: 40px;
-  height: 22px;
-  flex-shrink: 0;
-}
-.unit-toggle input { opacity: 0; width: 0; height: 0; }
-.unit-toggle-slider {
-  position: absolute;
-  inset: 0;
-  background: var(--accent);
-  border-radius: 22px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.unit-toggle-slider::before {
-  content: "";
-  position: absolute;
-  width: 16px; height: 16px;
-  left: 3px; top: 3px;
-  background: #fff;
-  border-radius: 50%;
-  transition: transform 0.2s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-.unit-toggle input:checked + .unit-toggle-slider { background: var(--success); }
-.unit-toggle input:checked + .unit-toggle-slider::before { transform: translateX(18px); }
-
-/* Tab bar */
-.calc-tabs {
-  display: flex;
-  gap: 4px;
-  border-bottom: 2px solid var(--border-md);
-  margin-bottom: 24px;
-}
-.calc-tab {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 10px 20px;
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--text2);
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
-  cursor: pointer;
-  transition: all 0.15s;
-  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-}
-.calc-tab:hover { color: var(--text1); background: var(--surface); }
-.calc-tab.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--accent-dim); }
-.calc-tab svg { opacity: 0.7; }
-.calc-tab.active svg { opacity: 1; color: var(--accent); }
-
-/* Panels */
-.calc-panel { display: none; }
-.calc-panel.active { display: block; }
-
-/* Card grid */
-.calc-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-/* Mini calc card */
-.calc-card-mini {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--card-shadow);
-  transition: box-shadow 0.2s, border-color 0.2s;
-}
-.calc-card-mini:hover { box-shadow: var(--card-shadow-hover); border-color: var(--accent-glow); }
-.calc-mini-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-}
-.calc-mini-icon {
-  width: 36px; height: 36px;
-  background: var(--accent);
-  border-radius: 9px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 800;
-  font-family: var(--mono); color: #fff;
-  flex-shrink: 0;
-  letter-spacing: -0.5px;
-}
-.calc-mini-title { font-size: 13px; font-weight: 700; color: var(--text1); }
-.calc-mini-sub { font-size: 10.5px; color: var(--text3); font-family: var(--mono); margin-top: 2px; }
-.calc-mini-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
-.calc-row-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.calc-field { display: flex; flex-direction: column; gap: 4px; }
-.calc-mini-label { font-size: 10.5px; font-weight: 600; color: var(--text3); letter-spacing: 0.03em; }
-.calc-input-wrap { position: relative; }
-.calc-input {
-  width: 100%;
-  padding: 7px 40px 7px 10px;
-  background: var(--surface);
-  border: 1.5px solid var(--border-md);
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text1);
-  font-family: var(--mono);
-  outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-.calc-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
-.calc-input-unit {
-  position: absolute;
-  right: 8px; top: 50%; transform: translateY(-50%);
-  font-size: 9.5px; font-weight: 700;
-  color: var(--text3); font-family: var(--mono);
-  pointer-events: none;
-}
-.calc-result-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--accent-dim);
-  border: 1px solid var(--accent-glow);
-  border-radius: var(--radius-sm);
-  padding: 8px 12px;
-}
-.calc-result-label { font-size: 11px; font-weight: 600; color: var(--text2); }
-.calc-result-val {
-  font-size: 18px; font-weight: 800;
-  color: var(--accent); font-family: var(--mono);
-  letter-spacing: -0.02em;
-}
-.calc-result-val small { font-size: 10px; font-weight: 500; color: var(--text3); margin-left: 3px; }
-
-@media (max-width: 1100px) { .calc-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 650px)  { .calc-grid { grid-template-columns: 1fr; } }
-
-@media (max-width: 1024px) {
-  .hero { grid-template-columns: 1fr; }
-  .hero-visual { display: none; }
-  .features-grid, .steps-row, .testi-grid { grid-template-columns: 1fr; }
-  .steps-row::before, .steps-row::after { display: none; }
-  .app-banner { flex-wrap: wrap; padding: 28px 24px; }
-  .app-banner-qr { display: none; }
-}
-@media (max-width: 600px) {
-  .stats-bar { grid-template-columns: 1fr 1fr; }
-}
+.stat-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.stat-val { font-family: var(--mono); font-size: 26px; font-weight: 700; color: var(--accent-bright); letter-spacing: -.02em; }
+.stat-lbl { font-size: 11.5px; color: var(--text2); margin-top: 3px; }
 </style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5756895689951807" crossorigin="anonymous"></script>
 </head>
 <body>
+<style>
+/* Features */
+.features-section { padding: 60px 0; }
+.feat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 36px; }
+.feat-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 26px; display: flex; flex-direction: column; gap: 14px;
+  transition: all .2s; cursor: pointer;
+}
+.feat-card:hover { border-color: var(--accent-glow); box-shadow: var(--card-shadow-hover); transform: translateY(-2px); }
+.feat-icon-wrap { width: 44px; height: 44px; background: var(--accent-dim); border: 1px solid var(--accent-glow); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.feat-icon-wrap svg { width: 22px; height: 22px; color: var(--accent-bright); }
+.feat-card h3 { font-size: 15.5px; font-weight: 700; color: var(--text1); }
+.feat-card p { font-size: 13px; color: var(--text2); line-height: 1.65; flex: 1; }
+.feat-link { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 600; color: var(--accent); transition: gap .15s; }
+.feat-link:hover { gap: 8px; }
+.feat-badge { display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px 2px 7px; border-radius: 12px; font-size: 10px; font-weight: 700; margin-bottom: 4px; letter-spacing: .04em; }
+.feat-badge.new { background: rgba(16,185,129,.12); color: var(--success); border: 1px solid rgba(16,185,129,.20); }
+.feat-badge.live { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-glow); }
+.feat-badge .bd { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 
-<!-- NAV -->
+/* How it works */
+.how-section { padding: 60px 0; }
+.steps-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 28px; margin-top: 36px; position: relative; }
+.steps-row::before, .steps-row::after {
+  content: ""; position: absolute; top: 24px; height: 1px;
+  background: linear-gradient(90deg, var(--accent-glow), transparent);
+}
+.steps-row::before { left: calc(33.33% - 8px); width: calc(33.33%); }
+.steps-row::after  { left: calc(66.66% - 8px); width: calc(33.33%); }
+.step { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+.step-num { width: 44px; height: 44px; background: linear-gradient(135deg,var(--accent),var(--accent-deep)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; color: #fff; font-family: var(--mono); flex-shrink: 0; box-shadow: 0 4px 12px rgba(6,182,212,.3); }
+.step h3 { font-size: 15px; font-weight: 700; color: var(--text1); }
+.step p  { font-size: 13px; color: var(--text2); line-height: 1.65; }
+
+/* Testimonials */
+.testi-section { padding: 60px 0; }
+.testi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 36px; }
+.testi-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 26px; box-shadow: var(--card-shadow); }
+.testi-stars { display: flex; gap: 3px; margin-bottom: 14px; }
+.testi-stars svg { width: 14px; height: 14px; fill: var(--warning); }
+.testi-quote { font-size: 14px; color: var(--text1); line-height: 1.75; margin-bottom: 18px; font-style: italic; }
+.testi-quote::before { content: "\201C"; color: var(--accent); font-size: 36px; line-height: 0; vertical-align: -12px; margin-right: 3px; font-style: normal; }
+.testi-author { display: flex; align-items: center; gap: 11px; }
+.testi-av { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 13px; font-family: var(--mono); flex-shrink: 0; }
+.testi-name { font-size: 12.5px; font-weight: 700; color: var(--text1); }
+.testi-role { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+/* App Banner */
+.app-section { padding: 24px 0 48px; }
+.app-banner-block {
+  background: linear-gradient(135deg, #0c2233 0%, #0e3347 50%, #0a2030 100%);
+  border: 1px solid var(--border-bright);
+  border-radius: 20px; padding: 36px 40px;
+  display: flex; align-items: center; gap: 36px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 8px 40px rgba(6,182,212,.12);
+}
+.app-banner-block::before {
+  content: ""; position: absolute;
+  top: -80px; right: -80px; width: 300px; height: 300px;
+  border-radius: 50%; background: rgba(6,182,212,.06); pointer-events: none;
+}
+.app-banner-block::after {
+  content: ""; position: absolute;
+  bottom: -50px; right: 180px; width: 180px; height: 180px;
+  border-radius: 50%; background: rgba(6,182,212,.04); pointer-events: none;
+}
+.ab-icon { width: 60px; height: 60px; background: rgba(6,182,212,.15); border: 1.5px solid rgba(6,182,212,.3); border-radius: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ab-icon svg { width: 30px; height: 30px; color: var(--accent-bright); }
+.ab-text { flex: 1; }
+.ab-label { font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: 6px; }
+.ab-title { font-family: var(--syne); font-size: 22px; font-weight: 800; color: #fff; line-height: 1.2; margin-bottom: 8px; }
+.ab-sub { font-size: 13px; color: rgba(255,255,255,.65); line-height: 1.6; max-width: 400px; }
+.ab-stores { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+.ab-store-btn {
+  display: flex; align-items: center; gap: 9px;
+  background: rgba(255,255,255,.12); border: 1.5px solid rgba(255,255,255,.25);
+  border-radius: 10px; padding: 9px 16px; color: #fff;
+  transition: all .18s; cursor: pointer; text-decoration: none;
+}
+.ab-store-btn:hover { background: rgba(255,255,255,.22); border-color: rgba(255,255,255,.45); transform: translateY(-1px); }
+.ab-store-btn svg { width: 20px; height: 20px; color: #fff; flex-shrink: 0; }
+.ab-store-txt .s1 { font-size: 10px; color: rgba(255,255,255,.65); }
+.ab-store-txt .s2 { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.2; }
+.ab-badge { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25); border-radius: 20px; padding: 4px 12px; font-size: 10.5px; font-weight: 700; color: #fff; letter-spacing: .04em; }
+.ab-qr { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 9px; }
+.ab-qr-wrap { background: #fff; border-radius: 12px; padding: 10px; width: 108px; height: 108px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(0,0,0,.25); transition: transform .2s; }
+.ab-qr-wrap:hover { transform: scale(1.04); }
+.ab-qr-wrap img { width: 88px; height: 88px; border-radius: 4px; display: block; }
+.ab-qr-lbl { font-size: 10.5px; font-weight: 600; color: rgba(255,255,255,.65); text-align: center; }
+
+/* Calculator section */
+.calc-section { padding: 56px 0 48px; }
+.calc-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 22px; gap: 16px; flex-wrap: wrap; }
+.unit-toggle-wrap { display: flex; align-items: center; gap: 10px; background: var(--card); border: 1px solid var(--border-md); border-radius: 30px; padding: 6px 16px; }
+.unit-toggle-label { font-size: 10.5px; font-weight: 700; letter-spacing: .07em; color: var(--text3); font-family: var(--mono); user-select: none; }
+.unit-toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+.unit-toggle input { opacity: 0; width: 0; height: 0; }
+.unit-slider { position: absolute; inset: 0; background: var(--accent); border-radius: 22px; cursor: pointer; transition: background .2s; }
+.unit-slider::before { content: ""; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.3); }
+.unit-toggle input:checked + .unit-slider { background: var(--success); }
+.unit-toggle input:checked + .unit-slider::before { transform: translateX(18px); }
+.calc-tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--border-md); margin-bottom: 22px; }
+.ctab { display: flex; align-items: center; gap: 7px; padding: 9px 18px; font-size: 13px; font-weight: 600; color: var(--text2); border: none; border-bottom: 2px solid transparent; margin-bottom: -2px; cursor: pointer; background: none; border-radius: 8px 8px 0 0; transition: all .15s; }
+.ctab:hover { color: var(--text1); background: var(--surface); }
+.ctab.active { color: var(--accent-bright); border-bottom-color: var(--accent); background: var(--accent-dim); }
+.ctab svg { opacity: .7; width: 14px; height: 14px; }
+.ctab.active svg { opacity: 1; }
+.cpanel { display: none; }
+.cpanel.active { display: block; }
+.calc-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+.cc { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: var(--card-shadow); transition: border-color .2s, box-shadow .2s; }
+.cc:hover { border-color: var(--accent-glow); box-shadow: var(--card-shadow-hover); }
+.cc-head { display: flex; align-items: center; gap: 11px; padding: 13px 15px; background: var(--surface); border-bottom: 1px solid var(--border); }
+.cc-sym { width: 34px; height: 34px; background: linear-gradient(135deg,var(--accent),var(--accent-deep)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; font-family: var(--mono); color: #fff; flex-shrink: 0; }
+.cc-title { font-size: 12.5px; font-weight: 700; color: var(--text1); }
+.cc-formula { font-size: 9.5px; color: var(--text3); font-family: var(--mono); margin-top: 1px; }
+.cc-body { padding: 13px 14px; display: flex; flex-direction: column; gap: 11px; }
+.cc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.cc-field { display: flex; flex-direction: column; gap: 3px; }
+.cc-lbl { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: .03em; }
+.cc-wrap { position: relative; }
+.cc-inp { width: 100%; padding: 6px 36px 6px 9px; background: var(--surface); border: 1.5px solid var(--border-md); border-radius: 7px; font-size: 12px; color: var(--text1); font-family: var(--mono); outline: none; transition: border-color .15s; }
+.cc-inp:focus { border-color: var(--accent); }
+.cc-unit { position: absolute; right: 7px; top: 50%; transform: translateY(-50%); font-size: 9px; font-weight: 700; color: var(--text3); font-family: var(--mono); pointer-events: none; }
+.cc-result { display: flex; align-items: center; justify-content: space-between; background: var(--surface); border: 1px solid var(--border-md); border-radius: 7px; padding: 7px 10px; }
+.cc-rlbl { font-size: 10.5px; font-weight: 600; color: var(--text2); }
+.cc-rval { font-size: 14px; font-weight: 800; color: var(--accent-bright); font-family: var(--mono); }
+.cc-rval small { font-size: 9.5px; font-weight: 600; color: var(--text3); }
+
+/* CTA section */
+.cta-section { padding: 48px 0 64px; }
+.cta-card { background: linear-gradient(135deg,var(--card) 0%,var(--card-raised) 100%); border: 1px solid var(--border-bright); border-radius: 20px; padding: 48px; text-align: center; box-shadow: var(--card-shadow), 0 0 40px rgba(6,182,212,.06); }
+.cta-card h2 { font-family: var(--syne); font-size: 28px; font-weight: 800; color: var(--text1); margin-bottom: 12px; }
+.cta-card p { font-size: 15px; color: var(--text2); margin-bottom: 28px; }
+.cta-btns { display: flex; gap: 14px; align-items: center; justify-content: center; flex-wrap: wrap; }
+.cta-note { margin-top: 16px; font-size: 11.5px; color: var(--text3); }
+</style>
+
+<!-- ═══════════════════════════════════════
+     NAV
+════════════════════════════════════════ -->
 <nav class="hm-nav">
   <a href="index.html" class="nav-logo">
     <div class="logo-icon">HM</div>
-    <span>HydroMind<span class="logo-ai">.AI</span></span>
+    Hydro<span class="logo-ai">Mind</span><span style="color:var(--text3);font-size:11px;font-weight:400;margin-left:2px;">.AI</span>
   </a>
   <div class="nav-links">
-    <a href="index.html" class="active">Home</a>
-    <a href="ai_advisor.html">AI Advisor</a>
-    <a href="system_design.html">System Design</a>
-    <a href="crane_diagnostic.html">Crane Diagnostic</a>
-    <a href="knowledge_base.html">Knowledge Base</a>
-    <a href="pricing.html">Pricing</a>
+    <a href="index.html" class="navbar-link active">Home</a>
+    <a href="ai_advisor.html" class="navbar-link">AI Advisor</a>
+    <a href="crane_diagnostic.html" class="navbar-link">Crane Diag</a>
+    <a href="knowledge_base.html" class="navbar-link">Knowledge Base</a>
+    <a href="system_design.html" class="navbar-link">System Design</a>
+    <a href="pricing.html" class="navbar-link">Pricing</a>
   </div>
-  <div class="nav-right">
-    <span class="nav-status"><span class="nav-status-dot"></span>ONLINE</span>
+  <div class="nav-right" id="hmNavCta">
+    <div class="nav-status"><div class="nav-status-dot"></div>AI Online</div>
     <a href="#" class="btn btn-ghost btn-sm">Log In</a>
-    <a href="#" class="btn btn-secondary btn-sm">Register</a>
-    <a href="pricing.html" class="btn btn-primary btn-sm">Get Pro</a>
+    <a href="pricing.html" class="btn btn-primary btn-sm">Get Started →</a>
   </div>
 </nav>
 
-<!-- LEFT SIDEBAR -->
+<!-- ═══════════════════════════════════════
+     LEFT SIDEBAR
+════════════════════════════════════════ -->
 <aside class="hm-sidebar-left">
-  <div class="sb-profile" id="sb-profile">
-    <div class="sb-avatar" id="sb-avatar">U</div>
-    <span class="sb-username" id="sb-username">User</span>
-    <span class="badge badge-teal" id="sb-plan">Free</span>
-  </div>
-
-  <div>
-    <div class="sb-section-label">Platform</div>
-    <a href="ai_advisor.html" class="sb-nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>
-      AI Advisor
+  <!-- No-auth state -->
+  <div id="hmSidebarNoAuth">
+    <div class="sb-section-label">Navigation</div>
+    <a href="index.html" class="sb-nav-link active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Home
     </a>
-    <a href="system_design.html" class="sb-nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
-      System Design
+    <a href="ai_advisor.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>AI Advisor
     </a>
     <a href="crane_diagnostic.html" class="sb-nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-      Crane Diag.
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6m-6 4h6m-6 4h4"/></svg>Crane Diag
     </a>
     <a href="knowledge_base.html" class="sb-nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
-      KB Library
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 006.5 7H20v13H6.5A2.5 2.5 0 014 17.5z"/></svg>KB
+    </a>
+    <a href="system_design.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Sys Design
     </a>
     <a href="pricing.html" class="sb-nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-      Pricing
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Pricing
     </a>
+    <div style="margin-top:6px;padding:10px 8px;background:var(--accent-dim);border:1px solid var(--accent-glow);border-radius:8px;text-align:center;">
+      <div style="font-size:10px;color:var(--text2);margin-bottom:6px;line-height:1.4;">Sign in to unlock history & profile</div>
+      <button onclick="openAuthModal('login')" style="width:100%;padding:6px;background:var(--accent);border:none;border-radius:6px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;">Sign In</button>
+    </div>
   </div>
 
-  <div class="sb-ad mt-auto">
-    <div class="sb-ad-label">Advertise Here</div>
-    <div class="sb-ad-sub">Reach offshore hydraulic engineers worldwide</div>
-    <a href="mailto:support@hydromindai.com" class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">Contact Us</a>
+  <!-- Logged-in profile -->
+  <div id="hmSidebarProfile" style="display:none;">
+    <div class="hm-profile-card">
+      <div class="sb-avatar-wrap">
+        <div class="sb-avatar" id="hmProfAvatar">AT</div>
+        <div class="sb-avatar-edit" onclick="openProfileEdit()" title="Edit Profile">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </div>
+      </div>
+      <div class="sb-username" id="hmProfName">User</div>
+      <div class="sb-useremail" id="hmProfEmail">user@email.com</div>
+      <div class="sb-plan-badge" id="hmProfPlan">Free</div>
+    </div>
+  </div>
+
+  <!-- Chat history -->
+  <div id="hmSidebarHistory" style="display:none;">
+    <div class="sb-section-label">History</div>
+    <div id="hmHistoryList"><div style="font-size:10px;color:var(--text3);text-align:center;padding:8px 0;">No history yet</div></div>
+  </div>
+
+  <!-- Nav links (logged-in) -->
+  <div id="hmSidebarLinks" style="display:none;">
+    <div class="sb-section-label" style="margin-top:6px;">Pages</div>
+    <a href="index.html" class="sb-nav-link active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Home
+    </a>
+    <a href="ai_advisor.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>AI Advisor
+    </a>
+    <a href="crane_diagnostic.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6m-6 4h6m-6 4h4"/></svg>Crane Diag
+    </a>
+    <a href="knowledge_base.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 006.5 7H20v13H6.5A2.5 2.5 0 014 17.5z"/></svg>KB
+    </a>
+    <a href="system_design.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Sys Design
+    </a>
+    <a href="pricing.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Pricing
+    </a>
+    <button id="hmLogoutBtn" onclick="doLogout()" style="display:none;width:100%;margin-top:6px;padding:7px;background:var(--danger-dim);border:1px solid rgba(239,68,68,.18);border-radius:7px;font-size:11px;font-weight:600;color:var(--danger);cursor:pointer;">Sign Out</button>
   </div>
 </aside>
 
-<!-- RIGHT SIDEBAR -->
-<aside class="hm-sidebar-right">
-  <div class="sb-pro-cta">
-    <h4>Upgrade to Pro</h4>
+<!-- ═══════════════════════════════════════
+     RIGHT SIDEBAR
+════════════════════════════════════════ -->
+<aside class="hm-sidebar-right" id="hmAdSidebar">
+  <!-- App Banner with real QR -->
+  <div class="sb-app-banner">
+    <div class="banner-title">HydroMind AI App</div>
+    <div class="banner-sub">Full platform on Android — free download worldwide</div>
+    <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" rel="noopener" class="qr-wrap" title="Scan to download HydroMind AI">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.hydromind.app&format=png&margin=4&qzone=1" alt="QR code to download HydroMind AI on Google Play" width="80" height="80" style="border-radius:4px;display:block;">
+    </a>
+    <div class="banner-dl">Scan to Download</div>
+    <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" rel="noopener" class="store-badge">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76a2 2 0 001.91-.19l11.12-6.37-2.93-2.93-10.1 9.49zM20.5 10.36L17.84 8.8l-3.19 3.19 3.19 3.2 2.69-1.56a2 2 0 000-3.27zM1.54.27A2 2 0 001 1.5v21l10.29-10.3L1.54.27zM14.65 12L4.09.24 3.18.24 14.65 12z"/></svg>
+      Google Play
+    </a>
+    <div style="font-size:9px;color:var(--text3);text-align:center;line-height:1.4;">6 installs · 177 countries<br>Version 1.0.39</div>
+  </div>
+
+  <div style="height:1px;background:var(--border);margin:2px 0;"></div>
+
+  <!-- No-ad badge (paid users) -->
+  <div id="hmNoAdBadge" style="display:none;background:var(--success-dim);border:1px solid rgba(16,185,129,.20);border-radius:8px;padding:9px 8px;text-align:center;">
+    <div style="font-size:11px;font-weight:700;color:var(--success);">✓ Ad-Free</div>
+    <div style="font-size:9.5px;color:var(--text2);margin-top:2px;">Pro subscriber benefit</div>
+  </div>
+
+  <!-- Ad slots (free users) -->
+  <div id="hmAd1" class="sb-ad">
+    <div class="sb-ad-label">Advertisement</div>
+    <ins class="adsbygoogle"
+         style="display:block;width:100%;min-height:100px;"
+         data-ad-client="ca-pub-5756895689951807"
+         data-ad-slot="auto"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+  </div>
+
+  <!-- Pro CTA -->
+  <div id="hmAd2" class="sb-pro-cta">
+    <h4>🚀 Go Pro</h4>
     <ul>
       <li>Unlimited AI queries</li>
-      <li>All 6 advisor modes</li>
-      <li>Full 155-doc KB access</li>
-      <li>BOM export & design tool</li>
+      <li>Full KB access (86+ docs)</li>
+      <li>Crane Diagnostic AI</li>
+      <li>Ad-free experience</li>
+      <li>Priority support</li>
     </ul>
-    <a href="pricing.html" class="btn btn-primary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">View Plans</a>
+    <a href="pricing.html" class="upgrade-btn">Upgrade Now →</a>
   </div>
 
-  <div class="sb-ad mt-auto">
-    <div class="sb-ad-label">Advertise Here</div>
-    <div class="sb-ad-sub">138×220 placement</div>
-    <a href="mailto:support@hydromindai.com" class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">Contact Us</a>
+  <div id="hmAd3" class="sb-ad">
+    <div class="sb-ad-label">Sponsor Slot</div>
+    <ins class="adsbygoogle"
+         style="display:block;width:100%;min-height:100px;"
+         data-ad-client="ca-pub-5756895689951807"
+         data-ad-slot="auto"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
   </div>
 </aside>
 
-<!-- MAIN -->
-<main class="hm-page" style="padding-top: 0;">
+<!-- ═══════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════ -->
+<main class="hm-page">
 
   <!-- HERO -->
-  <section class="hero">
-    <div class="hero-content">
-      <div class="hero-badge">
-        <span class="dot"></span>
-        AI-Powered · Industry · Marine · Offshore · ISO 4413
+  <section class="hero-section">
+    <div>
+      <div class="hero-eyebrow"><span class="pulse"></span>AI-Powered · Offshore Grade · 177 Countries</div>
+      <h1 class="hero-h1">Hydraulic<br><span class="hl">Intelligence</span><br>for Industry</h1>
+      <p class="hero-sub">Expert-level fault diagnosis, crane diagnostics, system design & knowledge base — purpose-built for marine and offshore hydraulic engineers.</p>
+      <div class="hero-btns">
+        <a href="ai_advisor.html" class="btn btn-primary btn-lg">Try AI Advisor →</a>
+        <a href="pricing.html" class="btn btn-secondary btn-lg">View Plans</a>
       </div>
-      <h1 class="display-title">Hydraulic Intelligence for Industry, Marine &amp; Offshore</h1>
-      <p class="hero-sub">AI-powered fault diagnosis, system design, and crane diagnostics — built for hydraulic engineers across industrial plant, marine vessels, and offshore installations. Backed by 155 KB documents and 30+ equipment datasets.</p>
-      <div class="hero-ctas">
-        <a href="ai_advisor.html" class="btn btn-primary btn-lg">Start Free →</a>
-        <a href="#how-it-works" class="btn btn-secondary btn-lg">How It Works</a>
-      </div>
-      <div class="hero-note">No credit card required · Free tier available</div>
+      <div class="hero-note">No credit card needed · Free tier available</div>
     </div>
-
     <div class="hero-visual">
       <div class="hero-chat">
-
-        <!-- Top bar -->
-        <div class="chat-topbar">
-          <div class="chat-topbar-left">
-            <div class="chat-topbar-icon">HM</div>
+        <div class="hc-bar">
+          <div class="hc-bar-left">
+            <div class="hc-icon">HM</div>
             <div>
-              <div class="chat-topbar-title">HydroMind AI Advisor</div>
-              <div class="chat-topbar-sub">Liebherr BOS 47000 · Fault Diagnosis Mode</div>
+              <div class="hc-title">HydroMind AI Advisor</div>
+              <div class="hc-sub">86 KB documents · Real-time analysis</div>
             </div>
           </div>
-          <span class="chat-topbar-live"><span class="dot"></span>Online</span>
+          <div class="hc-live"><span class="d"></span>Online</div>
         </div>
-
-        <!-- Mode chips -->
-        <div class="chat-mode-bar">
-          <span class="chat-mode-chip">General</span>
-          <span class="chat-mode-chip active">Fault Diagnosis</span>
-          <span class="chat-mode-chip">Pressure Analysis</span>
-          <span class="chat-mode-chip">Maintenance</span>
-          <span class="chat-mode-chip">Sizing</span>
+        <div class="hc-modes">
+          <button class="hc-chip on">🔧 Hydraulic</button>
+          <button class="hc-chip">🏗️ Crane</button>
+          <button class="hc-chip">📐 Calculator</button>
+          <button class="hc-chip">📚 KB Search</button>
         </div>
-
-        <!-- Messages -->
-        <div class="chat-messages">
-
-          <div class="chat-bubble user">
-            <span class="bubble-label">YOU</span>
-            <div class="bubble-body">Case drain pressure on A10V is reading 4.8 bar during hoisting. Is this a shaft seal issue?</div>
+        <div class="hc-msgs">
+          <div class="hc-bubble u">
+            <div class="bl">YOU</div>
+            <div class="bb">A4VG90 case drain pressure is 4.5 bar at full load — what's the cause?</div>
           </div>
-
-          <div class="chat-bubble ai">
-            <span class="bubble-label">HYDROMIND AI</span>
-            <div class="bubble-body">
-              A case drain of <strong>4.8 bar</strong> on the Rexroth A10V exceeds the standard 3 bar threshold and strongly indicates shaft seal degradation or internal bypass. On the BOS 47000 hoisting circuit this is typically caused by:<br><br>
-              <strong>1.</strong> Worn shaft seal (replace per RA 92003)<br>
-              <strong>2.</strong> Blocked case drain line (check 1.5 bar back-pressure limit)<br>
-              <strong>3.</strong> Elevated case temperature — verify oil temp ≤60°C
-            </div>
-            <div class="bubble-kb">
-              <span>KB-041: A10V Shaft Seal</span>
-              <span>KB-017: BOS-47000 HPU</span>
-              <span>ISO 4413 §6.4</span>
+          <div class="hc-bubble a">
+            <div class="bl">HYDROMIND AI</div>
+            <div class="bb"><strong>Root Cause:</strong> Case drain pressure >3 bar at full displacement on the A4VG90 indicates worn barrel/valve plate interface allowing internal bypass. Verify with case drain flow measurement at TP-3. Expected: &lt;3 L/min. If flow exceeds 6 L/min, pump overhaul is required.</div>
+            <div class="hc-tags">
+              <span class="hc-tag">KB-12 Rexroth A4VG</span>
+              <span class="hc-tag">KB-34 Case Drain</span>
             </div>
           </div>
-
-          <!-- Typing indicator -->
-          <div class="chat-bubble ai" style="opacity:0.6;">
-            <span class="bubble-label">HYDROMIND AI</span>
-            <div class="bubble-body" style="display:flex;align-items:center;gap:5px;padding:10px 14px;">
-              <span style="width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse-dot 1s infinite;"></span>
-              <span style="width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse-dot 1s 0.2s infinite;"></span>
-              <span style="width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse-dot 1s 0.4s infinite;"></span>
-            </div>
-          </div>
-
         </div>
-
-        <!-- Input bar -->
-        <div class="chat-input-bar">
-          <div class="chat-input-mock">Ask about any hydraulic fault, component, or system…</div>
-          <div class="chat-send-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-          </div>
+        <div class="hc-input-row">
+          <input class="hc-inp" placeholder="Ask a hydraulic question…" readonly>
+          <div class="hc-send"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg></div>
         </div>
-
       </div>
     </div>
   </section>
 
   <!-- STATS BAR -->
   <div class="stats-bar">
-    <div class="hm-stat">
-      <span class="stat-value">155</span>
-      <span class="stat-label">KB Documents Indexed</span>
-    </div>
-    <div class="hm-stat">
-      <span class="stat-value">33+</span>
-      <span class="stat-label">Crane Models Supported</span>
-    </div>
-    <div class="hm-stat">
-      <span class="stat-value">ISO</span>
-      <span class="stat-label">4413 Compliant Design</span>
-    </div>
-    <div class="hm-stat">
-      <span class="stat-value">A+</span>
-      <span class="stat-label">Offshore Grade Reliability</span>
-    </div>
+    <div class="stat-item"><div class="stat-val">86+</div><div class="stat-lbl">KB Documents</div></div>
+    <div class="stat-item"><div class="stat-val">177</div><div class="stat-lbl">Countries</div></div>
+    <div class="stat-item"><div class="stat-val">12</div><div class="stat-lbl">OEM Brands</div></div>
+    <div class="stat-item"><div class="stat-val">24/7</div><div class="stat-lbl">AI Availability</div></div>
   </div>
 
-  <!-- APP DOWNLOAD BANNER -->
-  <div class="app-banner">
-    <span class="app-banner-badge">FREE DOWNLOAD</span>
+  <!-- FEATURES -->
+  <section class="features-section">
+    <div class="section-label">Platform Capabilities</div>
+    <h2 class="section-title">Everything a Hydraulic Engineer Needs</h2>
+    <p class="section-subtitle">From first-principles fault diagnosis to full system design — powered by 86+ OEM manuals from Rexroth, Danfoss, Parker, Liebherr & more.</p>
+    <div class="feat-grid">
 
-    <div class="app-banner-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-        <rect x="5" y="2" width="14" height="20" rx="2"/>
-        <line x1="12" y1="18" x2="12" y2="18.01" stroke-width="2.5" stroke-linecap="round"/>
-      </svg>
+      <div class="feat-card">
+        <div><span class="feat-badge live"><span class="bd"></span>Live</span></div>
+        <div class="feat-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        </div>
+        <h3>AI Hydraulic Advisor</h3>
+        <p>Deep fault diagnosis, pressure analysis, component isolation and corrective action — using structured KB retrieval from 86+ OEM documents across Rexroth, Danfoss, Parker, Eaton, and more.</p>
+        <a href="ai_advisor.html" class="feat-link">Open Advisor <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="feat-card">
+        <div><span class="feat-badge live"><span class="bd"></span>Live</span></div>
+        <div class="feat-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6m-6 4h6m-6 4h4"/></svg>
+        </div>
+        <h3>Crane Diagnostic Agent</h3>
+        <p>10-state AI diagnostic sequence for offshore cranes — covering Liebherr, MacGregor, NOV, SeaTrax, Favelle Favco. Identifies hydraulic, mechanical and operational fault modes with precision.</p>
+        <a href="crane_diagnostic.html" class="feat-link">Open Crane Diag <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="feat-card">
+        <div><span class="feat-badge new"><span class="bd"></span>Updated</span></div>
+        <div class="feat-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <h3>System Design</h3>
+        <p>12-step guided hydraulic system design — pump/motor sizing, DCV selection, filter & tank sizing, BOM generation and cooler sizing. From requirements to full system specification.</p>
+        <a href="system_design.html" class="feat-link">Start Design <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="feat-card">
+        <div><span class="feat-badge live"><span class="bd"></span>Live</span></div>
+        <div class="feat-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 006.5 7H20v13H6.5A2.5 2.5 0 014 17.5z"/></svg>
+        </div>
+        <h3>Knowledge Base</h3>
+        <p>KB1–KB86 covering Rexroth, Danfoss, Parker, Eaton, Liebherr, MacGregor, NOV, SeaTrax, Favelle Favco — vector-searchable, categorised and instantly retrievable via AI.</p>
+        <a href="knowledge_base.html" class="feat-link">Browse KB <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+
     </div>
+  </section>
 
-    <div class="app-banner-text">
-      <div class="app-banner-label">Android App — Now Available on Google Play</div>
-      <div class="app-banner-title">HydroMind.AI in Your Pocket</div>
-      <div class="app-banner-sub">Take the full AI Advisor, crane diagnostics, and KB library offshore. Works in low-connectivity environments — built for Android engineers on the deck.</div>
-      <div class="app-banner-stores">
-        <a href="https://play.google.com/store/search?q=hydromind+ai&c=apps" target="_blank" rel="noopener" class="store-btn">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76a2 2 0 001.91-.19l11.12-6.37-2.93-2.93-10.1 9.49zM20.5 10.36L17.84 8.8l-3.19 3.19 3.19 3.2 2.69-1.56a1.99 1.99 0 000-3.27zM1.54.27A2 2 0 001 1.5v21l10.29-10.3L1.54.27zM14.65 12L4.09.24 3.18.24 14.65 12z"/></svg>
-          <div class="store-btn-text">
-            <div class="s-sub">Get it on</div>
-            <div class="s-name">Google Play</div>
-          </div>
-        </a>
+  <!-- HOW IT WORKS -->
+  <section class="how-section">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">From Problem to Solution in Minutes</h2>
+    <div class="steps-row">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Describe Your Problem</h3>
+        <p>Type your fault symptom, equipment model, and operating conditions. The AI understands hydraulic engineering context without needing simplified explanations.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>AI Searches the KB</h3>
+        <p>HydroMind searches 86+ OEM manuals, retrieves the most relevant KB documents, and structures a diagnostic response based on circuit paths and component logic.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Get Actionable Diagnosis</h3>
+        <p>Receive structured fault analysis — root cause, test points, corrective actions, and KB references — ready for your pre-job preparation or post-job report.</p>
       </div>
     </div>
+  </section>
 
-    <!-- QR Code -->
-    <div class="app-banner-qr">
-      <a href="https://play.google.com/store/search?q=hydromind+ai&c=apps" target="_blank" rel="noopener" class="qr-wrap" title="Scan to download on Android">
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fplay.google.com%2Fstore%2Fsearch%3Fq%3Dhydromind%2Bai%26c%3Dapps&format=png&color=0-31-31&bgcolor=ffffff&margin=6&qzone=1" alt="QR code — Scan to download HydroMind AI on Android" width="88" height="88" style="border-radius:4px;display:block;">
-      </a>
-      <div class="qr-label">Scan to Download on Android</div>
+  <!-- TESTIMONIALS -->
+  <section class="testi-section">
+    <div class="section-label">Field Engineers</div>
+    <h2 class="section-title">Trusted by Offshore & Marine Specialists</h2>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="testi-quote">The crane diagnostic agent walked me through a Liebherr LHBL-D luffing fault step by step. Saved hours of manual searching and gave me the exact test points to check.</div>
+        <div class="testi-author">
+          <div class="testi-av" style="background:var(--accent-deep);">RK</div>
+          <div>
+            <div class="testi-name">R. Kumar</div>
+            <div class="testi-role">Crane Supervisor · Offshore Platform, North Sea</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="testi-quote">I used the hydraulic calculator offline during a vessel overhaul — pipe velocity, pump sizing, cylinder force all calculated instantly. The KB search on Danfoss H1 pumps is excellent.</div>
+        <div class="testi-author">
+          <div class="testi-av" style="background:#0f6e56;">MF</div>
+          <div>
+            <div class="testi-name">M. Farooq</div>
+            <div class="testi-role">Marine Mechanical Engineer · Drillship, UAE</div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
+
+  <!-- APP DOWNLOAD BANNER -->
+  <section class="app-section">
+    <div class="app-banner-block">
+      <div class="ab-badge">Android App · Live on Play Store</div>
+      <div class="ab-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+      </div>
+      <div class="ab-text">
+        <div class="ab-label">Download Free</div>
+        <div class="ab-title">HydroMind AI on Android</div>
+        <div class="ab-sub">Full platform on your phone — AI Advisor, Crane Diagnostic, Calculator, Voice DPR, Fault Lookup & more. Works in 177 countries. Version 1.0.39 live now.</div>
+        <div class="ab-stores">
+          <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" rel="noopener" class="ab-store-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76a2 2 0 001.91-.19l11.12-6.37-2.93-2.93-10.1 9.49zM20.5 10.36L17.84 8.8l-3.19 3.19 3.19 3.2 2.69-1.56a2 2 0 000-3.27zM1.54.27A2 2 0 001 1.5v21l10.29-10.3L1.54.27zM14.65 12L4.09.24 3.18.24 14.65 12z"/></svg>
+            <div class="ab-store-txt"><div class="s1">Get it on</div><div class="s2">Google Play</div></div>
+          </a>
+        </div>
+      </div>
+      <div class="ab-qr">
+        <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" rel="noopener" class="ab-qr-wrap" title="Scan to download">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.hydromind.app&format=png&margin=4&qzone=1" alt="QR code — HydroMind AI on Google Play" width="88" height="88">
+        </a>
+        <div class="ab-qr-lbl">Scan to Download</div>
+      </div>
+    </div>
+  </section>
 
   <!-- QUICK CALCULATOR -->
   <section class="calc-section">
-    <div class="calc-section-header">
-      <div class="calc-section-left">
-        <div class="section-label" style="margin-bottom:4px;">Quick Reference</div>
-        <h2 class="calc-section-title">Hydraulic &amp; Electrical Calculator</h2>
+    <div class="calc-header">
+      <div>
+        <div class="section-label">Quick Reference</div>
+        <h2 style="font-size:20px;font-weight:800;color:var(--text1);margin:0;">Hydraulic &amp; Electrical Calculator</h2>
       </div>
-      <!-- Unit Toggle -->
       <div class="unit-toggle-wrap">
         <span class="unit-toggle-label">METRIC</span>
         <label class="unit-toggle">
           <input type="checkbox" id="unit-toggle-cb" onchange="switchUnits()">
-          <span class="unit-toggle-slider"></span>
+          <span class="unit-slider"></span>
         </label>
         <span class="unit-toggle-label">IMPERIAL</span>
       </div>
     </div>
-
-    <!-- Tab bar -->
     <div class="calc-tabs">
-      <button class="calc-tab active" onclick="switchCalcTab('hydraulic', this)">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-        Hydraulic
+      <button class="ctab active" onclick="switchCalcTab('hydraulic',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>Hydraulic
       </button>
-      <button class="calc-tab" onclick="switchCalcTab('electrical', this)">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><bolt d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        Electrical
+      <button class="ctab" onclick="switchCalcTab('electrical',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Electrical
       </button>
     </div>
 
-    <!-- HYDRAULIC CALCULATORS -->
-    <div id="calc-hydraulic" class="calc-panel active">
+    <!-- HYDRAULIC -->
+    <div id="calc-hydraulic" class="cpanel active">
       <div class="calc-grid">
-
-        <!-- Pump Flow -->
-        <div class="calc-card-mini">
-          <div class="calc-mini-header">
-            <span class="calc-mini-icon">Q</span>
-            <div>
-              <div class="calc-mini-title">Pump Flow Rate</div>
-              <div class="calc-mini-sub" id="h1-sub">Q = (D × N) / 1000</div>
+        <!-- H1: Pump Flow -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">Q</span><div><div class="cc-title">Pump Flow Rate</div><div class="cc-formula" id="h1-sub">Q = (D × N) / 1000</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl" id="h1-l1">Displacement D</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h1-d" value="121" step="1" oninput="calcH1()"><span class="cc-unit" id="h1-u1">cc/rev</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Speed N</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h1-n" value="1480" step="10" oninput="calcH1()"><span class="cc-unit">RPM</span></div></div>
             </div>
-          </div>
-          <div class="calc-mini-body">
-            <div class="calc-row-inputs">
-              <div class="calc-field">
-                <label class="calc-mini-label" id="h1-l1">Displacement D</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="h1-d" value="121" step="1" oninput="calcH1()">
-                  <span class="calc-input-unit" id="h1-u1">cc/rev</span>
-                </div>
-              </div>
-              <div class="calc-field">
-                <label class="calc-mini-label" id="h1-l2">Speed N</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="h1-n" value="1480" step="10" oninput="calcH1()">
-                  <span class="calc-input-unit">RPM</span>
-                </div>
-              </div>
-            </div>
-            <div class="calc-result-row">
-              <span class="calc-result-label">Flow Rate Q =</span>
-              <span class="calc-result-val" id="h1-result">179.1 <small id="h1-ru">L/min</small></span>
-            </div>
+            <div class="cc-result"><span class="cc-rlbl">Flow Rate Q =</span><span class="cc-rval" id="h1-result">179.1 <small>L/min</small></span></div>
           </div>
         </div>
-
-        <!-- Pump Power -->
-        <div class="calc-card-mini">
-          <div class="calc-mini-header">
-            <span class="calc-mini-icon">P</span>
-            <div>
-              <div class="calc-mini-title">Drive Power</div>
-              <div class="calc-mini-sub" id="h2-sub">P = (p × Q) / (600 × η)</div>
+        <!-- H2: Drive Power -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">P</span><div><div class="cc-title">Drive Power</div><div class="cc-formula" id="h2-sub">P = (p × Q) / 600η</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Pressure p</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h2-p" value="250" step="5" oninput="calcH2()"><span class="cc-unit" id="h2-u1">bar</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Flow Q</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h2-q" value="179" step="1" oninput="calcH2()"><span class="cc-unit" id="h2-u2">L/min</span></div></div>
             </div>
-          </div>
-          <div class="calc-mini-body">
-            <div class="calc-row-inputs">
-              <div class="calc-field">
-                <label class="calc-mini-label">Pressure p</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="h2-p" value="250" step="5" oninput="calcH2()">
-                  <span class="calc-input-unit" id="h2-u1">bar</span>
-                </div>
-              </div>
-              <div class="calc-field">
-                <label class="calc-mini-label">Flow Q</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="h2-q" value="180" step="5" oninput="calcH2()">
-                  <span class="calc-input-unit" id="h2-u2">L/min</span>
-                </div>
-              </div>
-            </div>
-            <div class="calc-result-row">
-              <span class="calc-result-label">Power P =</span>
-              <span class="calc-result-val" id="h2-result">86.2 <small id="h2-ru">kW</small></span>
-            </div>
+            <div class="cc-result"><span class="cc-rlbl">Power P =</span><span class="cc-rval" id="h2-result">85.8 <small>kW</small></span></div>
           </div>
         </div>
-
-        <!-- Cylinder Force -->
-        <div class="calc-card-mini">
-          <div class="calc-mini-header">
-            <span class="calc-mini-icon">F</span>
-            <div>
-              <div class="calc-mini-title">Cylinder Force</div>
-              <div class="calc-mini-sub" id="h3-sub">F = p × A</div>
+        <!-- H3: Cylinder Force -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">F</span><div><div class="cc-title">Cylinder Force</div><div class="cc-formula">F = p × A</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Pressure p</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h3-p" value="200" step="5" oninput="calcH3()"><span class="cc-unit" id="h3-u1">bar</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Bore Ø</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h3-b" value="100" step="5" oninput="calcH3()"><span class="cc-unit" id="h3-u2">mm</span></div></div>
             </div>
-          </div>
-          <div class="calc-mini-body">
-            <div class="calc-row-inputs">
-              <div class="calc-field">
-                <label class="calc-mini-label">Pressure p</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="h3-p" value="200" step="5" oninput="calcH3()">
-                  <span class="calc-input-unit" id="h3-u1">bar</span>
-                </div>
-              </div>
-              <div class="calc-field">
-                <label class="calc-mini-label" id="h3-l2">Bore Ø</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="h3-b" value="100" step="5" oninput="calcH3()">
-                  <span class="calc-input-unit" id="h3-u2">mm</span>
-                </div>
-              </div>
-            </div>
-            <div class="calc-result-row">
-              <span class="calc-result-label">Force F =</span>
-              <span class="calc-result-val" id="h3-result">157.1 <small id="h3-ru">kN</small></span>
-            </div>
+            <div class="cc-result"><span class="cc-rlbl">Force F =</span><span class="cc-rval" id="h3-result">157.1 <small>kN</small></span></div>
           </div>
         </div>
-
-        <!-- Pipe Velocity -->
-        <div class="calc-card-mini">
-          <div class="calc-mini-header">
-            <span class="calc-mini-icon">V</span>
-            <div>
-              <div class="calc-mini-title">Pipe Flow Velocity</div>
-              <div class="calc-mini-sub">v = Q / A</div>
+        <!-- H4: Pipe Velocity -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">v</span><div><div class="cc-title">Pipe Flow Velocity</div><div class="cc-formula">v = Q / A</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Flow Q</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h4-q" value="100" step="5" oninput="calcH4()"><span class="cc-unit" id="h4-u1">L/min</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Pipe Ø</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h4-d" value="25" step="1" oninput="calcH4()"><span class="cc-unit" id="h4-u2">mm</span></div></div>
             </div>
-          </div>
-          <div class="calc-mini-body">
-            <div class="calc-row-inputs">
-              <div class="calc-field">
-                <label class="calc-mini-label">Flow Q</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="h4-q" value="180" step="5" oninput="calcH4()">
-                  <span class="calc-input-unit" id="h4-u1">L/min</span>
-                </div>
-              </div>
-              <div class="calc-field">
-                <label class="calc-mini-label">Pipe ID</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="h4-d" value="32" step="1" oninput="calcH4()">
-                  <span class="calc-input-unit" id="h4-u2">mm</span>
-                </div>
-              </div>
-            </div>
-            <div class="calc-result-row">
-              <span class="calc-result-label">Velocity v =</span>
-              <span class="calc-result-val" id="h4-result">3.7 <small>m/s</small></span>
-            </div>
+            <div class="cc-result"><span class="cc-rlbl">Velocity v =</span><span class="cc-rval" id="h4-result">3.40 <small>m/s</small></span></div>
           </div>
         </div>
-
-        <!-- Relief Valve Check -->
-        <div class="calc-card-mini">
-          <div class="calc-mini-header">
-            <span class="calc-mini-icon">RV</span>
-            <div>
-              <div class="calc-mini-title">Relief Valve Check</div>
-              <div class="calc-mini-sub">ISO 4413 §6.3 — min 10% margin</div>
+        <!-- H5: Relief Valve Check -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">RV</span><div><div class="cc-title">Relief Valve Check</div><div class="cc-formula">RV ≥ WP × 1.1</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Working Press.</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h5-wp" value="250" step="5" oninput="calcH5()"><span class="cc-unit" id="h5-u1">bar</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">RV Setting</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h5-rv" value="280" step="5" oninput="calcH5()"><span class="cc-unit" id="h5-u2">bar</span></div></div>
             </div>
-          </div>
-          <div class="calc-mini-body">
-            <div class="calc-row-inputs">
-              <div class="calc-field">
-                <label class="calc-mini-label">Working Pressure</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="h5-wp" value="250" step="5" oninput="calcH5()">
-                  <span class="calc-input-unit" id="h5-u1">bar</span>
-                </div>
-              </div>
-              <div class="calc-field">
-                <label class="calc-mini-label">RV Setting</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="h5-rv" value="280" step="5" oninput="calcH5()">
-                  <span class="calc-input-unit" id="h5-u2">bar</span>
-                </div>
-              </div>
-            </div>
-            <div class="calc-result-row">
-              <span class="calc-result-label">Status =</span>
-              <span class="calc-result-val" id="h5-result" style="color:var(--success);">PASS ✓</span>
-            </div>
+            <div class="cc-result"><span class="cc-rlbl">Status =</span><span class="cc-rval" id="h5-result" style="font-size:12px;color:var(--success);">PASS ✓</span></div>
           </div>
         </div>
-
-        <!-- Tank Volume -->
-        <div class="calc-card-mini">
-          <div class="calc-mini-header">
-            <span class="calc-mini-icon">T</span>
-            <div>
-              <div class="calc-mini-title">Reservoir Volume</div>
-              <div class="calc-mini-sub">ISO 4413 §6.7 — min 3× Q</div>
+        <!-- H6: Tank Volume -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">V</span><div><div class="cc-title">Tank Volume</div><div class="cc-formula">V = 3–5 × Q_pump</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Pump Flow</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h6-q" value="100" step="5" oninput="calcH6()"><span class="cc-unit" id="h6-u1">L/min</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Multiplier</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h6-m" value="3" step="0.5" min="2" max="6" oninput="calcH6()"><span class="cc-unit">×</span></div></div>
             </div>
-          </div>
-          <div class="calc-mini-body">
-            <div class="calc-row-inputs">
-              <div class="calc-field">
-                <label class="calc-mini-label">Pump Flow</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="h6-q" value="180" step="5" oninput="calcH6()">
-                  <span class="calc-input-unit" id="h6-u1">L/min</span>
-                </div>
-              </div>
-              <div class="calc-field">
-                <label class="calc-mini-label">Multiplier</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="h6-m" value="3" step="0.5" oninput="calcH6()">
-                  <span class="calc-input-unit">×</span>
-                </div>
-              </div>
-            </div>
-            <div class="calc-result-row">
-              <span class="calc-result-label">Min Volume =</span>
-              <span class="calc-result-val" id="h6-result">540 <small id="h6-ru">L</small></span>
-            </div>
+            <div class="cc-result"><span class="cc-rlbl">Min Tank =</span><span class="cc-rval" id="h6-result">300 <small>L</small></span></div>
           </div>
         </div>
-
       </div>
     </div>
 
-    <!-- ELECTRICAL CALCULATORS -->
-    <div id="calc-electrical" class="calc-panel">
+    <!-- ELECTRICAL -->
+    <div id="calc-electrical" class="cpanel">
       <div class="calc-grid">
-
-        <!-- Motor Power -->
-        <div class="calc-card-mini">
-          <div class="calc-mini-header">
-            <span class="calc-mini-icon">kW</span>
-            <div>
-              <div class="calc-mini-title">Motor Power (3-Phase)</div>
-              <div class="calc-mini-sub">P = √3 × V × I × PF</div>
+        <!-- E1: Ohms Law -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">V</span><div><div class="cc-title">Ohm's Law</div><div class="cc-formula">V = I × R</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Current I</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e1-i" value="10" step="0.1" oninput="calcE1()"><span class="cc-unit">A</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Resistance R</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e1-r" value="12" step="0.1" oninput="calcE1()"><span class="cc-unit">Ω</span></div></div>
             </div>
-          </div>
-          <div class="calc-mini-body">
-            <div class="calc-row-inputs">
-              <div class="calc-field">
-                <label class="calc-mini-label">Voltage V</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="e1-v" value="415" step="1" oninput="calcE1()">
-                  <span class="calc-input-unit">V</span>
-                </div>
-              </div>
-              <div class="calc-field">
-                <label class="calc-mini-label">Current I</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="e1-i" value="150" step="1" oninput="calcE1()">
-                  <span class="calc-input-unit">A</span>
-                </div>
-              </div>
-            </div>
-            <div class="calc-result-row">
-              <span class="calc-result-label">Power P =</span>
-              <span class="calc-result-val" id="e1-result">88.9 <small id="e1-ru">kW</small></span>
-            </div>
+            <div class="cc-result"><span class="cc-rlbl">Voltage V =</span><span class="cc-rval" id="e1-result">120 <small>V</small></span></div>
           </div>
         </div>
-
-        <!-- Full Load Current -->
-        <div class="calc-card-mini">
-          <div class="calc-mini-header">
-            <span class="calc-mini-icon">I</span>
-            <div>
-              <div class="calc-mini-title">Full Load Current</div>
-              <div class="calc-mini-sub">I = P / (√3 × V × PF × η)</div>
+        <!-- E2: 3-Phase Power -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">P</span><div><div class="cc-title">3-Phase Power</div><div class="cc-formula">P = √3 × V × I × PF</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Voltage V</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e2-v" value="415" step="5" oninput="calcE2()"><span class="cc-unit">V</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Current I</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e2-i" value="75" step="1" oninput="calcE2()"><span class="cc-unit">A</span></div></div>
             </div>
-          </div>
-          <div class="calc-mini-body">
-            <div class="calc-row-inputs">
-              <div class="calc-field">
-                <label class="calc-mini-label">Power kW</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="e2-p" value="90" step="1" oninput="calcE2()">
-                  <span class="calc-input-unit" id="e2-pu">kW</span>
-                </div>
-              </div>
-              <div class="calc-field">
-                <label class="calc-mini-label">Voltage V</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="e2-v" value="415" step="1" oninput="calcE2()">
-                  <span class="calc-input-unit">V</span>
-                </div>
-              </div>
-            </div>
-            <div class="calc-result-row">
-              <span class="calc-result-label">Current I =</span>
-              <span class="calc-result-val" id="e2-result">152.3 <small>A</small></span>
-            </div>
+            <div class="cc-result"><span class="cc-rlbl">Power P =</span><span class="cc-rval" id="e2-result">45.5 <small>kW</small></span></div>
           </div>
         </div>
-
-        <!-- kW to HP -->
-        <div class="calc-card-mini">
-          <div class="calc-mini-header">
-            <span class="calc-mini-icon">HP</span>
-            <div>
-              <div class="calc-mini-title">kW ↔ Horsepower</div>
-              <div class="calc-mini-sub">1 kW = 1.341 HP</div>
+        <!-- E3: Motor Current -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">I</span><div><div class="cc-title">Motor Full Load Current</div><div class="cc-formula">I = P / (√3 × V × η × PF)</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Power kW</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e3-p" value="55" step="1" oninput="calcE3kw()"><span class="cc-unit">kW</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Voltage V</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e3-v" value="415" step="5" oninput="calcE3kw()"><span class="cc-unit">V</span></div></div>
             </div>
-          </div>
-          <div class="calc-mini-body">
-            <div class="calc-row-inputs">
-              <div class="calc-field">
-                <label class="calc-mini-label">Power kW</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="e3-kw" value="90" step="1" oninput="calcE3kw()">
-                  <span class="calc-input-unit">kW</span>
-                </div>
-              </div>
-              <div class="calc-field">
-                <label class="calc-mini-label">Horsepower</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="e3-hp" value="120.7" step="1" oninput="calcE3hp()">
-                  <span class="calc-input-unit">HP</span>
-                </div>
-              </div>
-            </div>
-            <div class="calc-result-row">
-              <span class="calc-result-label">Equivalent =</span>
-              <span class="calc-result-val" id="e3-result">90 kW = 120.7 HP</span>
-            </div>
+            <div class="cc-result"><span class="cc-rlbl">FLA I =</span><span class="cc-rval" id="e3-result">101.5 <small>A</small></span></div>
           </div>
         </div>
-
-        <!-- Cable sizing -->
-        <div class="calc-card-mini">
-          <div class="calc-mini-header">
-            <span class="calc-mini-icon">Ω</span>
-            <div>
-              <div class="calc-mini-title">Voltage Drop</div>
-              <div class="calc-mini-sub">ΔV = (2 × I × L × ρ) / A</div>
+        <!-- E4: Cable Volt Drop -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">ΔV</span><div><div class="cc-title">Cable Voltage Drop</div><div class="cc-formula">ΔV = 2 × I × R × L</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Current I</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e4-i" value="50" step="1" oninput="calcE4()"><span class="cc-unit">A</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Length L</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e4-l" value="30" step="1" oninput="calcE4()"><span class="cc-unit" id="e4-ul">m</span></div></div>
             </div>
-          </div>
-          <div class="calc-mini-body">
-            <div class="calc-row-inputs">
-              <div class="calc-field">
-                <label class="calc-mini-label">Current I</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="e4-i" value="150" step="1" oninput="calcE4()">
-                  <span class="calc-input-unit">A</span>
-                </div>
-              </div>
-              <div class="calc-field">
-                <label class="calc-mini-label">Cable Length</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="e4-l" value="50" step="1" oninput="calcE4()">
-                  <span class="calc-input-unit" id="e4-u">m</span>
-                </div>
-              </div>
-            </div>
-            <div class="calc-result-row">
-              <span class="calc-result-label">Voltage Drop =</span>
-              <span class="calc-result-val" id="e4-result">5.0 <small>V</small></span>
-            </div>
+            <div class="cc-result"><span class="cc-rlbl">Volt Drop =</span><span class="cc-rval" id="e4-result">3.0 <small>V</small></span></div>
           </div>
         </div>
-
-        <!-- Torque / Speed -->
-        <div class="calc-card-mini">
-          <div class="calc-mini-header">
-            <span class="calc-mini-icon">τ</span>
-            <div>
-              <div class="calc-mini-title">Motor Torque</div>
-              <div class="calc-mini-sub">τ = 9550 × P / N</div>
+        <!-- E5: Fuse Rating -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">F</span><div><div class="cc-title">Fuse / Breaker Rating</div><div class="cc-formula">F = FLA × 1.25</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Full Load A</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e5-fla" value="75" step="1" oninput="calcE5()"><span class="cc-unit">A</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Factor</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e5-f" value="1.25" step="0.05" oninput="calcE5()"><span class="cc-unit">×</span></div></div>
             </div>
-          </div>
-          <div class="calc-mini-body">
-            <div class="calc-row-inputs">
-              <div class="calc-field">
-                <label class="calc-mini-label">Power P</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="e5-p" value="90" step="1" oninput="calcE5()">
-                  <span class="calc-input-unit" id="e5-pu">kW</span>
-                </div>
-              </div>
-              <div class="calc-field">
-                <label class="calc-mini-label">Speed N</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="e5-n" value="1480" step="10" oninput="calcE5()">
-                  <span class="calc-input-unit">RPM</span>
-                </div>
-              </div>
-            </div>
-            <div class="calc-result-row">
-              <span class="calc-result-label">Torque τ =</span>
-              <span class="calc-result-val" id="e5-result">580.4 <small>N·m</small></span>
-            </div>
+            <div class="cc-result"><span class="cc-rlbl">Min Rating =</span><span class="cc-rval" id="e5-result">93.8 <small>A</small></span></div>
           </div>
         </div>
-
-        <!-- bar / PSI converter -->
-        <div class="calc-card-mini">
-          <div class="calc-mini-header">
-            <span class="calc-mini-icon">↔</span>
-            <div>
-              <div class="calc-mini-title">Pressure Converter</div>
-              <div class="calc-mini-sub">bar ↔ PSI ↔ MPa</div>
+        <!-- E6: Pressure Switch -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">PS</span><div><div class="cc-title">Pressure Switch Set</div><div class="cc-formula">PS = WP × 0.9 (cutout)</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Working Press.</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e6-wp" value="200" step="5" oninput="calcE6bar()"><span class="cc-unit" id="e6-u1">bar</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Deadband %</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e6-db" value="10" step="1" oninput="calcE6bar()"><span class="cc-unit">%</span></div></div>
             </div>
-          </div>
-          <div class="calc-mini-body">
-            <div class="calc-row-inputs">
-              <div class="calc-field">
-                <label class="calc-mini-label">Pressure (bar)</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="e6-bar" value="250" step="1" oninput="calcE6bar()">
-                  <span class="calc-input-unit">bar</span>
-                </div>
-              </div>
-              <div class="calc-field">
-                <label class="calc-mini-label">Pressure (PSI)</label>
-                <div class="calc-input-wrap">
-                  <input class="calc-input" type="number" id="e6-psi" value="3625" step="1" oninput="calcE6psi()">
-                  <span class="calc-input-unit">PSI</span>
-                </div>
-              </div>
-            </div>
-            <div class="calc-result-row">
-              <span class="calc-result-label">MPa =</span>
-              <span class="calc-result-val" id="e6-mpa">25.0 <small>MPa</small></span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- FEATURES -->
-  <section class="section">
-    <div class="section-label">Platform Capabilities</div>
-    <h2 class="section-title">Every Tool an Offshore Hydraulic Engineer Needs</h2>
-    <p class="section-subtitle">From fault isolation to full system design — purpose-built for Liebherr, NOV, MacGregor, Rexroth, and 30+ offshore equipment families.</p>
-
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>
-        </div>
-        <h3>AI Advisor</h3>
-        <p>Expert hydraulic Q&A across 6 specialist modes — Liebherr, Rexroth, NOV, MacGregor, Eaton, Danfoss. Get KB-referenced answers with component cross-references.</p>
-        <a href="ai_advisor.html" class="feature-link">Open AI Advisor →</a>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-        </div>
-        <h3>System Design Tool</h3>
-        <p>Complete BOM generation with live pressure, flow, and power calculations. ISO 4413 compliant specifications with pipe sizing and heat exchanger recommendations.</p>
-        <a href="system_design.html" class="feature-link">Open System Design →</a>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-        </div>
-        <h3>Crane Fault Diagnostic</h3>
-        <p>Fleet-aware fault isolation with PLC sequence analysis across 5 major crane platforms. Real-time gauge monitoring with threshold-based alerting.</p>
-        <a href="crane_diagnostic.html" class="feature-link">Open Crane Diagnostic →</a>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
-        </div>
-        <h3>Knowledge Base</h3>
-        <p>155 indexed documents across 155 KB entries — service manuals, maintenance procedures, ISO standards, and manufacturer technical bulletins from 30+ suppliers.</p>
-        <a href="knowledge_base.html" class="feature-link">Browse Knowledge Base →</a>
-      </div>
-    </div>
-  </section>
-
-  <div class="hm-divider"></div>
-
-  <!-- HOW IT WORKS -->
-  <section class="how-section" id="how-it-works">
-    <div class="section-label">Process</div>
-    <h2 class="section-title">Get Expert Analysis in 3 Steps</h2>
-    <p class="section-subtitle">Designed around how offshore engineers actually troubleshoot — fast, systematic, and evidence-based.</p>
-
-    <div class="steps-row">
-      <div class="step">
-        <div class="step-num">01</div>
-        <h3>Select Your Equipment</h3>
-        <p>Choose from 5 major crane platforms or select specific hydraulic components — pumps, motors, DCVs, or complete circuits.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">02</div>
-        <h3>Describe the Fault or Requirement</h3>
-        <p>Describe the observed fault, pressure readings, or design specification. The AI parses hydraulic terminology and system context automatically.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">03</div>
-        <h3>Get KB-Referenced Analysis</h3>
-        <p>Receive structured fault analysis or system specifications with direct KB document references, component cross-references, and ISO 4413 compliance notes.</p>
-      </div>
-    </div>
-  </section>
-
-  <div class="hm-divider"></div>
-
-  <!-- TESTIMONIALS -->
-  <section class="testi-section">
-    <div class="section-label">Field Feedback</div>
-    <h2 class="section-title">Trusted by Offshore Engineers</h2>
-
-    <div class="testi-grid">
-      <div class="testi-card">
-        <p class="testi-quote">HydroMind gave me the Liebherr BOS case drain fault tree in under 2 minutes. Previously that required calling Liebherr tech support and waiting hours. This is a genuine game-changer for offshore troubleshooting.</p>
-        <div class="testi-author">
-          <div class="testi-avatar">KA</div>
-          <div>
-            <div class="testi-name">Khalid Al-Rashidi</div>
-            <div class="testi-role">Senior Crane Technician · UAE Offshore, ADNOC Fleet</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="testi-card">
-        <p class="testi-quote">The system design tool generated a complete BOM with ISO 4413 pipe sizing for our North Sea HPU replacement project. The Rexroth A10V sizing came back spot-on matching our existing specs. Impressive accuracy.</p>
-        <div class="testi-author">
-          <div class="testi-avatar">JM</div>
-          <div>
-            <div class="testi-name">James McAllister</div>
-            <div class="testi-role">Hydraulic Systems Engineer · North Sea, Equinor Operations</div>
+            <div class="cc-result"><span class="cc-rlbl">Cut-in / Cut-out =</span><span class="cc-rval" id="e6-result" style="font-size:11px;">180 / 200 <small>bar</small></span></div>
           </div>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- FINAL CTA -->
+  <section class="cta-section">
+    <div class="cta-card">
+      <div class="section-label" style="justify-content:center;display:flex;">Get Started Today</div>
+      <h2>Ready to Diagnose Smarter?</h2>
+      <p>Join hydraulic engineers across 177 countries using HydroMind AI for faster, more accurate fault diagnosis and system design.</p>
+      <div class="cta-btns">
+        <a href="ai_advisor.html" class="btn btn-primary btn-xl">Try AI Advisor Free →</a>
+        <a href="pricing.html" class="btn btn-ghost btn-lg">View Pricing</a>
+      </div>
+      <div class="cta-note">Free tier available · No credit card required · Cancel anytime</div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="hm-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo-row">
+          <div style="width:28px;height:28px;background:linear-gradient(135deg,var(--accent),var(--accent-deep));border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;color:#fff;">HM</div>
+          HydroMind<span style="color:var(--accent-bright);">.AI</span>
+        </div>
+        <p>AI-powered hydraulic intelligence for marine, offshore and industrial engineers. Built by engineers, for engineers.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="ai_advisor.html">AI Advisor</a>
+        <a href="crane_diagnostic.html">Crane Diagnostic</a>
+        <a href="knowledge_base.html">Knowledge Base</a>
+        <a href="system_design.html">System Design</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="pricing.html">Pricing</a>
+        <a href="pages/privacy.html">Privacy Policy</a>
+        <a href="mailto:support@hydromindai.com">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Download</h4>
+        <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" rel="noopener">Google Play →</a>
+        <div style="margin-top:8px;font-size:11px;color:var(--text3);line-height:1.5;">Version 1.0.39<br>6 installs · 177 countries</div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 HydroMind.AI — All rights reserved</span>
+      <span>Built for marine &amp; offshore engineers worldwide</span>
+    </div>
+  </footer>
 
 </main>
 
-<!-- FOOTER -->
-<footer class="hm-footer">
-  <div class="footer-grid">
-    <div class="footer-brand">
-      <div class="logo-row">
-        <div class="logo-icon" style="width:28px;height:28px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--mono);font-size:11px;font-weight:700;">HM</div>
-        HydroMind<span style="color:var(--accent)">.AI</span>
-      </div>
-      <p>Professional hydraulic engineering AI platform for industrial plant, marine vessels, and offshore installations. Built for engineers worldwide across all sectors.</p>
-    </div>
-    <div class="footer-col">
-      <h4>Platform</h4>
-      <a href="ai_advisor.html">AI Advisor</a>
-      <a href="system_design.html">System Design</a>
-      <a href="crane_diagnostic.html">Crane Diagnostic</a>
-      <a href="knowledge_base.html">Knowledge Base</a>
-    </div>
-    <div class="footer-col">
-      <h4>Resources</h4>
-      <a href="knowledge_base.html">KB Library (155 docs)</a>
-      <a href="knowledge_base.html?filter=standards">ISO Standards</a>
-      <a href="knowledge_base.html?filter=manuals">Service Manuals</a>
-      <a href="pricing.html">Pricing Plans</a>
-    </div>
-    <div class="footer-col">
-      <h4>Company</h4>
-      <a href="pages/privacy.html">Privacy Policy</a>
-      <a href="mailto:support@hydromindai.com">support@hydromindai.com</a>
-      <a href="mailto:support@hydromindai.com">Advertise</a>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span>© 2025 HydroMind.AI — Hydraulic Intelligence Platform</span>
-    <div style="display:flex;gap:16px;">
-      <a href="pages/privacy.html">Privacy</a>
-      <span>ISO 4413 · DNV-ST-0378 · Offshore Grade</span>
-    </div>
-  </div>
-</footer>
-
+<script src="js/auth.js"></script>
 <script>
-/* ═══════════════════════════════════
-   CALCULATOR JS
-═══════════════════════════════════ */
-let imperial = false;
+/* ══ UNIT STATE ══ */
+var imperial = false;
 
-/* ── Tab switch ── */
-function switchCalcTab(tab, btn) {
-  document.querySelectorAll('.calc-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.calc-panel').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('calc-' + tab).classList.add('active');
-}
-
-/* ── Unit switch ── */
 function switchUnits() {
   imperial = document.getElementById('unit-toggle-cb').checked;
-
-  // H1: displacement label & units
-  document.getElementById('h1-sub').textContent   = imperial ? 'Q = (D × N) / 231' : 'Q = (D × N) / 1000';
-  document.getElementById('h1-u1').textContent    = imperial ? 'in³/rev' : 'cc/rev';
-  document.getElementById('h1-ru').textContent    = imperial ? 'GPM' : 'L/min';
-
-  // H2: pressure & flow units
-  document.getElementById('h2-sub').textContent   = imperial ? 'P = (p × Q) / (1714 × η)' : 'P = (p × Q) / (600 × η)';
-  document.getElementById('h2-u1').textContent    = imperial ? 'PSI' : 'bar';
-  document.getElementById('h2-u2').textContent    = imperial ? 'GPM' : 'L/min';
-  document.getElementById('h2-ru').textContent    = imperial ? 'HP' : 'kW';
-
-  // H3: force units
-  document.getElementById('h3-u1').textContent    = imperial ? 'PSI' : 'bar';
-  document.getElementById('h3-l2').textContent    = imperial ? 'Bore Ø' : 'Bore Ø';
-  document.getElementById('h3-u2').textContent    = imperial ? 'in' : 'mm';
-  document.getElementById('h3-ru').textContent    = imperial ? 'lbf' : 'kN';
-
-  // H4: velocity units
-  document.getElementById('h4-u1').textContent    = imperial ? 'GPM' : 'L/min';
-  document.getElementById('h4-u2').textContent    = imperial ? 'in' : 'mm';
-
-  // H5: pressure units
-  document.getElementById('h5-u1').textContent    = imperial ? 'PSI' : 'bar';
-  document.getElementById('h5-u2').textContent    = imperial ? 'PSI' : 'bar';
-
-  // H6: volume units
-  document.getElementById('h6-u1').textContent    = imperial ? 'GPM' : 'L/min';
-  document.getElementById('h6-ru').textContent    = imperial ? 'gal' : 'L';
-
-  // E2: power unit
-  document.getElementById('e2-pu').textContent    = imperial ? 'HP' : 'kW';
-
-  // E4: length unit
-  document.getElementById('e4-u').textContent     = imperial ? 'ft' : 'm';
-
-  // E5: power unit
-  document.getElementById('e5-pu').textContent    = imperial ? 'HP' : 'kW';
-
-  // Convert existing input values
-  if (imperial) {
-    // bar → PSI for pressure fields
-    ['h2-p','h3-p','h5-wp','h5-rv'].forEach(id => {
-      const el = document.getElementById(id);
-      el.value = (parseFloat(el.value) * 14.5038).toFixed(0);
-    });
-    // L/min → GPM
-    ['h1-d','h2-q','h4-q','h6-q'].forEach(id => {
-      const el = document.getElementById(id);
-      if (id === 'h1-d') { el.value = (parseFloat(el.value) / 16.387).toFixed(2); return; }
-      el.value = (parseFloat(el.value) * 0.2642).toFixed(1);
-    });
-    // mm → inches
-    ['h3-b','h4-d'].forEach(id => {
-      const el = document.getElementById(id);
-      el.value = (parseFloat(el.value) / 25.4).toFixed(2);
-    });
-    // m → ft
-    const e4l = document.getElementById('e4-l');
-    e4l.value = (parseFloat(e4l.value) * 3.281).toFixed(1);
+  var u = imperial;
+  document.getElementById('h1-sub').textContent  = u ? 'Q = (D × N) / 231' : 'Q = (D × N) / 1000';
+  document.getElementById('h1-l1').textContent   = u ? 'Displacement D' : 'Displacement D';
+  document.getElementById('h1-u1').textContent   = u ? 'in³/rev' : 'cc/rev';
+  document.getElementById('h2-sub').textContent  = u ? 'P = (p × Q) / 1714η' : 'P = (p × Q) / 600η';
+  document.getElementById('h2-u1').textContent   = u ? 'PSI' : 'bar';
+  document.getElementById('h2-u2').textContent   = u ? 'GPM' : 'L/min';
+  document.getElementById('h3-u1').textContent   = u ? 'PSI' : 'bar';
+  document.getElementById('h3-u2').textContent   = u ? 'in' : 'mm';
+  document.getElementById('h4-u1').textContent   = u ? 'GPM' : 'L/min';
+  document.getElementById('h4-u2').textContent   = u ? 'in' : 'mm';
+  document.getElementById('h5-u1').textContent   = u ? 'PSI' : 'bar';
+  document.getElementById('h5-u2').textContent   = u ? 'PSI' : 'bar';
+  document.getElementById('h6-u1').textContent   = u ? 'GPM' : 'L/min';
+  document.getElementById('e4-ul').textContent   = u ? 'ft' : 'm';
+  document.getElementById('e6-u1').textContent   = u ? 'PSI' : 'bar';
+  if (u) {
+    var d = document.getElementById('h1-d');
+    d.value = (parseFloat(d.value) / 16.387).toFixed(3);
+    var h2p = document.getElementById('h2-p');
+    h2p.value = (parseFloat(h2p.value) * 14.504).toFixed(0);
+    var h2q = document.getElementById('h2-q');
+    h2q.value = (parseFloat(h2q.value) * 0.2642).toFixed(1);
+    var h3p = document.getElementById('h3-p');
+    h3p.value = (parseFloat(h3p.value) * 14.504).toFixed(0);
+    var h3b = document.getElementById('h3-b');
+    h3b.value = (parseFloat(h3b.value) / 25.4).toFixed(2);
+    var h4q = document.getElementById('h4-q');
+    h4q.value = (parseFloat(h4q.value) * 0.2642).toFixed(1);
+    var h4d = document.getElementById('h4-d');
+    h4d.value = (parseFloat(h4d.value) / 25.4).toFixed(2);
+    var h5wp = document.getElementById('h5-wp');
+    h5wp.value = (parseFloat(h5wp.value) * 14.504).toFixed(0);
+    var h5rv = document.getElementById('h5-rv');
+    h5rv.value = (parseFloat(h5rv.value) * 14.504).toFixed(0);
+    var h6q = document.getElementById('h6-q');
+    h6q.value = (parseFloat(h6q.value) * 0.2642).toFixed(1);
+    var e4l = document.getElementById('e4-l');
+    e4l.value = (parseFloat(e4l.value) * 3.281).toFixed(0);
+    var e6wp = document.getElementById('e6-wp');
+    e6wp.value = (parseFloat(e6wp.value) * 14.504).toFixed(0);
   } else {
-    // PSI → bar
-    ['h2-p','h3-p','h5-wp','h5-rv'].forEach(id => {
-      const el = document.getElementById(id);
-      el.value = (parseFloat(el.value) / 14.5038).toFixed(1);
-    });
-    // GPM → L/min
-    ['h2-q','h4-q','h6-q'].forEach(id => {
-      const el = document.getElementById(id);
-      el.value = (parseFloat(el.value) / 0.2642).toFixed(0);
-    });
-    // in³/rev → cc/rev
-    const h1d = document.getElementById('h1-d');
-    h1d.value = (parseFloat(h1d.value) * 16.387).toFixed(0);
-    // inches → mm
-    ['h3-b','h4-d'].forEach(id => {
-      const el = document.getElementById(id);
-      el.value = (parseFloat(el.value) * 25.4).toFixed(0);
-    });
-    // ft → m
-    const e4l = document.getElementById('e4-l');
-    e4l.value = (parseFloat(e4l.value) / 3.281).toFixed(0);
+    var d2 = document.getElementById('h1-d');
+    d2.value = (parseFloat(d2.value) * 16.387).toFixed(0);
+    var h2p2 = document.getElementById('h2-p');
+    h2p2.value = (parseFloat(h2p2.value) / 14.504).toFixed(0);
+    var h2q2 = document.getElementById('h2-q');
+    h2q2.value = (parseFloat(h2q2.value) / 0.2642).toFixed(0);
+    var h3p2 = document.getElementById('h3-p');
+    h3p2.value = (parseFloat(h3p2.value) / 14.504).toFixed(0);
+    var h3b2 = document.getElementById('h3-b');
+    h3b2.value = (parseFloat(h3b2.value) * 25.4).toFixed(0);
+    var h4q2 = document.getElementById('h4-q');
+    h4q2.value = (parseFloat(h4q2.value) / 0.2642).toFixed(0);
+    var h4d2 = document.getElementById('h4-d');
+    h4d2.value = (parseFloat(h4d2.value) * 25.4).toFixed(0);
+    var h5wp2 = document.getElementById('h5-wp');
+    h5wp2.value = (parseFloat(h5wp2.value) / 14.504).toFixed(0);
+    var h5rv2 = document.getElementById('h5-rv');
+    h5rv2.value = (parseFloat(h5rv2.value) / 14.504).toFixed(0);
+    var h6q2 = document.getElementById('h6-q');
+    h6q2.value = (parseFloat(h6q2.value) / 0.2642).toFixed(0);
+    var e4l2 = document.getElementById('e4-l');
+    e4l2.value = (parseFloat(e4l2.value) / 3.281).toFixed(0);
+    var e6wp2 = document.getElementById('e6-wp');
+    e6wp2.value = (parseFloat(e6wp2.value) / 14.504).toFixed(0);
   }
-
-  // Recalculate all
   calcH1(); calcH2(); calcH3(); calcH4(); calcH5(); calcH6();
   calcE1(); calcE2(); calcE3kw(); calcE4(); calcE5(); calcE6bar();
 }
 
-/* ── HYDRAULIC CALCS ── */
+function switchCalcTab(tab, btn) {
+  document.querySelectorAll('.cpanel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.ctab').forEach(function(b) { b.classList.remove('active'); });
+  var el = document.getElementById('calc-' + tab);
+  if (el) el.classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+/* ══ HYDRAULIC CALCULATORS ══ */
 function calcH1() {
-  const D = parseFloat(document.getElementById('h1-d').value) || 0;
-  const N = parseFloat(document.getElementById('h1-n').value) || 0;
-  let result;
-  if (imperial) {
-    result = ((D * N) / 231).toFixed(1) + ' <small>GPM</small>';
-  } else {
-    result = ((D * N) / 1000).toFixed(1) + ' <small>L/min</small>';
-  }
-  document.getElementById('h1-result').innerHTML = result;
+  var D = parseFloat(document.getElementById('h1-d').value) || 0;
+  var N = parseFloat(document.getElementById('h1-n').value) || 0;
+  document.getElementById('h1-result').innerHTML = imperial
+    ? ((D * N) / 231).toFixed(1) + ' <small>GPM</small>'
+    : ((D * N) / 1000).toFixed(1) + ' <small>L/min</small>';
 }
-
 function calcH2() {
-  const p = parseFloat(document.getElementById('h2-p').value) || 0;
-  const Q = parseFloat(document.getElementById('h2-q').value) || 0;
-  const eta = 0.87;
-  let result;
-  if (imperial) {
-    result = ((p * Q) / (1714 * eta)).toFixed(1) + ' <small>HP</small>';
-  } else {
-    result = ((p * Q) / (600 * eta)).toFixed(1) + ' <small>kW</small>';
-  }
-  document.getElementById('h2-result').innerHTML = result;
+  var p = parseFloat(document.getElementById('h2-p').value) || 0;
+  var Q = parseFloat(document.getElementById('h2-q').value) || 0;
+  var eta = 0.87;
+  document.getElementById('h2-result').innerHTML = imperial
+    ? ((p * Q) / (1714 * eta)).toFixed(1) + ' <small>HP</small>'
+    : ((p * Q) / (600 * eta)).toFixed(1) + ' <small>kW</small>';
 }
-
 function calcH3() {
-  const p = parseFloat(document.getElementById('h3-p').value) || 0;
-  const b = parseFloat(document.getElementById('h3-b').value) || 0;
-  let result;
+  var p = parseFloat(document.getElementById('h3-p').value) || 0;
+  var b = parseFloat(document.getElementById('h3-b').value) || 0;
   if (imperial) {
-    const A = Math.PI * (b / 2) ** 2; // in²
-    const F = p * A; // lbf
-    result = F.toFixed(0) + ' <small>lbf</small>';
+    var A = Math.PI * Math.pow(b / 2, 2);
+    document.getElementById('h3-result').innerHTML = (p * A).toFixed(0) + ' <small>lbf</small>';
   } else {
-    const A = Math.PI * (b / 2) ** 2 / 1e6; // m²
-    const F = p * 1e5 * A / 1000; // kN
-    result = F.toFixed(1) + ' <small>kN</small>';
+    var A2 = Math.PI * Math.pow(b / 2, 2) / 1e6;
+    document.getElementById('h3-result').innerHTML = (p * 1e5 * A2 / 1000).toFixed(1) + ' <small>kN</small>';
   }
-  document.getElementById('h3-result').innerHTML = result;
 }
-
 function calcH4() {
-  const Q = parseFloat(document.getElementById('h4-q').value) || 0;
-  const d = parseFloat(document.getElementById('h4-d').value) || 1;
-  let v;
+  var Q = parseFloat(document.getElementById('h4-q').value) || 0;
+  var d = parseFloat(document.getElementById('h4-d').value) || 1;
   if (imperial) {
-    const Q_in3s = Q * 231 / 60; // in³/s
-    const A = Math.PI * (d / 2) ** 2; // in²
-    v = (Q_in3s / A / 12).toFixed(2); // ft/s
-    document.getElementById('h4-result').innerHTML = v + ' <small>ft/s</small>';
+    var Qi = Q * 231 / 60;
+    var Ai = Math.PI * Math.pow(d / 2, 2);
+    document.getElementById('h4-result').innerHTML = (Qi / Ai / 12).toFixed(2) + ' <small>ft/s</small>';
   } else {
-    const Q_m3s = Q / 60000;
-    const A = Math.PI * (d / 2000) ** 2;
-    v = (Q_m3s / A).toFixed(2);
-    document.getElementById('h4-result').innerHTML = v + ' <small>m/s</small>';
+    var Qm = Q / 60000;
+    var Am = Math.PI * Math.pow(d / 2000, 2);
+    document.getElementById('h4-result').innerHTML = (Qm / Am).toFixed(2) + ' <small>m/s</small>';
   }
 }
-
 function calcH5() {
-  const wp = parseFloat(document.getElementById('h5-wp').value) || 0;
-  const rv = parseFloat(document.getElementById('h5-rv').value) || 0;
-  const minRV = wp * 1.1;
-  const pass = rv >= minRV;
-  const el = document.getElementById('h5-result');
+  var wp = parseFloat(document.getElementById('h5-wp').value) || 0;
+  var rv = parseFloat(document.getElementById('h5-rv').value) || 0;
+  var minRV = wp * 1.1;
+  var pass = rv >= minRV;
+  var el = document.getElementById('h5-result');
+  var unit = imperial ? 'PSI' : 'bar';
   el.style.color = pass ? 'var(--success)' : 'var(--danger)';
-  const unit = imperial ? 'PSI' : 'bar';
-  el.textContent = pass ? `PASS ✓  (min ${minRV.toFixed(0)} ${unit})` : `FAIL ✗  (need ≥${minRV.toFixed(0)} ${unit})`;
+  el.textContent = pass ? 'PASS ✓  (min ' + minRV.toFixed(0) + ' ' + unit + ')' : 'FAIL ✗  (need \u2265' + minRV.toFixed(0) + ' ' + unit + ')';
 }
-
 function calcH6() {
-  const Q = parseFloat(document.getElementById('h6-q').value) || 0;
-  const m = parseFloat(document.getElementById('h6-m').value) || 3;
-  if (imperial) {
-    document.getElementById('h6-result').innerHTML = (Q * m * 7.481).toFixed(0) + ' <small>gal</small>';
-  } else {
-    document.getElementById('h6-result').innerHTML = (Q * m).toFixed(0) + ' <small>L</small>';
-  }
+  var Q = parseFloat(document.getElementById('h6-q').value) || 0;
+  var m = parseFloat(document.getElementById('h6-m').value) || 3;
+  var unit = imperial ? 'Gal' : 'L';
+  document.getElementById('h6-result').innerHTML = (Q * m).toFixed(0) + ' <small>' + unit + '</small>';
 }
 
-/* ── ELECTRICAL CALCS ── */
+/* ══ ELECTRICAL CALCULATORS ══ */
 function calcE1() {
-  const V = parseFloat(document.getElementById('e1-v').value) || 0;
-  const I = parseFloat(document.getElementById('e1-i').value) || 0;
-  const PF = 0.85;
-  const kW = (Math.sqrt(3) * V * I * PF / 1000).toFixed(1);
-  document.getElementById('e1-result').innerHTML = kW + ' <small>kW</small>';
+  var I = parseFloat(document.getElementById('e1-i').value) || 0;
+  var R = parseFloat(document.getElementById('e1-r').value) || 0;
+  document.getElementById('e1-result').innerHTML = (I * R).toFixed(1) + ' <small>V</small>';
 }
-
 function calcE2() {
-  const P = parseFloat(document.getElementById('e2-p').value) || 0;
-  const V = parseFloat(document.getElementById('e2-v').value) || 1;
-  const PF = 0.85; const eta = 0.92;
-  const kWval = imperial ? P * 0.7457 : P;
-  const I = (kWval * 1000 / (Math.sqrt(3) * V * PF * eta)).toFixed(1);
-  document.getElementById('e2-result').innerHTML = I + ' <small>A</small>';
+  var V = parseFloat(document.getElementById('e2-v').value) || 0;
+  var I = parseFloat(document.getElementById('e2-i').value) || 0;
+  document.getElementById('e2-result').innerHTML = (Math.sqrt(3) * V * I * 0.88 / 1000).toFixed(1) + ' <small>kW</small>';
 }
-
 function calcE3kw() {
-  const kw = parseFloat(document.getElementById('e3-kw').value) || 0;
-  const hp = (kw * 1.34102).toFixed(1);
-  document.getElementById('e3-hp').value = hp;
-  document.getElementById('e3-result').textContent = kw + ' kW = ' + hp + ' HP';
+  var P = parseFloat(document.getElementById('e3-p').value) || 0;
+  var V = parseFloat(document.getElementById('e3-v').value) || 1;
+  document.getElementById('e3-result').innerHTML = (P * 1000 / (Math.sqrt(3) * V * 0.88 * 0.87)).toFixed(1) + ' <small>A</small>';
 }
-function calcE3hp() {
-  const hp = parseFloat(document.getElementById('e3-hp').value) || 0;
-  const kw = (hp / 1.34102).toFixed(1);
-  document.getElementById('e3-kw').value = kw;
-  document.getElementById('e3-result').textContent = kw + ' kW = ' + hp + ' HP';
-}
-
 function calcE4() {
-  const I = parseFloat(document.getElementById('e4-i').value) || 0;
-  const L = parseFloat(document.getElementById('e4-l').value) || 0;
-  const rho = 0.0000000172; // copper resistivity Ω·m (1.72×10⁻⁸)
-  const A = 0.000025;       // 25mm² cable cross-section m²
-  // Always convert to metres for calculation
-  const L_m = imperial ? L / 3.281 : L;
-  const dV = (2 * I * L_m * rho / A).toFixed(2);
-  document.getElementById('e4-result').innerHTML = dV + ' <small>V</small>';
+  var I = parseFloat(document.getElementById('e4-i').value) || 0;
+  var L = parseFloat(document.getElementById('e4-l').value) || 0;
+  var R = 0.001;
+  document.getElementById('e4-result').innerHTML = (2 * I * R * L).toFixed(1) + ' <small>V</small>';
 }
-
 function calcE5() {
-  const P = parseFloat(document.getElementById('e5-p').value) || 0;
-  const N = parseFloat(document.getElementById('e5-n').value) || 1;
-  const kWval = imperial ? P * 0.7457 : P;
-  const tau = (9550 * kWval / N).toFixed(1);
-  document.getElementById('e5-result').innerHTML = tau + ' <small>N·m</small>';
+  var fla = parseFloat(document.getElementById('e5-fla').value) || 0;
+  var f   = parseFloat(document.getElementById('e5-f').value) || 1.25;
+  document.getElementById('e5-result').innerHTML = (fla * f).toFixed(1) + ' <small>A</small>';
 }
-
 function calcE6bar() {
-  const bar = parseFloat(document.getElementById('e6-bar').value) || 0;
-  document.getElementById('e6-psi').value = (bar * 14.5038).toFixed(0);
-  document.getElementById('e6-mpa').innerHTML = (bar / 10).toFixed(2) + ' <small>MPa</small>';
-}
-function calcE6psi() {
-  const psi = parseFloat(document.getElementById('e6-psi').value) || 0;
-  const bar = psi / 14.5038;
-  document.getElementById('e6-bar').value = bar.toFixed(1);
-  document.getElementById('e6-mpa').innerHTML = (bar / 10).toFixed(2) + ' <small>MPa</small>';
+  var wp = parseFloat(document.getElementById('e6-wp').value) || 0;
+  var db = parseFloat(document.getElementById('e6-db').value) || 10;
+  var cutout = wp;
+  var cutin  = wp * (1 - db / 100);
+  var unit = imperial ? 'PSI' : 'bar';
+  document.getElementById('e6-result').innerHTML = cutin.toFixed(0) + ' / ' + cutout.toFixed(0) + ' <small>' + unit + '</small>';
 }
 
-// Init all on load
-calcH1(); calcH2(); calcH3(); calcH4(); calcH5(); calcH6();
-calcE1(); calcE2(); calcE3kw(); calcE4(); calcE5(); calcE6bar();
+/* ══ HERO CHAT MODE CHIPS ══ */
+document.querySelectorAll('.hc-chip').forEach(function(chip) {
+  chip.addEventListener('click', function() {
+    document.querySelectorAll('.hc-chip').forEach(function(c) { c.classList.remove('on'); });
+    chip.classList.add('on');
+  });
+});
+
+/* ══ INIT ══ */
+document.addEventListener('DOMContentLoaded', function() {
+  calcH1(); calcH2(); calcH3(); calcH4(); calcH5(); calcH6();
+  calcE1(); calcE2(); calcE3kw(); calcE4(); calcE5(); calcE6bar();
+  if (typeof hmInit === 'function') hmInit();
+});
 </script>
-<script src="js/auth.js"></script>
 </body>
 </html>

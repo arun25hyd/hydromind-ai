@@ -3,22 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Advisor — HydroMind.AI</title>
+<title>AI Hydraulic Advisor — HydroMind.AI</title>
+<meta name="description" content="Expert AI hydraulic fault diagnosis, system analysis and KB search. Powered by 86+ OEM manuals.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="css/hm-design.css">
 <style>
-/* ── Full-height shell ── */
-body { overflow: hidden; }
-.hm-page { padding: 0; display: flex; flex-direction: column; height: calc(100vh - var(--nav-h)); overflow: hidden; }
+/* ══ AI ADVISOR PAGE — FULL SHELL ══ */
+body {
+  overflow: hidden !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100vh !important;
+}
+.hm-sidebar-left, .hm-sidebar-right { display: none !important; }
+.hm-page {
+  padding: 0 !important;
+  margin-top: var(--nav-h);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--nav-h));
+  overflow: hidden;
+  min-height: 0;
+}
 
-/* ── Three-column layout ── */
+/* ── THREE-COLUMN SHELL ── */
 .advisor-shell {
   display: flex;
   flex: 1;
+  min-height: 0;
   overflow: hidden;
-  height: 100%;
 }
 
-/* ── Left context panel ── */
+/* ══════════════════════════════
+   LEFT — CONTEXT PANEL
+══════════════════════════════ */
 .ctx-panel {
   width: 230px;
   flex-shrink: 0;
@@ -27,752 +48,1100 @@ body { overflow: hidden; }
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  padding: 16px 12px;
-  gap: 4px;
+  padding: 14px 11px;
+  gap: 6px;
 }
-.ctx-section { margin-bottom: 6px; }
-.ctx-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: var(--text3);
-  padding: 6px 8px 4px;
-}
-.ctx-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 7px 10px;
-  border-radius: var(--radius-sm);
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--text2);
-  cursor: pointer;
-  transition: all 0.15s;
-  user-select: none;
-}
-.ctx-item:hover { background: var(--accent-dim); color: var(--accent); }
-.ctx-item.active { background: var(--accent-dim); color: var(--accent); font-weight: 600; }
-.ctx-item.active::after { content: "✓"; font-size: 10px; }
-.ctx-item .ctx-mfr { font-size: 10px; color: var(--text3); }
-.ctx-item.active .ctx-mfr { color: var(--accent); opacity: 0.7; }
-.ctx-divider { height: 1px; background: var(--border); margin: 8px 4px; }
+.ctx-panel::-webkit-scrollbar { width: 3px; }
+.ctx-panel::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 2px; }
 
-/* ── Centre chat column ── */
+.ctx-section-label {
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: .10em; text-transform: uppercase;
+  color: var(--text3); padding: 4px 4px 2px;
+  margin-top: 4px;
+}
+
+/* Mode selector */
+.mode-grid { display: flex; flex-direction: column; gap: 5px; }
+.mode-btn {
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 11px; border-radius: 9px;
+  border: 1.5px solid var(--border);
+  background: var(--card); cursor: pointer;
+  transition: all .15s; font-family: var(--sans);
+  text-align: left;
+}
+.mode-btn:hover { border-color: var(--accent-glow); background: var(--accent-dim); }
+.mode-btn.active { border-color: var(--accent); background: var(--accent-dim); }
+.mode-icon {
+  width: 32px; height: 32px; flex-shrink: 0;
+  background: var(--surface); border: 1px solid var(--border-md);
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+}
+.mode-btn.active .mode-icon { background: rgba(6,182,212,.15); border-color: var(--accent-glow); }
+.mode-name { font-size: 12px; font-weight: 700; color: var(--text1); }
+.mode-btn.active .mode-name { color: var(--accent-bright); }
+.mode-sub { font-size: 10px; color: var(--text3); margin-top: 1px; line-height: 1.3; }
+
+/* KB filter */
+.kb-filter {
+  width: 100%; padding: 7px 10px;
+  background: var(--card); border: 1.5px solid var(--border-md);
+  border-radius: 7px; font-size: 11.5px; color: var(--text1);
+  font-family: var(--sans); outline: none; transition: border-color .15s;
+}
+.kb-filter::placeholder { color: var(--text3); }
+.kb-filter:focus { border-color: var(--accent); }
+
+/* Brand chips */
+.brand-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.brand-chip {
+  font-size: 10px; font-weight: 700;
+  background: var(--card); border: 1px solid var(--border-md);
+  border-radius: 5px; padding: 3px 8px; cursor: pointer;
+  color: var(--text2); transition: all .12s; font-family: var(--mono);
+}
+.brand-chip:hover { border-color: var(--accent-glow); color: var(--accent); background: var(--accent-dim); }
+.brand-chip.on { background: var(--accent-dim); color: var(--accent-bright); border-color: var(--accent); }
+
+/* Session stats */
+.session-stats {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 9px; padding: 10px 11px;
+  display: flex; flex-direction: column; gap: 7px;
+}
+.ss-row { display: flex; align-items: center; justify-content: space-between; }
+.ss-key { font-size: 10px; color: var(--text3); font-weight: 600; }
+.ss-val { font-size: 11px; font-weight: 800; color: var(--accent-bright); font-family: var(--mono); }
+.ss-val.warn { color: var(--warning); }
+
+/* History */
+.hist-list { display: flex; flex-direction: column; gap: 4px; }
+.hist-item {
+  display: flex; align-items: flex-start; gap: 7px;
+  padding: 7px 9px; border-radius: 7px;
+  background: var(--card); border: 1px solid var(--border);
+  cursor: pointer; transition: all .12s;
+}
+.hist-item:hover { border-color: var(--accent-glow); background: var(--accent-dim); }
+.hist-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; background: var(--accent); }
+.hist-dot.warn { background: var(--warning); }
+.hist-dot.fault { background: var(--danger); }
+.hist-text { font-size: 10.5px; color: var(--text2); line-height: 1.4; flex: 1; }
+.hist-time { font-size: 9px; color: var(--text3); font-family: var(--mono); white-space: nowrap; }
+
+/* Clear button */
+.clear-btn {
+  width: 100%; padding: 7px; border-radius: 7px;
+  background: var(--danger-dim); border: 1px solid rgba(239,68,68,.18);
+  font-size: 11px; font-weight: 600; color: var(--danger);
+  cursor: pointer; transition: all .15s; font-family: var(--sans);
+}
+.clear-btn:hover { background: var(--danger); color: #fff; }
+
+/* ══════════════════════════════
+   CENTRE — CHAT COLUMN
+══════════════════════════════ */
 .chat-col {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: var(--bg);
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column;
+  overflow: hidden; background: var(--bg);
+  border-right: 1px solid var(--border-md);
 }
 
-/* Mode tab bar */
+/* Mode bar */
 .mode-bar {
-  display: flex;
-  background: var(--card);
-  border-bottom: 1px solid var(--border-md);
-  padding: 0 16px;
   flex-shrink: 0;
+  display: flex; align-items: center; gap: 6px;
+  padding: 10px 18px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border-md);
   overflow-x: auto;
 }
+.mode-bar::-webkit-scrollbar { height: 0; }
 .mode-tab {
-  padding: 13px 16px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text2);
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  white-space: nowrap;
-  transition: all 0.15s;
-  user-select: none;
-  background: none;
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 7px;
+  font-size: 12.5px; font-weight: 600;
+  color: var(--text2); background: transparent;
+  border: 1.5px solid transparent; cursor: pointer;
+  white-space: nowrap; transition: all .15s; font-family: var(--sans);
 }
-.mode-tab:hover { color: var(--text1); }
-.mode-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+.mode-tab:hover { color: var(--accent-bright); background: var(--accent-dim); border-color: var(--accent-glow); }
+.mode-tab.active { color: var(--accent-bright); background: var(--accent-dim); border-color: var(--accent); }
+.mode-tab svg { width: 14px; height: 14px; flex-shrink: 0; }
+.mode-separator { width: 1px; height: 20px; background: var(--border-md); flex-shrink: 0; }
+.mode-bar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.model-badge {
+  font-size: 10px; font-weight: 700;
+  color: var(--text3); background: var(--card);
+  border: 1px solid var(--border-md); border-radius: 6px;
+  padding: 3px 8px; font-family: var(--mono); white-space: nowrap;
+}
+.online-dot {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 10px; font-weight: 600; color: var(--success);
+}
+.online-dot span { width: 6px; height: 6px; background: var(--success); border-radius: 50%; animation: pulse-dot 2s ease-in-out infinite; }
 
-/* Messages area */
+/* Chat area */
 .chat-area {
-  flex: 1;
+  flex: 1; min-height: 0;
   overflow-y: auto;
-  padding: 24px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  padding: 24px 28px;
+  display: flex; flex-direction: column; gap: 18px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
+.chat-area::-webkit-scrollbar { width: 8px; }
+.chat-area::-webkit-scrollbar-track { background: rgba(6,182,212,.03); }
+.chat-area::-webkit-scrollbar-thumb { background: rgba(6,182,212,.25); border-radius: 4px; }
+.chat-area::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
 /* Welcome screen */
-.welcome-screen {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  gap: 28px;
-  padding: 48px 32px;
-  text-align: center;
+.adv-welcome {
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+  width: 100%; padding: 32px 16px 40px; gap: 18px;
 }
-.welcome-icon {
-  width: 72px; height: 72px;
-  background: var(--accent);
-  border-radius: 18px;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--mono); font-size: 26px; font-weight: 700; color: #fff;
-  box-shadow: 0 12px 32px rgba(8,145,178,0.28);
+.adv-welcome-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent-dim); border: 1px solid var(--accent-glow);
+  border-radius: 20px; padding: 5px 14px;
+  font-size: 11px; font-weight: 700; color: var(--accent-bright);
+  letter-spacing: .05em;
 }
-.welcome-title { font-size: 26px; font-weight: 800; color: var(--text1); }
-.welcome-sub { font-size: 15.5px; color: var(--text2); max-width: 500px; line-height: 1.65; margin-top: -8px; }
-.suggestion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; max-width: 700px; }
-.suggestion-card {
-  background: var(--card);
-  border: 1px solid var(--border-md);
-  border-radius: var(--radius-lg);
-  padding: 20px 22px;
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.18s;
-  font-size: 13.5px;
-  color: var(--text2);
-  line-height: 1.6;
-  box-shadow: var(--card-shadow);
-}
-.suggestion-card:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); transform: translateY(-2px); box-shadow: var(--card-shadow-hover); }
-.suggestion-card strong { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 7px; background: var(--accent-dim); display: inline-block; padding: 3px 9px; border-radius: 20px; }
-.suggestion-card:hover strong { background: rgba(255,255,255,0.25); color: #fff; }
+.adv-welcome-badge .w-dot { width: 6px; height: 6px; background: var(--accent-bright); border-radius: 50%; animation: pulse-dot 2s ease-in-out infinite; }
+.adv-welcome h2 { font-family: var(--syne); font-size: 26px; font-weight: 800; color: var(--text1); margin-bottom: 6px; }
+.adv-welcome p { font-size: 14px; color: var(--text2); line-height: 1.7; max-width: 520px; }
 
-/* Chat bubbles */
-.msg-row { display: flex; flex-direction: column; gap: 4px; max-width: 80%; }
+/* Suggestion grid */
+.sugg-section { width: 100%; max-width: 900px; }
+.sugg-label {
+  font-size: 12px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--text3); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.sugg-label::before, .sugg-label::after {
+  content: ""; flex: 1; height: 1px; background: var(--border-md);
+}
+.sugg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.sugg-card {
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 16px; padding: 24px 22px 22px; cursor: pointer;
+  transition: all .18s; text-align: left;
+  display: flex; flex-direction: column; gap: 10px;
+  font-family: var(--sans); min-height: 140px;
+}
+.sugg-card:hover {
+  border-color: var(--accent); background: var(--accent-dim);
+  transform: translateY(-3px); box-shadow: 0 8px 28px rgba(6,182,212,.15);
+}
+.sugg-cat {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 800;
+  letter-spacing: .07em; text-transform: uppercase;
+  color: var(--accent); background: var(--accent-dim);
+  border: 1px solid var(--accent-glow);
+  border-radius: 6px; padding: 3px 10px;
+}
+.sugg-icon { font-size: 26px; }
+.sugg-title { font-size: 15px; font-weight: 800; color: var(--text1); line-height: 1.3; }
+.sugg-card:hover .sugg-title { color: var(--accent-bright); }
+.sugg-desc { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+/* Messages */
+.msg-row { display: flex; flex-direction: column; gap: 4px; max-width: 88%; }
 .msg-row.user { align-self: flex-end; align-items: flex-end; }
-.msg-row.ai { align-self: flex-start; align-items: flex-start; }
-.msg-sender { font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text3); padding: 0 4px; }
+.msg-row.ai   { align-self: flex-start; align-items: flex-start; max-width: 96%; }
+.msg-sender { font-size: 9.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); }
 .msg-bubble {
-  padding: 11px 15px;
-  border-radius: 14px;
-  font-size: 13.5px;
-  line-height: 1.65;
-  word-break: break-word;
+  padding: 12px 16px; border-radius: 14px; font-size: 13.5px; line-height: 1.65;
 }
 .msg-row.user .msg-bubble {
-  background: var(--accent);
-  color: #fff;
-  border-bottom-right-radius: 4px;
+  background: linear-gradient(135deg, var(--accent-deep), var(--accent-hover));
+  color: #fff; border-bottom-right-radius: 3px;
+  box-shadow: 0 2px 12px rgba(6,182,212,.20);
 }
 .msg-row.ai .msg-bubble {
-  background: var(--card);
-  color: var(--text1);
-  border: 1px solid var(--border-md);
-  border-left: 3px solid var(--accent);
-  border-bottom-left-radius: 4px;
-  box-shadow: var(--card-shadow);
+  background: var(--card); border: 1px solid var(--border-md);
+  border-left: 3px solid var(--accent); border-bottom-left-radius: 3px;
+  color: var(--text1); box-shadow: var(--card-shadow);
 }
-.msg-bubble strong { font-weight: 700; }
-.msg-bubble ul { padding-left: 18px; margin-top: 8px; }
-.msg-bubble ul li { margin-bottom: 4px; }
-.msg-bubble ol { padding-left: 18px; margin-top: 8px; }
-.msg-bubble ol li { margin-bottom: 4px; }
-.msg-bubble p { margin-top: 8px; }
-.msg-bubble p:first-child { margin-top: 0; }
-.msg-kb {
-  display: flex; gap: 6px; flex-wrap: wrap;
-  padding: 0 4px;
-  margin-top: 2px;
-}
-.msg-kb-chip {
-  font-size: 10.5px; font-weight: 600;
+.msg-time { font-size: 9px; color: var(--text3); margin-top: 2px; }
+.kb-refs { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 6px; }
+.kb-tag {
+  font-size: 9.5px; font-weight: 700;
   background: var(--accent-dim); color: var(--accent);
-  border: 1px solid var(--accent-glow);
-  border-radius: 4px; padding: 2px 8px;
-  font-family: var(--mono);
+  border: 1px solid var(--accent-glow); border-radius: 4px;
+  padding: 2px 7px; font-family: var(--mono); cursor: pointer;
+  transition: all .12s;
 }
-.msg-time { font-size: 10px; color: var(--text3); padding: 0 4px; }
+.kb-tag:hover { background: var(--accent); color: #fff; }
 
-/* Typing indicator */
-.typing-dots { display: flex; align-items: center; gap: 4px; padding: 4px 0; }
-.typing-dots span {
-  width: 7px; height: 7px;
-  background: var(--accent);
-  border-radius: 50%;
-  animation: bounce-dot 1.2s ease-in-out infinite;
-}
-.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes bounce-dot {
-  0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
-  40% { transform: translateY(-5px); opacity: 1; }
-}
+/* Markdown */
+.msg-h2 { font-size:16px;font-weight:800;color:var(--accent-bright);margin:12px 0 6px; }
+.msg-h3 { font-size:14px;font-weight:700;color:var(--text1);margin:10px 0 4px; }
+.msg-h4 { font-size:13px;font-weight:700;color:var(--accent);margin:8px 0 3px; }
+.msg-p  { margin:4px 0;color:var(--text1);line-height:1.7; }
+.msg-ul,.msg-ol { margin:6px 0 6px 18px;padding:0; }
+.msg-ul li,.msg-ol li { margin:4px 0;color:var(--text1);line-height:1.65; }
+.msg-code { background:rgba(6,182,212,.10);border:1px solid var(--accent-glow);border-radius:4px;padding:1px 6px;font-family:var(--mono);font-size:12px;color:var(--accent-bright); }
+.msg-pre { background:var(--surface);border:1px solid var(--border-md);border-radius:8px;padding:12px;font-family:var(--mono);font-size:12px;color:var(--text1);overflow-x:auto;margin:8px 0;line-height:1.6; }
+.msg-strong { color:var(--accent-bright);font-weight:700; }
+.msg-em { color:var(--text2);font-style:italic; }
+.msg-hr { border:none;border-top:1px solid var(--border-md);margin:10px 0; }
+.msg-gap { height:6px; }
+.msg-table { border-collapse:collapse;width:100%;margin:8px 0;font-size:12.5px; }
+.msg-table th { background:var(--surface);border:1px solid var(--border-md);padding:7px 11px;color:var(--accent);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.05em; }
+.msg-table td { border:1px solid var(--border);padding:7px 11px;color:var(--text1); }
+.msg-table tr:nth-child(even) td { background:rgba(6,182,212,.03); }
+
+/* Typing */
+.typing-dots { display:flex;align-items:center;gap:5px;height:18px; }
+.typing-dots span { width:7px;height:7px;background:var(--accent);border-radius:50%;animation:typing-bounce .9s ease-in-out infinite; }
+.typing-dots span:nth-child(2){animation-delay:.18s;}
+.typing-dots span:nth-child(3){animation-delay:.36s;}
+@keyframes typing-bounce{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-6px);opacity:1}}
 
 /* Input bar */
 .input-bar {
-  padding: 12px 16px;
-  background: var(--card);
-  border-top: 1px solid var(--border-md);
   flex-shrink: 0;
-}
-.input-row {
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
+  padding: 12px 18px 14px;
   background: var(--surface);
-  border: 1.5px solid var(--border-md);
-  border-radius: var(--radius);
-  padding: 8px 12px;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  border-top: 1px solid var(--border-md);
 }
-.input-row:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+.input-wrap {
+  display: flex; align-items: flex-end; gap: 10px;
+  background: var(--card); border: 1.5px solid var(--border-md);
+  border-radius: 14px; padding: 11px 13px;
+  transition: border-color .15s, box-shadow .15s;
+}
+.input-wrap:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
 #chat-input {
-  flex: 1;
-  background: none;
-  border: none;
-  outline: none;
-  font-size: 14px;
-  color: var(--text1);
-  resize: none;
-  max-height: 120px;
-  line-height: 1.5;
-  font-family: var(--sans);
+  flex: 1; background: none; border: none; outline: none;
+  font-size: 14px; color: var(--text1); font-family: var(--sans);
+  resize: none; max-height: 160px; line-height: 1.6; min-height: 24px;
 }
 #chat-input::placeholder { color: var(--text3); }
 .send-btn {
-  width: 34px; height: 34px;
-  background: var(--accent);
-  border-radius: 8px;
+  width: 38px; height: 38px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+  border: none; border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  transition: background 0.15s, transform 0.15s;
+  cursor: pointer; transition: all .18s;
+  box-shadow: 0 2px 8px rgba(6,182,212,.25);
 }
-.send-btn:hover { background: var(--accent-hover); transform: scale(1.05); }
-.send-btn:disabled { background: var(--border-md); cursor: not-allowed; transform: none; }
-.send-btn svg { width: 15px; height: 15px; color: #fff; }
-.input-hints {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-top: 7px;
-  padding: 0 2px;
-  font-size: 11px;
-  color: var(--text3);
+.send-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(6,182,212,.35); }
+.send-btn:disabled { opacity: .35; cursor: not-allowed; transform: none; box-shadow: none; }
+.send-btn svg { width: 17px; height: 17px; color: #fff; }
+.input-meta {
+  display: flex; align-items: center; gap: 14px;
+  margin-top: 8px; font-size: 10.5px; color: var(--text3);
+  flex-wrap: wrap;
 }
-.input-hints span { display: flex; align-items: center; gap: 5px; }
-.input-hints kbd {
-  background: var(--surface);
-  border: 1px solid var(--border-md);
-  border-radius: 4px;
-  padding: 1px 6px;
-  font-size: 10.5px;
-  font-family: var(--mono);
-  color: var(--text2);
+.input-meta .hint-chips { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+.hint-chip {
+  padding: 3px 10px; border-radius: 20px;
+  background: var(--card); border: 1px solid var(--border);
+  font-size: 10.5px; font-weight: 600; color: var(--text3);
+  cursor: pointer; transition: all .12s; white-space: nowrap;
+  font-family: var(--sans);
+}
+.hint-chip:hover { color: var(--accent-bright); border-color: var(--accent-glow); background: var(--accent-dim); }
+.input-meta .kbd-hint { margin-left: auto; white-space: nowrap; }
+.input-meta kbd {
+  background: var(--card); border: 1px solid var(--border-md);
+  border-radius: 4px; padding: 1px 5px; font-family: var(--mono);
+  font-size: 9.5px; color: var(--text2);
 }
 
-/* ── Right info panel ── */
+/* ══════════════════════════════
+   RIGHT — INFO PANEL
+══════════════════════════════ */
 .info-panel {
-  width: 220px;
-  flex-shrink: 0;
+  width: 220px; flex-shrink: 0;
   background: var(--surface);
-  border-left: 1px solid var(--border-md);
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  padding: 16px 12px;
-  gap: 16px;
+  display: flex; flex-direction: column;
+  overflow-y: auto; padding: 14px 12px; gap: 14px;
 }
-.info-section h4 {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: var(--text3);
-  margin-bottom: 10px;
+.info-panel::-webkit-scrollbar { width: 3px; }
+.ip-section { display: flex; flex-direction: column; gap: 7px; }
+.ip-section h4 {
+  font-size: 9.5px; font-weight: 700; letter-spacing: .10em;
+  text-transform: uppercase; color: var(--text3);
+  padding-bottom: 6px; border-bottom: 1px solid var(--border);
 }
-.stat-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 12px;
-}
-.stat-row:last-child { border-bottom: none; }
-.stat-row .s-label { color: var(--text2); }
-.stat-row .s-val { font-weight: 700; color: var(--text1); font-family: var(--mono); font-size: 11.5px; }
-.stat-row .s-val.teal { color: var(--accent); }
 
-.kb-list { display: flex; flex-direction: column; gap: 6px; }
-.kb-ref-item {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 8px 10px;
-  font-size: 11.5px;
+/* KB hit items */
+.kb-hit-item {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 9px 10px; cursor: pointer;
+  transition: all .12s;
 }
-.kb-ref-item .kb-num { font-family: var(--mono); font-weight: 700; color: var(--accent); font-size: 10.5px; }
-.kb-ref-item .kb-title { color: var(--text1); margin-top: 2px; font-size: 11px; line-height: 1.4; }
-.kb-ref-item .kb-mfr { color: var(--text3); font-size: 10px; margin-top: 3px; }
+.kb-hit-item:hover { border-color: var(--accent-glow); background: var(--accent-dim); }
+.kb-hit-num { font-size: 9.5px; font-weight: 800; color: var(--accent); font-family: var(--mono); }
+.kb-hit-title { font-size: 10.5px; color: var(--text2); margin-top: 2px; line-height: 1.4; }
+.kb-hit-brand { font-size: 9px; color: var(--text3); margin-top: 3px; font-family: var(--mono); }
 
-.model-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 8px 10px;
-  font-size: 11px;
+/* Capability pills */
+.cap-list { display: flex; flex-direction: column; gap: 5px; }
+.cap-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 9px; border-radius: 7px;
+  background: var(--card); border: 1px solid var(--border);
 }
-.model-dot { width: 7px; height: 7px; background: var(--success); border-radius: 50%; flex-shrink: 0; }
-.model-name { font-weight: 600; color: var(--text1); }
-.model-sub { color: var(--text3); font-size: 10px; margin-top: 1px; }
+.cap-icon { font-size: 13px; flex-shrink: 0; }
+.cap-text { font-size: 10.5px; color: var(--text2); line-height: 1.35; }
+.cap-text strong { color: var(--text1); font-weight: 700; display: block; font-size: 11px; }
 
-@media (max-width: 1100px) {
-  .ctx-panel { width: 180px; }
-  .info-panel { display: none; }
+/* Upgrade CTA */
+.upgrade-cta {
+  background: var(--accent-dim); border: 1px solid var(--accent-glow);
+  border-radius: 10px; padding: 12px 10px;
 }
-@media (max-width: 800px) {
-  .ctx-panel { display: none; }
-  .mode-bar { padding: 0 8px; }
+.upgrade-cta h4 { font-size: 11.5px; font-weight: 700; color: var(--accent-bright); margin-bottom: 8px; }
+.upgrade-cta ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+.upgrade-cta li {
+  font-size: 10.5px; color: var(--text2);
+  display: flex; gap: 6px; align-items: flex-start; line-height: 1.4;
 }
+.upgrade-cta li::before { content: "✓"; color: var(--success); font-weight: 700; font-size: 10px; margin-top: 1px; flex-shrink: 0; }
+.upgrade-cta a {
+  display: block; width: 100%; margin-top: 10px; padding: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+  border-radius: 7px; font-size: 11.5px; font-weight: 700; color: #fff;
+  text-align: center; letter-spacing: .03em; transition: opacity .15s;
+}
+.upgrade-cta a:hover { opacity: .85; }
+
+/* Standards panel */
+.std-list { display: flex; flex-direction: column; gap: 4px; }
+.std-tag {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 6px; padding: 6px 9px;
+  font-size: 10px; font-weight: 600; color: var(--text2);
+  font-family: var(--mono); line-height: 1.4;
+}
+.std-tag strong { color: var(--accent-bright); font-weight: 800; }
+
+/* App banner right panel */
+.sb-app-banner { margin-top: 0; }
+
+/* ─── HOW TO USE DROPDOWN ─── */
+.htu-wrap{padding:10px 12px 0;}
+.htu-panel{background:var(--card);border:1.5px solid var(--border-md);border-radius:10px;margin-bottom:0;overflow:hidden;}
+.htu-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;user-select:none;border-bottom:1.5px solid transparent;transition:border-color .2s;}
+.htu-header:hover{border-bottom-color:var(--border-bright);}
+.htu-header-left{display:flex;align-items:center;gap:9px;}
+.htu-header-icon{font-size:.95rem;}
+.htu-header-title{font-size:12.5px;font-weight:700;color:var(--text1);}
+.htu-header-sub{font-size:10.5px;color:var(--text3);margin-top:1px;}
+.htu-arrow{font-size:10px;color:var(--accent);transition:transform .25s ease;}
+.htu-arrow.open{transform:rotate(180deg);}
+.htu-body{display:none;padding:12px 14px 14px;border-top:1px solid var(--border);}
+.htu-body.open{display:block;}
+.htu-steps{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
+.htu-step{display:flex;align-items:flex-start;gap:10px;background:var(--accent-dim);border:1px solid var(--border-md);border-radius:8px;padding:10px 12px;transition:border-color .15s;}
+.htu-step:hover{border-color:var(--accent-glow);}
+.htu-step-num{width:24px;height:24px;background:rgba(6,182,212,.15);border:1.5px solid var(--accent-glow);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--accent);flex-shrink:0;}
+.htu-step-title{font-size:12px;font-weight:700;color:var(--text1);margin-bottom:3px;}
+.htu-step-desc{font-size:11px;color:var(--text2);line-height:1.55;}
+.htu-tips{background:rgba(6,182,212,.04);border:1px solid var(--border);border-radius:8px;padding:10px 12px;}
+.htu-tips-title{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:7px;letter-spacing:.04em;}
+.htu-tip-row{display:flex;align-items:flex-start;gap:7px;margin-bottom:5px;}
+.htu-tip-row:last-child{margin-bottom:0;}
+.htu-tip-dot{width:5px;height:5px;background:var(--accent);border-radius:50%;flex-shrink:0;margin-top:4px;}
+.htu-tip-text{font-size:11px;color:var(--text2);line-height:1.5;}
 </style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5756895689951807" crossorigin="anonymous"></script>
 </head>
 <body>
 
-<!-- NAV -->
+<!-- ═══════════ NAV ═══════════ -->
 <nav class="hm-nav">
   <a href="index.html" class="nav-logo">
     <div class="logo-icon">HM</div>
-    <span>HydroMind<span class="logo-ai">.AI</span></span>
+    Hydro<span class="logo-ai">Mind</span><span style="color:var(--text3);font-size:11px;font-weight:400;margin-left:2px;">.AI</span>
   </a>
   <div class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="ai_advisor.html" class="active">AI Advisor</a>
-    <a href="system_design.html">System Design</a>
-    <a href="crane_diagnostic.html">Crane Diagnostic</a>
-    <a href="knowledge_base.html">Knowledge Base</a>
-    <a href="pricing.html">Pricing</a>
+    <a href="index.html" class="navbar-link">Home</a>
+    <a href="ai_advisor.html" class="navbar-link active">AI Advisor</a>
+    <a href="crane_diagnostic.html" class="navbar-link">Crane Diag</a>
+    <a href="knowledge_base.html" class="navbar-link">Knowledge Base</a>
+    <a href="system_design.html" class="navbar-link">System Design</a>
+    <a href="pricing.html" class="navbar-link">Pricing</a>
   </div>
-  <div class="nav-right">
-    <span class="nav-status"><span class="nav-status-dot"></span>ONLINE</span>
+  <div class="nav-right" id="hmNavCta">
+    <div class="nav-status"><div class="nav-status-dot"></div>AI Online</div>
     <a href="#" class="btn btn-ghost btn-sm">Log In</a>
-    <a href="#" class="btn btn-secondary btn-sm">Register</a>
-    <a href="pricing.html" class="btn btn-primary btn-sm">Get Pro</a>
+    <a href="pricing.html" class="btn btn-primary btn-sm">Get Started →</a>
   </div>
 </nav>
 
-<!-- LEFT SIDEBAR -->
-<aside class="hm-sidebar-left">
-  <div class="sb-profile" id="sb-profile">
-    <div class="sb-avatar" id="sb-avatar">U</div>
-    <span class="sb-username" id="sb-username">User</span>
-    <span class="badge badge-teal" id="sb-plan">Free</span>
-  </div>
-  <div>
-    <div class="sb-section-label">Platform</div>
-    <a href="ai_advisor.html" class="sb-nav-link active">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>
-      AI Advisor
-    </a>
-    <a href="system_design.html" class="sb-nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
-      System Design
-    </a>
-    <a href="crane_diagnostic.html" class="sb-nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-      Crane Diag.
-    </a>
-    <a href="knowledge_base.html" class="sb-nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
-      KB Library
-    </a>
-    <a href="pricing.html" class="sb-nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-      Pricing
-    </a>
-  </div>
-  <div class="sb-ad mt-auto">
-    <div class="sb-ad-label">Advertise Here</div>
-    <div class="sb-ad-sub">Reach offshore hydraulic engineers worldwide</div>
-    <a href="mailto:support@hydromindai.com" class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">Contact Us</a>
-  </div>
-</aside>
-
-<!-- RIGHT SIDEBAR -->
-<aside class="hm-sidebar-right">
-  <div class="sb-pro-cta">
-    <h4>Upgrade to Pro</h4>
-    <ul>
-      <li>Unlimited AI queries</li>
-      <li>All 6 advisor modes</li>
-      <li>Full 155-doc KB</li>
-      <li>BOM export</li>
-    </ul>
-    <a href="pricing.html" class="btn btn-primary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">View Plans</a>
-  </div>
-  <div class="sb-ad mt-auto">
-    <div class="sb-ad-label">Advertise Here</div>
-    <div class="sb-ad-sub">138×220 placement</div>
-    <a href="mailto:support@hydromindai.com" class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">Contact Us</a>
-  </div>
-</aside>
-
-<!-- MAIN -->
+<!-- ═══════════ MAIN ═══════════ -->
 <main class="hm-page">
-  <div class="advisor-shell">
+<div class="advisor-shell">
 
-    <!-- LEFT CONTEXT PANEL -->
-    <div class="ctx-panel">
-      <div class="ctx-section">
-        <div class="ctx-label">Cranes</div>
-        <div class="ctx-item active" data-ctx="Liebherr BOS 47000">
-          <span>Liebherr BOS 47000</span>
-        </div>
-        <div class="ctx-item" data-ctx="NOV RAM 500">
-          <span>NOV RAM 500</span>
-        </div>
-        <div class="ctx-item" data-ctx="MacGregor TM35">
-          <span>MacGregor TM35</span>
-        </div>
-        <div class="ctx-item" data-ctx="SeaTrax S1280">
-          <span>SeaTrax S1280</span>
-        </div>
-        <div class="ctx-item" data-ctx="Favelle Favco M250T">
-          <span>Favelle Favco M250T</span>
-        </div>
-      </div>
+  <!-- ══ LEFT: CONTEXT PANEL ══ -->
+  <div class="ctx-panel">
 
-      <div class="ctx-divider"></div>
-
-      <div class="ctx-section">
-        <div class="ctx-label">Components</div>
-        <div class="ctx-item" data-ctx="Rexroth A10V">
-          <span>Rexroth A10V</span>
-        </div>
-        <div class="ctx-item" data-ctx="Rexroth A6VM">
-          <span>Rexroth A6VM</span>
-        </div>
-        <div class="ctx-item" data-ctx="Rexroth M7">
-          <span>Rexroth M7 Valve</span>
-        </div>
-        <div class="ctx-item" data-ctx="Eaton PVXS">
-          <span>Eaton PVXS</span>
-        </div>
-        <div class="ctx-item" data-ctx="Danfoss 90 Series">
-          <span>Danfoss 90 Series</span>
-        </div>
-      </div>
-
-      <div class="ctx-divider"></div>
-
-      <div class="ctx-section">
-        <div class="ctx-label">Standards</div>
-        <div class="ctx-item" data-ctx="ISO 4413:2010">
-          <span>ISO 4413:2010</span>
-        </div>
-        <div class="ctx-item" data-ctx="DNV-ST-0378">
-          <span>DNV-ST-0378</span>
-        </div>
-      </div>
+    <div class="ctx-section-label">Mode</div>
+    <div class="mode-grid">
+      <button class="mode-btn active" onclick="setMode('hydraulic',this)" id="mode-hydraulic">
+        <div class="mode-icon">🔧</div>
+        <div><div class="mode-name">Hydraulic Advisor</div><div class="mode-sub">Fault diagnosis & analysis</div></div>
+      </button>
+      <button class="mode-btn" onclick="setMode('kb',this)" id="mode-kb">
+        <div class="mode-icon">📚</div>
+        <div><div class="mode-name">KB Search</div><div class="mode-sub">Search 86+ OEM docs</div></div>
+      </button>
+      <button class="mode-btn" onclick="setMode('calculator',this)" id="mode-calculator">
+        <div class="mode-icon">🔢</div>
+        <div><div class="mode-name">Calculator</div><div class="mode-sub">Pump, flow, power sizing</div></div>
+      </button>
+      <button class="mode-btn" onclick="setMode('design',this)" id="mode-design">
+        <div class="mode-icon">📐</div>
+        <div><div class="mode-name">System Design</div><div class="mode-sub">12-step guided design</div></div>
+      </button>
     </div>
 
-    <!-- CHAT CENTRE -->
-    <div class="chat-col">
-
-      <!-- Mode tabs -->
-      <div class="mode-bar">
-        <button class="mode-tab active" data-mode="General">General</button>
-        <button class="mode-tab" data-mode="Fault Diagnosis">Fault Diagnosis</button>
-        <button class="mode-tab" data-mode="Pressure Analysis">Pressure Analysis</button>
-        <button class="mode-tab" data-mode="Maintenance">Maintenance</button>
-        <button class="mode-tab" data-mode="Component Sizing">Component Sizing</button>
-        <button class="mode-tab" data-mode="Commissioning">Commissioning</button>
-      </div>
-
-      <!-- Messages -->
-      <div class="chat-area" id="chat-area">
-        <!-- Welcome screen shown when empty -->
-        <div class="welcome-screen" id="welcome-screen">
-          <div class="welcome-icon">HM</div>
-          <div class="welcome-title">HydroMind AI Advisor</div>
-          <p class="welcome-sub">Expert hydraulic guidance for industrial, marine, and offshore systems. Select equipment context on the left, choose a mode above, then ask your question.</p>
-          <div class="suggestion-grid">
-            <div class="suggestion-card" onclick="useSuggestion(this)">
-              <strong>Fault Diagnosis</strong>
-              Case drain pressure on A10V reading 4.8 bar during hoisting — shaft seal or internal bypass?
-            </div>
-            <div class="suggestion-card" onclick="useSuggestion(this)">
-              <strong>Pressure Analysis</strong>
-              What is the correct relief valve setting for a Liebherr BOS 47000 main hoist circuit?
-            </div>
-            <div class="suggestion-card" onclick="useSuggestion(this)">
-              <strong>Component Sizing</strong>
-              Size an A10V pump for 250 bar, 180 L/min open circuit — what displacement and drive power?
-            </div>
-            <div class="suggestion-card" onclick="useSuggestion(this)">
-              <strong>Maintenance</strong>
-              What are the DNV-ST-0378 inspection intervals for offshore crane hydraulic hoses?
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Input bar -->
-      <div class="input-bar">
-        <div class="input-row">
-          <textarea id="chat-input" rows="1" placeholder="Ask about any hydraulic fault, component sizing, pressure analysis, or system design…" maxlength="2000"></textarea>
-          <button class="send-btn" id="send-btn" onclick="sendMessage()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-          </button>
-        </div>
-        <div class="input-hints">
-          <span>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
-            155 KB docs indexed
-          </span>
-          <span>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            claude-sonnet-4-6
-          </span>
-          <span style="margin-left:auto;"><kbd>Shift+Enter</kbd> new line &nbsp;·&nbsp; <kbd>Enter</kbd> send</span>
-        </div>
-      </div>
+    <div class="ctx-section-label" style="margin-top:6px;">Filter by Brand</div>
+    <input type="text" class="kb-filter" placeholder="🔍 Filter KB brand…" oninput="filterBrand(this.value)">
+    <div class="brand-chips" id="brand-chips">
+      <span class="brand-chip on" onclick="toggleBrand(this,'ALL')">ALL</span>
+      <span class="brand-chip" onclick="toggleBrand(this,'RXR')">Rexroth</span>
+      <span class="brand-chip" onclick="toggleBrand(this,'DAN')">Danfoss</span>
+      <span class="brand-chip" onclick="toggleBrand(this,'PRK')">Parker</span>
+      <span class="brand-chip" onclick="toggleBrand(this,'EAT')">Eaton</span>
+      <span class="brand-chip" onclick="toggleBrand(this,'LBR')">Liebherr</span>
+      <span class="brand-chip" onclick="toggleBrand(this,'MCG')">MacGregor</span>
+      <span class="brand-chip" onclick="toggleBrand(this,'NOV')">NOV</span>
     </div>
 
-    <!-- RIGHT INFO PANEL -->
-    <div class="info-panel">
+    <div class="ctx-section-label" style="margin-top:6px;">Session Stats</div>
+    <div class="session-stats">
+      <div class="ss-row"><span class="ss-key">Queries</span><span class="ss-val" id="stat-queries">0</span></div>
+      <div class="ss-row"><span class="ss-key">KB Hits</span><span class="ss-val" id="stat-kb">0</span></div>
+      <div class="ss-row"><span class="ss-key">Remaining</span><span class="ss-val warn" id="stat-remain">5</span></div>
+      <div class="ss-row"><span class="ss-key">Model</span><span class="ss-val" style="font-size:9.5px;">sonnet-4-6</span></div>
+    </div>
 
-      <div class="info-section">
-        <h4>AI Model</h4>
-        <div class="model-badge">
-          <span class="model-dot"></span>
-          <div>
-            <div class="model-name">Claude Sonnet</div>
-            <div class="model-sub">4.6 · Hydraulic Expert</div>
-          </div>
+    <div class="ctx-section-label" style="margin-top:4px;">Recent</div>
+    <div class="hist-list" id="hist-list">
+      <div style="font-size:10px;color:var(--text3);text-align:center;padding:8px 0;">No history yet</div>
+    </div>
+
+    <div class="ctx-section-label" style="margin-top:4px;">Session</div>
+    <button class="clear-btn" onclick="clearChat()">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+      Clear Chat History
+    </button>
+    <div id="hmSidebarNoAuth" style="margin-top:4px;">
+      <div style="background:var(--accent-dim);border:1px solid var(--accent-glow);border-radius:8px;padding:10px 8px;text-align:center;">
+        <div style="font-size:10px;color:var(--text2);margin-bottom:6px;line-height:1.4;">Sign in to save chat history</div>
+        <button onclick="openAuthModal('login')" style="width:100%;padding:6px;background:var(--accent);border:none;border-radius:6px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;">Sign In</button>
+      </div>
+    </div>
+    <div id="hmSidebarProfile" style="display:none;">
+      <div class="hm-profile-card">
+        <div class="sb-avatar-wrap">
+          <div class="sb-avatar" id="hmProfAvatar">AT</div>
+          <div class="sb-avatar-edit" onclick="openProfileEdit()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
         </div>
+        <div class="sb-username" id="hmProfName">User</div>
+        <div class="sb-useremail" id="hmProfEmail"></div>
+        <div class="sb-plan-badge" id="hmProfPlan">Free</div>
       </div>
-
-      <div class="info-section">
-        <h4>Session Stats</h4>
-        <div class="stat-row"><span class="s-label">Messages</span><span class="s-val teal" id="stat-msgs">0</span></div>
-        <div class="stat-row"><span class="s-label">Mode</span><span class="s-val" id="stat-mode">General</span></div>
-        <div class="stat-row"><span class="s-label">Context</span><span class="s-val" id="stat-ctx">BOS 47000</span></div>
-        <div class="stat-row"><span class="s-label">KB Hits</span><span class="s-val teal" id="stat-kb">0</span></div>
-        <div class="stat-row"><span class="s-label">Queries Left</span><span class="s-val" id="stat-ql">10</span></div>
-      </div>
-
-      <div class="info-section">
-        <h4>Active KB References</h4>
-        <div class="kb-list" id="kb-list">
-          <div style="font-size:11px;color:var(--text3);font-style:italic;">KB references appear here after your first query.</div>
-        </div>
-      </div>
-
+    </div>
+    <div id="hmSidebarHistory" style="display:none;"></div>
+    <div id="hmSidebarLinks" style="display:none;">
+      <button id="hmLogoutBtn" onclick="doLogout()" style="display:none;width:100%;padding:7px;background:var(--danger-dim);border:1px solid rgba(239,68,68,.18);border-radius:7px;font-size:11px;font-weight:600;color:var(--danger);cursor:pointer;margin-top:4px;">Sign Out</button>
     </div>
   </div>
+
+  <!-- ══ CENTRE: CHAT ══ -->
+  <div class="chat-col">
+
+    <!-- Mode tabs bar -->
+    <div class="mode-bar">
+      <button class="mode-tab active" onclick="switchTab('hydraulic',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+        Hydraulic Advisor
+      </button>
+      <button class="mode-tab" onclick="switchTab('kb',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 006.5 7H20v13H6.5A2.5 2.5 0 014 17.5z"/></svg>
+        KB Search
+      </button>
+      <button class="mode-tab" onclick="switchTab('calculator',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/></svg>
+        Calculator
+      </button>
+      <button class="mode-tab" onclick="switchTab('design',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        System Design
+      </button>
+      <div class="mode-separator"></div>
+      <div class="mode-bar-right">
+        <div class="model-badge">claude-sonnet-4-6</div>
+        <div class="online-dot"><span></span>Online</div>
+      </div>
+    </div>
+
+    <!-- Chat area -->
+    <div class="chat-area" id="chat-area">
+
+      <!-- HOW TO USE DROPDOWN -->
+      <div class="htu-wrap">
+        <div class="htu-panel">
+          <div class="htu-header" onclick="toggleHtu()">
+            <div class="htu-header-left">
+              <div class="htu-header-icon">📋</div>
+              <div>
+                <div class="htu-header-title">How to Use AI Hydraulic Advisor</div>
+                <div class="htu-header-sub">Click to expand — 5-step guide + pro tips</div>
+              </div>
+            </div>
+            <div class="htu-arrow" id="htu-arrow">▼</div>
+          </div>
+          <div class="htu-body" id="htu-body">
+            <div class="htu-steps">
+              <div class="htu-step">
+                <div class="htu-step-num">1</div>
+                <div>
+                  <div class="htu-step-title">Select Your Mode</div>
+                  <div class="htu-step-desc">Choose from the four tabs at the top — Hydraulic Advisor (fault diagnosis), KB Search (OEM manual lookup), Calculator (hydraulic sizing), or System Design (guided 12-step design). Each mode changes the AI prompt and input placeholder automatically.</div>
+                </div>
+              </div>
+              <div class="htu-step">
+                <div class="htu-step-num">2</div>
+                <div>
+                  <div class="htu-step-title">Filter by Manufacturer (Optional)</div>
+                  <div class="htu-step-desc">Use the brand chips in the left panel to narrow the AI context to a specific OEM — Rexroth, Danfoss, Parker, Eaton, Liebherr, MacGregor, NOV, SeaTrax, or Favelle Favco. Selecting a brand focuses the KB search on that manufacturer's documents.</div>
+                </div>
+              </div>
+              <div class="htu-step">
+                <div class="htu-step-num">3</div>
+                <div>
+                  <div class="htu-step-title">Describe Your Fault or Query Precisely</div>
+                  <div class="htu-step-desc">Include: system type (crane, winch, steering), affected circuit (hoist, luff, slew), component model if known, actual pressure readings (bar), and whether the fault is intermittent or constant. The more specific your input, the more actionable the diagnosis.</div>
+                </div>
+              </div>
+              <div class="htu-step">
+                <div class="htu-step-num">4</div>
+                <div>
+                  <div class="htu-step-title">Read the Structured AI Response</div>
+                  <div class="htu-step-desc">Responses follow a structured format — Root Cause → Test Points → Corrective Action → KB References. KB tags (e.g. KB-12, KB-34) appear below each AI message and are clickable — tap one to immediately ask a follow-up about that document.</div>
+                </div>
+              </div>
+              <div class="htu-step">
+                <div class="htu-step-num">5</div>
+                <div>
+                  <div class="htu-step-title">Use Suggested Questions to Get Started</div>
+                  <div class="htu-step-desc">Tap any of the suggestion cards on the welcome screen for one-click fault starters — A4VG90 case drain, CBV settings, motor sizing, and more. Or use the Quick Hint chips below the input box for common fault prompts.</div>
+                </div>
+              </div>
+            </div>
+            <div class="htu-tips">
+              <div class="htu-tips-title">💡 Pro Tips</div>
+              <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Always quote actual <strong>pressure readings</strong> (bar/PSI) from your gauges — the AI uses these numbers for precise fault isolation.</div></div>
+              <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Use <strong>Calculator mode</strong> for step-by-step hydraulic sizing with formulas shown — pump displacement, pipe bore, motor torque, drive power.</div></div>
+              <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Ask the AI to <strong>"Run a full 10-state diagnostic sequence"</strong> for a structured, step-by-step fault isolation from Safety Isolation through to Final Check.</div></div>
+              <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text"><strong>Shift+Enter</strong> for a new line in long queries — <strong>Enter</strong> alone sends the message.</div></div>
+              <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">For KB Search, use manufacturer + component model — e.g. <strong>"Rexroth A4VG90 swashplate control"</strong> returns more targeted results than a generic fault description.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WELCOME STATE -->
+      <div class="adv-welcome" id="adv-welcome">
+        <div class="adv-welcome-badge"><span class="w-dot"></span>86+ OEM Manuals · Real-time AI · ISO 4413</div>
+        <h2>AI Hydraulic Advisor</h2>
+        <p>Expert-level hydraulic fault diagnosis, component analysis, system sizing and KB search — powered by Rexroth, Danfoss, Parker, Liebherr, MacGregor and more.</p>
+
+        <div class="sugg-section">
+          <div class="sugg-label">Suggested Questions</div>
+          <div class="sugg-grid">
+            <div class="sugg-card" onclick="injectQ('Diagnose high case drain pressure (4.5 bar) on Rexroth A4VG90 piston pump at full load — root cause and corrective action.')">
+              <span class="sugg-icon">⚡</span>
+              <div class="sugg-cat">Fault Diagnosis</div>
+              <div class="sugg-title">A4VG90 High Case Drain Pressure</div>
+              <div class="sugg-desc">Root cause analysis for elevated case drain — worn barrel, valve plate wear, or bypass fault.</div>
+            </div>
+            <div class="sugg-card" onclick="injectQ('What is the correct counterbalance valve setting for a Liebherr LHBL-D luffing cylinder circuit running at 280 bar working pressure?')">
+              <span class="sugg-icon">⚖️</span>
+              <div class="sugg-cat">Pressure Settings</div>
+              <div class="sugg-title">Counterbalance Valve Setting</div>
+              <div class="sugg-desc">CBV set pressure calculation for luffing cylinder — 110–130% load pressure rule applied.</div>
+            </div>
+            <div class="sugg-card" onclick="injectQ('Size a Rexroth A10V open circuit pump for 250 bar working pressure, 180 L/min flow at 1480 RPM — displacement, drive power and shaft torque.')">
+              <span class="sugg-icon">📐</span>
+              <div class="sugg-cat">Component Sizing</div>
+              <div class="sugg-title">A10V Pump Sizing</div>
+              <div class="sugg-desc">Full pump sizing — displacement, drive power, shaft torque for open circuit application.</div>
+            </div>
+            <div class="sugg-card" onclick="injectQ('What are the DNV-ST-0378 maintenance and inspection requirements for offshore crane hydraulic hose assemblies?')">
+              <span class="sugg-icon">📋</span>
+              <div class="sugg-cat">Maintenance</div>
+              <div class="sugg-title">DNV Hose Inspection Intervals</div>
+              <div class="sugg-desc">Offshore crane hydraulic hose inspection standards — DNV-ST-0378 compliance requirements.</div>
+            </div>
+            <div class="sugg-card" onclick="injectQ('Danfoss H1 bent-axis motor is overheating above 90°C — diagnose possible causes in a closed-loop winch circuit.')">
+              <span class="sugg-icon">🌡️</span>
+              <div class="sugg-cat">Fault Diagnosis</div>
+              <div class="sugg-title">H1 Motor Overheating</div>
+              <div class="sugg-desc">Closed-loop winch circuit overheating — charge pressure, flushing valve, and case drain analysis.</div>
+            </div>
+            <div class="sugg-card" onclick="injectQ('Explain the difference between open-loop and closed-loop hydraulic circuits for marine winch applications — pros, cons and component differences.')">
+              <span class="sugg-icon">🔄</span>
+              <div class="sugg-cat">System Design</div>
+              <div class="sugg-title">Open vs Closed Loop Circuits</div>
+              <div class="sugg-desc">Marine winch circuit comparison — architecture, components, efficiency and fault modes.</div>
+            </div>
+            <div class="sugg-card" onclick="injectQ('Parker proportional directional control valve is not responding to signal — diagnose fault in electronic joystick controlled offshore crane slewing circuit.')">
+              <span class="sugg-icon">🔧</span>
+              <div class="sugg-cat">Fault Diagnosis</div>
+              <div class="sugg-title">Proportional Valve No Response</div>
+              <div class="sugg-desc">PVCM/amplifier card fault analysis for electronic joystick crane slewing circuit.</div>
+            </div>
+            <div class="sugg-card" onclick="injectQ('Calculate pipe bore size for 200 L/min flow at maximum 4 m/s velocity in a pressure line — show working and recommend standard pipe size.')">
+              <span class="sugg-icon">🧮</span>
+              <div class="sugg-cat">Calculation</div>
+              <div class="sugg-title">Pipe Bore Sizing</div>
+              <div class="sugg-desc">Pressure line pipe sizing — velocity limit calculation and standard bore recommendation.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input bar -->
+    <div class="input-bar">
+      <div class="input-wrap">
+        <textarea id="chat-input" rows="1" placeholder="Ask about any hydraulic fault, component sizing, KB search, or system design…" maxlength="3000"></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendMessage()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="input-meta">
+        <div class="hint-chips">
+          <span class="hint-chip" onclick="injectQ('Diagnose A4VG pump fault — high case drain pressure')">Case Drain Fault</span>
+          <span class="hint-chip" onclick="injectQ('Relief valve setting calculation for 250 bar system')">Relief Valve</span>
+          <span class="hint-chip" onclick="injectQ('Charge pressure fault in closed loop circuit')">Charge Pressure</span>
+          <span class="hint-chip" onclick="injectQ('Size hydraulic motor for 150 kW at 250 bar')">Motor Sizing</span>
+          <span class="hint-chip" onclick="injectQ('ISO 4413 hydraulic safety requirements')">ISO 4413</span>
+        </div>
+        <div class="kbd-hint"><kbd>Shift+Enter</kbd> new line &nbsp;·&nbsp; <kbd>Enter</kbd> send</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ RIGHT: INFO PANEL ══ -->
+  <div class="info-panel">
+
+    <div class="ip-section">
+      <h4>KB References</h4>
+      <div id="kb-hit-list">
+        <div style="font-size:10px;color:var(--text3);text-align:center;padding:8px 0;">Refs appear here after query</div>
+      </div>
+    </div>
+
+    <!-- Inline Ad Slot 1 — between KB refs and Capabilities (free users only) -->
+    <div id="hmAd1" class="inline-ad-wrap">
+      <div class="inline-ad-label">Advertisement</div>
+      <ins class="adsbygoogle"
+           style="display:block;width:100%;min-height:90px;"
+           data-ad-client="ca-pub-5756895689951807"
+           data-ad-slot="auto"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+    </div>
+
+    <div class="ip-section">
+      <h4>Capabilities</h4>
+      <div class="cap-list">
+        <div class="cap-row"><span class="cap-icon">⚡</span><div class="cap-text"><strong>Fault Diagnosis</strong>Root cause, test points, corrective action</div></div>
+        <div class="cap-row"><span class="cap-icon">📐</span><div class="cap-text"><strong>Component Sizing</strong>Pump, motor, valve, pipe sizing</div></div>
+        <div class="cap-row"><span class="cap-icon">📚</span><div class="cap-text"><strong>KB Search</strong>86+ OEM manuals — Rexroth to Liebherr</div></div>
+        <div class="cap-row"><span class="cap-icon">⚖️</span><div class="cap-text"><strong>Pressure Settings</strong>Relief, CBV, pilot pressure calc</div></div>
+        <div class="cap-row"><span class="cap-icon">📋</span><div class="cap-text"><strong>Standards</strong>ISO 4413, DNV-ST-0378, API RP 2D</div></div>
+      </div>
+    </div>
+
+    <div class="ip-section">
+      <h4>Applied Standards</h4>
+      <div class="std-list">
+        <div class="std-tag"><strong>ISO 4413</strong> — Hydraulic Fluid Power</div>
+        <div class="std-tag"><strong>DNV-ST-0378</strong> — Offshore Cranes</div>
+        <div class="std-tag"><strong>EN 13852-1</strong> — Crane Design</div>
+        <div class="std-tag"><strong>API RP 2D</strong> — Crane Operations</div>
+        <div class="std-tag"><strong>ISO 4406</strong> — Fluid Cleanliness</div>
+      </div>
+    </div>
+
+    <!-- Inline Ad Slot 2 — between Standards and Download App -->
+    <div id="hmAd2" class="inline-ad-wrap">
+      <div class="inline-ad-label">Advertisement</div>
+      <ins class="adsbygoogle"
+           style="display:block;width:100%;min-height:90px;"
+           data-ad-client="ca-pub-5756895689951807"
+           data-ad-slot="auto"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+    </div>
+
+    <div class="ip-section">
+      <h4>Download App</h4>
+      <div class="sb-app-banner">
+        <div class="banner-title">HydroMind AI App</div>
+        <div class="banner-sub">Full advisor on Android — free download</div>
+        <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" rel="noopener" class="qr-wrap" title="Scan to download">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.hydromind.app&format=png&margin=4&qzone=1" alt="QR code" width="80" height="80" style="border-radius:4px;display:block;">
+        </a>
+        <div class="banner-dl">Scan to Download</div>
+        <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" rel="noopener" class="store-badge">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76a2 2 0 001.91-.19l11.12-6.37-2.93-2.93-10.1 9.49zM20.5 10.36L17.84 8.8l-3.19 3.19 3.19 3.2 2.69-1.56a2 2 0 000-3.27zM1.54.27A2 2 0 001 1.5v21l10.29-10.3L1.54.27zM14.65 12L4.09.24 3.18.24 14.65 12z"/></svg>
+          Google Play
+        </a>
+      </div>
+    </div>
+
+    <div class="ip-section">
+      <div class="upgrade-cta">
+        <h4>🚀 Upgrade to Pro</h4>
+        <ul>
+          <li>Unlimited AI queries</li>
+          <li>Full KB access (86+ docs)</li>
+          <li>Crane Diagnostic AI</li>
+          <li>System Design tool</li>
+          <li>Ad-free experience</li>
+        </ul>
+        <a href="pricing.html">Upgrade Now →</a>
+      </div>
+    </div>
+
+  </div><!-- end info-panel -->
+
+</div><!-- end advisor-shell -->
 </main>
 
+<script src="js/auth.js"></script>
 <script>
-/* ── State ── */
-const BACKEND = 'https://hydromind-backend.onrender.com/api/chat';
-let history = [];
-let msgCount = 0;
-let kbHits = 0;
-let queriesLeft = 10;
-let activeCtx = 'Liebherr BOS 47000';
-let activeMode = 'General';
-
-/* ── Context selector ── */
-document.querySelectorAll('.ctx-item').forEach(el => {
-  el.addEventListener('click', () => {
-    document.querySelectorAll('.ctx-item').forEach(x => x.classList.remove('active'));
-    el.classList.add('active');
-    activeCtx = el.dataset.ctx;
-    document.getElementById('stat-ctx').textContent = activeCtx.substring(0, 12) + (activeCtx.length > 12 ? '…' : '');
-  });
-});
-
-/* ── Mode tabs ── */
-document.querySelectorAll('.mode-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    activeMode = tab.dataset.mode;
-    document.getElementById('stat-mode').textContent = activeMode.substring(0, 10) + (activeMode.length > 10 ? '…' : '');
-  });
-});
-
-/* ── Auto-resize textarea ── */
-const input = document.getElementById('chat-input');
-input.addEventListener('input', () => {
-  input.style.height = 'auto';
-  input.style.height = Math.min(input.scrollHeight, 120) + 'px';
-});
-input.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-});
-
-/* ── Suggestion cards ── */
-function useSuggestion(el) {
-  const text = el.innerText.replace(/^[A-Z ]+\n/, '').trim();
-  input.value = text;
-  input.dispatchEvent(new Event('input'));
-  input.focus();
+/* ══ HOW TO USE TOGGLE ══ */
+function toggleHtu() {
+  var body  = document.getElementById('htu-body');
+  var arrow = document.getElementById('htu-arrow');
+  if (!body) return;
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
 }
 
-/* ── Add message to DOM ── */
-function addMessage(role, content, kbRefs) {
-  const welcome = document.getElementById('welcome-screen');
+/* ══ CONSTANTS ══ */
+var BACKEND = 'https://hydromind-backend.onrender.com/api/chat';
+var history = [];
+var isLoading = false;
+var queriesUsed = 0;
+var queriesMax = 5;
+var kbHits = 0;
+var activeMode = 'hydraulic';
+var activeBrand = 'ALL';
+
+var MODE_PROMPTS = {
+  hydraulic: 'You are HydroMind AI Hydraulic Advisor — expert marine and offshore hydraulic engineer. Provide structured fault diagnosis, component analysis, pressure settings and system design guidance. Reference KB documents (KB-01 to KB-86) covering Rexroth, Danfoss, Parker, Eaton, Liebherr, MacGregor, NOV, SeaTrax, Favelle Favco. Apply ISO 4413, DNV-ST-0378, EN 13852-1, API RP 2D. Structure answers: Root Cause → Test Points → Corrective Action → KB References.',
+  kb: 'You are HydroMind KB Search Assistant. The user wants to search the knowledge base of 86+ OEM hydraulic manuals. Identify which KB document(s) (KB-01 to KB-86) are most relevant to their query and summarize the key technical content. Always cite the KB number.',
+  calculator: 'You are HydroMind Hydraulic Calculator. Perform hydraulic calculations step by step: pump flow (Q=DN/1000), drive power (P=pQ/600η), cylinder force (F=pA), pipe velocity (v=Q/A), motor torque (T=pD/20π), relief valve settings. Show formula, substitution and result with correct units. Support both metric and imperial.',
+  design: 'You are HydroMind System Design Advisor. Guide the user through a 12-step hydraulic system design: (1) Requirements, (2) Circuit type, (3) Pump selection & sizing, (4) Motor/actuator sizing, (5) DCV selection, (6) Relief valve sizing, (7) Filter sizing, (8) Tank sizing, (9) Pipe sizing, (10) Cooler sizing, (11) BOM generation, (12) System validation. Ask clarifying questions at each step.'
+};
+
+var MODE_PLACEHOLDERS = {
+  hydraulic: 'Ask about any hydraulic fault, component sizing, KB search, or system design…',
+  kb: 'Search the knowledge base — e.g. "Rexroth A4VG90 case drain" or "Danfoss H1 charge pressure"…',
+  calculator: 'Enter a calculation — e.g. "Pump flow for 121cc/rev at 1480 RPM" or "Cylinder force at 200 bar, 100mm bore"…',
+  design: 'Describe your system requirements — e.g. "Design a 250 bar, 180 L/min hydraulic winch system"…'
+};
+
+/* ══ MODE SWITCH ══ */
+function setMode(mode, btn) {
+  activeMode = mode;
+  document.querySelectorAll('.mode-btn').forEach(function(b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  document.getElementById('chat-input').placeholder = MODE_PLACEHOLDERS[mode] || MODE_PLACEHOLDERS.hydraulic;
+}
+
+function switchTab(mode, btn) {
+  activeMode = mode;
+  document.querySelectorAll('.mode-tab').forEach(function(b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  document.querySelectorAll('.mode-btn').forEach(function(b) {
+    b.classList.toggle('active', b.id === 'mode-' + mode);
+  });
+  document.getElementById('chat-input').placeholder = MODE_PLACEHOLDERS[mode] || MODE_PLACEHOLDERS.hydraulic;
+  document.getElementById('chat-input').focus();
+}
+
+/* ══ BRAND FILTER ══ */
+function toggleBrand(el, brand) {
+  document.querySelectorAll('.brand-chip').forEach(function(c) { c.classList.remove('on'); });
+  el.classList.add('on');
+  activeBrand = brand;
+}
+function filterBrand(val) {
+  document.querySelectorAll('.brand-chip').forEach(function(c) {
+    c.style.display = (!val || c.textContent.toLowerCase().indexOf(val.toLowerCase()) > -1) ? '' : 'none';
+  });
+}
+
+/* ══ INJECT QUESTION ══ */
+function injectQ(text) {
+  var inp = document.getElementById('chat-input');
+  inp.value = text;
+  inp.focus();
+  autoResize(inp);
+}
+
+/* ══ AUTO-RESIZE ══ */
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+}
+
+/* ══ MARKDOWN RENDERER ══ */
+function renderMd(raw) {
+  var lines = (raw || '').split('\n');
+  var out = '', inUl = false, inOl = false, inCode = false, inTable = false;
+  function closeLists() {
+    if (inUl) { out += '</ul>'; inUl = false; }
+    if (inOl) { out += '</ol>'; inOl = false; }
+  }
+  function fmt(t) {
+    return t
+      .replace(/`([^`]+)`/g, '<code class="msg-code">$1</code>')
+      .replace(/\*\*([^*]+)\*\*/g, '<strong class="msg-strong">$1</strong>')
+      .replace(/\*([^*]+)\*/g, '<em class="msg-em">$1</em>')
+      .replace(/__([^_]+)__/g, '<strong class="msg-strong">$1</strong>');
+  }
+  for (var i = 0; i < lines.length; i++) {
+    var l = lines[i];
+    if (l.indexOf('```') === 0) {
+      closeLists();
+      if (inCode) { out += '</pre>'; inCode = false; }
+      else { out += '<pre class="msg-pre">'; inCode = true; }
+      continue;
+    }
+    if (inCode) { out += l.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '\n'; continue; }
+    if (l.indexOf('|') === 0 && l.indexOf('|-') < 0) {
+      if (!inTable) { out += '<table class="msg-table"><thead><tr>'; inTable = true; var isH = true; }
+      else { out += (out.endsWith('</thead>') ? '<tbody>' : '') + '<tr>'; isH = false; }
+      var cells = l.split('|').filter(function(c,j,a){return j>0&&j<a.length-1;});
+      cells.forEach(function(c){out+=(isH?'<th>':'<td>')+fmt(c.trim())+(isH?'</th>':'</td>');});
+      out += isH ? '</tr></thead>' : '</tr>';
+      continue;
+    }
+    if (l.match(/^\|[-| :]+\|$/)) continue;
+    if (inTable) { out += '</tbody></table>'; inTable = false; }
+    if (l.indexOf('#### ') === 0) { closeLists(); out += '<h4 class="msg-h4">'+fmt(l.slice(5))+'</h4>'; continue; }
+    if (l.indexOf('### ')  === 0) { closeLists(); out += '<h3 class="msg-h3">'+fmt(l.slice(4))+'</h3>'; continue; }
+    if (l.indexOf('## ')   === 0) { closeLists(); out += '<h2 class="msg-h2">'+fmt(l.slice(3))+'</h2>'; continue; }
+    if (l.indexOf('# ')    === 0) { closeLists(); out += '<h2 class="msg-h2">'+fmt(l.slice(2))+'</h2>'; continue; }
+    if (l === '---') { closeLists(); out += '<hr class="msg-hr">'; continue; }
+    if (/^[-*•]\s/.test(l)) {
+      if (!inUl) { if(inOl){out+='</ol>';inOl=false;} out += '<ul class="msg-ul">'; inUl = true; }
+      out += '<li>'+fmt(l.replace(/^[-*•]\s+/,''))+'</li>'; continue;
+    }
+    if (/^\d+[.)]\s/.test(l)) {
+      if (!inOl) { if(inUl){out+='</ul>';inUl=false;} out += '<ol class="msg-ol">'; inOl = true; }
+      out += '<li>'+fmt(l.replace(/^\d+[.)]\s+/,''))+'</li>'; continue;
+    }
+    if (l === '') { closeLists(); out += '<div class="msg-gap"></div>'; continue; }
+    closeLists();
+    out += '<p class="msg-p">'+fmt(l)+'</p>';
+  }
+  closeLists();
+  if (inTable) out += '</tbody></table>';
+  if (inCode)  out += '</pre>';
+  return out;
+}
+
+/* ══ ADD MESSAGE ══ */
+function addMsg(role, content, kbRefs) {
+  var welcome = document.getElementById('adv-welcome');
   if (welcome) welcome.remove();
-
-  const area = document.getElementById('chat-area');
-  const row = document.createElement('div');
-  row.className = `msg-row ${role}`;
-
-  const sender = document.createElement('div');
+  var area = document.getElementById('chat-area');
+  var row = document.createElement('div');
+  row.className = 'msg-row ' + role;
+  var sender = document.createElement('div');
   sender.className = 'msg-sender';
   sender.textContent = role === 'user' ? 'YOU' : 'HYDROMIND AI';
-
-  const bubble = document.createElement('div');
+  var bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
-
-  if (role === 'ai') {
-    bubble.innerHTML = formatAIResponse(content);
-  } else {
-    bubble.textContent = content;
-  }
-
-  const time = document.createElement('div');
+  if (role === 'ai') { bubble.innerHTML = renderMd(content); }
+  else { bubble.textContent = content; }
+  var time = document.createElement('div');
   time.className = 'msg-time';
-  time.textContent = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-
+  time.textContent = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
   row.appendChild(sender);
   row.appendChild(bubble);
-
   if (role === 'ai' && kbRefs && kbRefs.length) {
-    const kbRow = document.createElement('div');
-    kbRow.className = 'msg-kb';
-    kbRefs.forEach(ref => {
-      const chip = document.createElement('span');
-      chip.className = 'msg-kb-chip';
-      chip.textContent = ref;
-      kbRow.appendChild(chip);
+    var refs = document.createElement('div');
+    refs.className = 'kb-refs';
+    kbRefs.forEach(function(r) {
+      var tag = document.createElement('span');
+      tag.className = 'kb-tag';
+      tag.textContent = r;
+      tag.onclick = function() { injectQ('Tell me more about ' + r); };
+      refs.appendChild(tag);
     });
-    row.appendChild(kbRow);
+    row.appendChild(refs);
     updateKBPanel(kbRefs);
   }
-
   row.appendChild(time);
   area.appendChild(row);
-  area.scrollTop = area.scrollHeight;
+  setTimeout(function() {
+    if (role === 'ai') {
+      var rowTop = row.getBoundingClientRect().top - area.getBoundingClientRect().top + area.scrollTop;
+      area.scrollTop = Math.max(0, rowTop - 8);
+    } else { area.scrollTop = area.scrollHeight; }
+  }, 60);
+  if (role === 'user') addToHistory(content);
 }
 
-function formatAIResponse(text) {
-  return text
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\n\n/g, '</p><p>')
-    .replace(/\n(\d+)\. /g, '</p><ol start="$1"><li>')
-    .replace(/\n- /g, '</p><ul><li>')
-    .replace(/^/, '<p>')
-    .replace(/$/, '</p>');
-}
-
-/* ── Typing indicator ── */
-function showTyping() {
-  const area = document.getElementById('chat-area');
-  const row = document.createElement('div');
-  row.className = 'msg-row ai';
-  row.id = 'typing-indicator';
-  row.innerHTML = `
-    <div class="msg-sender">HYDROMIND AI</div>
-    <div class="msg-bubble" style="padding:12px 16px;">
-      <div class="typing-dots"><span></span><span></span><span></span></div>
-    </div>`;
-  area.appendChild(row);
-  area.scrollTop = area.scrollHeight;
-}
-function hideTyping() {
-  const t = document.getElementById('typing-indicator');
-  if (t) t.remove();
-}
-
-/* ── Update KB panel ── */
-function updateKBPanel(refs) {
-  const list = document.getElementById('kb-list');
-  kbHits += refs.length;
-  document.getElementById('stat-kb').textContent = kbHits;
-  refs.slice(0, 4).forEach(ref => {
-    const item = document.createElement('div');
-    item.className = 'kb-ref-item';
-    item.innerHTML = `<div class="kb-num">${ref}</div><div class="kb-title">Referenced document</div>`;
-    list.prepend(item);
-    // keep max 6 items
-    while (list.children.length > 6) list.lastChild.remove();
+/* ══ HISTORY ══ */
+function addToHistory(text) {
+  var list = document.getElementById('hist-list');
+  list.innerHTML = '';
+  var recent = [{text: text, time: 'Now'}];
+  recent.forEach(function(h) {
+    var item = document.createElement('div');
+    item.className = 'hist-item';
+    item.innerHTML = '<div class="hist-dot"></div><div class="hist-text">' + h.text.substring(0,60) + (h.text.length>60?'…':'') + '</div><div class="hist-time">' + h.time + '</div>';
+    item.onclick = function() { injectQ(h.text); };
+    list.appendChild(item);
   });
 }
 
-/* ── Send message ── */
-async function sendMessage() {
-  const text = input.value.trim();
+/* ══ KB PANEL ══ */
+function updateKBPanel(refs) {
+  kbHits += refs.length;
+  document.getElementById('stat-kb').textContent = kbHits;
+  var list = document.getElementById('kb-hit-list');
+  if (list.querySelector('[style]')) list.innerHTML = '';
+  refs.slice(0, 6).forEach(function(ref) {
+    var item = document.createElement('div');
+    item.className = 'kb-hit-item';
+    item.innerHTML = '<div class="kb-hit-num">' + ref + '</div><div class="kb-hit-title">OEM Reference Document</div><div class="kb-hit-brand">Click to query</div>';
+    item.onclick = function() { injectQ('Tell me more about document ' + ref); };
+    list.insertBefore(item, list.firstChild);
+    while (list.children.length > 6) list.removeChild(list.lastChild);
+  });
+}
+
+/* ══ TYPING INDICATOR ══ */
+function showTyping() {
+  var area = document.getElementById('chat-area');
+  var row = document.createElement('div');
+  row.className = 'msg-row ai'; row.id = 'typing-ind';
+  row.innerHTML = '<div class="msg-sender">HYDROMIND AI</div><div class="msg-bubble" style="padding:12px 16px;"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
+  area.appendChild(row);
+  area.scrollTop = area.scrollHeight;
+}
+function hideTyping() { var t = document.getElementById('typing-ind'); if (t) t.remove(); }
+function setUIBusy(busy) {
+  isLoading = busy;
+  var b = document.getElementById('send-btn');
+  var i = document.getElementById('chat-input');
+  if (b) b.disabled = busy;
+  if (i) i.disabled = busy;
+}
+
+/* ══ SEND ══ */
+function sendMessage() {
+  if (isLoading) return;
+  var inp = document.getElementById('chat-input');
+  var text = inp.value.trim();
   if (!text) return;
-  if (queriesLeft <= 0) {
-    addMessage('ai', 'You have reached your free tier query limit. Please upgrade to Pro for unlimited access.', []);
+  if (queriesUsed >= queriesMax) {
+    addMsg('ai', '## Query Limit Reached\n\nYou have used all ' + queriesMax + ' free queries. **Upgrade to Pro** for unlimited access to the full AI Hydraulic Advisor.\n\n[View Pricing →](pricing.html)', []);
     return;
   }
-
-  input.value = '';
-  input.style.height = 'auto';
-  document.getElementById('send-btn').disabled = true;
-
-  addMessage('user', text);
-  msgCount++;
-  queriesLeft--;
-  document.getElementById('stat-msgs').textContent = msgCount;
-  document.getElementById('stat-ql').textContent = queriesLeft;
-
-  history.push({ role: 'user', content: text });
+  inp.value = ''; inp.style.height = 'auto';
+  setUIBusy(true);
+  addMsg('user', text);
+  history.push({role:'user', content:text});
   showTyping();
+  queriesUsed++;
+  document.getElementById('stat-queries').textContent = queriesUsed;
+  var remain = Math.max(0, queriesMax - queriesUsed);
+  document.getElementById('stat-remain').textContent = remain;
 
-  const systemPrompt = `You are HydroMind AI, an expert hydraulic engineer specialising in offshore cranes, marine hydraulic systems, and industrial hydraulics. Current context: ${activeCtx}. Mode: ${activeMode}. Provide precise, technically accurate answers referencing relevant standards (ISO 4413, DNV-ST-0378) where applicable.`;
+  var brandCtx = activeBrand !== 'ALL' ? ' Focus on ' + activeBrand + ' brand documents.' : '';
+  var sysPrompt = MODE_PROMPTS[activeMode] + brandCtx;
 
-  // Build messages array for /api/chat
-  const msgs = [
-    { role: 'user', content: systemPrompt },
-    { role: 'assistant', content: 'Understood. I am HydroMind AI, ready to assist with hydraulic engineering questions.' },
-    ...history.slice(-8),
-    { role: 'user', content: text }
-  ];
+  var msgs = [
+    {role:'user', content: sysPrompt},
+    {role:'assistant', content: 'HydroMind AI Advisor ready in ' + activeMode + ' mode. How can I help?'}
+  ].concat(history.slice(-12));
 
-  try {
-    const res = await fetch(BACKEND, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: msgs })
-    });
-
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', BACKEND, true);
+  xhr.setRequestHeader('Content-Type','application/json');
+  xhr.timeout = 35000;
+  xhr.onload = function() {
     hideTyping();
-
-    if (!res.ok) throw new Error(`Server error ${res.status}`);
-    const data = await res.json();
-    const answer = data.content?.[0]?.text || data.answer || data.response || data.text || JSON.stringify(data);
-
-    // extract KB refs from answer text (pattern: KB-\d+)
-    const kbRefs = [...new Set((answer.match(/KB-\d+/g) || []))];
-
-    history.push({ role: 'assistant', content: answer });
-    if (history.length > 20) history = history.slice(-20);
-
-    addMessage('ai', answer, kbRefs);
-
-  } catch (err) {
-    hideTyping();
-    addMessage('ai', `⚠️ Connection error: ${err.message}. Please check your internet connection and try again.`, []);
-    history.pop();
-    queriesLeft++;
-    document.getElementById('stat-ql').textContent = queriesLeft;
-  }
-
-  document.getElementById('send-btn').disabled = false;
-  input.focus();
+    if (xhr.status >= 200 && xhr.status < 300) {
+      try {
+        var data = JSON.parse(xhr.responseText);
+        var answer = (data.content && data.content[0] && data.content[0].text) || data.answer || data.response || data.text || 'No response received.';
+        var refs = []; var seen = {};
+        var kbMatch = answer.match(/KB-\d+/g);
+        if (kbMatch) kbMatch.forEach(function(r){if(!seen[r]){seen[r]=1;refs.push(r);}});
+        history.push({role:'assistant', content:answer});
+        if (history.length > 24) history = history.slice(-24);
+        addMsg('ai', answer, refs);
+      } catch(e) { addMsg('ai','Error parsing response. Please retry.',[]);}
+    } else {
+      addMsg('ai','Server error ' + xhr.status + '. The backend may be starting up — please try again in a moment.',[]);
+    }
+    setUIBusy(false);
+  };
+  xhr.onerror = function() { hideTyping(); addMsg('ai','Connection error. Check network and retry.',[]);  setUIBusy(false); };
+  xhr.ontimeout = function() { hideTyping(); addMsg('ai','Request timed out (35s). Please try again.',[]);  setUIBusy(false); };
+  xhr.send(JSON.stringify({messages: msgs}));
 }
+
+/* ══ CLEAR CHAT ══ */
+function clearChat() {
+  history = [];
+  queriesUsed = 0;
+  kbHits = 0;
+  document.getElementById('stat-queries').textContent = '0';
+  document.getElementById('stat-kb').textContent = '0';
+  document.getElementById('stat-remain').textContent = queriesMax;
+  document.getElementById('kb-hit-list').innerHTML = '<div style="font-size:10px;color:var(--text3);text-align:center;padding:8px 0;">Refs appear here after query</div>';
+  document.getElementById('hist-list').innerHTML = '<div style="font-size:10px;color:var(--text3);text-align:center;padding:8px 0;">No history yet</div>';
+  var area = document.getElementById('chat-area');
+  area.innerHTML = '';
+  var welcome = document.createElement('div');
+  welcome.id = 'adv-welcome';
+  welcome.className = 'adv-welcome';
+  welcome.innerHTML = '<div class="adv-welcome-badge"><span class="w-dot"></span>Chat cleared — ready for new session</div>';
+  area.appendChild(welcome);
+}
+
+/* ══ INIT ══ */
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof hmInit === 'function') hmInit();
+  var inp = document.getElementById('chat-input');
+  if (inp) {
+    inp.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
+    inp.addEventListener('input', function() { autoResize(inp); });
+  }
+});
 </script>
-<script src="js/auth.js"></script>
 </body>
 </html>

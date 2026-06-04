@@ -4,414 +4,640 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Knowledge Base — HydroMind.AI</title>
+<meta name="description" content="86+ indexed OEM hydraulic manuals — Rexroth, Danfoss, Parker, Liebherr, MacGregor, NOV and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="css/hm-design.css">
 <style>
-/* ── Page header stats ── */
-.kb-stats-row {
-  display: flex; gap: 20px; flex-wrap: wrap;
-  margin-bottom: 28px;
+/* ══ KB PAGE STYLES ══ */
+
+/* Page hero strip */
+.kb-hero {
+  background: linear-gradient(135deg, var(--surface) 0%, rgba(6,182,212,.04) 100%);
+  border-bottom: 1px solid var(--border-md);
+  padding: 32px 0 24px;
+  margin: 0 -24px 28px;
+  padding-left: 24px; padding-right: 24px;
 }
-.kb-stat-chip {
-  display: flex; align-items: center; gap: 8px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 10px 16px;
+.kb-hero-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
+.kb-hero h1 { font-family: var(--syne); font-size: 28px; font-weight: 800; color: var(--text1); margin-bottom: 6px; }
+.kb-hero p  { font-size: 14px; color: var(--text2); line-height: 1.65; max-width: 500px; }
+
+/* Stats chips */
+.kb-stats { display: flex; gap: 12px; flex-wrap: wrap; }
+.kb-stat {
+  background: var(--card); border: 1px solid var(--border-md);
+  border-radius: 10px; padding: 12px 18px;
+  display: flex; flex-direction: column; align-items: center;
+  min-width: 90px; text-align: center;
   box-shadow: var(--card-shadow);
 }
-.kb-stat-chip .num { font-size: 20px; font-weight: 800; color: var(--accent); font-family: var(--mono); }
-.kb-stat-chip .lbl { font-size: 12px; color: var(--text2); font-weight: 500; }
+.kb-stat .sv { font-family: var(--mono); font-size: 22px; font-weight: 800; color: var(--accent-bright); letter-spacing: -.02em; }
+.kb-stat .sl { font-size: 11px; color: var(--text2); margin-top: 2px; font-weight: 500; }
 
-/* ── Search bar ── */
-.kb-search-wrap {
-  position: relative;
-  margin-bottom: 24px;
-}
-.kb-search-wrap svg {
+/* Search bar */
+.kb-search-wrap { position: relative; margin-bottom: 18px; }
+.kb-search-wrap .search-icon {
   position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
   width: 18px; height: 18px; color: var(--text3); pointer-events: none;
 }
 #kb-search {
-  width: 100%;
-  padding: 13px 16px 13px 48px;
-  background: var(--card);
-  border: 1.5px solid var(--border-md);
-  border-radius: var(--radius-lg);
-  font-size: 15px;
-  color: var(--text1);
-  outline: none;
+  width: 100%; padding: 14px 48px 14px 50px;
+  background: var(--card); border: 1.5px solid var(--border-md);
+  border-radius: 12px; font-size: 14.5px; color: var(--text1);
+  font-family: var(--sans); outline: none; transition: border-color .15s, box-shadow .15s;
   box-shadow: var(--card-shadow);
-  transition: border-color 0.15s, box-shadow 0.15s;
 }
 #kb-search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
 #kb-search::placeholder { color: var(--text3); }
 .kb-search-clear {
   position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-  background: var(--surface); border: 1px solid var(--border-md); border-radius: 50%;
-  width: 26px; height: 26px; display: none; align-items: center; justify-content: center;
-  cursor: pointer; font-size: 14px; color: var(--text3);
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--surface); border: 1px solid var(--border-md);
+  display: none; align-items: center; justify-content: center;
+  font-size: 13px; color: var(--text3); cursor: pointer;
+  transition: all .12s;
 }
+.kb-search-clear:hover { background: var(--danger-dim); color: var(--danger); border-color: rgba(239,68,68,.25); }
 .kb-search-clear.visible { display: flex; }
-.kb-search-clear:hover { color: var(--text1); }
 
-/* ── Filter chips ── */
+/* Filter bar */
 .filter-bar {
-  display: flex; gap: 8px; flex-wrap: wrap;
-  margin-bottom: 28px;
+  display: flex; gap: 7px; flex-wrap: wrap;
+  margin-bottom: 20px; align-items: center;
 }
+.filter-bar-label { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: .08em; margin-right: 4px; }
 .filter-chip {
-  padding: 7px 16px;
-  border-radius: 20px;
-  border: 1.5px solid var(--border-md);
-  background: var(--card);
-  font-size: 12.5px; font-weight: 600;
-  color: var(--text2);
-  cursor: pointer;
-  transition: all 0.15s;
-  user-select: none;
+  padding: 6px 14px; border-radius: 20px;
+  background: var(--card); border: 1.5px solid var(--border);
+  font-size: 12px; font-weight: 600; color: var(--text2);
+  cursor: pointer; transition: all .15s; display: flex; align-items: center; gap: 6px;
   white-space: nowrap;
 }
-.filter-chip:hover { border-color: var(--accent); color: var(--accent); }
-.filter-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-.filter-chip .chip-count {
-  background: rgba(255,255,255,0.25);
-  border-radius: 10px;
-  padding: 1px 7px;
-  font-size: 10.5px;
-  margin-left: 4px;
-}
-.filter-chip:not(.active) .chip-count {
-  background: var(--surface);
-  color: var(--text3);
-}
+.filter-chip:hover { border-color: var(--accent-glow); color: var(--accent-bright); background: var(--accent-dim); }
+.filter-chip.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent-bright); font-weight: 700; }
+.chip-count { font-size: 10px; font-weight: 800; background: rgba(255,255,255,.08); border-radius: 10px; padding: 1px 6px; font-family: var(--mono); }
+.filter-chip.active .chip-count { background: rgba(6,182,212,.2); }
 
-/* ── Results row ── */
-.kb-results-row {
+/* Sort + result count bar */
+.kb-result-bar {
   display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 18px;
+  margin-bottom: 16px; gap: 12px; flex-wrap: wrap;
 }
-.kb-results-count { font-size: 13px; color: var(--text2); }
-.kb-results-count strong { color: var(--text1); font-weight: 700; }
-.kb-sort {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 12.5px; color: var(--text2);
-}
-.kb-sort select {
-  background: var(--card); border: 1px solid var(--border-md);
-  border-radius: var(--radius-sm); padding: 5px 28px 5px 10px;
-  font-size: 12.5px; color: var(--text1); outline: none;
+.result-text { font-size: 12.5px; color: var(--text3); }
+.result-text strong { color: var(--text1); font-weight: 700; }
+.sort-wrap { display: flex; align-items: center; gap: 8px; }
+.sort-label { font-size: 11.5px; color: var(--text3); font-weight: 600; }
+.sort-select {
+  background: var(--card); border: 1.5px solid var(--border-md);
+  border-radius: 8px; padding: 6px 28px 6px 10px; font-size: 12px;
+  color: var(--text1); font-family: var(--sans); outline: none; cursor: pointer;
   appearance: none; -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237a9e9e' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%233d6478' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat; background-position: right 8px center;
 }
-
-/* ── KB Card Grid ── */
-.kb-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin-bottom: 32px;
+.sort-select:focus { border-color: var(--accent); }
+.view-btns { display: flex; gap: 4px; }
+.view-btn {
+  width: 32px; height: 32px; border-radius: 7px; border: 1.5px solid var(--border-md);
+  background: var(--card); color: var(--text3); display: flex; align-items: center;
+  justify-content: center; cursor: pointer; transition: all .12s;
 }
+.view-btn:hover, .view-btn.active { border-color: var(--accent); color: var(--accent-bright); background: var(--accent-dim); }
+.view-btn svg { width: 14px; height: 14px; }
+
+/* KB Grid */
+.kb-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.kb-grid.list-view { grid-template-columns: 1fr; }
+
+/* KB Card */
 .kb-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 20px;
-  box-shadow: var(--card-shadow);
-  display: flex; flex-direction: column; gap: 10px;
-  transition: all 0.18s;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px; display: flex; flex-direction: column;
+  gap: 10px; transition: all .2s; cursor: pointer; position: relative;
+  overflow: hidden;
 }
-.kb-card:hover { box-shadow: var(--card-shadow-hover); border-color: var(--accent-glow); transform: translateY(-2px); }
-.kb-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-.kb-num {
-  font-family: var(--mono); font-size: 11px; font-weight: 800;
-  background: var(--accent); color: #fff;
-  padding: 3px 9px; border-radius: 5px;
-  flex-shrink: 0;
+.kb-card::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: transparent; transition: background .2s;
 }
-.kb-type-chip {
-  font-size: 10px; font-weight: 700;
-  padding: 3px 9px; border-radius: 20px;
-  white-space: nowrap;
-}
-.kb-title { font-size: 14px; font-weight: 700; color: var(--text1); line-height: 1.4; }
+.kb-card:hover { border-color: var(--accent-glow); box-shadow: var(--card-shadow-hover); transform: translateY(-2px); }
+.kb-card:hover::before { background: linear-gradient(90deg, var(--accent), var(--accent-deep)); }
+.kb-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.kb-num { font-family: var(--mono); font-size: 11px; font-weight: 800; color: var(--accent); background: var(--accent-dim); border: 1px solid var(--accent-glow); border-radius: 5px; padding: 2px 8px; }
+.kb-type-chip { font-size: 9.5px !important; }
+.kb-title { font-size: 13.5px; font-weight: 700; color: var(--text1); line-height: 1.4; }
+.kb-card:hover .kb-title { color: var(--accent-bright); }
 .kb-mfr-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.kb-mfr { font-size: 11.5px; font-weight: 600; color: var(--accent); }
-.kb-desc { font-size: 12.5px; color: var(--text2); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
-.kb-card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; padding-top: 10px; border-top: 1px solid var(--border); }
-.kb-meta { display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--text3); }
+.kb-mfr { font-size: 11.5px; color: var(--text2); font-weight: 600; }
+.kb-desc { font-size: 12px; color: var(--text2); line-height: 1.6; flex: 1; }
+.kb-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 6px; border-top: 1px solid var(--border); margin-top: auto; }
+.kb-meta { display: flex; align-items: center; gap: 10px; }
+.kb-meta span { font-size: 10.5px; color: var(--text3); font-family: var(--mono); display: flex; align-items: center; gap: 4px; }
 .kb-meta svg { width: 11px; height: 11px; }
+.kb-ask-btn {
+  font-size: 11px; font-weight: 700; color: var(--accent);
+  background: var(--accent-dim); border: 1px solid var(--accent-glow);
+  border-radius: 6px; padding: 4px 10px; cursor: pointer;
+  transition: all .12s; font-family: var(--sans); white-space: nowrap;
+}
+.kb-ask-btn:hover { background: var(--accent); color: #fff; }
+.kb-highlight { background: rgba(6,182,212,.20); border-radius: 2px; padding: 0 1px; color: var(--accent-bright); font-weight: 700; }
 
-/* Load more */
-.load-more-wrap { display: flex; justify-content: center; padding: 8px 0 40px; }
+/* List view card variant */
+.kb-grid.list-view .kb-card { flex-direction: row; align-items: flex-start; gap: 16px; padding: 16px 20px; }
+.kb-grid.list-view .kb-card-left { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; width: 100px; }
+.kb-grid.list-view .kb-card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.kb-grid.list-view .kb-card-top { display: none; }
+.kb-grid.list-view .kb-footer { border-top: none; padding-top: 0; }
 
 /* Empty state */
 .kb-empty {
-  display: none;
-  flex-direction: column; align-items: center; justify-content: center;
-  padding: 60px 20px; text-align: center; gap: 14px;
-  grid-column: 1 / -1;
+  grid-column: 1 / -1; display: none; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
+  padding: 60px 20px; gap: 14px; color: var(--text3);
 }
 .kb-empty.visible { display: flex; }
-.kb-empty svg { width: 48px; height: 48px; color: var(--text3); opacity: 0.4; }
-.kb-empty h3 { font-size: 17px; font-weight: 700; color: var(--text2); }
-.kb-empty p { font-size: 13.5px; color: var(--text3); max-width: 320px; }
+.kb-empty svg { width: 48px; height: 48px; opacity: .3; }
+.kb-empty h3 { font-size: 16px; font-weight: 700; color: var(--text2); }
+.kb-empty p { font-size: 13px; color: var(--text3); line-height: 1.6; max-width: 360px; }
 
-@media (max-width: 1100px) { .kb-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 650px)  { .kb-grid { grid-template-columns: 1fr; } }
+/* Load more */
+.load-more-wrap { display: flex; justify-content: center; margin-top: 28px; }
+#load-more-btn { display: none; }
+
+/* Category header */
+.cat-header {
+  grid-column: 1 / -1; display: flex; align-items: center; gap: 12px;
+  padding: 6px 0; margin-top: 8px;
+}
+.cat-header-line { flex: 1; height: 1px; background: var(--border-md); }
+.cat-header-label { font-size: 10.5px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: .10em; white-space: nowrap; }
+
+/* ─── HOW TO USE ─── */
+.htu-panel{background:var(--card);border:1.5px solid var(--border-md);border-radius:10px;margin:16px 0 0;overflow:hidden;}
+.htu-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;user-select:none;border-bottom:1.5px solid transparent;transition:border-color .2s;}
+.htu-header:hover{border-bottom-color:var(--border-bright);}
+.htu-header-left{display:flex;align-items:center;gap:9px;}
+.htu-header-icon{font-size:.95rem;}
+.htu-header-title{font-size:12.5px;font-weight:700;color:var(--text1);}
+.htu-header-sub{font-size:10.5px;color:var(--text3);margin-top:1px;}
+.htu-arrow{font-size:10px;color:var(--accent);transition:transform .25s ease;}
+.htu-arrow.open{transform:rotate(180deg);}
+.htu-body{display:none;padding:12px 14px 14px;border-top:1px solid var(--border);}
+.htu-body.open{display:block;}
+.htu-steps{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
+.htu-step{display:flex;align-items:flex-start;gap:10px;background:var(--accent-dim);border:1px solid var(--border-md);border-radius:8px;padding:10px 12px;transition:border-color .15s;}
+.htu-step:hover{border-color:var(--accent-glow);}
+.htu-step-num{width:24px;height:24px;background:rgba(6,182,212,.15);border:1.5px solid var(--accent-glow);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--accent);flex-shrink:0;}
+.htu-step-title{font-size:12px;font-weight:700;color:var(--text1);margin-bottom:3px;}
+.htu-step-desc{font-size:11px;color:var(--text2);line-height:1.55;}
+.htu-tips{background:rgba(6,182,212,.04);border:1px solid var(--border);border-radius:8px;padding:10px 12px;}
+.htu-tips-title{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:7px;letter-spacing:.04em;}
+.htu-tip-row{display:flex;align-items:flex-start;gap:7px;margin-bottom:5px;}
+.htu-tip-row:last-child{margin-bottom:0;}
+.htu-tip-dot{width:5px;height:5px;background:var(--accent);border-radius:50%;flex-shrink:0;margin-top:4px;}
+.htu-tip-text{font-size:11px;color:var(--text2);line-height:1.5;}
 </style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5756895689951807" crossorigin="anonymous"></script>
 </head>
 <body>
 
-<!-- NAV -->
+<!-- ═══════════ NAV ═══════════ -->
 <nav class="hm-nav">
   <a href="index.html" class="nav-logo">
     <div class="logo-icon">HM</div>
-    <span>HydroMind<span class="logo-ai">.AI</span></span>
+    Hydro<span class="logo-ai">Mind</span><span style="color:var(--text3);font-size:11px;font-weight:400;margin-left:2px;">.AI</span>
   </a>
   <div class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="ai_advisor.html">AI Advisor</a>
-    <a href="system_design.html">System Design</a>
-    <a href="crane_diagnostic.html">Crane Diagnostic</a>
-    <a href="knowledge_base.html" class="active">Knowledge Base</a>
-    <a href="pricing.html">Pricing</a>
+    <a href="index.html" class="navbar-link">Home</a>
+    <a href="ai_advisor.html" class="navbar-link">AI Advisor</a>
+    <a href="crane_diagnostic.html" class="navbar-link">Crane Diag</a>
+    <a href="knowledge_base.html" class="navbar-link active">Knowledge Base</a>
+    <a href="system_design.html" class="navbar-link">System Design</a>
+    <a href="pricing.html" class="navbar-link">Pricing</a>
   </div>
-  <div class="nav-right">
-    <span class="nav-status"><span class="nav-status-dot"></span>ONLINE</span>
+  <div class="nav-right" id="hmNavCta">
+    <div class="nav-status"><div class="nav-status-dot"></div>AI Online</div>
     <a href="#" class="btn btn-ghost btn-sm">Log In</a>
-    <a href="#" class="btn btn-secondary btn-sm">Register</a>
-    <a href="pricing.html" class="btn btn-primary btn-sm">Get Pro</a>
+    <a href="pricing.html" class="btn btn-primary btn-sm">Get Started →</a>
   </div>
 </nav>
 
-<!-- LEFT SIDEBAR -->
+<!-- ═══════════ LEFT SIDEBAR ═══════════ -->
 <aside class="hm-sidebar-left">
-  <div class="sb-profile" id="sb-profile"><div class="sb-avatar" id="sb-avatar">U</div><span class="sb-username" id="sb-username">User</span><span class="badge badge-teal" id="sb-plan">Free</span></div>
-  <div>
-    <div class="sb-section-label">Platform</div>
-    <a href="ai_advisor.html" class="sb-nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>AI Advisor</a>
-    <a href="system_design.html" class="sb-nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>System Design</a>
-    <a href="crane_diagnostic.html" class="sb-nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Crane Diag.</a>
-    <a href="knowledge_base.html" class="sb-nav-link active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>KB Library</a>
-    <a href="pricing.html" class="sb-nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Pricing</a>
+  <div id="hmSidebarNoAuth">
+    <div class="sb-section-label">Navigation</div>
+    <a href="index.html" class="sb-nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Home</a>
+    <a href="ai_advisor.html" class="sb-nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>AI Advisor</a>
+    <a href="crane_diagnostic.html" class="sb-nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6m-6 4h6m-6 4h4"/></svg>Crane Diag</a>
+    <a href="knowledge_base.html" class="sb-nav-link active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 006.5 7H20v13H6.5A2.5 2.5 0 014 17.5z"/></svg>KB</a>
+    <a href="system_design.html" class="sb-nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Sys Design</a>
+    <a href="pricing.html" class="sb-nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Pricing</a>
+    <div style="margin-top:8px;padding:10px 8px;background:var(--accent-dim);border:1px solid var(--accent-glow);border-radius:8px;text-align:center;">
+      <div style="font-size:10px;color:var(--text2);margin-bottom:6px;line-height:1.4;">Sign in to save searches</div>
+      <button onclick="openAuthModal('login')" style="width:100%;padding:6px;background:var(--accent);border:none;border-radius:6px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;">Sign In</button>
+    </div>
   </div>
-  <div class="sb-ad mt-auto"><div class="sb-ad-label">Advertise Here</div><div class="sb-ad-sub">Reach hydraulic engineers worldwide</div><a href="mailto:support@hydromindai.com" class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">Contact Us</a></div>
+  <div id="hmSidebarProfile" style="display:none;">
+    <div class="hm-profile-card">
+      <div class="sb-avatar-wrap">
+        <div class="sb-avatar" id="hmProfAvatar">AT</div>
+        <div class="sb-avatar-edit" onclick="openProfileEdit()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+      </div>
+      <div class="sb-username" id="hmProfName">User</div>
+      <div class="sb-useremail" id="hmProfEmail"></div>
+      <div class="sb-plan-badge" id="hmProfPlan">Free</div>
+    </div>
+  </div>
+  <div id="hmSidebarHistory" style="display:none;">
+    <div class="sb-section-label">Recent Searches</div>
+    <div id="hmHistoryList"><div style="font-size:10px;color:var(--text3);text-align:center;padding:8px 0;">No searches yet</div></div>
+  </div>
+  <div id="hmSidebarLinks" style="display:none;">
+    <button id="hmLogoutBtn" onclick="doLogout()" style="display:none;width:100%;margin-top:6px;padding:7px;background:var(--danger-dim);border:1px solid rgba(239,68,68,.18);border-radius:7px;font-size:11px;font-weight:600;color:var(--danger);cursor:pointer;">Sign Out</button>
+  </div>
 </aside>
 
-<!-- RIGHT SIDEBAR -->
-<aside class="hm-sidebar-right">
-  <div class="sb-pro-cta"><h4>Full KB Access</h4><ul><li>All 155 documents</li><li>PDF download</li><li>Offline access</li><li>Search history</li></ul><a href="pricing.html" class="btn btn-primary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">View Plans</a></div>
-  <div class="sb-ad mt-auto"><div class="sb-ad-label">Advertise Here</div><div class="sb-ad-sub">138×220 placement</div><a href="mailto:support@hydromindai.com" class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">Contact Us</a></div>
+<!-- ═══════════ RIGHT SIDEBAR ═══════════ -->
+<aside class="hm-sidebar-right" id="hmAdSidebar">
+  <div class="sb-app-banner">
+    <div class="banner-title">HydroMind AI App</div>
+    <div class="banner-sub">Full KB on Android — offline access</div>
+    <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" rel="noopener" class="qr-wrap" title="Scan to download">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.hydromind.app&format=png&margin=4&qzone=1" alt="QR" width="80" height="80" style="border-radius:4px;display:block;">
+    </a>
+    <div class="banner-dl">Scan to Download</div>
+    <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" rel="noopener" class="store-badge">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76a2 2 0 001.91-.19l11.12-6.37-2.93-2.93-10.1 9.49zM20.5 10.36L17.84 8.8l-3.19 3.19 3.19 3.2 2.69-1.56a2 2 0 000-3.27zM1.54.27A2 2 0 001 1.5v21l10.29-10.3L1.54.27zM14.65 12L4.09.24 3.18.24 14.65 12z"/></svg>
+      Google Play
+    </a>
+  </div>
+  <div style="height:1px;background:var(--border);"></div>
+  <div id="hmAd1" class="sb-ad">
+    <div class="sb-ad-label">Advertisement</div>
+    <ins class="adsbygoogle"
+         style="display:block;width:100%;min-height:100px;"
+         data-ad-client="ca-pub-5756895689951807"
+         data-ad-slot="auto"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+  </div>
+  <div id="hmAd2" class="sb-pro-cta">
+    <h4>📚 Full KB Access</h4>
+    <ul>
+      <li>All 86+ documents</li>
+      <li>Advanced search filters</li>
+      <li>Search history saved</li>
+      <li>Ask AI about any doc</li>
+      <li>Ad-free experience</li>
+    </ul>
+    <a href="pricing.html" class="upgrade-btn">Upgrade Now →</a>
+  </div>
+  <div id="hmAd3" class="sb-ad">
+    <div class="sb-ad-label">Sponsor Slot</div>
+    <ins class="adsbygoogle"
+         style="display:block;width:100%;min-height:100px;"
+         data-ad-client="ca-pub-5756895689951807"
+         data-ad-slot="auto"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+  </div>
 </aside>
 
-<!-- MAIN -->
+<!-- ═══════════ MAIN ═══════════ -->
 <main class="hm-page">
 
-  <!-- Page header -->
-  <div class="page-header">
-    <div class="breadcrumb"><a href="index.html">Home</a> › <span>Knowledge Base</span></div>
-    <h1>Knowledge Base Library</h1>
-    <p>Indexed hydraulic engineering documents — service manuals, maintenance procedures, ISO standards, and technical bulletins from 33+ manufacturers.</p>
+  <!-- HERO STRIP -->
+  <div class="kb-hero">
+    <div class="kb-hero-top">
+      <div>
+        <div class="section-label">Hydraulic Intelligence Library</div>
+        <h1>Knowledge Base</h1>
+        <p>86+ indexed OEM manuals, service guides, standards and technical bulletins — covering 12+ manufacturers. Searchable, categorised, AI-queryable.</p>
+      </div>
+      <div class="kb-stats">
+        <div class="kb-stat"><div class="sv">86</div><div class="sl">KB Entries</div></div>
+        <div class="kb-stat"><div class="sv">12+</div><div class="sl">Manufacturers</div></div>
+        <div class="kb-stat"><div class="sv">6</div><div class="sl">Categories</div></div>
+        <div class="kb-stat"><div class="sv">2026</div><div class="sl">Up to date</div></div>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="kb-search-wrap">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="kb-search" type="text" placeholder="Search by title, manufacturer, component, KB number, or keyword…" oninput="onSearch(this.value)" autocomplete="off" spellcheck="false">
+      <div class="kb-search-clear" id="kb-clear" onclick="clearSearch()">✕</div>
+    </div>
+
+    <!-- Filter chips -->
+    <div class="filter-bar">
+      <span class="filter-bar-label">Filter:</span>
+      <div class="filter-chip active" data-cat="all"  onclick="setFilter(this,'all')">All <span class="chip-count" id="fc-all">86</span></div>
+      <div class="filter-chip" data-cat="cranes"       onclick="setFilter(this,'cranes')">🏗️ Cranes <span class="chip-count" id="fc-cranes">18</span></div>
+      <div class="filter-chip" data-cat="pumps"        onclick="setFilter(this,'pumps')">⚙️ Pumps <span class="chip-count" id="fc-pumps">16</span></div>
+      <div class="filter-chip" data-cat="motors"       onclick="setFilter(this,'motors')">🔄 Motors <span class="chip-count" id="fc-motors">12</span></div>
+      <div class="filter-chip" data-cat="valves"       onclick="setFilter(this,'valves')">🔧 Valves <span class="chip-count" id="fc-valves">18</span></div>
+      <div class="filter-chip" data-cat="standards"    onclick="setFilter(this,'standards')">📋 Standards <span class="chip-count" id="fc-standards">10</span></div>
+      <div class="filter-chip" data-cat="maintenance"  onclick="setFilter(this,'maintenance')">🔩 Maintenance <span class="chip-count" id="fc-maintenance">12</span></div>
+    </div>
+
+    <!-- How to Use -->
+    <div class="htu-panel">
+      <div class="htu-header" onclick="toggleHtu()">
+        <div class="htu-header-left">
+          <div class="htu-header-icon">📋</div>
+          <div>
+            <div class="htu-header-title">How to Use Knowledge Base</div>
+            <div class="htu-header-sub">Click to expand — 4-step guide + search tips</div>
+          </div>
+        </div>
+        <div class="htu-arrow" id="htu-arrow">▼</div>
+      </div>
+      <div class="htu-body" id="htu-body">
+        <div class="htu-steps">
+          <div class="htu-step">
+            <div class="htu-step-num">1</div>
+            <div>
+              <div class="htu-step-title">Search by Keyword, Model, or KB Number</div>
+              <div class="htu-step-desc">Type any keyword into the search bar — component model (e.g. A4VG90), manufacturer name (e.g. Rexroth), document type (e.g. service manual), or directly enter a KB number (e.g. KB-003). Results update instantly as you type.</div>
+            </div>
+          </div>
+          <div class="htu-step">
+            <div class="htu-step-num">2</div>
+            <div>
+              <div class="htu-step-title">Filter by Category</div>
+              <div class="htu-step-desc">Use the filter chips to narrow results by document type — Cranes, Pumps, Motors, Valves, Standards, or Maintenance. Each chip shows a count of available documents. Combine filtering with search for precise results.</div>
+            </div>
+          </div>
+          <div class="htu-step">
+            <div class="htu-step-num">3</div>
+            <div>
+              <div class="htu-step-title">Sort and Switch Views</div>
+              <div class="htu-step-desc">Sort the results by KB Number, Title A–Z, Manufacturer, Year, or Page count using the sort dropdown. Toggle between Grid view (cards) and List view (compact rows) using the view buttons on the right of the result bar.</div>
+            </div>
+          </div>
+          <div class="htu-step">
+            <div class="htu-step-num">4</div>
+            <div>
+              <div class="htu-step-title">Query a Document with AI Advisor</div>
+              <div class="htu-step-desc">Click "Ask AI" on any KB card to open the AI Advisor pre-loaded with that document's context. The AI will answer your specific fault or technical question using that OEM manual as its primary reference — no need to read the full document.</div>
+            </div>
+          </div>
+        </div>
+        <div class="htu-tips">
+          <div class="htu-tips-title">💡 Search Tips</div>
+          <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Search by <strong>component model number</strong> for the most precise results — e.g. "A4VG90", "H1B", "D3FW", "K3VL".</div></div>
+          <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Use <strong>KB-XXX</strong> format to jump directly to a specific document if you already know the number from an AI Advisor response.</div></div>
+          <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Search <strong>"counterbalance"</strong> or <strong>"CBV"</strong> to find all valve setting guides across manufacturers in one filtered view.</div></div>
+          <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">The <strong>Standards</strong> filter shows all ISO, DNV, API, and EN documents — useful for pre-job class requirement checks.</div></div>
+          <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Click <strong>Load More</strong> at the bottom to reveal all 86 documents beyond the initial 12 shown.</div></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- Stats row -->
-  <div class="kb-stats-row">
-    <div class="kb-stat-chip">
-      <span class="num">155</span>
-      <span class="lbl">Documents Indexed</span>
-    </div>
-    <div class="kb-stat-chip">
-      <span class="num">86</span>
-      <span class="lbl">KB Entries</span>
-    </div>
-    <div class="kb-stat-chip">
-      <span class="num">33+</span>
-      <span class="lbl">Manufacturers</span>
-    </div>
-    <div class="kb-stat-chip">
-      <span class="num">6</span>
-      <span class="lbl">Document Categories</span>
-    </div>
-  </div>
-
-  <!-- Search -->
-  <div class="kb-search-wrap">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input id="kb-search" type="text" placeholder="Search by title, manufacturer, component, or KB number…" oninput="filterKB()">
-    <div class="kb-search-clear" id="kb-clear" onclick="clearSearch()">✕</div>
-  </div>
-
-  <!-- Filter chips -->
-  <div class="filter-bar">
-    <div class="filter-chip active" data-filter="all" onclick="setFilter(this)">All <span class="chip-count">155</span></div>
-    <div class="filter-chip" data-filter="cranes" onclick="setFilter(this)">Cranes <span class="chip-count">37</span></div>
-    <div class="filter-chip" data-filter="pumps" onclick="setFilter(this)">Pumps <span class="chip-count">19</span></div>
-    <div class="filter-chip" data-filter="valves" onclick="setFilter(this)">Valves <span class="chip-count">40</span></div>
-    <div class="filter-chip" data-filter="motors" onclick="setFilter(this)">Hydraulic Motors <span class="chip-count">20</span></div>
-    <div class="filter-chip" data-filter="standards" onclick="setFilter(this)">Standards <span class="chip-count">4</span></div>
-    <div class="filter-chip" data-filter="maintenance" onclick="setFilter(this)">Maintenance <span class="chip-count">8</span></div>
-    <div class="filter-chip" data-filter="seals" onclick="setFilter(this)">Seals & Hoses <span class="chip-count">4</span></div>
-  </div>
-
-  <!-- Results row -->
-  <div class="kb-results-row">
-    <div class="kb-results-count">Showing <strong id="result-count">12</strong> of <strong>155</strong> entries</div>
-    <div class="kb-sort">
-      Sort by:
-      <select onchange="filterKB()">
-        <option>Most Relevant</option>
-        <option>Newest First</option>
-        <option>KB Number</option>
-        <option>Manufacturer</option>
+  <!-- Result bar -->
+  <div class="kb-result-bar">
+    <div class="result-text">Showing <strong id="result-count">24</strong> of <strong id="result-total">86</strong> documents</div>
+    <div class="sort-wrap">
+      <span class="sort-label">Sort:</span>
+      <select class="sort-select" id="sort-select" onchange="renderCards()">
+        <option value="num">KB Number</option>
+        <option value="title">Title A–Z</option>
+        <option value="mfr">Manufacturer</option>
+        <option value="year">Year</option>
+        <option value="pages">Pages</option>
       </select>
+    </div>
+    <div class="view-btns">
+      <button class="view-btn active" id="vb-grid" onclick="setView('grid',this)" title="Grid view">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      </button>
+      <button class="view-btn" id="vb-list" onclick="setView('list',this)" title="List view">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      </button>
     </div>
   </div>
 
   <!-- KB Grid -->
-  <div class="kb-grid" id="kb-grid">
-    <!-- populated by JS -->
-  </div>
+  <div class="kb-grid" id="kb-grid"></div>
 
   <!-- Load more -->
   <div class="load-more-wrap">
-    <button class="btn btn-secondary" id="load-more-btn" onclick="loadMore()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+    <button id="load-more-btn" class="btn btn-secondary" onclick="loadMore()">
       Load More Documents
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
     </button>
   </div>
 
+  <!-- Footer -->
+  <footer class="hm-footer" style="margin-top:40px;">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo-row">
+          <div style="width:28px;height:28px;background:linear-gradient(135deg,var(--accent),var(--accent-deep));border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;color:#fff;">HM</div>
+          HydroMind<span style="color:var(--accent-bright);">.AI</span>
+        </div>
+        <p>AI-powered hydraulic intelligence for marine, offshore and industrial engineers.</p>
+      </div>
+      <div class="footer-col"><h4>Platform</h4><a href="ai_advisor.html">AI Advisor</a><a href="crane_diagnostic.html">Crane Diagnostic</a><a href="knowledge_base.html">Knowledge Base</a><a href="system_design.html">System Design</a></div>
+      <div class="footer-col"><h4>Company</h4><a href="pricing.html">Pricing</a><a href="pages/privacy.html">Privacy Policy</a><a href="mailto:support@hydromindai.com">Contact</a></div>
+      <div class="footer-col"><h4>Download</h4><a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank">Google Play →</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 HydroMind.AI</span><span>Built for marine &amp; offshore engineers worldwide</span></div>
+  </footer>
 </main>
 
+<script src="js/auth.js"></script>
 <script>
-/* ── KB Data ── */
-const KB_DATA = [
-  { num:'KB-001', title:'Liebherr BOS 47000 — Complete HPU Service Manual', mfr:'Liebherr Maritime', cat:'cranes', type:'Service Manual', typeClass:'badge-teal', desc:'Full hydraulic power unit service and maintenance manual for the BOS 47000 offshore pedestal crane. Covers pump maintenance, valve settings, and circuit diagrams.', pages:184, year:2019 },
-  { num:'KB-002', title:'Rexroth A10V Variable Displacement Pump — Service & Repair', mfr:'Bosch Rexroth', cat:'pumps', type:'Service Manual', typeClass:'badge-teal', desc:'Complete disassembly, inspection, and reassembly guide for the A10V axial piston variable pump series. Includes shaft seal replacement and charge pressure procedures.', pages:96, year:2021 },
-  { num:'KB-003', title:'ISO 4413:2010 — Hydraulic Fluid Power Safety Requirements', mfr:'ISO / IEC', cat:'standards', type:'Standard', typeClass:'badge-green', desc:'International standard specifying safety requirements for hydraulic fluid power systems and their components. Pipe sizing, pressure ratings, filtration, and cleanliness requirements.', pages:62, year:2010 },
-  { num:'KB-004', title:'NOV RAM 500 Knuckle Boom Crane — Hydraulic Fault Codes', mfr:'NOV (National Oilwell Varco)', cat:'cranes', type:'Fault Code Ref', typeClass:'badge-warning', desc:'Complete fault code reference for the RAM 500 series. Includes PLC fault descriptions, hydraulic causes, and recommended corrective actions for each code.', pages:48, year:2020 },
-  { num:'KB-005', title:'Rexroth A6VM — Hydraulic Motor Commissioning Guide', mfr:'Bosch Rexroth', cat:'motors', type:'Commissioning', typeClass:'badge-gray', desc:'Step-by-step commissioning procedure for the A6VM variable displacement motor. Covers initial fill, charge pressure, case drain back-pressure verification, and break-in procedure.', pages:38, year:2022 },
-  { num:'KB-006', title:'MacGregor TM35 Deck Crane — Maintenance Schedule', mfr:'MacGregor (Cargotec)', cat:'cranes', type:'Maintenance', typeClass:'badge-teal', desc:'Preventive maintenance intervals and procedures for the TM35 knuckle boom crane hydraulic system. Includes oil change intervals, filter specifications, and annual inspection checklist.', pages:72, year:2018 },
-  { num:'KB-007', title:'Eaton PVXS Piston Pump — Installation & Start-Up', mfr:'Eaton Hydraulics', cat:'pumps', type:'Installation', typeClass:'badge-gray', desc:'Installation, commissioning and start-up procedure for the PVXS series variable displacement pump. Drive shaft alignment, case drain routing, and initial pressure settings.', pages:44, year:2020 },
-  { num:'KB-008', title:'DNV-ST-0378 — Standard for Offshore and Platform Lifting Appliances', mfr:'DNV (Det Norske Veritas)', cat:'standards', type:'Standard', typeClass:'badge-green', desc:'DNV standard governing design, fabrication, installation, and operation of offshore lifting appliances. Hydraulic system classification and certification requirements.', pages:128, year:2021 },
-  { num:'KB-009', title:'Rexroth M7 Directional Control Valve — Proportional Valve Setup', mfr:'Bosch Rexroth', cat:'valves', type:'Setup Guide', typeClass:'badge-teal', desc:'Electronic proportional valve configuration and calibration guide. Covers LUDV circuit setup, pressure compensator adjustment, and load-sensing interface wiring.', pages:56, year:2021 },
-  { num:'KB-010', title:'Danfoss Series 90 Closed Circuit Pump — Service Guide', mfr:'Danfoss Power Solutions', cat:'pumps', type:'Service Manual', typeClass:'badge-teal', desc:'Service manual for the Series 90 axial piston pump/motor in closed circuit configuration. Charge pressure, servo control, and variable displacement mechanism service.', pages:88, year:2020 },
-  { num:'KB-011', title:'SeaTrax S1280 — Hydraulic System Troubleshooting', mfr:'SeaTrax Inc.', cat:'cranes', type:'Troubleshooting', typeClass:'badge-warning', desc:'Hydraulic troubleshooting guide for the S1280 pedestal crane. Symptom-based fault trees for low pressure, slow operation, overheating, and erratic movement.', pages:52, year:2019 },
-  { num:'KB-012', title:'Parker Hannifin — High Pressure Hose Selection & Assembly', mfr:'Parker Hannifin', cat:'seals', type:'Reference', typeClass:'badge-gray', desc:'Technical reference for selecting, assembling, and pressure-testing hydraulic hose assemblies per ISO 18752. Includes end fitting torque values and bend radius limits.', pages:34, year:2022 },
-  { num:'KB-013', title:'Rexroth A10V Shaft Seal — Replacement Procedure', mfr:'Bosch Rexroth', cat:'seals', type:'Repair Procedure', typeClass:'badge-warning', desc:'Step-by-step shaft seal replacement for A10VO/A10VG pumps. Includes housing removal, seal press-fit dimensions, run-in procedure, and case drain pressure verification post-repair.', pages:22, year:2021 },
-  { num:'KB-014', title:'Liebherr BOS 47000 — Slewing Drive Hydraulic Circuit', mfr:'Liebherr Maritime', cat:'cranes', type:'Circuit Diagram', typeClass:'badge-teal', desc:'Hydraulic circuit diagrams and component specifications for the BOS 47000 slewing drive system. Motor displacement, braking valve settings, and anti-sway circuit description.', pages:28, year:2019 },
-  { num:'KB-015', title:'Vickers V-Series Vane Pump — Performance Data', mfr:'Eaton (Vickers)', cat:'pumps', type:'Technical Data', typeClass:'badge-gray', desc:'Performance curves, volumetric efficiency data, and noise levels for the V-series fixed displacement vane pump. Fluid viscosity and temperature correction factors included.', pages:18, year:2017 },
-  { num:'KB-016', title:'ISO 4406:2021 — Hydraulic Fluid Cleanliness Classification', mfr:'ISO / IEC', cat:'standards', type:'Standard', typeClass:'badge-green', desc:'Cleanliness classification system for hydraulic fluids using the ISO code. Particle count methods, target cleanliness levels for different component types, and sampling procedures.', pages:24, year:2021 },
-  { num:'KB-017', title:'Favelle Favco M250T — Full Hydraulic System Manual', mfr:'Favelle Favco Cranes', cat:'cranes', type:'Service Manual', typeClass:'badge-teal', desc:'Complete hydraulic system manual for the M250T luffing jib tower crane. Covers hoist, derricking, slewing, and hydraulic cooling circuits with component specifications.', pages:156, year:2018 },
-  { num:'KB-018', title:'Bosch Rexroth — Load Sensing Hydraulics Technical Training', mfr:'Bosch Rexroth', cat:'valves', type:'Training Material', typeClass:'badge-gray', desc:'Technical training document explaining load sensing (LS) hydraulic systems. LUDV circuit operation, pressure compensator function, pump control, and energy efficiency analysis.', pages:76, year:2020 },
-  { num:'KB-019', title:'Sauer-Danfoss 42 Series Motor — Overhaul Guide', mfr:'Danfoss Power Solutions', cat:'motors', type:'Overhaul Guide', typeClass:'badge-warning', desc:'Detailed overhaul and reassembly guide for the 42 series gear motor. Clearance measurement, bearing replacement, port plate lapping, and end-of-line testing procedures.', pages:64, year:2016 },
-  { num:'KB-020', title:'Hydraulic Filtration — Best Practices for Offshore Systems', mfr:'Hydac International', cat:'maintenance', type:'Best Practice', typeClass:'badge-green', desc:'Best practice guide for hydraulic filtration in offshore environments. Covers filter selection (β-ratio), bypass indicators, sampling ports, and contamination control procedures.', pages:42, year:2022 },
-  { num:'KB-021', title:'Rexroth DBDS Relief Valve — Setting & Calibration', mfr:'Bosch Rexroth', cat:'valves', type:'Calibration Guide', typeClass:'badge-teal', desc:'Pressure relief valve setting procedure for the DBDS series. Includes calibration using calibrated gauge, setting margin over working pressure, and lock-off procedure.', pages:16, year:2020 },
-  { num:'KB-022', title:'Sun Hydraulics — Cartridge Valve Cross-Reference Guide', mfr:'Sun Hydraulics (Helios)', cat:'valves', type:'Reference', typeClass:'badge-gray', desc:'Cross-reference guide for Sun Hydraulics cartridge valves to competitor equivalents. Check valves, relief valves, flow controls, and logic elements with cavity dimensions.', pages:88, year:2021 },
-  { num:'KB-023', title:'NOV Knuckle Boom — HPU Annual Inspection Checklist', mfr:'NOV (National Oilwell Varco)', cat:'maintenance', type:'Inspection', typeClass:'badge-green', desc:'Annual HPU inspection checklist for NOV knuckle boom cranes per DNV-ST-0378. Hydraulic pressure tests, hose inspection criteria, valve function tests, and record keeping.', pages:20, year:2020 },
-  { num:'KB-024', title:'Kawasaki K3VL Series — Swash Plate Pump Service', mfr:'Kawasaki Precision Machinery', cat:'pumps', type:'Service Manual', typeClass:'badge-teal', desc:'Service and repair manual for the K3VL swash plate piston pump. Disassembly sequence, component inspection limits, reassembly torques, and test bench procedures.', pages:112, year:2019 },
+/* ══ KB DATA — 24 entries (representative sample of 86) ══ */
+var KB_DATA = [
+  {num:'KB-001',title:'Rexroth A4VG Series — Variable Displacement Pump Service Manual',mfr:'Bosch Rexroth',cat:'pumps',type:'Service Manual',typeCls:'badge-teal',desc:'Complete service and repair manual for the A4VG variable displacement axial piston pump. Covers disassembly, component inspection, reassembly torques, test bench procedures, and case drain flow limits for offshore crane HPU applications.',pages:184,year:2022},
+  {num:'KB-002',title:'Danfoss H1 Bent-Axis Motor — Closed Loop Service Guide',mfr:'Danfoss Power Solutions',cat:'motors',type:'Service Guide',typeCls:'badge-teal',desc:'Detailed service guide for the H1 series bent-axis variable displacement motors used in closed-loop winch circuits. Charge pressure requirements, flushing valve settings, case drain analysis, and overhaul procedures.',pages:146,year:2021},
+  {num:'KB-003',title:'Liebherr LHBL-D Offshore Pedestal Crane — Hydraulic System Manual',mfr:'Liebherr Maritime Cranes',cat:'cranes',type:'System Manual',typeCls:'badge-teal',desc:'Full hydraulic system manual for the LHBL-D series offshore pedestal cranes. Hoist, luffing, slewing and boom circuits described with component specs, pressure settings, and fault code reference.',pages:312,year:2020},
+  {num:'KB-004',title:'ISO 4413:2010 — Hydraulic Fluid Power Safety Requirements',mfr:'ISO / IEC',cat:'standards',type:'Standard',typeCls:'badge-green',desc:'International standard for safety requirements for hydraulic fluid power systems and their components. Covers design, construction, modification, and application of hydraulic systems.',pages:62,year:2010},
+  {num:'KB-005',title:'Parker Hannifin D3FW Proportional Valve — Amplifier Card Setup',mfr:'Parker Hannifin',cat:'valves',type:'Setup Guide',typeCls:'badge-teal',desc:'Amplifier card calibration and setup guide for the D3FW series proportional directional control valves. Signal input configuration, ramp time settings, dither frequency, and fault diagnosis for electronic crane controls.',pages:44,year:2021},
+  {num:'KB-006',title:'MacGregor AHC Crane — Active Heave Compensation Hydraulic System',mfr:'MacGregor Group',cat:'cranes',type:'Technical Manual',typeCls:'badge-teal',desc:'Technical manual for MacGregor active heave compensated crane hydraulic systems. AHC accumulator pre-charge, servo valve response, control architecture and maintenance intervals per DNV-ST-0378.',pages:228,year:2019},
+  {num:'KB-007',title:'Rexroth A6VM Variable Motor — Displacement Control & Service',mfr:'Bosch Rexroth',cat:'motors',type:'Service Manual',typeCls:'badge-teal',desc:'Service manual for the A6VM series variable displacement axial piston motors. Swashplate control mechanisms, case drain pressure limits, overhaul dimensions, and test procedures.',pages:168,year:2022},
+  {num:'KB-008',title:'DNV-ST-0378 — Offshore and Platform Lifting Appliances',mfr:'DNV Group',cat:'standards',type:'Standard',typeCls:'badge-green',desc:'DNV standard for offshore and platform lifting appliances covering design, fabrication, testing and certification. Hydraulic system requirements, SWL certification, and annual inspection criteria.',pages:188,year:2021},
+  {num:'KB-009',title:'Eaton Vickers PVB Series — Piston Pump Troubleshooting',mfr:'Eaton (Vickers)',cat:'pumps',type:'Troubleshooting',typeCls:'badge-warning',desc:'Troubleshooting guide for the PVB series pressure compensated piston pumps. Noise diagnosis, pressure instability, case drain analysis, compensator adjustment, and seal replacement procedures.',pages:56,year:2020},
+  {num:'KB-010',title:'NOV ST-300 Offshore Crane — HPU Maintenance Manual',mfr:'NOV (National Oilwell Varco)',cat:'cranes',type:'Maintenance Manual',typeCls:'badge-teal',desc:'Hydraulic power unit maintenance manual for the NOV ST-300 pedestal crane. Filter change intervals, oil sampling, HPU pressure settings, and annual inspection checklist per API RP 2D.',pages:96,year:2020},
+  {num:'KB-011',title:'Rexroth DBDS Pressure Relief Valve — Setting & Calibration',mfr:'Bosch Rexroth',cat:'valves',type:'Calibration Guide',typeCls:'badge-teal',desc:'Pressure relief valve setting procedure for the DBDS series direct-acting valves. Calibrated gauge setup, setting margin above working pressure (10–15%), lock-off, and documentation procedure.',pages:16,year:2020},
+  {num:'KB-012',title:'Danfoss Series 90 — Closed Loop Pump & Motor Service',mfr:'Danfoss Power Solutions',cat:'pumps',type:'Service Manual',typeCls:'badge-teal',desc:'Comprehensive service manual for the Series 90 hydrostatic transmission system. Charge pump inspection, servo pressure, shaft seal replacement, flushing relief valve settings, and case drain flow limits.',pages:204,year:2021},
+  {num:'KB-013',title:'ISO 4406:2021 — Hydraulic Fluid Cleanliness Classification',mfr:'ISO / IEC',cat:'standards',type:'Standard',typeCls:'badge-green',desc:'Cleanliness classification system for hydraulic fluids using the ISO code (18/16/13). Particle count methods, target cleanliness levels for different component types, sampling procedures.',pages:24,year:2021},
+  {num:'KB-014',title:'Favelle Favco M440D — Full Hydraulic System Manual',mfr:'Favelle Favco Cranes',cat:'cranes',type:'System Manual',typeCls:'badge-teal',desc:'Complete hydraulic system manual for the M440D tower crane. Hoist, derricking, slewing hydraulic circuits with component specifications, pressure settings and fault code cross-reference.',pages:156,year:2018},
+  {num:'KB-015',title:'Parker Counterbalance Valve — Setting & Application Guide',mfr:'Parker Hannifin',cat:'valves',type:'Application Guide',typeCls:'badge-teal',desc:'Application and setting guide for Parker counterbalance valves in crane luffing and hoist circuits. Set pressure calculation (110–130% of load pressure), pilot ratio selection, and cavitation prevention.',pages:32,year:2022},
+  {num:'KB-016',title:'Hydac Filtration — Best Practices for Offshore HPU Systems',mfr:'Hydac International',cat:'maintenance',type:'Best Practice',typeCls:'badge-green',desc:'Best practice guide for hydraulic filtration in offshore environments. Filter selection (β-ratio), bypass indicator setting, oil sampling ports, contamination control, and NAS cleanliness targets.',pages:42,year:2022},
+  {num:'KB-017',title:'Kawasaki K3VL Series — Swash Plate Pump Overhaul',mfr:'Kawasaki Precision Machinery',cat:'pumps',type:'Overhaul Guide',typeCls:'badge-warning',desc:'Overhaul and reassembly guide for the K3VL swash plate piston pump. Disassembly sequence, component wear limits, bearing replacement, reassembly torques, and test bench run-in procedure.',pages:112,year:2019},
+  {num:'KB-018',title:'Rexroth Load Sensing Hydraulics — Technical Training',mfr:'Bosch Rexroth',cat:'valves',type:'Training Material',typeCls:'badge-gray',desc:'Technical training explaining load sensing (LS) hydraulic systems. LUDV circuit operation, pressure compensator function, pump control, standby pressure, and energy efficiency compared to fixed pump systems.',pages:76,year:2020},
+  {num:'KB-019',title:'SeaTrax S-Series — Offshore Crane Service Manual',mfr:'SeaTrax Inc.',cat:'cranes',type:'Service Manual',typeCls:'badge-teal',desc:'Service manual for SeaTrax S-series offshore folding boom cranes. Hydraulic circuit operation, pump and motor specifications, counterbalance valve settings, and ATEX-rated component list.',pages:188,year:2020},
+  {num:'KB-020',title:'API RP 2D — Operation and Maintenance of Offshore Cranes',mfr:'American Petroleum Institute',cat:'standards',type:'Standard',typeCls:'badge-green',desc:'API Recommended Practice for operation and maintenance of offshore cranes. Load testing requirements, inspection intervals, operator competency, hydraulic system maintenance, and load chart usage.',pages:92,year:2019},
+  {num:'KB-021',title:'Bosch Rexroth — Proportional Valve Amplifier Card A4',mfr:'Bosch Rexroth',cat:'valves',type:'Setup Guide',typeCls:'badge-teal',desc:'Setup and commissioning guide for Rexroth A4 amplifier cards used with proportional directional control valves. Enable signal wiring, command signal calibration, ramp generator, and fault output diagnostics.',pages:38,year:2021},
+  {num:'KB-022',title:'Offshore HPU Hydraulic Oil — Selection & Maintenance Guide',mfr:'Shell / ExxonMobil',cat:'maintenance',type:'Maintenance Guide',typeCls:'badge-green',desc:'Hydraulic oil selection and maintenance guide for offshore HPU applications. Viscosity grade selection by temperature, fire-resistant fluid options (HFD), oil life testing, and contamination disposal.',pages:54,year:2022},
+  {num:'KB-023',title:'Parker Industrial Cylinder — Sealing & Repair Guide',mfr:'Parker Hannifin',cat:'maintenance',type:'Repair Guide',typeCls:'badge-warning',desc:'Cylinder seal replacement and repair guide for Parker industrial hydraulic cylinders. Seal material compatibility, installation tools, surface finish requirements, and post-repair pressure test.',pages:68,year:2021},
+  {num:'KB-024',title:'EN 13852-1 — Offshore Cranes — Design Principles',mfr:'European Standards (EN)',cat:'standards',type:'Standard',typeCls:'badge-green',desc:'European standard for offshore cranes covering design principles, structural analysis, stability calculations, hydraulic system requirements, and overload protection systems.',pages:144,year:2019},
 ];
 
-let visibleCount = 12;
-let activeFilter = 'all';
-let searchTerm = '';
-
-/* ── Render cards ── */
-function renderCards() {
-  const grid = document.getElementById('kb-grid');
-  let data = KB_DATA.filter(d => {
-    const matchFilter = activeFilter === 'all' || d.cat === activeFilter;
-    const matchSearch = !searchTerm || [d.title, d.mfr, d.num, d.desc, d.type].some(f => f.toLowerCase().includes(searchTerm));
-    return matchFilter && matchSearch;
-  });
-
-  const total = data.length;
-  const slice = data.slice(0, visibleCount);
-
-  document.getElementById('result-count').textContent = Math.min(visibleCount, total);
-  document.getElementById('load-more-btn').style.display = total > visibleCount ? 'inline-flex' : 'none';
-
-  grid.innerHTML = '';
-
-  if (slice.length === 0) {
-    const empty = document.createElement('div');
-    empty.className = 'kb-empty visible';
-    empty.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <h3>No documents found</h3>
-      <p>Try a different search term or clear the filter to browse all ${KB_DATA.length} KB entries.</p>
-      <button class="btn btn-secondary" onclick="clearSearch()">Clear Search</button>`;
-    grid.appendChild(empty);
-    return;
-  }
-
-  slice.forEach(d => {
-    const card = document.createElement('div');
-    card.className = 'kb-card';
-    card.innerHTML = `
-      <div class="kb-card-top">
-        <span class="kb-num">${d.num}</span>
-        <span class="badge ${d.typeClass} kb-type-chip">${d.type}</span>
-      </div>
-      <div class="kb-title">${highlight(d.title)}</div>
-      <div class="kb-mfr-row">
-        <span class="kb-mfr">${d.mfr}</span>
-        <span class="badge badge-gray" style="font-size:9.5px;text-transform:capitalize;">${d.cat}</span>
-      </div>
-      <div class="kb-desc">${highlight(d.desc)}</div>
-      <div class="kb-card-footer">
-        <div class="kb-meta">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          ${d.pages} pages
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:4px;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          ${d.year}
-        </div>
-        <button class="btn btn-secondary btn-sm" onclick="viewDoc('${d.num}')">View →</button>
-      </div>`;
-    grid.appendChild(card);
-  });
+/* ══ HOW TO USE TOGGLE ══ */
+function toggleHtu() {
+  var body  = document.getElementById('htu-body');
+  var arrow = document.getElementById('htu-arrow');
+  if (!body) return;
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
 }
 
-function highlight(text) {
-  if (!searchTerm) return text;
-  const re = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
-  return text.replace(re, '<mark style="background:rgba(8,145,178,0.15);color:var(--accent);border-radius:2px;padding:0 2px;">$1</mark>');
-}
+var visibleCount = 12;
+var activeFilter = 'all';
+var searchTerm = '';
+var currentView = 'grid';
 
-function setFilter(el) {
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+/* ── Filter ── */
+function setFilter(el, cat) {
+  document.querySelectorAll('.filter-chip').forEach(function(c) { c.classList.remove('active'); });
   el.classList.add('active');
-  activeFilter = el.dataset.filter;
+  activeFilter = cat;
   visibleCount = 12;
   renderCards();
 }
 
-function filterKB() {
-  searchTerm = document.getElementById('kb-search').value.toLowerCase().trim();
+/* ── Search ── */
+function onSearch(val) {
+  searchTerm = val.toLowerCase().trim();
   document.getElementById('kb-clear').classList.toggle('visible', searchTerm.length > 0);
   visibleCount = 12;
   renderCards();
 }
-
 function clearSearch() {
   document.getElementById('kb-search').value = '';
   searchTerm = '';
   document.getElementById('kb-clear').classList.remove('visible');
+  visibleCount = 12;
   renderCards();
 }
 
-function loadMore() {
-  visibleCount += 12;
+/* ── View toggle ── */
+function setView(v, btn) {
+  currentView = v;
+  document.querySelectorAll('.view-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  var grid = document.getElementById('kb-grid');
+  grid.classList.toggle('list-view', v === 'list');
+}
+
+/* ── Load more ── */
+function loadMore() { visibleCount += 12; renderCards(); }
+
+/* ── Highlight search term ── */
+function highlight(text) {
+  if (!searchTerm) return text;
+  var re = new RegExp('(' + searchTerm.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi');
+  return text.replace(re, '<mark class="kb-highlight">$1</mark>');
+}
+
+/* ── Sort data ── */
+function getSorted(data) {
+  var s = document.getElementById('sort-select').value;
+  return data.slice().sort(function(a, b) {
+    if (s === 'num')   return a.num.localeCompare(b.num);
+    if (s === 'title') return a.title.localeCompare(b.title);
+    if (s === 'mfr')   return a.mfr.localeCompare(b.mfr);
+    if (s === 'year')  return b.year - a.year;
+    if (s === 'pages') return b.pages - a.pages;
+    return 0;
+  });
+}
+
+/* ── Navigate to AI Advisor with KB query ── */
+function askAI(kbNum, title) {
+  var query = 'Tell me about ' + kbNum + ': ' + title;
+  sessionStorage.setItem('hm_kb_query', query);
+  window.location.href = 'ai_advisor.html';
+}
+
+/* ── Render cards ── */
+function renderCards() {
+  var grid = document.getElementById('kb-grid');
+  var filtered = KB_DATA.filter(function(d) {
+    var matchCat  = activeFilter === 'all' || d.cat === activeFilter;
+    var matchText = !searchTerm || [d.title,d.mfr,d.num,d.desc,d.type].some(function(f) { return f.toLowerCase().indexOf(searchTerm) > -1; });
+    return matchCat && matchText;
+  });
+  var sorted = getSorted(filtered);
+  var total  = sorted.length;
+  var slice  = sorted.slice(0, visibleCount);
+
+  document.getElementById('result-count').textContent = Math.min(visibleCount, total);
+  document.getElementById('result-total').textContent = total;
+  var loadBtn = document.getElementById('load-more-btn');
+  loadBtn.style.display = total > visibleCount ? 'inline-flex' : 'none';
+
+  grid.innerHTML = '';
+
+  if (slice.length === 0) {
+    var empty = document.createElement('div');
+    empty.className = 'kb-empty visible';
+    empty.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><h3>No documents found</h3><p>Try a different search term or clear the filter.</p><button class="btn btn-secondary" onclick="clearSearch()">Clear Search</button>';
+    grid.appendChild(empty);
+    return;
+  }
+
+  slice.forEach(function(d) {
+    var card = document.createElement('div');
+    card.className = 'kb-card';
+    card.innerHTML =
+      '<div class="kb-card-top">' +
+        '<span class="kb-num">' + d.num + '</span>' +
+        '<span class="badge ' + d.typeCls + ' kb-type-chip">' + d.type + '</span>' +
+      '</div>' +
+      '<div class="kb-title">' + highlight(d.title) + '</div>' +
+      '<div class="kb-mfr-row">' +
+        '<span class="kb-mfr">' + highlight(d.mfr) + '</span>' +
+        '<span class="badge badge-gray" style="font-size:9.5px;text-transform:capitalize;">' + d.cat + '</span>' +
+      '</div>' +
+      '<div class="kb-desc">' + highlight(d.desc) + '</div>' +
+      '<div class="kb-footer">' +
+        '<div class="kb-meta">' +
+          '<span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' + d.pages + 'pp</span>' +
+          '<span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>' + d.year + '</span>' +
+        '</div>' +
+        '<button class="kb-ask-btn" onclick="event.stopPropagation();askAI(\'' + d.num + '\',\'' + d.title.replace(/'/g,"\\'") + '\')">Ask AI →</button>' +
+      '</div>';
+    card.onclick = function() { askAI(d.num, d.title); };
+    grid.appendChild(card);
+  });
+
+  /* Update chip counts */
+  var cats = ['cranes','pumps','motors','valves','standards','maintenance'];
+  cats.forEach(function(c) {
+    var el = document.getElementById('fc-' + c);
+    if (el) el.textContent = KB_DATA.filter(function(d) {
+      var matchText = !searchTerm || [d.title,d.mfr,d.num,d.desc,d.type].some(function(f){return f.toLowerCase().indexOf(searchTerm)>-1;});
+      return d.cat === c && matchText;
+    }).length;
+  });
+  var allEl = document.getElementById('fc-all');
+  if (allEl) allEl.textContent = KB_DATA.filter(function(d) {
+    return !searchTerm || [d.title,d.mfr,d.num,d.desc,d.type].some(function(f){return f.toLowerCase().indexOf(searchTerm)>-1;});
+  }).length;
+}
+
+/* ── Check for incoming query from KB cards ── */
+document.addEventListener('DOMContentLoaded', function() {
   renderCards();
-}
-
-function viewDoc(num) {
-  alert(`${num} — Full document access requires a Pro subscription.\n\nUpgrade at hydromindai.com/pricing for PDF download and offline access to all 155 documents.`);
-}
-
-// Init
-renderCards();
+  if (typeof hmInit === 'function') hmInit();
+  /* Pre-fill search if coming from another page */
+  var q = sessionStorage.getItem('hm_kb_search');
+  if (q) {
+    document.getElementById('kb-search').value = q;
+    onSearch(q);
+    sessionStorage.removeItem('hm_kb_search');
+  }
+});
 </script>
-<script src="js/auth.js"></script>
 </body>
 </html>

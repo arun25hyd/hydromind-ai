@@ -53,9 +53,9 @@ function switchAuthTab(tab){
   ['login','register'].forEach(t=>{
     const b=document.getElementById('hmTab_'+t);if(!b)return;
     const on=(t===tab);
-    b.style.background=on?'rgba(0,212,255,.08)':'transparent';
-    b.style.color=on?'#00d4ff':'rgba(200,216,232,.35)';
-    b.style.borderBottom=on?'2px solid #00d4ff':'2px solid transparent';
+    b.style.background=on?'rgba(6,182,212,0.12)':'transparent';
+    b.style.color=on?'#22d3ee':'#7fb3c8';
+    b.style.borderBottom=on?'2px solid #06b6d4':'2px solid transparent';
     b.classList.toggle('active',on);
   });
 }
@@ -160,23 +160,12 @@ function _updateNavbar(user){
     const av=document.getElementById('hmNavAvatar');
     const nm=document.getElementById('hmNavName');
     const pl=document.getElementById('hmNavPlan');
-    if(av){av.textContent=(user.first||user.email).slice(0,2).toUpperCase();av.style.background='#f97316';}
+    if(av){av.textContent=(user.first||user.email).slice(0,2).toUpperCase();av.style.background='linear-gradient(135deg,#0e7490,#06b6d4)';}
     if(nm)nm.textContent=(user.first||user.email.split('@')[0]);
     if(pl){
-      pl.textContent=user.plan;
-      pl.style.color=user.isAdmin?'#f97316':(user.plan==='Pro'||user.plan==='Enterprise')?'#22c55e':'#f97316';
-      pl.style.background=user.isAdmin?'rgba(249,115,22,.15)':(user.plan==='Pro'||user.plan==='Enterprise')?'rgba(34,197,94,.1)':'rgba(249,115,22,.1)';
-    }
-  }
-  if(user.isAdmin){
-    const cta=document.getElementById('hmNavCta');
-    if(cta&&!document.getElementById('hmAdminLink')){
-      const a=document.createElement('a');
-      a.id='hmAdminLink';a.className='btn-outline';
-      a.style.cssText='padding:5px 14px;font-size:.78rem;border-radius:5px;border:1px solid rgba(249,115,22,.4);color:#f97316;text-decoration:none;font-family:"Barlow Condensed",sans-serif;font-weight:600;letter-spacing:.5px;';
-      a.textContent='⚙ Admin';
-      a.href=window.location.pathname.includes('/pages/')?'admin.html':'pages/admin.html';
-      cta.insertBefore(a,cta.firstChild);
+      pl.textContent=user.isAdmin?'Admin':user.plan;
+      pl.style.color=user.isAdmin?'#06b6d4':(user.plan==='Pro'||user.plan==='Enterprise')?'#22c55e':'#06b6d4';
+      pl.style.background=user.isAdmin?'rgba(6,182,212,.15)':(user.plan==='Pro'||user.plan==='Enterprise')?'rgba(34,197,94,.1)':'rgba(6,182,212,.1)';
     }
   }
 }
@@ -200,15 +189,15 @@ function _updateLeftSidebar(user){
   if(em)em.textContent=user.email;
   if(pl){
     pl.textContent=user.plan;
-    pl.style.background=user.isAdmin?'rgba(249,115,22,.15)':(user.plan==='Pro'||user.plan==='Enterprise')?'rgba(34,197,94,.1)':'rgba(249,115,22,.08)';
-    pl.style.color=user.isAdmin?'#f97316':(user.plan==='Pro'||user.plan==='Enterprise')?'#22c55e':'#f97316';
+    pl.style.background=user.isAdmin?'rgba(6,182,212,.15)':(user.plan==='Pro'||user.plan==='Enterprise')?'rgba(34,197,94,.1)':'rgba(6,182,212,.08)';
+    pl.style.color=user.isAdmin?'#06b6d4':(user.plan==='Pro'||user.plan==='Enterprise')?'#22c55e':'#06b6d4';
   }
   // Add edit button
   const pc=document.querySelector('.hm-profile-card');
   if(pc&&!document.getElementById('hmProfEditBtn')){
     const btn=document.createElement('button');
     btn.id='hmProfEditBtn';btn.title='Edit Profile';btn.innerHTML='✎';
-    btn.style.cssText='position:absolute;top:8px;right:8px;background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.2);border-radius:6px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#f97316;font-size:.8rem;transition:.18s;';
+    btn.style.cssText='position:absolute;top:8px;right:8px;background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.2);border-radius:6px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#06b6d4;font-size:.8rem;transition:.18s;';
     btn.onclick=openProfileEdit;pc.appendChild(btn);
   }
   _renderHistory();
@@ -324,71 +313,83 @@ function hmSetActiveNav() {
   });
 }
 
-/* ── Inject auth modal HTML ── */
+/* ── Inject auth modal HTML — Dark Theme v4.0 ── */
 function _injectAuthModal(){
   if(document.getElementById('hmAuthOverlay'))return;
+  const INP='width:100%;padding:10px 13px;border:1.5px solid rgba(6,182,212,0.22);border-radius:8px;font-size:13.5px;color:#e2f0f5;background:#0d1720;outline:none;box-sizing:border-box;font-family:inherit;transition:border-color 0.15s;';
   const el=document.createElement('div');
   el.id='hmAuthOverlay';
-  el.style.cssText='display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);z-index:9999;align-items:center;justify-content:center;';
+  el.style.cssText='display:none;position:fixed;inset:0;background:rgba(8,15,20,0.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:9999;align-items:center;justify-content:center;';
   el.innerHTML=`
-  <div style="background:#fff;border:1px solid var(--border-md);border-radius:16px;width:100%;max-width:400px;margin:0 20px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.18);">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px 0;">
+  <div style="background:#111d2a;border:1px solid rgba(6,182,212,0.30);border-radius:20px;width:100%;max-width:420px;margin:0 20px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.7),0 0 32px rgba(6,182,212,0.08);">
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid rgba(6,182,212,0.12);background:#0d1720;">
       <div style="display:flex;gap:4px;">
-        <button id="hmTab_login" onclick="switchAuthTab('login')" style="padding:8px 18px;border:none;border-bottom:2px solid var(--accent);background:var(--accent-dim);color:var(--accent);font-weight:700;font-size:13px;border-radius:8px 8px 0 0;cursor:pointer;font-family:inherit;">Log In</button>
-        <button id="hmTab_register" onclick="switchAuthTab('register')" style="padding:8px 18px;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--text2);font-weight:600;font-size:13px;border-radius:8px 8px 0 0;cursor:pointer;font-family:inherit;">Register</button>
+        <button id="hmTab_login" onclick="switchAuthTab('login')" style="padding:7px 18px;border:none;border-bottom:2px solid #06b6d4;background:rgba(6,182,212,0.10);color:#22d3ee;font-weight:700;font-size:13px;border-radius:7px 7px 0 0;cursor:pointer;font-family:inherit;transition:all 0.15s;">Log In</button>
+        <button id="hmTab_register" onclick="switchAuthTab('register')" style="padding:7px 18px;border:none;border-bottom:2px solid transparent;background:transparent;color:#7fb3c8;font-weight:600;font-size:13px;border-radius:7px 7px 0 0;cursor:pointer;font-family:inherit;transition:all 0.15s;">Register</button>
       </div>
-      <button onclick="closeAuthModal()" style="background:none;border:none;font-size:20px;color:var(--text3);cursor:pointer;padding:4px 8px;line-height:1;">×</button>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="width:6px;height:6px;background:#10b981;border-radius:50%;"></div>
+        <span style="font-size:10px;font-weight:600;color:#10b981;">HydroMind.AI</span>
+        <button onclick="closeAuthModal()" style="background:rgba(239,68,68,0.10);border:1px solid rgba(239,68,68,0.20);border-radius:50%;width:26px;height:26px;font-size:15px;color:#ef4444;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-left:8px;line-height:1;font-family:inherit;">×</button>
+      </div>
     </div>
-    <div style="padding:24px;">
-      <div id="hmAuthError" style="display:none;background:var(--danger-dim);border:1px solid var(--danger);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--danger);margin-bottom:14px;"></div>
+    <!-- Body -->
+    <div style="padding:22px;">
+      <div id="hmAuthError" style="display:none;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.30);border-radius:8px;padding:10px 14px;font-size:13px;color:#ef4444;margin-bottom:14px;"></div>
 
-      <!-- Login panel -->
+      <!-- LOGIN -->
       <div id="hmPanel_login">
         <div style="margin-bottom:14px;">
-          <label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;">Email Address</label>
-          <input id="hmLoginEmail" type="email" placeholder="engineer@company.com" style="width:100%;padding:10px 13px;border:1.5px solid var(--border-md);border-radius:8px;font-size:14px;color:var(--text1);outline:none;box-sizing:border-box;font-family:inherit;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border-md)'">
+          <label style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Email Address</label>
+          <input id="hmLoginEmail" type="email" placeholder="engineer@company.com" style="${INP}" onfocus="this.style.borderColor='#06b6d4';this.style.boxShadow='0 0 0 3px rgba(6,182,212,0.12)'" onblur="this.style.borderColor='rgba(6,182,212,0.22)';this.style.boxShadow='none'">
         </div>
         <div style="margin-bottom:20px;">
-          <label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;">Password</label>
-          <input id="hmLoginPass" type="password" placeholder="••••••••" style="width:100%;padding:10px 13px;border:1.5px solid var(--border-md);border-radius:8px;font-size:14px;color:var(--text1);outline:none;box-sizing:border-box;font-family:inherit;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border-md)'" onkeydown="if(event.key==='Enter')doLogin()">
+          <label style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Password</label>
+          <input id="hmLoginPass" type="password" placeholder="Enter your password" style="${INP}" onfocus="this.style.borderColor='#06b6d4';this.style.boxShadow='0 0 0 3px rgba(6,182,212,0.12)'" onblur="this.style.borderColor='rgba(6,182,212,0.22)';this.style.boxShadow='none'" onkeydown="if(event.key==='Enter')doLogin()">
         </div>
-        <button onclick="doLogin()" style="width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.15s;" onmouseover="this.style.background='var(--accent-hover)'" onmouseout="this.style.background='var(--accent)'">Log In</button>
-        <div style="text-align:center;margin-top:12px;"><button onclick="switchAuthTab('forgot')" style="background:none;border:none;font-size:12.5px;color:var(--accent);cursor:pointer;font-family:inherit;">Forgot password?</button></div>
+        <button onclick="doLogin()" style="width:100%;padding:12px;background:linear-gradient(135deg,#06b6d4,#0e7490);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity 0.15s;box-shadow:0 2px 12px rgba(6,182,212,0.25);" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">Log In →</button>
+        <div style="text-align:center;margin-top:14px;">
+          <button onclick="switchAuthTab('forgot')" style="background:none;border:none;font-size:12px;color:#06b6d4;cursor:pointer;font-family:inherit;">Forgot password?</button>
+        </div>
       </div>
 
-      <!-- Register panel -->
+      <!-- REGISTER -->
       <div id="hmPanel_register" style="display:none;">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
           <div>
-            <label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;">First Name *</label>
-            <input id="hmRegFirst" type="text" placeholder="James" style="width:100%;padding:10px 13px;border:1.5px solid var(--border-md);border-radius:8px;font-size:13px;color:var(--text1);outline:none;box-sizing:border-box;font-family:inherit;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border-md)'">
+            <label style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">First Name *</label>
+            <input id="hmRegFirst" type="text" placeholder="James" style="${INP}" onfocus="this.style.borderColor='#06b6d4';this.style.boxShadow='0 0 0 3px rgba(6,182,212,0.12)'" onblur="this.style.borderColor='rgba(6,182,212,0.22)';this.style.boxShadow='none'">
           </div>
           <div>
-            <label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;">Last Name</label>
-            <input id="hmRegLast" type="text" placeholder="McAllister" style="width:100%;padding:10px 13px;border:1.5px solid var(--border-md);border-radius:8px;font-size:13px;color:var(--text1);outline:none;box-sizing:border-box;font-family:inherit;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border-md)'">
+            <label style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Last Name</label>
+            <input id="hmRegLast" type="text" placeholder="McAllister" style="${INP}" onfocus="this.style.borderColor='#06b6d4';this.style.boxShadow='0 0 0 3px rgba(6,182,212,0.12)'" onblur="this.style.borderColor='rgba(6,182,212,0.22)';this.style.boxShadow='none'">
           </div>
         </div>
         <div style="margin-bottom:14px;">
-          <label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;">Email Address *</label>
-          <input id="hmRegEmail" type="email" placeholder="engineer@company.com" style="width:100%;padding:10px 13px;border:1.5px solid var(--border-md);border-radius:8px;font-size:14px;color:var(--text1);outline:none;box-sizing:border-box;font-family:inherit;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border-md)'">
+          <label style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Email Address *</label>
+          <input id="hmRegEmail" type="email" placeholder="engineer@company.com" style="${INP}" onfocus="this.style.borderColor='#06b6d4';this.style.boxShadow='0 0 0 3px rgba(6,182,212,0.12)'" onblur="this.style.borderColor='rgba(6,182,212,0.22)';this.style.boxShadow='none'">
         </div>
         <div style="margin-bottom:20px;">
-          <label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;">Password * (min 6 chars)</label>
-          <input id="hmRegPass" type="password" placeholder="••••••••" style="width:100%;padding:10px 13px;border:1.5px solid var(--border-md);border-radius:8px;font-size:14px;color:var(--text1);outline:none;box-sizing:border-box;font-family:inherit;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border-md)'" onkeydown="if(event.key==='Enter')doRegister()">
+          <label style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Password * (min 6 chars)</label>
+          <input id="hmRegPass" type="password" placeholder="Create a password" style="${INP}" onfocus="this.style.borderColor='#06b6d4';this.style.boxShadow='0 0 0 3px rgba(6,182,212,0.12)'" onblur="this.style.borderColor='rgba(6,182,212,0.22)';this.style.boxShadow='none'" onkeydown="if(event.key==='Enter')doRegister()">
         </div>
-        <button onclick="doRegister()" style="width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;" onmouseover="this.style.background='var(--accent-hover)'" onmouseout="this.style.background='var(--accent)'">Create Account</button>
+        <button onclick="doRegister()" style="width:100%;padding:12px;background:linear-gradient(135deg,#06b6d4,#0e7490);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity 0.15s;box-shadow:0 2px 12px rgba(6,182,212,0.25);" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">Create Account →</button>
+        <div style="text-align:center;margin-top:12px;font-size:11.5px;color:#3d6478;">Free tier · No credit card needed</div>
       </div>
 
-      <!-- Forgot panel -->
+      <!-- FORGOT -->
       <div id="hmPanel_forgot" style="display:none;">
-        <p style="font-size:13.5px;color:var(--text2);margin-bottom:14px;line-height:1.6;">Enter your email and we'll send a password reset link.</p>
+        <p style="font-size:13px;color:#7fb3c8;margin-bottom:16px;line-height:1.65;">Enter your registered email and we'll send you a reset link.</p>
         <div id="hmForgotOk" style="display:none;margin-bottom:14px;"></div>
-        <div style="margin-bottom:14px;">
-          <label style="font-size:11.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:5px;">Email Address</label>
-          <input id="hmForgotEmail" type="email" placeholder="engineer@company.com" style="width:100%;padding:10px 13px;border:1.5px solid var(--border-md);border-radius:8px;font-size:14px;color:var(--text1);outline:none;box-sizing:border-box;font-family:inherit;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border-md)'">
+        <div style="margin-bottom:18px;">
+          <label style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Email Address</label>
+          <input id="hmForgotEmail" type="email" placeholder="engineer@company.com" style="${INP}" onfocus="this.style.borderColor='#06b6d4';this.style.boxShadow='0 0 0 3px rgba(6,182,212,0.12)'" onblur="this.style.borderColor='rgba(6,182,212,0.22)';this.style.boxShadow='none'">
         </div>
-        <button onclick="doForgot()" style="width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">Send Reset Link</button>
-        <div style="text-align:center;margin-top:12px;"><button onclick="switchAuthTab('login')" style="background:none;border:none;font-size:12.5px;color:var(--text2);cursor:pointer;font-family:inherit;">← Back to login</button></div>
+        <button onclick="doForgot()" style="width:100%;padding:12px;background:linear-gradient(135deg,#06b6d4,#0e7490);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity 0.15s;" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">Send Reset Link</button>
+        <div style="text-align:center;margin-top:14px;">
+          <button onclick="switchAuthTab('login')" style="background:none;border:none;font-size:12px;color:#7fb3c8;cursor:pointer;font-family:inherit;">← Back to login</button>
+        </div>
       </div>
     </div>
   </div>`;
@@ -431,7 +432,7 @@ function _injectNavUserChip(user){
   const chip=document.createElement('div');
   chip.id='hmNavUser';
   chip.style.cssText='display:flex;align-items:center;gap:8px;background:var(--accent-dim);border:1px solid var(--accent-glow);border-radius:20px;padding:4px 12px 4px 4px;cursor:pointer;';
-  chip.innerHTML=`<div id="hmNavAvatar" style="width:26px;height:26px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;">${(user.first||user.email).slice(0,2).toUpperCase()}</div><span id="hmNavName" style="font-size:13px;font-weight:600;color:var(--text1);">${user.first||user.email.split('@')[0]}</span><span id="hmNavPlan" style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--success-dim);color:var(--success);">${user.plan}</span>`;
+  chip.innerHTML=`<div id="hmNavAvatar" style="width:26px;height:26px;background:linear-gradient(135deg,#0e7490,#06b6d4);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;">${(user.first||user.email).slice(0,2).toUpperCase()}</div><span id="hmNavName" style="font-size:13px;font-weight:600;color:var(--text1);">${user.first||user.email.split('@')[0]}</span>${user.isAdmin?`<span id="hmNavPlan" style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(6,182,212,.15);color:#06b6d4;">Admin</span>`:`<span id="hmNavPlan" style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--success-dim);color:var(--success);">${user.plan}</span>`}`;
   chip.title='Click to log out';
   chip.onclick=doLogout;
   navRight.appendChild(chip);
