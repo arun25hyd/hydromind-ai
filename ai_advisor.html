@@ -881,24 +881,67 @@ function setMode(mode, btn) {
   activeMode = mode;
   document.querySelectorAll('.mode-btn').forEach(function(b) { b.classList.remove('active'); });
   if (btn) btn.classList.add('active');
-  // Sync top tab bar
+  /* Sync top tab bar */
   document.querySelectorAll('.mode-tab').forEach(function(b) {
-    b.classList.toggle('active', b.getAttribute('onclick') && b.getAttribute('onclick').indexOf("'" + mode + "'") > -1);
+    var oc = b.getAttribute('onclick') || '';
+    b.classList.toggle('active', oc.indexOf("switchTab") > -1 && oc.indexOf("'" + mode + "'") > -1);
   });
   var inp = document.getElementById('chat-input');
-  if (inp) inp.placeholder = MODE_PLACEHOLDERS[mode] || MODE_PLACEHOLDERS.hydraulic;
+  if (inp) { inp.placeholder = MODE_PLACEHOLDERS[mode] || MODE_PLACEHOLDERS.hydraulic; inp.focus(); }
+  showModeCard(mode);
 }
 
 function switchTab(mode, btn) {
   activeMode = mode;
   document.querySelectorAll('.mode-tab').forEach(function(b) { b.classList.remove('active'); });
   if (btn) btn.classList.add('active');
-  // Sync left sidebar buttons
+  /* Sync left sidebar buttons */
   document.querySelectorAll('.mode-btn').forEach(function(b) {
     b.classList.toggle('active', b.id === 'mode-' + mode);
   });
   var inp = document.getElementById('chat-input');
   if (inp) { inp.placeholder = MODE_PLACEHOLDERS[mode] || MODE_PLACEHOLDERS.hydraulic; inp.focus(); }
+  showModeCard(mode);
+}
+
+/* Show a context card in chat when mode changes */
+var MODE_CARDS = {
+  hydraulic: null, /* no card for default mode */
+  calculator: {
+    icon: '🔢',
+    title: 'Calculator Mode Active',
+    desc: 'Ask me to perform hydraulic calculations step by step. Examples:',
+    examples: [
+      'Pump flow for 121 cc/rev at 1480 RPM',
+      'Drive power for 250 bar, 180 L/min at 90% efficiency',
+      'Cylinder force at 200 bar with 100mm bore',
+      'Pipe bore for 200 L/min at max 4 m/s velocity',
+      'Motor torque for 280 bar, 250 cc/rev displacement'
+    ]
+  },
+  kb: null, /* navigates away */
+  design: null  /* navigates away */
+};
+
+function showModeCard(mode) {
+  var card = MODE_CARDS[mode];
+  if (!card) return;
+  /* Remove any existing mode card */
+  var old = document.getElementById('mode-context-card');
+  if (old) old.remove();
+  /* Remove welcome screen */
+  var welcome = document.getElementById('adv-welcome');
+  if (welcome) welcome.remove();
+  var area = document.getElementById('chat-area');
+  var div = document.createElement('div');
+  div.id = 'mode-context-card';
+  div.style.cssText = 'background:var(--card);border:1.5px solid var(--accent-glow);border-left:3px solid var(--accent);border-radius:12px;padding:16px 18px;margin:0;';
+  var exHtml = card.examples.map(function(e) {
+    return '<div onclick="injectQ(\'' + e.replace(/'/g,"\\'") + '\')" style="display:flex;align-items:center;gap:8px;padding:7px 10px;margin-bottom:5px;background:var(--surface);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:12px;color:var(--text2);transition:all .12s;" onmouseover="this.style.borderColor=\'var(--accent-glow)\';this.style.color=\'var(--accent-bright)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--text2)\'"><span style="color:var(--accent);font-size:10px;">▶</span>' + e + '</div>';
+  }).join('');
+  div.innerHTML = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><span style="font-size:1.4rem;">' + card.icon + '</span><div><div style="font-size:13.5px;font-weight:800;color:var(--accent-bright);">' + card.title + '</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">' + card.desc + '</div></div></div>' + exHtml + '<div style="font-size:10.5px;color:var(--text3);margin-top:8px;">Click any example above to load it into the input box, or type your own calculation.</div>';
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
 }
 
 /* ══ BRAND FILTER ══ */
