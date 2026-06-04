@@ -1170,6 +1170,16 @@ function clearChat() {
   area.appendChild(welcome);
 }
 
+/* ══ KEEP BACKEND WARM ══
+   Pings backend from browser every 8 min — Render needs external traffic to stay awake.
+   Self-pings from within Render do NOT prevent sleep. */
+(function() {
+  var warmUrl = 'https://hydromind-backend.onrender.com/';
+  function ping() { fetch(warmUrl, {method:'GET'}).catch(function(){}); }
+  ping(); // fire immediately on page load
+  setInterval(ping, 8 * 60 * 1000); // repeat every 8 minutes
+})();
+
 /* ══ INIT ══ */
 document.addEventListener('DOMContentLoaded', function() {
   if (typeof hmInit === 'function') hmInit();
