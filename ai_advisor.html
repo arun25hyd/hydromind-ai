@@ -430,7 +430,7 @@ body {
 .sb-app-banner { margin-top: 0; }
 
 /* ─── HOW TO USE DROPDOWN ─── */
-.htu-wrap{padding:10px 12px 0;}
+.htu-wrap{padding:8px 12px;flex-shrink:0;border-bottom:1px solid var(--border-md);}
 .htu-panel{background:var(--card);border:1.5px solid var(--border-md);border-radius:10px;margin-bottom:0;overflow:hidden;}
 .htu-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;user-select:none;border-bottom:1.5px solid transparent;transition:border-color .2s;}
 .htu-header:hover{border-bottom-color:var(--border-bright);}
@@ -589,71 +589,71 @@ body {
       </div>
     </div>
 
-    <!-- Chat area -->
-    <div class="chat-area" id="chat-area">
-
-      <!-- HOW TO USE DROPDOWN -->
-      <div class="htu-wrap">
-        <div class="htu-panel">
-          <div class="htu-header" onclick="toggleHtu()">
-            <div class="htu-header-left">
-              <div class="htu-header-icon">📋</div>
-              <div>
-                <div class="htu-header-title">How to Use AI Hydraulic Advisor</div>
-                <div class="htu-header-sub">Click to expand — 5-step guide + pro tips</div>
-              </div>
+    <!-- HOW TO USE DROPDOWN — outside chat-area so it never gets scrolled with messages -->
+    <div class="htu-wrap">
+      <div class="htu-panel">
+        <div class="htu-header" onclick="toggleHtu()">
+          <div class="htu-header-left">
+            <div class="htu-header-icon">📋</div>
+            <div>
+              <div class="htu-header-title">How to Use AI Hydraulic Advisor</div>
+              <div class="htu-header-sub">Click to expand — 5-step guide + pro tips</div>
             </div>
-            <div class="htu-arrow" id="htu-arrow">▼</div>
           </div>
-          <div class="htu-body" id="htu-body">
-            <div class="htu-steps">
-              <div class="htu-step">
-                <div class="htu-step-num">1</div>
-                <div>
-                  <div class="htu-step-title">Select Your Mode</div>
-                  <div class="htu-step-desc">Choose from the four tabs at the top — Hydraulic Advisor (fault diagnosis), KB Search (OEM manual lookup), Calculator (hydraulic sizing), or System Design (guided 12-step design). Each mode changes the AI prompt and input placeholder automatically.</div>
-                </div>
-              </div>
-              <div class="htu-step">
-                <div class="htu-step-num">2</div>
-                <div>
-                  <div class="htu-step-title">Filter by Manufacturer (Optional)</div>
-                  <div class="htu-step-desc">Use the brand chips in the left panel to narrow the AI context to a specific OEM — Rexroth, Danfoss, Parker, Eaton, Liebherr, MacGregor, NOV, SeaTrax, or Favelle Favco. Selecting a brand focuses the KB search on that manufacturer's documents.</div>
-                </div>
-              </div>
-              <div class="htu-step">
-                <div class="htu-step-num">3</div>
-                <div>
-                  <div class="htu-step-title">Describe Your Fault or Query Precisely</div>
-                  <div class="htu-step-desc">Include: system type (crane, winch, steering), affected circuit (hoist, luff, slew), component model if known, actual pressure readings (bar), and whether the fault is intermittent or constant. The more specific your input, the more actionable the diagnosis.</div>
-                </div>
-              </div>
-              <div class="htu-step">
-                <div class="htu-step-num">4</div>
-                <div>
-                  <div class="htu-step-title">Read the Structured AI Response</div>
-                  <div class="htu-step-desc">Responses follow a structured format — Root Cause → Test Points → Corrective Action → KB References. KB tags (e.g. KB-12, KB-34) appear below each AI message and are clickable — tap one to immediately ask a follow-up about that document.</div>
-                </div>
-              </div>
-              <div class="htu-step">
-                <div class="htu-step-num">5</div>
-                <div>
-                  <div class="htu-step-title">Use Suggested Questions to Get Started</div>
-                  <div class="htu-step-desc">Tap any of the suggestion cards on the welcome screen for one-click fault starters — A4VG90 case drain, CBV settings, motor sizing, and more. Or use the Quick Hint chips below the input box for common fault prompts.</div>
-                </div>
+          <div class="htu-arrow" id="htu-arrow">▼</div>
+        </div>
+        <div class="htu-body" id="htu-body">
+          <div class="htu-steps">
+            <div class="htu-step">
+              <div class="htu-step-num">1</div>
+              <div>
+                <div class="htu-step-title">Select Your Mode</div>
+                <div class="htu-step-desc">Choose from the four tabs at the top — Hydraulic Advisor (fault diagnosis), KB Search (OEM manual lookup), Calculator (hydraulic sizing), or System Design (guided 12-step design). Each mode changes the AI prompt and input placeholder automatically.</div>
               </div>
             </div>
-            <div class="htu-tips">
-              <div class="htu-tips-title">💡 Pro Tips</div>
-              <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Always quote actual <strong>pressure readings</strong> (bar/PSI) from your gauges — the AI uses these numbers for precise fault isolation.</div></div>
-              <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Use <strong>Calculator mode</strong> for step-by-step hydraulic sizing with formulas shown — pump displacement, pipe bore, motor torque, drive power.</div></div>
-              <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Ask the AI to <strong>"Run a full 10-state diagnostic sequence"</strong> for a structured, step-by-step fault isolation from Safety Isolation through to Final Check.</div></div>
-              <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text"><strong>Shift+Enter</strong> for a new line in long queries — <strong>Enter</strong> alone sends the message.</div></div>
-              <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">For KB Search, use manufacturer + component model — e.g. <strong>"Rexroth A4VG90 swashplate control"</strong> returns more targeted results than a generic fault description.</div></div>
+            <div class="htu-step">
+              <div class="htu-step-num">2</div>
+              <div>
+                <div class="htu-step-title">Filter by Manufacturer (Optional)</div>
+                <div class="htu-step-desc">Use the brand chips in the left panel to narrow the AI context to a specific OEM — Rexroth, Danfoss, Parker, Eaton, Liebherr, MacGregor, NOV, SeaTrax, or Favelle Favco. Selecting a brand focuses the KB search on that manufacturer's documents.</div>
+              </div>
             </div>
+            <div class="htu-step">
+              <div class="htu-step-num">3</div>
+              <div>
+                <div class="htu-step-title">Describe Your Fault or Query Precisely</div>
+                <div class="htu-step-desc">Include: system type (crane, winch, steering), affected circuit (hoist, luff, slew), component model if known, actual pressure readings (bar), and whether the fault is intermittent or constant. The more specific your input, the more actionable the diagnosis.</div>
+              </div>
+            </div>
+            <div class="htu-step">
+              <div class="htu-step-num">4</div>
+              <div>
+                <div class="htu-step-title">Read the Structured AI Response</div>
+                <div class="htu-step-desc">Responses follow a structured format — Root Cause → Test Points → Corrective Action → KB References. KB tags appear below each AI message and are clickable — tap one to immediately ask a follow-up about that document.</div>
+              </div>
+            </div>
+            <div class="htu-step">
+              <div class="htu-step-num">5</div>
+              <div>
+                <div class="htu-step-title">Use Suggested Questions to Get Started</div>
+                <div class="htu-step-desc">Tap any of the suggestion cards on the welcome screen for one-click fault starters. Or use the Quick Hint chips below the input box for common fault prompts.</div>
+              </div>
+            </div>
+          </div>
+          <div class="htu-tips">
+            <div class="htu-tips-title">💡 Pro Tips</div>
+            <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Always quote actual <strong>pressure readings</strong> (bar/PSI) from your gauges — the AI uses these numbers for precise fault isolation.</div></div>
+            <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Use <strong>Calculator mode</strong> for step-by-step hydraulic sizing with formulas shown.</div></div>
+            <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Ask the AI to <strong>"Run a full 10-state diagnostic sequence"</strong> for structured fault isolation.</div></div>
+            <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text"><strong>Shift+Enter</strong> for a new line — <strong>Enter</strong> alone sends the message.</div></div>
+            <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">For KB Search: <strong>"Rexroth A4VG90 swashplate control"</strong> returns more targeted results than a generic description.</div></div>
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Chat area -->
+    <div class="chat-area" id="chat-area">
 
       <!-- WELCOME STATE -->
       <div class="adv-welcome" id="adv-welcome">
