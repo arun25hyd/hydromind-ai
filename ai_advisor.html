@@ -869,18 +869,24 @@ function setMode(mode, btn) {
   activeMode = mode;
   document.querySelectorAll('.mode-btn').forEach(function(b) { b.classList.remove('active'); });
   if (btn) btn.classList.add('active');
-  document.getElementById('chat-input').placeholder = MODE_PLACEHOLDERS[mode] || MODE_PLACEHOLDERS.hydraulic;
+  // Sync top tab bar
+  document.querySelectorAll('.mode-tab').forEach(function(b) {
+    b.classList.toggle('active', b.getAttribute('onclick') && b.getAttribute('onclick').indexOf("'" + mode + "'") > -1);
+  });
+  var inp = document.getElementById('chat-input');
+  if (inp) inp.placeholder = MODE_PLACEHOLDERS[mode] || MODE_PLACEHOLDERS.hydraulic;
 }
 
 function switchTab(mode, btn) {
   activeMode = mode;
   document.querySelectorAll('.mode-tab').forEach(function(b) { b.classList.remove('active'); });
   if (btn) btn.classList.add('active');
+  // Sync left sidebar buttons
   document.querySelectorAll('.mode-btn').forEach(function(b) {
     b.classList.toggle('active', b.id === 'mode-' + mode);
   });
-  document.getElementById('chat-input').placeholder = MODE_PLACEHOLDERS[mode] || MODE_PLACEHOLDERS.hydraulic;
-  document.getElementById('chat-input').focus();
+  var inp = document.getElementById('chat-input');
+  if (inp) { inp.placeholder = MODE_PLACEHOLDERS[mode] || MODE_PLACEHOLDERS.hydraulic; inp.focus(); }
 }
 
 /* ══ BRAND FILTER ══ */
@@ -1070,7 +1076,6 @@ function sendMessage() {
   inp.value = ''; inp.style.height = 'auto';
   setUIBusy(true);
   addMsg('user', text);
-  history.push({role:'user', content:text});
   showTyping();
   queriesUsed++;
   document.getElementById('stat-queries').textContent = queriesUsed;
@@ -1080,21 +1085,43 @@ function sendMessage() {
   var brandCtx = activeBrand !== 'ALL' ? ' Focus on ' + activeBrand + ' brand documents.' : '';
   var sysPrompt = MODE_PROMPTS[activeMode] + brandCtx;
 
+  // Build messages: system seed + conversation history + current message
+  // NOTE: push current message to history AFTER building msgs to avoid duplication
   var msgs = [
     {role:'user', content: sysPrompt},
-    {role:'assistant', content: 'HydroMind AI Advisor ready in ' + activeMode + ' mode. How can I help?'}
-  ].concat(history.slice(-12));
+    {role:'assistant', content: 'HydroMind AI Advisor ready. How can I help?'}
+  ].concat(history.slice(-10)).concat([{role:'user', content: text}]);
+
+  // Now push to history for future turns
+  history.push({role:'user', content: text});
+
+  // Warm-up notice if backend might be cold (show after 8s)
+  var warmupTimer = setTimeout(function() {
+    var t = document.getElementById('typing-ind');
+    if (t) {
+      var warm = t.querySelector('.warmup-note');
+      if (!warm) {
+        warm = document.createElement('div');
+        warm.className = 'warmup-note';
+        warm.style.cssText = 'font-size:10.5px;color:var(--text3);margin-top:6px;font-style:italic;';
+        warm.textContent = '⏳ Server warming up — this may take up to 30 seconds on first query…';
+        t.querySelector('.msg-bubble').appendChild(warm);
+      }
+    }
+  }, 8000);
 
   var xhr = new XMLHttpRequest();
   xhr.open('POST', BACKEND, true);
   xhr.setRequestHeader('Content-Type','application/json');
-  xhr.timeout = 35000;
+  xhr.timeout = 90000; // 90s to handle Render cold starts
   xhr.onload = function() {
+    clearTimeout(warmupTimer);
     hideTyping();
     if (xhr.status >= 200 && xhr.status < 300) {
       try {
         var data = JSON.parse(xhr.responseText);
-        var answer = (data.content && data.content[0] && data.content[0].text) || data.answer || data.response || data.text || 'No response received.';
+        var answer = (data.content && data.content[0] && data.content[0].text)
+          || data.answer || data.response || data.text || 'No response received.';
         var refs = []; var seen = {};
         var kbMatch = answer.match(/KB-\d+/g);
         if (kbMatch) kbMatch.forEach(function(r){if(!seen[r]){seen[r]=1;refs.push(r);}});
@@ -1102,13 +1129,25 @@ function sendMessage() {
         if (history.length > 24) history = history.slice(-24);
         addMsg('ai', answer, refs);
       } catch(e) { addMsg('ai','Error parsing response. Please retry.',[]);}
+    } else if (xhr.status === 429) {
+      addMsg('ai','⚠️ Rate limit reached. Please wait a moment before sending another query.',[]);
     } else {
-      addMsg('ai','Server error ' + xhr.status + '. The backend may be starting up — please try again in a moment.',[]);
+      addMsg('ai','Server error ' + xhr.status + '. Please try again in a moment.',[]);
     }
     setUIBusy(false);
   };
-  xhr.onerror = function() { hideTyping(); addMsg('ai','Connection error. Check network and retry.',[]);  setUIBusy(false); };
-  xhr.ontimeout = function() { hideTyping(); addMsg('ai','Request timed out (35s). Please try again.',[]);  setUIBusy(false); };
+  xhr.onerror = function() {
+    clearTimeout(warmupTimer);
+    hideTyping();
+    addMsg('ai','Connection error — check network and retry.',[]);
+    setUIBusy(false);
+  };
+  xhr.ontimeout = function() {
+    clearTimeout(warmupTimer);
+    hideTyping();
+    addMsg('ai','⏱ Request timed out (90s). The server may be restarting — please try again.',[]);
+    setUIBusy(false);
+  };
   xhr.send(JSON.stringify({messages: msgs}));
 }
 
