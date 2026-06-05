@@ -1,4 +1,4 @@
-# CLAUDE.md — HydroMind AI | Master System Protocol v3.1
+# CLAUDE.md — HydroMind AI | Master System Protocol v3.2
 # STATUS: ONLINE | PRECISION MODE: ACTIVE | Last updated: June 05 2026
 # READ THIS FIRST. Every session. No exceptions.
 
@@ -189,6 +189,12 @@ Files: index.html, knowledge_base.html, pricing.html, privacy.html, disclaimer.h
 | 20 | No client-side keep-alive on chat pages | Add 8-min XHR ping to backend root on every page with AI chat |
 | 21 | Frontend/backend API contract drift | When backend security is hardened, update ALL frontend pages — not just the one being worked on |
 | 22 | Not updating CLAUDE.md / SKILL.md / memory after session | MANDATORY end-of-session update — Arun's standing instruction |
+| 23 | Circuit diagram using magic number offsets for port connections | ALWAYS use named coordinate constants for every port — never hardcode arithmetic |
+| 24 | PRV placed above pressure rail — vent line wrapping top of canvas | PRV always BELOW pressure rail. Inlet taps down from rail. Drain exits bottom to return rail then tank |
+| 25 | DCV P/T ports not centred on middle box | DCV_P_X = dcvL + dvW + dvW/2 exactly. DCV_T_X = DCV_P_X. Never dcvL+dvW+22 or any offset |
+| 26 | Diagonal flow lines in hydraulic schematic | ISO 1219 — ALL lines orthogonal (90° only). No diagonal routing ever |
+| 27 | Circuit not verified against ISO 1219-1 symbols before coding | MANDATORY: check pump/motor/filter/DCV/PRV/cylinder symbols against ISO 1219-1 before writing SVG |
+| 28 | Shipping circuit diagram without self-audit checklist | Run the CIRCUIT DIAGRAM CHECKLIST (Section 11) before every push |
 
 ---
 
@@ -254,7 +260,131 @@ If page looks wrong:
 
 | Date | What Was Done | Files Changed | Bugs Fixed |
 |---|---|---|---|
-| 2026-06-05 | Fixed `var history` clash in crane_diagnostic.html — renamed to `chatHistory` (6 replacements). Fixed system_design.html 400 error — wrong fetch payload `{message}` → correct `{messages:[]}` array. Fixed response parser `data.content[0].text`. Increased XHR timeout 35s→90s. Added client-side keep-alive ping (8 min) to crane_diagnostic.html. | crane_diagnostic.html, system_design.html | history.push crash, Backend 400, timeout too short, no keep-alive |
+| 2026-06-05 | Fixed `var history` clash in crane_diagnostic.html. Fixed system_design.html 400 error — wrong payload. Fixed response parser. XHR timeout 35s→90s. Added keep-alive ping. | crane_diagnostic.html, system_design.html | history.push crash, Backend 400, timeout, no keep-alive |
+| 2026-06-05 | Full circuit diagram rebuild — ISO 1219-1 compliant symbols, named port coordinates, PRV below rail, P/T DCV ports centred, orthogonal routing, W=1000 canvas, component reference table | system_design.html | All 10 circuit diagram faults from audit |
+
+---
+
+## ▶ SECTION 11 — HYDRAULIC CIRCUIT DIAGRAM STANDARDS (MANDATORY — READ BEFORE EVERY CIRCUIT CHANGE)
+
+HydroMind AI is used by real offshore hydraulic engineers. A wrong circuit destroys credibility instantly.
+Every circuit diagram MUST pass this checklist before any push. No exceptions.
+
+### ISO 1219-1:2012 SYMBOL REFERENCE
+
+| Component | Correct ISO Symbol | Common Wrong Approach |
+|---|---|---|
+| Fixed pump | Circle + triangle apex pointing RIGHT (outlet side) | Triangle outside circle, wrong orientation |
+| Variable pump | Fixed pump + diagonal arrow through circle | Just writing "VAR" as text |
+| Hydraulic motor | Circle + triangle apex pointing INTO circle from right | Letter "M" — not ISO |
+| Double-acting cylinder | Rectangle + thick end-caps both sides + piston line + rod exits ONE side only | Rod through both ends, no end caps |
+| Filter (HP/return) | Circle with diagonal hatching lines inside (clip-path required) | Striped rectangle |
+| PRV | Square body + internal directional arrow + spring zigzag ABOVE box | Rotated diamond |
+| DCV 4/3 | THREE equal adjacent squares + flow arrows inside each position box + solenoid hatched rects each side + spring triangles | Single rect with dividers |
+| Accumulator | Circle bisected by horizontal line (gas top, fluid bottom) | Plain ellipse |
+| Cooler/HE | Rectangle with X pattern inside | Square with lines |
+| Reservoir | Two horizontal parallel lines + end caps (open-top symbol) | Filled rectangle |
+| Junction dot | Filled circle r=3.5 at every T-junction | Missing — engineers expect it |
+
+### PORT CONNECTION RULES (CRITICAL)
+
+Every port position MUST be a named constant derived from component geometry. NEVER use magic number arithmetic in flow line paths.
+
+```
+MANDATORY NAMED CONSTANTS:
+  DCV_P_X = dcvL + dvW + dvW/2   ← exact centre of middle box — P enters top
+  DCV_T_X = DCV_P_X              ← same X as P — T exits bottom
+  DCV_A_X = dcvL                 ← left edge of left box — A exits left
+  DCV_B_X = dcvR                 ← right edge of right box — B exits right
+  PMP_OUT_X = PUMP_X + pR        ← pump outlet = right side of circle
+  PMP_IN_X  = PUMP_X - pR        ← pump inlet  = left side of circle
+  FLT_IN_X  = FILT_X - fR        ← filter inlet
+  FLT_OUT_X = FILT_X + fR        ← filter outlet
+  PRV_TOP_Y = PRV_CY - PRV_SZ/2  ← PRV inlet (from rail pressure)
+  PRV_BOT_Y = PRV_CY + PRV_SZ/2  ← PRV drain outlet (to return/tank)
+```
+
+### TOPOLOGY RULES (ISO 4413)
+
+```
+PRESSURE PATH (solid line, 2px):
+  Tank → Pump inlet → Pump outlet → HP Filter → [Gauge tap] → [PRV tap] → DCV P port → DCV A/B → Actuator
+
+RETURN PATH (solid line, 1.5px, darker):
+  Actuator → DCV B/A → DCV T port → Return Filter → Cooler → Tank
+
+PRV ROUTING (dashed red, 1.2px):
+  Tee off pressure line BETWEEN filter and DCV
+  PRV body BELOW pressure rail (never above)
+  Inlet: pressure rail taps DOWN to PRV top
+  Drain: PRV bottom → straight down → return rail → left → tank
+
+PILOT/LS LINE (dashed violet, 1px):
+  From actuator load port → back to pump compensator
+  Always on a separate Y offset below the main pressure rail
+
+CASE DRAIN (dashed, darkest teal, 1px):
+  From motor case → separate line → direct to tank top (not return rail)
+```
+
+### FLOW LINE RULES
+
+```
+1. ALL lines ORTHOGONAL ONLY — no diagonal lines ever (ISO 1219)
+2. T-junction DOT (r=3.5, filled) at every branch point
+3. Lines do NOT cross through component bodies
+4. Routing order: horizontal rail runs → vertical drops to components
+5. A and B lines route ABOVE the DCV assembly via bypass channels
+   bypY_A = dcvT - 28    (first bypass)
+   bypY_B = dcvT - 46    (second bypass, slightly higher)
+6. Suction line routes via offset Y below rail (never through pump body)
+7. PRV drain and return lines share RET_Y horizontal — use junction dot
+```
+
+### CANVAS & SPACING RULES
+
+```
+W = 1000, H = 640 minimum for standard circuit
+Component X positions (standard open-loop):
+  TANK_X  = 80
+  PUMP_X  = 200
+  FILT_X  = 360
+  PRV_TEE_X = 460  (between filter and DCV)
+  GAUGE_X = 420    (between filter and PRV tee)
+  DCV_X   = 560
+  ACT_X   = 790
+
+Y positions:
+  RAIL_Y  = 300    (main pressure rail)
+  PRV_CY  = 390    (PRV body — BELOW rail)
+  RET_Y   = 480    (return rail)
+  tkY     = 530    (reservoir top)
+
+Component reference table: x=730, width=254
+Legend bar: bottom 82px of canvas
+```
+
+### PRE-PUSH CHECKLIST (run mentally before every circuit push)
+
+```
+□ Pump triangle pointing RIGHT (outlet direction) — not left, not arbitrary
+□ Motor triangle pointing INTO circle — opposite to pump
+□ Filter has hatching lines inside circle (not a rectangle)
+□ PRV body is BELOW pressure rail — not above
+□ PRV vent routes DOWN to return rail, not UP over the top of diagram
+□ DCV has THREE separate boxes (not one box with dividers)
+□ DCV P port enters TOP CENTRE of middle box (DCV_P_X = DCV_X)
+□ DCV T port exits BOTTOM CENTRE of middle box (DCV_T_X = DCV_P_X)
+□ DCV A exits LEFT EDGE of left box
+□ DCV B exits RIGHT EDGE of right box
+□ ALL flow lines are orthogonal — zero diagonal lines
+□ T-junction dots at every branch point
+□ No component body has a line passing through it
+□ Return path goes: Actuator → DCV T → Cooler → RTN Filter → Tank
+□ All component positions are named constants
+□ No magic number arithmetic in flow line paths
+□ Canvas wide enough — components not cramped (W=1000 minimum)
+```
 
 - Homepage hero section: YES — with QR code, app description, Google Play link
 - Pricing page: YES — CTA section at bottom only

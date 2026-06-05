@@ -1,6 +1,6 @@
 ---
 name: session-skill
-version: v4.1
+version: v4.2
 date: 2026-06-05
 description: >
   Session orientation skill for Claude working on the HydroMind AI project with Arun
@@ -69,6 +69,11 @@ NEVER patch a patch — restore from clean Downloads source if broken.
 | 21 | No client-side keep-alive on chat pages | Every chat page MUST have 8-min XHR GET ping to backend root |
 | 22 | Frontend/backend API contract drift after backend hardening | When validateChatRequest changes — audit ALL pages that call /api/chat |
 | 23 | Not updating CLAUDE.md, SKILL.md, memory at session end | MANDATORY — Arun's standing rule — always update all three before closing |
+| 24 | Circuit diagram magic number offsets for port connections | ALWAYS named coordinate constants — DCV_P_X, DCV_T_X, PMP_OUT_X etc. Never arithmetic |
+| 25 | PRV body placed above pressure rail — vent wraps over top of diagram | PRV ALWAYS below rail. Inlet taps DOWN from rail. Drain exits bottom to RET_Y then tank |
+| 26 | DCV P/T ports not on centre of middle box | DCV_P_X = dcvL + dvW + dvW/2. DCV_T_X = same X. Never use offset like +22 |
+| 27 | Diagonal flow lines in hydraulic circuit | ISO 1219 — ALL lines orthogonal only. Zero diagonal routing ever |
+| 28 | No pre-push circuit checklist | Run full ISO 1219 checklist (see CIRCUIT DIAGRAM SECTION below) before every push |
 
 ---
 
@@ -359,7 +364,64 @@ Container /mnt ≠ Mac filesystem. NEVER confuse them.
 
 ---
 
-## RULE 13 — HYDRAULIC TROUBLESHOOTING PROTOCOL
+## RULE 16 — HYDRAULIC CIRCUIT DIAGRAM STANDARDS (MANDATORY)
+
+HydroMind AI serves real offshore hydraulic engineers and field designers.
+A single wrong circuit symbol or incorrect port connection DESTROYS platform credibility.
+Read this section completely before touching any circuit rendering code.
+
+### ISO 1219-1:2012 SYMBOL REFERENCE
+
+| Component | ISO Correct Symbol | NEVER Do This |
+|---|---|---|
+| Fixed pump | Circle + solid triangle, apex pointing RIGHT (outlet) | Triangle wrong direction or outside circle |
+| Variable pump | Fixed pump + diagonal arrow through circle | Writing "VAR" as text label only |
+| Hydraulic motor | Circle + triangle apex pointing INTO circle from right side | Letter "M" inside circle — not ISO |
+| Double-acting cylinder | Rect + thick end-caps BOTH sides + piston line at ~40% + rod exits ONE side | Rod both sides, missing end caps |
+| HP/Return filter | Circle with diagonal hatching lines INSIDE (requires clipPath) | Striped rectangle |
+| PRV | Square body + upward arrow inside + spring zigzag ABOVE box | Rotated diamond, wrong orientation |
+| 4/3 DCV | THREE separate equal adjacent squares + internal flow arrows per position + solenoid hatched rects + spring triangles | Single rect with dividers |
+| Accumulator | Circle bisected by horizontal line — gas top, fluid bottom | Plain ellipse or circle only |
+| Cooler / HE | Rectangle with X pattern inside | Rectangle with plus or empty |
+| Reservoir | Two horizontal parallel lines + vertical end caps both sides | Filled rectangle |
+| T-junction dot | Filled circle r=3.5 at EVERY branch point | Missing junction dots |
+
+### MANDATORY NAMED PORT CONSTANTS
+
+NEVER use magic number offsets in flow line paths. All port XY positions must be named variables:
+
+DCV_P_X = dcvL + dvW + dvW/2 (exact centre-top of middle box — P port)
+DCV_T_X = DCV_P_X (same X — T port exits centre-bottom)
+DCV_A_X = dcvL (left edge of left box — A port)
+DCV_B_X = dcvL + dvW*3 (right edge of right box — B port)
+PMP_IN_X = PUMP_X - pR | PMP_OUT_X = PUMP_X + pR
+FLT_IN_X = FILT_X - fR | FLT_OUT_X = FILT_X + fR
+PRV_TOP_Y = PRV_CY - PRV_SZ/2 | PRV_BOT_Y = PRV_CY + PRV_SZ/2
+
+### CIRCUIT TOPOLOGY (ISO 4413)
+
+PRESSURE PATH:  Tank → Pump → HP Filter → [Gauge tap] → [PRV tap] → DCV P → Actuator
+RETURN PATH:    Actuator → DCV T → RTN Filter → Cooler → Tank
+PRV ROUTING:    Branch BELOW rail. Body at PRV_CY > RAIL_Y. Drain straight DOWN to RET_Y.
+SUCTION LINE:   Routes below RAIL_Y via suctY = RAIL_Y+55 — never through pump body
+A/B BYPASS:     Route above DCV assembly: bypY_A = dcvT-28, bypY_B = dcvT-46
+
+### STANDARD CANVAS (open-loop)
+
+W=1000 H=640 | TANK_X=80 PUMP_X=200 FILT_X=360 PRV_TEE_X=460 DCV_X=560 ACT_X=790
+RAIL_Y=300 PRV_CY=390 RET_Y=480 tkY=530
+
+### PRE-PUSH CHECKLIST (every circuit push)
+
+□ Pump triangle RIGHT | □ Motor triangle INTO circle | □ Filter = hatched circle
+□ PRV BELOW rail | □ PRV drain DOWN to RET_Y | □ DCV = 3 separate boxes
+□ P=DCV_P_X=DCV_X | □ T=DCV_T_X=same X | □ A=left edge B=right edge
+□ ALL lines orthogonal | □ Junction dots at every T | □ No lines through components
+□ All ports are named constants | □ W≥1000 | □ Component reference table present
+
+---
+
+## RULE 17 — HYDRAULIC TROUBLESHOOTING PROTOCOL
 
 1. Identify: System type → Architecture → Suspect component
 2. Check: KB entry for that model first (KB01–KB86)
@@ -412,7 +474,8 @@ If ANY is NO — stop and fix first.
 | v3.0 | 2026-05-01 | CRITICAL UPDATE: shell layout rules, safe nav template, browser verify mandatory, May 1 site state, full mistake registry from today's failures |
 | v3.1 | 2026-05-03 | KB87–KB90 added: ISO 4413, Rexroth VT-VRPA2, VT-VRPA1, Palfinger PK10000 |
 | v4.0 | 2026-06-01 | Full redesign to dark teal v4.0, new page structure rules, sidebar rules |
-| v4.1 | 2026-06-05 | Added mistakes #19–23: wrong fetch payload, 35s timeout, no keep-alive, API drift, mandatory session-end file updates. Page status table updated. Session log started. |
+| v4.1 | 2026-06-05 | Added mistakes #19–23: wrong fetch payload, 35s timeout, no keep-alive, API drift, mandatory session-end file updates. Page status table updated. |
+| v4.2 | 2026-06-05 | CRITICAL: Added RULE 16 — full hydraulic circuit diagram standards. ISO 1219-1 symbol reference table, mandatory named port constants, topology rules, pre-push checklist. Added mistakes #24–28: magic offsets, PRV above rail, DCV P/T misalignment, diagonal lines, no checklist. This rule is NON-NEGOTIABLE — real engineers test this platform. |
 
 ---
 
