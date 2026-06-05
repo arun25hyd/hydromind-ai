@@ -1307,7 +1307,7 @@ function diagSend() {
     chatHistory.push({ role: 'user', content: text });
     showTyping();
     controller = new AbortController();
-    reqTimer = setTimeout(function() { controller.abort(); }, 35000);
+    reqTimer = setTimeout(function() { controller.abort(); }, 90000);
     function gval(id) { var el = document.getElementById(id); return el ? el.textContent : '?'; }
     var gauges = 'System: ' + gval('g-sys-val') + ' BAR | Case Drain: ' + gval('g-drain-val') + ' BAR | Temp: ' + gval('g-temp-val') + 'C | Flow: ' + gval('g-flow-val') + ' L/min';
     var systemContext = 'You are HydroMind AI Crane Diagnostic Agent — an expert hydraulic engineer specializing in offshore crane fault diagnosis. Active crane: ' + activeCrane + ' (' + activeCraneType + '). Manufacturer: ' + activeMfr + '. Live gauges: ' + gauges + '. PLC diagnostic step: ' + (currentPlcStep + 1) + ' of 10 (' + PLC_STEPS[currentPlcStep].replace('\n',' ') + '). Apply ISO 4413, DNV-ST-0378, EN 13852-1 standards. Provide structured diagnosis: root cause, test points, corrective actions, KB references (KB-01 to KB-86).';
@@ -1318,7 +1318,7 @@ function diagSend() {
     var xhr = new XMLHttpRequest();
     xhr.open('POST', BACKEND, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.timeout = 35000;
+    xhr.timeout = 90000;
     xhr.onload = function() {
       if (reqTimer) clearTimeout(reqTimer);
       hideTyping();
@@ -1348,7 +1348,7 @@ function diagSend() {
     };
     xhr.ontimeout = function() {
       hideTyping();
-      addMsg('ai', 'Request timed out (35s). The server may be starting up — please try again.', []);
+      addMsg('ai', 'Request timed out (90s). The server may be cold-starting — please wait 60 seconds and try again.', []);
       setUIBusy(false);
     };
     xhr.send(JSON.stringify({ messages: msgs }));
@@ -1402,6 +1402,15 @@ document.addEventListener('DOMContentLoaded', function() {
   buildPlcBar();
   buildSparkline();
   if (typeof hmInit === 'function') hmInit();
+
+  /* ══ CLIENT-SIDE KEEP-ALIVE PING — every 8 minutes ══ */
+  /* Prevents Render backend from sleeping between user queries */
+  setInterval(function() {
+    var pingXhr = new XMLHttpRequest();
+    pingXhr.open('GET', 'https://hydromind-backend.onrender.com/', true);
+    pingXhr.timeout = 10000;
+    pingXhr.send();
+  }, 8 * 60 * 1000);
 
   var dinput = document.getElementById('diag-input');
   if (dinput) {

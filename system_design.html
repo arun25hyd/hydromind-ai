@@ -1100,12 +1100,19 @@
       var res = await fetch(BACKEND, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: prompt, systemContext: 'hydraulic_system_design' })
+        body: JSON.stringify({
+          messages: [
+            {
+              role: 'user',
+              content: 'You are HydroMind AI — an expert hydraulic system design engineer specialising in marine and offshore applications. Generate a complete, structured hydraulic system design specification based on the parameters provided. Include: pump sizing rationale, motor selection, DCV architecture, filter ratings, tank volume, pipe sizing, BOM summary, and any applicable ISO 4413 / DNV-ST-0378 considerations. Be precise and technical.\n\n' + prompt
+            }
+          ]
+        })
       });
       clearInterval(animInterval);
       if (!res.ok) throw new Error('Backend error ' + res.status);
       var data = await res.json();
-      var text = data.response || data.message || data.content || 'No response received.';
+      var text = (data.content && data.content[0] && data.content[0].text) || data.response || data.message || data.answer || 'No response received.';
       showResult(formatOutput(text));
     } catch(err) {
       clearInterval(animInterval);
