@@ -1515,10 +1515,11 @@
        DRAIN: exits bottom of PRV box, routes down to RET_Y then left to tank
        ================================================================ */
     s += R(PRV_TEE_X-PRV_SZ/2, PRV_TOP_Y, PRV_SZ, PRV_SZ, C.fr, C.relief, 1.5);
-    /* internal arrow — points upward = pressure acts on ball from below */
-    s += L(PRV_TEE_X, PRV_TOP_Y+PRV_SZ-5, PRV_TEE_X, PRV_TOP_Y+4, C.relief, 1.5);
-    s += '<polygon points="'+(PRV_TEE_X-3)+','+(PRV_TOP_Y+4)+' '+(PRV_TEE_X+3)+','+(PRV_TOP_Y+4)+' '+PRV_TEE_X+','+(PRV_TOP_Y-1)+'" fill="'+C.relief+'"/>';
-    /* spring above PRV box — zigzag between PRV_TOP_Y-4 and PRV_TOP_Y-20 */
+    /* ISO 1219-1 PRV: arrow from INLET(bottom) toward DRAIN(top) = points UP */
+    /* Pressure enters BOT_Y, arrow points from BOT toward TOP = normally-closed */
+    s += L(PRV_TEE_X, PRV_BOT_Y-3, PRV_TEE_X, PRV_TOP_Y+6, C.relief, 1.5);
+    s += '<polygon points="'+(PRV_TEE_X-3)+','+(PRV_TOP_Y+6)+' '+(PRV_TEE_X+3)+','+(PRV_TOP_Y+6)+' '+PRV_TEE_X+','+(PRV_TOP_Y+1)+'" fill="'+C.relief+'"/>';
+    /* spring on DRAIN side — above box top, zigzag */
     var spTop = PRV_TOP_Y - 20, spBot = PRV_TOP_Y - 2;
     s += '<polyline points="'+PRV_TEE_X+','+spBot+' '+(PRV_TEE_X-4)+','+(spBot-5)+
          ' '+(PRV_TEE_X+4)+','+(spBot-10)+' '+(PRV_TEE_X-4)+','+(spBot-15)+
@@ -1723,11 +1724,17 @@
     s += PH('M'+GAUGE_X+' '+RAIL_Y+' L'+GAUGE_X+' '+(GAUGE_Y+gR+2),
             C.amber, 1, '3 2', false);
 
-    /* ─── PRV: vertical stub DOWN from RAIL_Y to PRV box top ─── */
-    s += PH('M'+PRV_TEE_X+' '+RAIL_Y+' L'+PRV_TEE_X+' '+PRV_TOP_Y,
+    /* --- PRV routing (ISO 1219-1 §6.5.1) ---
+       INLET  = BOTTOM of PRV box — pressure taps DOWN from rail into PRV_BOT_Y
+       DRAIN  = TOP of PRV box — exits upward, routes UP then left to tank via return rail
+       Spring is on DRAIN side (above box top, between box and seat line)
+    */
+    /* Pressure rail → PRV inlet (bottom of box) */
+    s += PH('M'+PRV_TEE_X+' '+RAIL_Y+' L'+PRV_TEE_X+' '+PRV_BOT_Y,
             C.relief, 1.2, '5 3', false);
-    /* PRV drain: exits PRV box bottom, goes straight down to RET_Y, then left to tank */
-    s += PH('M'+PRV_TEE_X+' '+PRV_BOT_Y+
+    /* PRV drain: exits top of box, goes UP then left to return rail then to tank */
+    var prvDrainY = spTop - 4;  /* above the spring/seat */
+    s += PH('M'+PRV_TEE_X+' '+PRV_TOP_Y+
             ' L'+PRV_TEE_X+' '+RET_Y+
             ' L'+(TANK_X+12)+' '+RET_Y+
             ' L'+(TANK_X+12)+' '+TK_TOP_Y,
@@ -1745,11 +1752,11 @@
     /* Route: up from DCV left edge, along horizontal bypass above DCV, down to actuator */
     var bypY_A = dcvT - 28; /* bypass channel above DCV assembly */
     if (isMotor) {
-      var MOT_A_X = ACT_X - 10;
+      /* Motor port A = LEFT side of motor (ACT_X - mR) */
       s += PH('M'+DCV_A_X+' '+DCV_A_Y+
               ' L'+DCV_A_X+' '+bypY_A+
-              ' L'+MOT_A_X+' '+bypY_A+
-              ' L'+MOT_A_X+' '+(RAIL_Y-mR),
+              ' L'+(ACT_X-mR)+' '+bypY_A+
+              ' L'+(ACT_X-mR)+' '+(RAIL_Y),
               C.pres, 1.8, '', false);
     } else {
       s += PH('M'+DCV_A_X+' '+DCV_A_Y+
@@ -1762,11 +1769,11 @@
     /* ─── DCV B port \u2192 actuator rod end (port B) ─── */
     var bypY_B = bypY_A - 18; /* second bypass channel, slightly higher */
     if (isMotor) {
-      var MOT_B_X = ACT_X + 10;
+      /* Motor port B = RIGHT side of motor (ACT_X + mR) */
       s += PH('M'+DCV_B_X+' '+DCV_B_Y+
               ' L'+DCV_B_X+' '+bypY_B+
-              ' L'+MOT_B_X+' '+bypY_B+
-              ' L'+MOT_B_X+' '+(RAIL_Y-mR),
+              ' L'+(ACT_X+mR)+' '+bypY_B+
+              ' L'+(ACT_X+mR)+' '+(RAIL_Y),
               C.ret, 1.5, '', false);
     } else {
       s += PH('M'+DCV_B_X+' '+DCV_B_Y+
@@ -1787,9 +1794,10 @@
             C.ret, 1.5, '', false);
     s += PH('M'+(coolX-coolW/2-2)+' '+RET_Y+' L'+(rfX+rfR+2)+' '+RET_Y,
             C.ret, 1.5, '', false);
-    s += PH('M'+(rfX-rfR-2)+' '+RET_Y+' L'+(TANK_X+12)+' '+RET_Y+' L'+(TANK_X+12)+' '+TK_TOP_Y,
+    /* Return rail left end drops vertically to tank centre top */
+    s += PH('M'+(rfX-rfR-2)+' '+RET_Y+' L'+TANK_X+' '+RET_Y+' L'+TANK_X+' '+TK_TOP_Y,
             C.ret, 1.5, '', false);
-    s += JD(TANK_X+12, RET_Y);
+    s += JD(TANK_X, RET_Y);
 
     /* ─── LS PILOT LINE (load-sensing only) ─── */
     if (isLS) {
