@@ -1250,219 +1250,565 @@
     goToStep(1);
   }
 
-  /* ═══ CIRCUIT DIAGRAM RENDERER ═══ */
+  /* ═══════════════════════════════════════════════════════════════════
+     HYDRAULIC CIRCUIT SCHEMATIC RENDERER — ISO 1219-1 / ISO 1219-2
+     All symbols per ISO 1219-1:2012. Lines orthogonal only.
+     Topology: Tank → Pump → Filter → PRV tap → DCV → Actuator
+               Return: Actuator → DCV → Cooler → Return Filter → Tank
+     ═══════════════════════════════════════════════════════════════════ */
   function renderCircuitDiagram(d) {
     var old = document.getElementById('sdCircuit');
     if (old) old.remove();
 
-    var circuit = d.circuit || 'open';
-    var isClosedLoop = circuit === 'closed';
-    var isLoadSensing = circuit === 'open_var';
-    var hasCBV = d.cbvReq === 'yes' || d.cbvReq === 'Yes';
-    var hasAccum = d.accumReq === 'yes' || d.accumReq === 'Yes';
-    var hasBrake = d.brakeReq === 'yes' || d.brakeReq === 'Yes';
-    var isMotor = d.actType === 'motor' || (d.actPref && d.actPref.indexOf('motor') > -1);
+    var circuit    = d.circuit  || 'open';
+    var isClosed   = circuit === 'closed';
+    var isLS       = circuit === 'open_var';
+    var isVariable = isClosed || isLS;
+    var hasCBV     = (d.cbvReq   || '').toLowerCase() === 'yes';
+    var hasAccum   = (d.accumReq || '').toLowerCase() === 'yes';
+    var hasBrake   = (d.brakeReq || '').toLowerCase() === 'yes';
+    var isMotor    = (d.actType  || '').toLowerCase().indexOf('motor') > -1 ||
+                     (d.actPref  || '').toLowerCase().indexOf('motor') > -1;
+    var Q  = d.flowRate  || '—';
+    var P  = d.workPress || '—';
+    var Pp = d.peakPress || '—';
 
-    /* ── SVG ISO schematic (800 × 520) ── */
-    var W = 800, H = isClosedLoop ? 560 : 520;
+    /* ── Canvas ── */
+    var W = 900, H = 600;
     var s = '';
 
-    /* defs */
+    /* ── Colour palette (HydroMind dark teal) ── */
+    var C = {
+      bg:      '#080f14',
+      line:    '#06b6d4',   /* pressure lines */
+      ret:     '#0e7490',   /* return lines — darker teal */
+      drain:   '#164e63',   /* drain / case drain */
+      pilot:   '#a78bfa',   /* pilot lines — violet per ISO 1219 */
+      relief:  '#ef4444',   /* relief valve */
+      amber:   '#f59e0b',   /* solenoid / instrument */
+      green:   '#10b981',   /* CBV */
+      txt1:    '#e2f0f5',
+      txt2:    '#7fb3c8',
+      txt3:    '#4a6b80',
+      border:  'rgba(6,182,212,0.25)',
+      fill_c:  'rgba(6,182,212,0.07)',
+      fill_r:  'rgba(239,68,68,0.08)',
+    };
+
+    /* ── SVG helpers ── */
+    function rect(x,y,w,h,fill,stroke,sw,rx) {
+      return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'"'+
+             (rx?' rx="'+rx+'"':'')+
+             ' fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+(sw||1.5)+'"/>';
+    }
+    function line(x1,y1,x2,y2,col,sw,dash) {
+      return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'"'+
+             ' stroke="'+col+'" stroke-width="'+(sw||1.5)+'"'+
+             (dash?' stroke-dasharray="'+dash+'"':'')+
+             ' fill="none"/>';
+    }
+    function path(d2,col,sw,dash,marker) {
+      return '<path d="'+d2+'" stroke="'+col+'" stroke-width="'+(sw||1.5)+'"'+
+             ' fill="none"'+(dash?' stroke-dasharray="'+dash+'"':'')+
+             (marker?' marker-end="url(#mArr)"':'')+'/>';
+    }
+    function circle(cx,cy,r,fill,stroke,sw) {
+      return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+(sw||1.5)+'"/>';
+    }
+    function txt(x,y,t,fill,fs,anchor,weight) {
+      return '<text x="'+x+'" y="'+y+'"'+
+             ' font-family="Space Mono,monospace" font-size="'+(fs||10)+'"'+
+             ' fill="'+fill+'" text-anchor="'+(anchor||'middle')+'"'+
+             (weight?' font-weight="'+weight+'"':'')+
+             ' dominant-baseline="central">'+t+'</text>';
+    }
+    function junc(x,y) { /* T-junction dot per ISO 1219 */
+      return circle(x,y,3.5,C.line,C.line,0);
+    }
+
+    /* ═══ DEFS ═══ */
     s += '<defs>';
-    s += '<marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#06b6d4"/></marker>';
-    s += '<marker id="arr2" markerWidth="8" markerHeight="6" refX="0" refY="3" orient="auto"><polygon points="8 0,0 3,8 6" fill="#06b6d4"/></marker>';
-    s += '<filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+    /* Arrowhead — filled triangle for pressure lines */
+    s += '<marker id="mArr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">' +
+         '<polygon points="0,0 8,3 0,6" fill="'+C.line+'"/></marker>';
+    /* Return line arrowhead — darker */
+    s += '<marker id="mRet" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">' +
+         '<polygon points="0,0 8,3 0,6" fill="'+C.ret+'"/></marker>';
+    /* Pilot arrowhead */
+    s += '<marker id="mPil" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">' +
+         '<polygon points="0,0 8,3 0,6" fill="'+C.pilot+'"/></marker>';
     s += '</defs>';
 
-    /* background */
-    s += '<rect width="' + W + '" height="' + H + '" fill="#080f14" rx="10"/>';
+    /* ── Background ── */
+    s += rect(0,0,W,H,C.bg,'none',0,10);
 
-    /* title bar */
-    s += '<rect x="0" y="0" width="' + W + '" height="36" fill="rgba(6,182,212,0.08)" rx="10"/>';
-    s += '<rect x="0" y="26" width="' + W + '" height="10" fill="rgba(6,182,212,0.08)"/>';
-    s += '<rect x="0" y="35" width="' + W + '" height="1" fill="rgba(6,182,212,0.2)"/>';
-    var circLabel = isClosedLoop ? 'CLOSED LOOP' : (isLoadSensing ? 'OPEN LOOP — LOAD SENSING' : 'OPEN LOOP — FIXED DISPLACEMENT');
-    s += '<text x="16" y="23" font-family="Space Mono,monospace" font-size="11" font-weight="700" fill="#22d3ee" letter-spacing="2">' + circLabel + ' HYDRAULIC CIRCUIT</text>';
-    s += '<text x="' + (W-16) + '" y="23" font-family="Space Mono,monospace" font-size="9" fill="#7fb3c8" text-anchor="end">ISO 4413 · HydroMind.AI</text>';
+    /* ── Title bar ── */
+    s += rect(0,0,W,40,'rgba(6,182,212,0.07)','rgba(6,182,212,0.2)',1,0);
+    var circLabel = isClosed ? 'CLOSED-LOOP HYDROSTATIC CIRCUIT' :
+                   (isLS    ? 'OPEN-LOOP LOAD-SENSING CIRCUIT'   :
+                               'OPEN-LOOP FIXED-DISPLACEMENT CIRCUIT');
+    s += txt(16,20, circLabel, C.line, 11, 'start', '700');
+    s += txt(W-16,20,'ISO 1219-1 · ISO 4413 · HydroMind.AI', C.txt3, 9, 'end');
 
-    /* ── COMPONENT POSITIONS ── */
-    var tankX = 60, tankY = 380, tankW = 90, tankH = 60;
-    var pumpX = 220, pumpY = 370;
-    var filtX = 340, filtY = 363;
-    var dcvX  = 460, dcvY  = 355;
-    var actX  = 620, actY  = isMotor ? 310 : 280;
-    var relX  = 230, relY  = 270;
-    var coolerX = 110, coolerY = 260;
+    /* ════════════════════════════════════════════════════════
+       COMPONENT GRID (all positions in px, orthogonal routing)
+       Layout (left→right along pressure rail Y=280):
+         Tank(80)  Pump(200)  Filter(340)  DCV(500)  Actuator(680)
+       PRV drops from pressure rail at X=420 down to Y=460
+       Cooler on return rail at X=340, Y=420
+       Return rail Y=420 runs right-to-left back to tank
+       ════════════════════════════════════════════════════════ */
 
-    /* ── RESERVOIR ── */
-    s += '<rect x="' + tankX + '" y="' + tankY + '" width="' + tankW + '" height="' + tankH + '" fill="rgba(6,182,212,0.06)" stroke="#06b6d4" stroke-width="1.5" rx="3"/>';
-    /* fluid level line */
-    s += '<line x1="' + (tankX+8) + '" y1="' + (tankY+20) + '" x2="' + (tankX+tankW-8) + '" y2="' + (tankY+20) + '" stroke="#22d3ee" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>';
-    /* breather */
-    s += '<rect x="' + (tankX+tankW/2-8) + '" y="' + (tankY-12) + '" width="16" height="12" fill="rgba(6,182,212,0.1)" stroke="#06b6d4" stroke-width="1" rx="2"/>';
-    s += '<text x="' + (tankX+tankW/2) + '" y="' + (tankY-3) + '" font-family="Space Mono" font-size="7" fill="#22d3ee" text-anchor="middle">▼</text>';
-    s += '<text x="' + (tankX+tankW/2) + '" y="' + (tankY+tankH+14) + '" font-family="Space Mono" font-size="9" fill="#7fb3c8" text-anchor="middle" font-weight="600">RESERVOIR</text>';
-    s += '<text x="' + (tankX+tankW/2) + '" y="' + (tankY+tankH+25) + '" font-family="Space Mono" font-size="8" fill="#4a6b80" text-anchor="middle">' + d.flowRate + ' L/min</text>';
+    /* ── Coordinate constants ── */
+    var RAIL_Y   = 280;   /* main pressure rail Y */
+    var RET_Y    = 420;   /* return rail Y */
+    var TANK_X   = 80;    /* tank centre X */
+    var PUMP_X   = 200;   /* pump centre X */
+    var FILT_X   = 340;   /* filter centre X */
+    var PRV_X    = 440;   /* PRV tee-off X */
+    var DCV_X    = 500;   /* DCV centre X */
+    var ACT_X    = 680;   /* actuator centre X */
+    var PRV_Y    = 160;   /* PRV sits above pressure rail */
+    var GAUGE_X  = 390;   /* pressure gauge tee X */
+    var GAUGE_Y  = 200;   /* gauge Y (above rail) */
+    var ACCUM_X  = 580;   /* accumulator tee X */
+    var ACCUM_Y  = 200;
 
-    /* ── PUMP (circle with triangle — ISO symbol) ── */
-    var pR = 24;
-    s += '<circle cx="' + pumpX + '" cy="' + (pumpY+pR) + '" r="' + pR + '" fill="rgba(6,182,212,0.08)" stroke="#06b6d4" stroke-width="2"/>';
-    /* triangle pointing right = fixed disp pump */
-    s += '<polygon points="' + (pumpX-12) + ',' + (pumpY+pR+12) + ' ' + (pumpX-12) + ',' + (pumpY+pR-12) + ' ' + (pumpX+12) + ',' + (pumpY+pR) + '" fill="#06b6d4" opacity="0.7"/>';
-    if (isLoadSensing) {
-      /* arrow through pump = variable */
-      s += '<line x1="' + (pumpX-18) + '" y1="' + (pumpY+pR+14) + '" x2="' + (pumpX+18) + '" y2="' + (pumpY+pR-14) + '" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arr)"/>';
+    /* ═══════════════════════
+       ISO 1219 COMPONENT SYMBOLS
+       ═══════════════════════ */
+
+    /* ── 1. RESERVOIR (ISO 1219-1 §6.1) ──
+       Two horizontal parallel lines with vertical end caps
+       Open top reservoir symbol */
+    var tkY = 500, tkHalf = 35;
+    /* outer lines */
+    s += line(TANK_X-tkHalf, tkY,      TANK_X+tkHalf, tkY,      C.line, 2);
+    s += line(TANK_X-tkHalf, tkY+18,   TANK_X+tkHalf, tkY+18,   C.line, 2);
+    /* end caps */
+    s += line(TANK_X-tkHalf, tkY,      TANK_X-tkHalf, tkY+18,   C.line, 2);
+    s += line(TANK_X+tkHalf, tkY,      TANK_X+tkHalf, tkY+18,   C.line, 2);
+    /* fluid fill rect */
+    s += rect(TANK_X-tkHalf+1, tkY+1, tkHalf*2-2, 16, 'rgba(6,182,212,0.12)', 'none', 0);
+    /* tag */
+    s += txt(TANK_X,    tkY+32,  'T', C.txt2, 9,'middle','700');
+    s += txt(TANK_X,    tkY+44,  'RESERVOIR', C.txt3, 8);
+    s += txt(TANK_X,    tkY+56,  Q+' L/min', C.txt3, 8);
+
+    /* ── 2. FIXED/VARIABLE DISPLACEMENT PUMP (ISO 1219-1 §6.3.1 / §6.3.2) ──
+       Circle with ONE filled triangle pointing in direction of flow (outlet)
+       Triangle apex points to RIGHT (outlet direction)
+       For variable: diagonal arrow through circle */
+    var pR = 22;
+    s += circle(PUMP_X, RAIL_Y, pR, C.fill_c, C.line, 2);
+    /* Triangle: inlet left, outlet right — apex points right (ISO 1219-1 pump) */
+    s += '<polygon points="'+
+         (PUMP_X-11)+','+(RAIL_Y+11)+' '+
+         (PUMP_X-11)+','+(RAIL_Y-11)+' '+
+         (PUMP_X+13)+','+RAIL_Y+
+         '" fill="'+C.line+'" opacity="0.85"/>';
+    if (isVariable) {
+      /* Variable displacement arrow — 45° diagonal through circle */
+      s += '<line x1="'+(PUMP_X-18)+'" y1="'+(RAIL_Y+14)+'" x2="'+(PUMP_X+18)+'" y2="'+(RAIL_Y-14)+
+           '" stroke="'+C.txt1+'" stroke-width="1.8" marker-end="url(#mArr)"/>';
     }
-    s += '<text x="' + pumpX + '" y="' + (pumpY+pR*2+14) + '" font-family="Space Mono" font-size="9" fill="#7fb3c8" text-anchor="middle" font-weight="600">PUMP</text>';
-    s += '<text x="' + pumpX + '" y="' + (pumpY+pR*2+24) + '" font-family="Space Mono" font-size="8" fill="#4a6b80" text-anchor="middle">' + d.workPress + ' bar</text>';
+    /* Shaft line (drive input, bottom) */
+    s += line(PUMP_X, RAIL_Y+pR, PUMP_X, RAIL_Y+pR+20, C.txt2, 2.5);
+    s += txt(PUMP_X, RAIL_Y+pR+34, 'P',                C.txt2,  9,'middle','700');
+    s += txt(PUMP_X, RAIL_Y+pR+46, isVariable?'VAR PUMP':'FIXED PUMP', C.txt3, 8);
+    s += txt(PUMP_X, RAIL_Y+pR+57, P+' bar', C.txt3, 8);
 
-    /* ── RELIEF VALVE ── */
-    s += '<rect x="' + (relX-12) + '" y="' + (relY-12) + '" width="24" height="24" fill="rgba(239,68,68,0.08)" stroke="#ef4444" stroke-width="1.5" rx="2" transform="rotate(45,' + relX + ',' + relY + ')"/>';
-    s += '<line x1="' + (relX-6) + '" y1="' + (relY+4) + '" x2="' + (relX+6) + '" y2="' + (relY-4) + '" stroke="#ef4444" stroke-width="1.5"/>';
-    s += '<text x="' + (relX+22) + '" y="' + (relY+4) + '" font-family="Space Mono" font-size="8" fill="#ef4444" font-weight="700">PRV</text>';
-    s += '<text x="' + (relX+22) + '" y="' + (relY+14) + '" font-family="Space Mono" font-size="7" fill="#4a6b80">' + d.peakPress + 'bar</text>';
+    /* ── 3. HIGH-PRESSURE FILTER (ISO 1219-1 §6.10.1) ──
+       Circle with diagonal hatching lines inside = filter element */
+    var fR = 14;
+    s += circle(FILT_X, RAIL_Y, fR, C.fill_c, C.line, 1.5);
+    /* ISO filter: diagonal lines inside circle */
+    s += '<clipPath id="fcl"><circle cx="'+FILT_X+'" cy="'+RAIL_Y+'" r="'+(fR-1)+'"/></clipPath>';
+    for (var fi = -20; fi <= 20; fi += 5) {
+      s += '<line x1="'+(FILT_X+fi-10)+'" y1="'+(RAIL_Y-14)+'" x2="'+(FILT_X+fi+10)+'" y2="'+(RAIL_Y+14)+
+           '" stroke="'+C.line+'" stroke-width="0.8" clip-path="url(#fcl)" opacity="0.6"/>';
+    }
+    /* DP indicator arrow (top) */
+    s += line(FILT_X, RAIL_Y-fR, FILT_X, RAIL_Y-fR-12, C.amber, 1.2);
+    s += '<polygon points="'+(FILT_X-4)+','+(RAIL_Y-fR-12)+' '+(FILT_X+4)+','+(RAIL_Y-fR-12)+' '+FILT_X+','+(RAIL_Y-fR-20)+
+         '" fill="'+C.amber+'" opacity="0.8"/>';
+    s += txt(FILT_X, RAIL_Y+fR+12, 'F', C.txt2, 9,'middle','700');
+    s += txt(FILT_X, RAIL_Y+fR+23, 'H.P. FILTER', C.txt3, 8);
 
-    /* ── FILTER ── */
-    s += '<rect x="' + (filtX-16) + '" y="' + (filtY-10) + '" width="32" height="20" fill="rgba(6,182,212,0.06)" stroke="#06b6d4" stroke-width="1.5" rx="3"/>';
-    s += '<line x1="' + (filtX-10) + '" y1="' + (filtY-4) + '" x2="' + (filtX+10) + '" y2="' + (filtY-4) + '" stroke="#22d3ee" stroke-width="1" opacity="0.5"/>';
-    s += '<line x1="' + (filtX-8)  + '" y1="' + filtY + '" x2="' + (filtX+8)  + '" y2="' + filtY + '" stroke="#22d3ee" stroke-width="1" opacity="0.5"/>';
-    s += '<line x1="' + (filtX-6)  + '" y1="' + (filtY+4) + '" x2="' + (filtX+6) + '" y2="' + (filtY+4) + '" stroke="#22d3ee" stroke-width="1" opacity="0.5"/>';
-    s += '<text x="' + filtX + '" y="' + (filtY+26) + '" font-family="Space Mono" font-size="9" fill="#7fb3c8" text-anchor="middle" font-weight="600">FILTER</text>';
+    /* ── 4. PRESSURE RELIEF VALVE (ISO 1219-1 §6.5.1) ──
+       Square with internal arrow and spring; vents to tank
+       Position: tee off pressure rail, above rail */
+    var prvSz = 18;
+    s += rect(PRV_X-prvSz/2, PRV_Y-prvSz/2, prvSz, prvSz, C.fill_r, C.relief, 1.5);
+    /* Internal arrow (pressure acts upward = normally closed) */
+    s += line(PRV_X, PRV_Y+5, PRV_X, PRV_Y-3, C.relief, 1.5);
+    s += '<polygon points="'+(PRV_X-3)+','+(PRV_Y-3)+' '+(PRV_X+3)+','+(PRV_Y-3)+' '+PRV_X+','+(PRV_Y-8)+
+         '" fill="'+C.relief+'"/>';
+    /* Spring symbol (3 zigzag lines above box) */
+    var szY = PRV_Y - prvSz/2 - 18;
+    s += '<polyline points="'+PRV_X+','+(PRV_Y-prvSz/2)+' '+(PRV_X-4)+','+(szY+14)+' '+(PRV_X+4)+','+(szY+10)+' '+(PRV_X-4)+','+(szY+6)+' '+PRV_X+','+szY+
+         '" stroke="'+C.relief+'" stroke-width="1.2" fill="none"/>';
+    s += txt(PRV_X+14, PRV_Y,      'PRV',         C.relief, 8, 'start','700');
+    s += txt(PRV_X+14, PRV_Y+12,   Pp+' bar',     C.txt3,   8, 'start');
+    s += txt(PRV_X+14, PRV_Y-20,   'SPRING-BIAS', C.txt3,   7, 'start');
 
-    /* ── DCV (4/3 proportional valve box) ── */
-    var dvW = 80, dvH = 36;
-    s += '<rect x="' + (dcvX-dvW/2) + '" y="' + (dcvY-dvH/2) + '" width="' + dvW + '" height="' + dvH + '" fill="rgba(6,182,212,0.08)" stroke="#06b6d4" stroke-width="1.5" rx="2"/>';
-    /* spool position boxes */
-    s += '<line x1="' + (dcvX-dvW/2+dvW/3) + '" y1="' + (dcvY-dvH/2) + '" x2="' + (dcvX-dvW/2+dvW/3) + '" y2="' + (dcvY+dvH/2) + '" stroke="#06b6d4" stroke-width="1" opacity="0.5"/>';
-    s += '<line x1="' + (dcvX+dvW/2-dvW/3) + '" y1="' + (dcvY-dvH/2) + '" x2="' + (dcvX+dvW/2-dvW/3) + '" y2="' + (dcvY+dvH/2) + '" stroke="#06b6d4" stroke-width="1" opacity="0.5"/>';
-    /* centre cross = critical centre */
-    s += '<line x1="' + (dcvX-dvW/6) + '" y1="' + (dcvY-8) + '" x2="' + (dcvX+dvW/6) + '" y2="' + (dcvY+8) + '" stroke="#22d3ee" stroke-width="1.5"/>';
-    s += '<line x1="' + (dcvX+dvW/6) + '" y1="' + (dcvY-8) + '" x2="' + (dcvX-dvW/6) + '" y2="' + (dcvY+8) + '" stroke="#22d3ee" stroke-width="1.5"/>';
-    /* solenoid symbols */
-    s += '<rect x="' + (dcvX-dvW/2-14) + '" y="' + (dcvY-6) + '" width="14" height="12" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="1" rx="1"/>';
-    s += '<rect x="' + (dcvX+dvW/2) + '"   y="' + (dcvY-6) + '" width="14" height="12" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="1" rx="1"/>';
-    s += '<text x="' + dcvX + '" y="' + (dcvY+dvH/2+14) + '" font-family="Space Mono" font-size="9" fill="#7fb3c8" text-anchor="middle" font-weight="600">4/3 DCV</text>';
-    s += '<text x="' + dcvX + '" y="' + (dcvY+dvH/2+24) + '" font-family="Space Mono" font-size="8" fill="#4a6b80" text-anchor="middle">PROPORTIONAL</text>';
+    /* ── 5. PRESSURE GAUGE (ISO 1219-1 §6.11.1) ──
+       Circle with pointer/needle inside */
+    var gR = 10;
+    s += circle(GAUGE_X, GAUGE_Y, gR, C.fill_c, C.amber, 1.2);
+    s += '<line x1="'+GAUGE_X+'" y1="'+(GAUGE_Y+2)+'" x2="'+(GAUGE_X+6)+'" y2="'+(GAUGE_Y-5)+
+         '" stroke="'+C.amber+'" stroke-width="1.5"/>';
+    s += txt(GAUGE_X, GAUGE_Y+18, 'PI', C.amber, 8,'middle','700');
 
-    /* ── ACTUATOR (motor or cylinder) ── */
+    /* ── 6. DIRECTIONAL CONTROL VALVE — 4/3 (ISO 1219-1 §6.4.1) ──
+       THREE equal square boxes side-by-side.
+       Centre box = neutral (critical centre: blocked P, blocked A/B, T)
+       Left box  = extend position (P→A, B→T arrows)
+       Right box = retract position (P→B, A→T arrows)
+       Proportional solenoid each side + spring return to centre */
+    var dvH  = 44, dvW = 44; /* each position box */
+    var dcvL = DCV_X - dvW*1.5; /* left edge of 3-box assembly */
+    var dcvT = RAIL_Y - dvH/2;
+
+    /* Three position boxes */
+    for (var bi = 0; bi < 3; bi++) {
+      s += rect(dcvL + bi*dvW, dcvT, dvW, dvH, C.fill_c, C.line, 1.5);
+    }
+
+    /* ISO flow arrows inside each box */
+    /* Box 0 — LEFT (extend: P→A top-to-bottom, B→T bottom-to-top — NOT current — actuator extends) */
+    var b0x = dcvL, b0y = dcvT;
+    /* P→A: arrow going down on left side of box */
+    s += '<line x1="'+(b0x+12)+'" y1="'+(b0y+8)+'" x2="'+(b0x+12)+'" y2="'+(b0y+36)+
+         '" stroke="'+C.line+'" stroke-width="1.2" marker-end="url(#mArr)"/>';
+    /* B→T: arrow going up on right side */
+    s += '<line x1="'+(b0x+32)+'" y1="'+(b0y+36)+'" x2="'+(b0x+32)+'" y2="'+(b0y+8)+
+         '" stroke="'+C.ret+'" stroke-width="1.2" marker-end="url(#mRet)"/>';
+
+    /* Box 1 — CENTRE (neutral/critical centre: all ports blocked) */
+    var b1x = dcvL + dvW, b1y = dcvT;
+    s += '<line x1="'+(b1x+8)+'"  y1="'+(b1y+12)+'" x2="'+(b1x+36)+'" y2="'+(b1y+32)+
+         '" stroke="'+C.line+'" stroke-width="1.2" opacity="0.4"/>';
+    s += '<line x1="'+(b1x+36)+'" y1="'+(b1y+12)+'" x2="'+(b1x+8)+'"  y2="'+(b1y+32)+
+         '" stroke="'+C.line+'" stroke-width="1.2" opacity="0.4"/>';
+    /* Port label overlays */
+    s += txt(b1x+22, b1y-10,    'P',  C.line,   8,'middle','700');
+    s += txt(b1x+22, b1y+dvH+10,'T',  C.ret,    8,'middle','700');
+    s += txt(dcvL-8, RAIL_Y,    'A',  C.txt2,   8,'middle','700');
+    s += txt(dcvL+dvW*3+8, RAIL_Y,'B',C.txt2,   8,'middle','700');
+
+    /* Box 2 — RIGHT (retract: P→B, A→T) */
+    var b2x = dcvL + dvW*2, b2y = dcvT;
+    s += '<line x1="'+(b2x+32)+'" y1="'+(b2y+8)+'" x2="'+(b2x+32)+'" y2="'+(b2y+36)+
+         '" stroke="'+C.line+'" stroke-width="1.2" marker-end="url(#mArr)"/>';
+    s += '<line x1="'+(b2x+12)+'" y1="'+(b2y+36)+'" x2="'+(b2x+12)+'" y2="'+(b2y+8)+
+         '" stroke="'+C.ret+'" stroke-width="1.2" marker-end="url(#mRet)"/>';
+
+    /* Proportional solenoids (ISO §6.7.3) — hatched rectangles each side */
+    var solW = 22, solH = 20;
+    /* Left solenoid */
+    s += rect(dcvL-solW-2, RAIL_Y-solH/2, solW, solH, 'rgba(245,158,11,0.1)', C.amber, 1.2);
+    for (var si = 4; si < solW; si += 4) {
+      s += '<line x1="'+(dcvL-solW-2+si)+'" y1="'+(RAIL_Y-solH/2)+'" x2="'+(dcvL-solW-2+si)+'" y2="'+(RAIL_Y+solH/2)+
+           '" stroke="'+C.amber+'" stroke-width="0.7" opacity="0.5"/>';
+    }
+    s += txt(dcvL-solW/2-2, RAIL_Y+solH/2+10, 'SOL A', C.amber, 7);
+    /* Right solenoid */
+    s += rect(dcvL+dvW*3+2, RAIL_Y-solH/2, solW, solH, 'rgba(245,158,11,0.1)', C.amber, 1.2);
+    for (var si2 = 4; si2 < solW; si2 += 4) {
+      s += '<line x1="'+(dcvL+dvW*3+2+si2)+'" y1="'+(RAIL_Y-solH/2)+'" x2="'+(dcvL+dvW*3+2+si2)+'" y2="'+(RAIL_Y+solH/2)+
+           '" stroke="'+C.amber+'" stroke-width="0.7" opacity="0.5"/>';
+    }
+    s += txt(dcvL+dvW*3+solW/2+2, RAIL_Y+solH/2+10,'SOL B', C.amber, 7);
+    /* Spring returns (each side — triangle with vertical line) */
+    s += '<polygon points="'+(dcvL-solW-8)+','+(RAIL_Y-8)+' '+(dcvL-solW-8)+','+(RAIL_Y+8)+' '+(dcvL-solW-22)+','+RAIL_Y+
+         '" fill="none" stroke="'+C.txt3+'" stroke-width="1.2"/>';
+    s += '<polygon points="'+(dcvL+dvW*3+solW+8)+','+(RAIL_Y-8)+' '+(dcvL+dvW*3+solW+8)+','+(RAIL_Y+8)+' '+(dcvL+dvW*3+solW+22)+','+RAIL_Y+
+         '" fill="none" stroke="'+C.txt3+'" stroke-width="1.2"/>';
+    s += txt(DCV_X, dcvT+dvH+18, '4/3 PROPORTIONAL DCV', C.txt2, 8,'middle','700');
+    s += txt(DCV_X, dcvT+dvH+29, 'CRITICAL CENTRE', C.txt3, 7);
+
+    /* ── 7. ACTUATOR ──
+       Motor: ISO 1219-1 §6.6.1 — circle with triangle pointing INTO circle (inlet)
+       Cylinder: ISO 1219-1 §6.2.1 — double-acting shown correctly */
     if (isMotor) {
-      /* Motor circle with M */
-      var mR = 26;
-      s += '<circle cx="' + actX + '" cy="' + (actY+mR) + '" r="' + mR + '" fill="rgba(6,182,212,0.06)" stroke="#06b6d4" stroke-width="2"/>';
-      s += '<text x="' + actX + '" y="' + (actY+mR+5) + '" font-family="Space Mono" font-size="14" font-weight="700" fill="#22d3ee" text-anchor="middle">M</text>';
-      /* shaft */
-      s += '<line x1="' + (actX+mR) + '" y1="' + (actY+mR) + '" x2="' + (actX+mR+20) + '" y2="' + (actY+mR) + '" stroke="#7fb3c8" stroke-width="3"/>';
-      s += '<text x="' + actX + '" y="' + (actY+mR*2+14) + '" font-family="Space Mono" font-size="9" fill="#7fb3c8" text-anchor="middle" font-weight="600">MOTOR</text>';
+      var mR = 24;
+      s += circle(ACT_X, RAIL_Y, mR, C.fill_c, C.line, 2);
+      /* Triangle pointing INTO circle = motor (opposite to pump) */
+      s += '<polygon points="'+
+           (ACT_X-13)+','+RAIL_Y+' '+
+           (ACT_X+10)+','+(RAIL_Y-13)+' '+
+           (ACT_X+10)+','+(RAIL_Y+13)+
+           '" fill="'+C.line+'" opacity="0.85"/>';
+      /* Output shaft */
+      s += line(ACT_X+mR, RAIL_Y, ACT_X+mR+25, RAIL_Y, C.txt2, 3);
+      s += rect(ACT_X+mR+22, RAIL_Y-8, 12, 16, C.fill_c, C.txt3, 1, 2);
+      /* Case drain (broken line to tank — ISO shows as broken) */
+      s += path('M'+ACT_X+' '+(RAIL_Y+mR)+' L'+ACT_X+' '+(RET_Y+30)+' L'+TANK_X+' '+(RET_Y+30)+' L'+TANK_X+' '+tkY,
+                C.drain, 1, '4 3');
+      s += txt(ACT_X, RAIL_Y+mR+40, 'M',       C.txt2, 9,'middle','700');
+      s += txt(ACT_X, RAIL_Y+mR+52, 'HYD MOTOR',C.txt3, 8);
     } else {
-      /* Cylinder — rod+barrel */
-      var cyW = 70, cyH = 36;
-      s += '<rect x="' + actX + '" y="' + actY + '" width="' + cyW + '" height="' + cyH + '" fill="rgba(6,182,212,0.06)" stroke="#06b6d4" stroke-width="1.5"/>';
-      /* piston */
-      s += '<line x1="' + (actX+cyW*0.45) + '" y1="' + actY + '" x2="' + (actX+cyW*0.45) + '" y2="' + (actY+cyH) + '" stroke="#22d3ee" stroke-width="3"/>';
-      /* rod */
-      s += '<line x1="' + (actX+cyW*0.45) + '" y1="' + (actY+cyH/2) + '" x2="' + (actX+cyW+20) + '" y2="' + (actY+cyH/2) + '" stroke="#7fb3c8" stroke-width="4"/>';
-      /* end cap */
-      s += '<rect x="' + actX + '" y="' + actY + '" width="8" height="' + cyH + '" fill="rgba(6,182,212,0.15)" stroke="#06b6d4" stroke-width="1"/>';
-      s += '<text x="' + (actX+cyW/2) + '" y="' + (actY+cyH+14) + '" font-family="Space Mono" font-size="9" fill="#7fb3c8" text-anchor="middle" font-weight="600">CYLINDER</text>';
+      /* ISO double-acting cylinder §6.2.1:
+         - Rectangle = barrel
+         - Full-width inner line = piston (divides rod-side from cap-side)
+         - Rod exits right side only
+         - End caps = thick lines on both ends */
+      var cyW = 80, cyH = 40;
+      var cyX = ACT_X - 10, cyY = RAIL_Y - cyH/2;
+      /* Barrel */
+      s += rect(cyX, cyY, cyW, cyH, C.fill_c, C.line, 1.5);
+      /* End caps (thick) */
+      s += line(cyX,      cyY, cyX,      cyY+cyH, C.line, 4);
+      s += line(cyX+cyW,  cyY, cyX+cyW,  cyY+cyH, C.line, 4);
+      /* Piston — divides barrel, at 40% from left */
+      var pisX = cyX + Math.round(cyW*0.4);
+      s += line(pisX, cyY+1, pisX, cyY+cyH-1, C.line, 3);
+      /* Rod — exits right through right end cap */
+      s += line(cyX+cyW, RAIL_Y, cyX+cyW+30, RAIL_Y, C.txt1, 4);
+      /* Port A top-left (cap side), Port B top-right (rod side) */
+      s += line(cyX+10,      cyY, cyX+10,     cyY-14, C.line,  1.5);
+      s += line(pisX+15,     cyY, pisX+15,    cyY-14, C.ret,   1.5);
+      s += txt(cyX+10,       cyY-22,'A', C.txt2, 8,'middle','700');
+      s += txt(pisX+15,      cyY-22,'B', C.txt2, 8,'middle','700');
+      /* CBV (counterbalance valves) on port lines if required */
       if (hasCBV) {
-        /* CBV symbols on A/B ports */
-        var cbvY = actY - 30;
-        s += '<rect x="' + (actX+10) + '" y="' + cbvY + '" width="16" height="16" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1.2" rx="2" transform="rotate(45,' + (actX+18) + ',' + (cbvY+8) + ')"/>';
-        s += '<text x="' + (actX+18) + '" y="' + (cbvY-10) + '" font-family="Space Mono" font-size="7.5" fill="#10b981" text-anchor="middle" font-weight="700">CBV</text>';
+        /* CBV = ISO symbol: square with arrow, spring, check valve in parallel */
+        var cbvY = cyY - 55;
+        /* Port A CBV */
+        s += rect(cyX+2, cbvY, 16, 16, 'rgba(16,185,129,0.1)', C.green, 1.2);
+        s += '<line x1="'+(cyX+6)+'" y1="'+(cbvY+10)+'" x2="'+(cyX+6)+'" y2="'+(cbvY+6)+'" stroke="'+C.green+'" stroke-width="1.2"/>';
+        s += '<polygon points="'+(cyX+4)+','+(cbvY+6)+' '+(cyX+8)+','+(cbvY+6)+' '+(cyX+6)+','+(cbvY+2)+'" fill="'+C.green+'"/>';
+        /* spring */
+        s += '<polyline points="'+(cyX+12)+','+(cbvY+2)+' '+(cyX+10)+','+(cbvY+5)+' '+(cyX+14)+','+(cbvY+8)+' '+(cyX+10)+','+(cbvY+11)+' '+(cyX+14)+','+(cbvY+14)+'" stroke="'+C.green+'" stroke-width="0.9" fill="none"/>';
+        s += txt(cyX+9, cbvY-9, 'CBV', C.green, 7,'middle','700');
+
+        /* Port B CBV */
+        s += rect(pisX+7, cbvY, 16, 16, 'rgba(16,185,129,0.1)', C.green, 1.2);
+        s += '<line x1="'+(pisX+11)+'" y1="'+(cbvY+10)+'" x2="'+(pisX+11)+'" y2="'+(cbvY+6)+'" stroke="'+C.green+'" stroke-width="1.2"/>';
+        s += '<polygon points="'+(pisX+9)+','+(cbvY+6)+' '+(pisX+13)+','+(cbvY+6)+' '+(pisX+11)+','+(cbvY+2)+'" fill="'+C.green+'"/>';
+        s += '<polyline points="'+(pisX+17)+','+(cbvY+2)+' '+(pisX+15)+','+(cbvY+5)+' '+(pisX+19)+','+(cbvY+8)+' '+(pisX+15)+','+(cbvY+11)+' '+(pisX+19)+','+(cbvY+14)+'" stroke="'+C.green+'" stroke-width="0.9" fill="none"/>';
+        s += txt(pisX+15, cbvY-9, 'CBV', C.green, 7,'middle','700');
       }
+      s += txt(cyX+cyW/2+10, RAIL_Y+cyH/2+16, 'CYLINDER', C.txt2, 8,'middle','700');
+      s += txt(cyX+cyW/2+10, RAIL_Y+cyH/2+27, 'DOUBLE-ACTING', C.txt3, 7);
     }
 
-    /* ── PRESSURE GAUGE ── */
-    var gaugeX = 310, gaugeY = 300;
-    s += '<circle cx="' + gaugeX + '" cy="' + gaugeY + '" r="11" fill="rgba(245,158,11,0.08)" stroke="#f59e0b" stroke-width="1.2"/>';
-    s += '<line x1="' + gaugeX + '" y1="' + (gaugeY+3) + '" x2="' + (gaugeX+7) + '" y2="' + (gaugeY-5) + '" stroke="#f59e0b" stroke-width="1.5"/>';
-    s += '<text x="' + gaugeX + '" y="' + (gaugeY+24) + '" font-family="Space Mono" font-size="7.5" fill="#f59e0b" text-anchor="middle">GAUGE</text>';
-
-    /* ── ACCUMULATOR (if selected) ── */
+    /* ── 8. ACCUMULATOR (ISO 1219-1 §6.8.1) ──
+       Ellipse divided by horizontal line: top=gas, bottom=fluid */
     if (hasAccum) {
-      var accX = 390, accY = 280;
-      s += '<ellipse cx="' + accX + '" cy="' + (accY+20) + '" rx="14" ry="20" fill="rgba(6,182,212,0.06)" stroke="#06b6d4" stroke-width="1.5"/>';
-      s += '<line x1="' + (accX-14) + '" y1="' + (accY+20) + '" x2="' + (accX+14) + '" y2="' + (accY+20) + '" stroke="#22d3ee" stroke-width="1" stroke-dasharray="3,2"/>';
-      s += '<text x="' + accX + '" y="' + (accY+50) + '" font-family="Space Mono" font-size="7.5" fill="#22d3ee" text-anchor="middle">ACCUM</text>';
+      var accR = 16;
+      s += circle(ACCUM_X, ACCUM_Y, accR, C.fill_c, C.line, 1.5);
+      /* Dividing line (membrane/bladder) */
+      s += line(ACCUM_X-accR, ACCUM_Y, ACCUM_X+accR, ACCUM_Y, C.line, 1.5);
+      /* Gas = N2 label top, fluid bottom */
+      s += txt(ACCUM_X, ACCUM_Y-7, 'N₂', C.txt3, 8);
+      s += txt(ACCUM_X, ACCUM_Y+22, 'ACC', C.txt2, 8,'middle','700');
+      s += txt(ACCUM_X, ACCUM_Y+33, 'ACCUMULATOR', C.txt3, 7);
     }
 
-    /* ── COOLER (air blast symbol) ── */
-    s += '<rect x="' + (coolerX-18) + '" y="' + (coolerY-12) + '" width="36" height="24" fill="rgba(6,182,212,0.04)" stroke="rgba(6,182,212,0.4)" stroke-width="1.2" rx="4"/>';
-    for (var cx = coolerX-12; cx <= coolerX+12; cx += 8) {
-      s += '<line x1="' + cx + '" y1="' + (coolerY-8) + '" x2="' + cx + '" y2="' + (coolerY+8) + '" stroke="rgba(6,182,212,0.4)" stroke-width="1"/>';
+    /* ── 9. COOLER (ISO 1219-1 §6.9.1) ──
+       Rectangle with X pattern = heat exchanger symbol, on return line */
+    var coolX = 240, coolY = RET_Y;
+    var coolW = 36, coolH = 24;
+    s += rect(coolX-coolW/2, coolY-coolH/2, coolW, coolH, C.fill_c, C.line, 1.5);
+    /* X pattern inside */
+    s += line(coolX-coolW/2+2, coolY-coolH/2+2, coolX+coolW/2-2, coolY+coolH/2-2, C.line, 0.8, '');
+    s += line(coolX+coolW/2-2, coolY-coolH/2+2, coolX-coolW/2+2, coolY+coolH/2-2, C.line, 0.8, '');
+    s += txt(coolX, coolY+coolH/2+12, 'HE', C.txt2, 8,'middle','700');
+    s += txt(coolX, coolY+coolH/2+23, 'COOLER', C.txt3, 7);
+
+    /* ── 10. RETURN FILTER (ISO §6.10.1) — on return line ── */
+    var rfX = 160, rfR = 11;
+    s += circle(rfX, RET_Y, rfR, C.fill_c, C.line, 1.5);
+    var fcid2 = 'fcl2';
+    s += '<clipPath id="'+fcid2+'"><circle cx="'+rfX+'" cy="'+RET_Y+'" r="'+(rfR-1)+'"/></clipPath>';
+    for (var fi2 = -14; fi2 <= 14; fi2 += 4) {
+      s += '<line x1="'+(rfX+fi2-8)+'" y1="'+(RET_Y-12)+'" x2="'+(rfX+fi2+8)+'" y2="'+(RET_Y+12)+
+           '" stroke="'+C.line+'" stroke-width="0.8" clip-path="url(#'+fcid2+')" opacity="0.6"/>';
     }
-    s += '<text x="' + coolerX + '" y="' + (coolerY+26) + '" font-family="Space Mono" font-size="8" fill="#7fb3c8" text-anchor="middle">COOLER</text>';
+    s += txt(rfX, RET_Y+rfR+11, 'RF', C.txt2, 8,'middle','700');
+    s += txt(rfX, RET_Y+rfR+22, 'RTN FILTER', C.txt3, 7);
 
-    /* ══ FLOW LINES ══ */
-    var ps = 'stroke="#06b6d4" stroke-width="2" fill="none" marker-end="url(#arr)"';
-    var rs = 'stroke="rgba(6,182,212,0.45)" stroke-width="1.5" fill="none" stroke-dasharray="6,3"';
-
-    /* Tank → Pump suction */
-    s += '<path d="M' + (tankX+tankW) + ',' + (tankY+tankH/2) + ' L' + (pumpX-pR) + ',' + (pumpY+pR) + '" ' + ps + '/>';
-    /* Pump → Filter */
-    s += '<path d="M' + (pumpX+pR) + ',' + (pumpY+pR) + ' L' + (filtX-16) + ',' + (filtY) + '" ' + ps + '/>';
-    /* Filter → DCV */
-    s += '<path d="M' + (filtX+16) + ',' + filtY + ' L' + (dcvX-dvW/2) + ',' + dcvY + '" ' + ps + '/>';
-    /* DCV → Actuator */
-    var actInY = isMotor ? (actY+26) : (actY + cyH/3);
-    s += '<path d="M' + (dcvX+dvW/2) + ',' + (dcvY-8) + ' L' + actX + ',' + actInY + '" ' + ps + '/>';
-    /* Actuator return → Tank (dashed) */
-    var actRetX = isMotor ? actX : actX;
-    var actRetY = isMotor ? (actY+26+20) : (actY + cyH*2/3);
-    s += '<path d="M' + actRetX + ',' + actRetY + ' L' + (dcvX+dvW/2) + ',' + (dcvY+8) + ' L' + (dcvX-dvW/2) + ',' + (dcvY+8) + ' L' + (filtX) + ',' + (filtY+30) + ' L' + (coolerX) + ',' + (coolerY+12) + ' L' + (coolerX) + ',' + (tankY+10) + ' L' + (tankX+tankW/2) + ',' + (tankY+10) + '" ' + rs + '/>';
-    /* PRV line from pump pressure line → tank */
-    s += '<path d="M' + (pumpX+pR+30) + ',' + (pumpY+pR-10) + ' L' + relX + ',' + (relY+18) + '" stroke="#ef4444" stroke-width="1.2" fill="none" stroke-dasharray="4,3"/>';
-    s += '<path d="M' + relX + ',' + (relY+18) + ' L' + relX + ',' + (tankY) + ' L' + (tankX+tankW/2+20) + ',' + tankY + '" stroke="#ef4444" stroke-width="1.2" fill="none" stroke-dasharray="4,3"/>';
-    /* Gauge tap */
-    s += '<path d="M' + (filtX+8) + ',' + (filtY-10) + ' L' + gaugeX + ',' + (gaugeY+11) + '" stroke="#f59e0b" stroke-width="1" fill="none" stroke-dasharray="3,2"/>';
-
-    /* ── BRAKE SOLENOID (if selected) ── */
+    /* ── 11. BRAKE VALVE (ISO §6.5.3) — if selected ── */
     if (hasBrake) {
-      var brkX = actX + (isMotor ? 0 : cyW/2), brkY = isMotor ? (actY+65) : (actY+cyH+50);
-      s += '<rect x="' + (brkX-20) + '" y="' + brkY + '" width="40" height="18" fill="rgba(245,158,11,0.08)" stroke="#f59e0b" stroke-width="1.2" rx="3"/>';
-      s += '<text x="' + brkX + '" y="' + (brkY+12) + '" font-family="Space Mono" font-size="8" fill="#f59e0b" text-anchor="middle" font-weight="600">BRAKE</text>';
+      var brkX = ACT_X + 20, brkY2 = RAIL_Y + 60;
+      s += rect(brkX-14, brkY2-14, 28, 28, 'rgba(245,158,11,0.08)', C.amber, 1.5);
+      s += line(brkX-8, brkY2+5, brkX-8, brkY2-5, C.amber, 1.5);
+      s += '<polygon points="'+(brkX-11)+','+(brkY2-5)+' '+(brkX-5)+','+(brkY2-5)+' '+(brkX-8)+','+(brkY2-10)+'" fill="'+C.amber+'"/>';
+      s += txt(brkX+20, brkY2, 'BRAKE VLV', C.amber, 7,'start');
     }
 
-    /* ── LEGEND ── */
-    var legY = H - 48;
-    s += '<rect x="16" y="' + legY + '" width="' + (W-32) + '" height="36" fill="rgba(6,182,212,0.04)" stroke="rgba(6,182,212,0.1)" stroke-width="1" rx="4"/>';
-    s += '<line x1="30" y1="' + (legY+11) + '" x2="60" y2="' + (legY+11) + '" stroke="#06b6d4" stroke-width="2" marker-end="url(#arr)"/>';
-    s += '<text x="68" y="' + (legY+15) + '" font-family="Space Mono" font-size="8" fill="#7fb3c8">Pressure line</text>';
-    s += '<line x1="160" y1="' + (legY+11) + '" x2="190" y2="' + (legY+11) + '" stroke="rgba(6,182,212,0.45)" stroke-width="1.5" stroke-dasharray="5,3"/>';
-    s += '<text x="198" y="' + (legY+15) + '" font-family="Space Mono" font-size="8" fill="#7fb3c8">Return line</text>';
-    s += '<line x1="290" y1="' + (legY+11) + '" x2="320" y2="' + (legY+11) + '" stroke="#ef4444" stroke-width="1.2" stroke-dasharray="4,3"/>';
-    s += '<text x="328" y="' + (legY+15) + '" font-family="Space Mono" font-size="8" fill="#7fb3c8">Relief / drain</text>';
-    s += '<line x1="420" y1="' + (legY+11) + '" x2="450" y2="' + (legY+11) + '" stroke="#f59e0b" stroke-width="1" stroke-dasharray="3,2"/>';
-    s += '<text x="458" y="' + (legY+15) + '" font-family="Space Mono" font-size="8" fill="#7fb3c8">Instrumentation</text>';
-    /* second legend row */
-    s += '<text x="30"  y="' + (legY+28) + '" font-family="Space Mono" font-size="7.5" fill="#4a6b80">Q=' + d.flowRate + 'L/min</text>';
-    s += '<text x="130" y="' + (legY+28) + '" font-family="Space Mono" font-size="7.5" fill="#4a6b80">P=' + d.workPress + 'bar</text>';
-    s += '<text x="210" y="' + (legY+28) + '" font-family="Space Mono" font-size="7.5" fill="#4a6b80">Peak=' + d.peakPress + 'bar</text>';
-    s += '<text x="310" y="' + (legY+28) + '" font-family="Space Mono" font-size="7.5" fill="#4a6b80">Circuit: ' + circLabel + '</text>';
-    s += '<text x="' + (W-16) + '" y="' + (legY+28) + '" font-family="Space Mono" font-size="7.5" fill="#4a6b80" text-anchor="end">ISO 4413 Compliant</text>';
+    /* ═══════════════════════
+       FLOW LINES — ORTHOGONAL ONLY (ISO 1219)
+       Line weights: pressure=2px, return=1.5px, pilot=1px dash, drain=1px dash
+       ═══════════════════════ */
 
-    /* ── WRAP IN CONTAINER ── */
-    var circ = document.createElement('div');
-    circ.id = 'sdCircuit';
-    circ.style.cssText = 'margin-top:16px;';
-    circ.innerHTML =
+    /* ── SUCTION LINE: Tank → Pump (vertical up then horizontal right) ── */
+    s += path('M'+TANK_X+' '+tkY+' L'+TANK_X+' '+(RAIL_Y+pR+6)+' L'+(PUMP_X-pR-2)+' '+(RAIL_Y+pR+6)+' L'+(PUMP_X-pR-2)+' '+RAIL_Y,
+              C.line, 1.5, '', false);
+
+    /* ── PRESSURE LINE: Pump outlet → Filter ── */
+    s += path('M'+(PUMP_X+pR)+' '+RAIL_Y+' L'+(FILT_X-fR-2)+' '+RAIL_Y,
+              C.line, 2, '', true);
+
+    /* ── Filter → PRV tee (continues to DCV) ── */
+    s += path('M'+(FILT_X+fR)+' '+RAIL_Y+' L'+(PRV_X)+' '+RAIL_Y,
+              C.line, 2, '', false);
+    s += junc(PRV_X, RAIL_Y); /* T-junction dot */
+
+    /* ── PRV tee → PRV ── */
+    s += path('M'+PRV_X+' '+RAIL_Y+' L'+PRV_X+' '+(PRV_Y+prvSz/2),
+              C.relief, 1.2, '5 3', false);
+    /* PRV vent → Tank (via return rail) */
+    s += path('M'+PRV_X+' '+(PRV_Y-prvSz/2)+' L'+PRV_X+' '+(PRV_Y-40)+
+              ' L'+(TANK_X+10)+' '+(PRV_Y-40)+' L'+(TANK_X+10)+' '+tkY,
+              C.relief, 1.2, '5 3', false);
+
+    /* ── Pressure gauge tap ── */
+    s += junc(GAUGE_X, RAIL_Y);
+    s += path('M'+GAUGE_X+' '+RAIL_Y+' L'+GAUGE_X+' '+(GAUGE_Y+gR+2),
+              C.amber, 1, '3 2', false);
+
+    /* ── Accumulator tap (if selected) ── */
+    if (hasAccum) {
+      s += junc(ACCUM_X, RAIL_Y);
+      s += path('M'+ACCUM_X+' '+RAIL_Y+' L'+ACCUM_X+' '+(ACCUM_Y+accR+2),
+                C.line, 1.2, '4 3', false);
+    }
+
+    /* ── Pressure line continues: PRV tee → DCV port P ── */
+    s += path('M'+PRV_X+' '+RAIL_Y+' L'+(dcvL+dvW+22)+' '+RAIL_Y,
+              C.line, 2, '', false);
+    /* Down into DCV P port (top of centre box) */
+    s += path('M'+(dcvL+dvW+22)+' '+RAIL_Y+' L'+(dcvL+dvW+22)+' '+dcvT,
+              C.line, 2, '', false);
+    s += junc(dcvL+dvW+22, RAIL_Y);
+
+    /* ── DCV A port → Actuator port A ── */
+    var dcvA_x = dcvL + 12;
+    s += path('M'+dcvA_x+' '+(dcvT-2)+' L'+dcvA_x+' '+(RAIL_Y-60)+' L'+ACT_X+' '+(RAIL_Y-60),
+              C.line, 1.8, '', false);
+    if (isMotor) {
+      s += path('M'+ACT_X+' '+(RAIL_Y-60)+' L'+ACT_X+' '+(RAIL_Y-pR-2),
+                C.line, 1.8, '', true);
+    } else {
+      s += path('M'+ACT_X+' '+(RAIL_Y-60)+' L'+(cyX+10)+' '+(RAIL_Y-60)+' L'+(cyX+10)+' '+cyY,
+                C.line, 1.8, '', true);
+    }
+
+    /* ── DCV B port → Actuator port B ── */
+    var dcvB_x = dcvL + dvW*3 - 12;
+    if (isMotor) {
+      s += path('M'+dcvB_x+' '+(dcvT-2)+' L'+dcvB_x+' '+(RAIL_Y-80)+' L'+(ACT_X+10)+' '+(RAIL_Y-80)+' L'+(ACT_X+10)+' '+(RAIL_Y-pR-2),
+                C.ret, 1.5, '', false);
+    } else {
+      s += path('M'+dcvB_x+' '+(dcvT-2)+' L'+dcvB_x+' '+(RAIL_Y-80)+' L'+(pisX+15)+' '+(RAIL_Y-80)+' L'+(pisX+15)+' '+cyY,
+                C.ret, 1.5, '', false);
+    }
+
+    /* ── DCV T port → Return rail ── */
+    var dcvT_x = dcvL + dvW + 22;
+    s += path('M'+dcvT_x+' '+(dcvT+dvH+2)+' L'+dcvT_x+' '+RET_Y,
+              C.ret, 1.5, '', false);
+    s += junc(dcvT_x, RET_Y);
+
+    /* ── Return rail: DCV T → Cooler → Return Filter → Tank ── */
+    s += path('M'+dcvT_x+' '+RET_Y+' L'+(coolX+coolW/2+2)+' '+RET_Y,
+              C.ret, 1.5, '', false);
+    s += path('M'+(coolX-coolW/2-2)+' '+RET_Y+' L'+(rfX+rfR+2)+' '+RET_Y,
+              C.ret, 1.5, '', false);
+    s += path('M'+(rfX-rfR-2)+' '+RET_Y+' L'+(TANK_X+10)+' '+RET_Y+' L'+(TANK_X+10)+' '+tkY,
+              C.ret, 1.5, '', false);
+    s += junc(TANK_X+10, RET_Y); /* junction where drain line meets return rail */
+
+    /* ── PILOT LINE to DCV (dashed violet, from pressure rail) ── */
+    if (isLS) {
+      /* Load-sensing: pilot signal from actuator back to pump compensator */
+      var pilY = RAIL_Y + 50;
+      s += path('M'+ACT_X+' '+(RAIL_Y+ (isMotor ? pR : cyH/2))+
+                ' L'+ACT_X+' '+pilY+' L'+PUMP_X+' '+pilY+' L'+PUMP_X+' '+(RAIL_Y+pR),
+                C.pilot, 1, '6 3', false);
+      s += txt(PUMP_X + 60, pilY - 8, 'LS PILOT', C.pilot, 7,'start');
+    }
+
+    /* ═══ LINE TYPE LEGEND ═══ */
+    var legX = 16, legY = H - 76;
+    s += rect(legX, legY, W-32, 64, 'rgba(6,182,212,0.04)', 'rgba(6,182,212,0.12)', 1, 4);
+    s += txt(legX+10, legY+12, 'LINE TYPES (ISO 1219-1)', C.txt3, 8,'start','700');
+
+    var items = [
+      { x: legX+10,  col: C.line,  dash:'',     lbl:'Pressure line (main)',   sw: 2   },
+      { x: legX+160, col: C.ret,   dash:'',     lbl:'Return line',            sw: 1.5 },
+      { x: legX+310, col: C.relief,dash:'5 3',  lbl:'Relief / drain',         sw: 1.2 },
+      { x: legX+440, col: C.pilot, dash:'6 3',  lbl:'Pilot / LS signal',      sw: 1   },
+      { x: legX+600, col: C.drain, dash:'4 3',  lbl:'Case drain',             sw: 1   },
+    ];
+    items.forEach(function(it) {
+      s += line(it.x, legY+36, it.x+40, legY+36, it.col, it.sw, it.dash);
+      s += txt(it.x+48, legY+36, it.lbl, C.txt2, 8,'start');
+    });
+
+    /* ── operating parameters ── */
+    s += txt(legX+10,  legY+54, 'Q='+Q+' L/min',    C.txt3, 8,'start');
+    s += txt(legX+110, legY+54, 'P='+P+' bar',       C.txt3, 8,'start');
+    s += txt(legX+180, legY+54, 'Ppeak='+Pp+' bar',  C.txt3, 8,'start');
+    s += txt(legX+280, legY+54, 'Fluid: '+(d.fluidType||'HV46'), C.txt3, 8,'start');
+    s += txt(legX+400, legY+54, 'Circuit: '+circLabel, C.txt3, 8,'start');
+
+    /* ═══ COMPONENT REFERENCE TABLE (top-right corner) ═══ */
+    var refX = 700, refY2 = 48, refW = 185;
+    s += rect(refX, refY2, refW, 160, 'rgba(6,182,212,0.04)', 'rgba(6,182,212,0.12)', 1, 4);
+    s += txt(refX+8, refY2+12, 'COMPONENT REFERENCE', C.txt3, 8,'start','700');
+    var refs = [
+      ['T',  'Reservoir'],
+      ['P',  isVariable ? 'Variable disp. pump' : 'Fixed disp. pump'],
+      ['F',  'High-pressure filter'],
+      ['PRV','Pressure relief valve'],
+      ['PI', 'Pressure gauge'],
+      ['DCV','4/3 Prop. direct. ctrl. valve'],
+      [isMotor?'M':'CYL', isMotor?'Hydraulic motor':'Double-acting cylinder'],
+    ];
+    if (hasCBV)  refs.push(['CBV','Counterbalance valve']);
+    if (hasAccum)refs.push(['ACC','Bladder accumulator']);
+    if (hasBrake)refs.push(['BRK','Brake valve']);
+    refs.push(['HE', 'Oil cooler (heat exchanger)']);
+    refs.push(['RF', 'Return line filter']);
+    refs.forEach(function(r,i) {
+      s += txt(refX+8,  refY2+26+i*12, r[0], C.line,  8,'start','700');
+      s += txt(refX+34, refY2+26+i*12, r[1], C.txt2,  8,'start');
+    });
+
+    /* ── Wrap ── */
+    var wrap = document.createElement('div');
+    wrap.id = 'sdCircuit';
+    wrap.style.cssText = 'margin-top:16px;';
+    wrap.innerHTML =
       '<div style="background:var(--card);border:1.5px solid rgba(6,182,212,0.2);border-radius:12px;overflow:hidden;">' +
-        '<div style="background:rgba(6,182,212,.08);border-bottom:1px solid rgba(6,182,212,.15);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;">' +
-          '<div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.08em;">⚡ HYDRAULIC CIRCUIT SCHEMATIC</div>' +
-          '<span style="font-size:10px;color:#7fb3c8;font-family:var(--mono);">ISO 4413 Symbolic Representation</span>' +
+        '<div style="background:rgba(6,182,212,.06);border-bottom:1px solid rgba(6,182,212,.15);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;">' +
+          '<div style="font-family:var(--mono);font-size:11px;font-weight:700;color:#22d3ee;letter-spacing:.08em;">HYDRAULIC CIRCUIT SCHEMATIC</div>' +
+          '<span style="font-size:9px;color:#7fb3c8;font-family:var(--mono);">ISO 1219-1 · ISO 1219-2 · ISO 4413</span>' +
         '</div>' +
-        '<div style="padding:16px;overflow-x:auto;">' +
-          '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" style="max-width:' + W + 'px;display:block;margin:0 auto;">' + s + '</svg>' +
+        '<div style="padding:16px 16px 8px;overflow-x:auto;background:#080f14;">' +
+          '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;min-width:640px;">'+s+'</svg>' +
+        '</div>' +
+        '<div style="padding:6px 16px 10px;background:#080f14;">' +
+          '<p style="font-size:9.5px;color:#4a6b80;font-family:Space Mono,monospace;margin:0;">'+
+          '⚠ Schematic is symbolic per ISO 1219-1:2012. Pipe sizes, valve codes and pressure settings must be verified against OEM data sheets and ISO 4413 / DNV-ST-0378 before fabrication.</p>' +
         '</div>' +
       '</div>';
 
     var result = document.getElementById('sdResult');
-    if (result) result.parentNode.insertBefore(circ, result);
-    circ.scrollIntoView({ behavior: 'smooth' });
+    if (result) result.parentNode.insertBefore(wrap, result);
+    else {
+      var main = document.querySelector('main.hm-page');
+      if (main) main.appendChild(wrap);
+    }
+    wrap.scrollIntoView({ behavior: 'smooth' });
   }
 
-  /* ═══ TOAST ═══ */
-  function showToast(msg) {
+    /* ═══ TOAST ═══ */
+    function showToast(msg) {
     var t = document.getElementById('hmToast');
     if (!t) {
       t = document.createElement('div');
