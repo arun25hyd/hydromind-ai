@@ -1,7 +1,7 @@
 ---
 name: session-skill
-version: v3.0
-date: 2026-05-01
+version: v4.1
+date: 2026-06-05
 description: >
   Session orientation skill for Claude working on the HydroMind AI project with Arun
   (Crane Supervisor / Hydraulic Systems Specialist, EnerMech, Abu Dhabi).
@@ -10,7 +10,7 @@ description: >
   Android app build, page redesign, or backend change.
 ---
 
-# Claude Session Skill — HydroMind AI Project v3.0
+# Claude Session Skill — HydroMind AI Project v4.0
 
 ---
 
@@ -61,32 +61,83 @@ NEVER patch a patch — restore from clean Downloads source if broken.
 | 13 | Re-doing tasks Arun confirmed with 👍 | If Arun said 👍 — never touch it again |
 | 14 | Long preamble before acting | Act first, brief explanation after |
 | 15 | Adding new CSS without checking existing classes | grep existing CSS before writing new rules |
+| 16 | Using display:grid on .diag-shell with flex:1 | Use display:flex + explicit widths on children |
+| 17 | Not overriding hm-design.css body padding on shell pages | Shell pages MUST override body padding-left/right:0!important |
+| 18 | Leaving hm-sidebar-left/right visible on full-height pages | Add display:none!important on shell pages with own panels |
+| 19 | system_design.html sending wrong fetch payload | Always send `{ messages: [{role,content}] }` — never `{ message, systemContext }` |
+| 20 | XHR timeout 35s on Render backend | Render cold start = 50–70s — always set XHR timeout to 90s |
+| 21 | No client-side keep-alive on chat pages | Every chat page MUST have 8-min XHR GET ping to backend root |
+| 22 | Frontend/backend API contract drift after backend hardening | When validateChatRequest changes — audit ALL pages that call /api/chat |
+| 23 | Not updating CLAUDE.md, SKILL.md, memory at session end | MANDATORY — Arun's standing rule — always update all three before closing |
 
 ---
 
-## RULE 3 — PROJECT STATE (May 1, 2026)
+## RULE 3 — PROJECT STATE (June 1, 2026)
 
 ### Platform URLs
 | Service | URL |
 |---|---|
 | Frontend (live) | https://hydromindai.com |
 | Backend | https://hydromind-backend.onrender.com |
+| Backend API chat | https://hydromind-backend.onrender.com/api/chat |
 | Supabase | frqefpoheewbornozvhc |
+| Android App | https://play.google.com/store/apps/details?id=com.hydromind.app |
 
-### Mac File Paths (EXACT)
+### Mac File Paths (EXACT — Jun 2026)
 | Item | Path |
 |---|---|
-| Frontend root | /Users/admin/Desktop/HydroMind-Platform/web-frontend |
-| Backend root | /Users/admin/Desktop/HydroMind-Platform/backend |
-| Android app | /Users/admin/HydroMind-Platform/android-app |
-| Skills root | /Users/admin/Desktop/HydroMind-Platform/web-frontend/skills |
-| Session skill | /Users/admin/Desktop/HydroMind-Platform/web-frontend/skills/claude-session-skill/SKILL.md |
+| Web root | /Users/Apple/Documents/HydroMind-Website/Web |
+| Backend root | /Users/Apple/Documents/HydroMind-Website/Backend |
+| Android app | /Users/Apple/Documents/HydroMind-Platform/android-app |
+| CSS design system | /Users/Apple/Documents/HydroMind-Website/Web/css/hm-design.css |
+| Auth JS | /Users/Apple/Documents/HydroMind-Website/Web/js/auth.js |
+| Session skill | /Users/Apple/Documents/HydroMind-Website/Web/skills/claude-session-skill/SKILL.md |
 
 ### Git Remotes
 | Repo | Remote |
 |---|---|
 | Frontend (Vercel) | arun25hyd/hydromind-ai |
 | Backend (Render) | arun25hyd/hydromind-backend |
+
+### Design System — v4.0 DARK TEAL THEME
+| Token | Value |
+|---|---|
+| Background | #080f14 |
+| Surface | #0d1720 |
+| Card | #111d2a |
+| Accent | #06b6d4 (teal) |
+| Accent bright | #22d3ee |
+| Text primary | #e2f0f5 |
+| Text secondary | #7fb3c8 |
+| Success | #10b981 |
+| Warning | #f59e0b |
+| Danger | #ef4444 |
+| Nav height | 60px (--nav-h) |
+| Sidebar width | 140px (--sb-w) |
+| Fonts | Inter + Space Mono + Syne 800 |
+| CSS file | css/hm-design.css v4.0 (923 lines) |
+
+### Page Status — Web v2.0 Rebuild (updated June 05 2026)
+| Page | Status | Notes |
+|---|---|---|
+| hm-design.css | ✅ DONE | Dark teal v4.0 |
+| auth.js | ✅ DONE | Dark modal fixed |
+| index.html | ✅ DONE | Hero, stats, features, calc, app banner, QR |
+| crane_diagnostic.html | ✅ DONE | 3-col, PLC bar, 8 cranes — chatHistory fix + 90s timeout + keep-alive added Jun 5 |
+| system_design.html | ✅ DONE | fetch payload fixed (messages array), response parser fixed Jun 5 |
+| ai_advisor.html | ⚠ VERIFY | var history clash fixed in earlier session — confirm keep-alive present |
+| knowledge_base.html | ⏳ PENDING | Needs audit |
+| pricing.html | ⏳ PENDING | Left sidebar grid fix needed |
+| pages/feedback.html | ⏳ PENDING | Left sidebar grid fix needed |
+
+### Android App Status
+| Item | Value |
+|---|---|
+| Version | v1.0.39 (versionCode 43) |
+| Next versionCode | 44 |
+| Installs | 6 |
+| Countries | 177 |
+| Known issue | Deprecated edge-to-edge API (Expo SDK 54) — defer to SDK 55 |
 
 ### Clean Source HTML Files in Downloads (RESTORE FROM HERE IF PAGE BROKEN)
 | Deployed name | Downloads source |
@@ -360,6 +411,8 @@ If ANY is NO — stop and fix first.
 | v2.0 | 2026-04-19 | KB71-86, hero v2, advisor 8 modes, Android versionCode 35 |
 | v3.0 | 2026-05-01 | CRITICAL UPDATE: shell layout rules, safe nav template, browser verify mandatory, May 1 site state, full mistake registry from today's failures |
 | v3.1 | 2026-05-03 | KB87–KB90 added: ISO 4413, Rexroth VT-VRPA2, VT-VRPA1, Palfinger PK10000 |
+| v4.0 | 2026-06-01 | Full redesign to dark teal v4.0, new page structure rules, sidebar rules |
+| v4.1 | 2026-06-05 | Added mistakes #19–23: wrong fetch payload, 35s timeout, no keep-alive, API drift, mandatory session-end file updates. Page status table updated. Session log started. |
 
 ---
 

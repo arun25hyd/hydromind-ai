@@ -1,5 +1,5 @@
-# CLAUDE.md — HydroMind AI | Master System Protocol v3.0
-# STATUS: ONLINE | PRECISION MODE: ACTIVE | Last updated: May 30 2026
+# CLAUDE.md — HydroMind AI | Master System Protocol v3.1
+# STATUS: ONLINE | PRECISION MODE: ACTIVE | Last updated: June 05 2026
 # READ THIS FIRST. Every session. No exceptions.
 
 ---
@@ -183,6 +183,12 @@ Files: index.html, knowledge_base.html, pricing.html, privacy.html, disclaimer.h
 | 14 | `bash_tool` for Mac filesystem operations | Desktop Commander MCP only for Mac files |
 | 15 | Bulk Python regex on HTML — damages structure | Surgical targeted replacements only |
 | 16 | Claiming confirmed ✅ tasks need re-doing | Never redo Arun-confirmed tasks |
+| 17 | Using `var history = []` as a variable name | Shadows window.history — always use `chatHistory` or `msgHistory` |
+| 18 | system_design fetch sending `{ message, systemContext }` | Backend requires `{ messages: [...] }` array — always match validateChatRequest |
+| 19 | XHR timeout set to 35s | Render cold start = 50–70s — always set timeout to 90s minimum |
+| 20 | No client-side keep-alive on chat pages | Add 8-min XHR ping to backend root on every page with AI chat |
+| 21 | Frontend/backend API contract drift | When backend security is hardened, update ALL frontend pages — not just the one being worked on |
+| 22 | Not updating CLAUDE.md / SKILL.md / memory after session | MANDATORY end-of-session update — Arun's standing instruction |
 
 ---
 
@@ -244,7 +250,11 @@ If page looks wrong:
 
 ---
 
-## ▶ SECTION 9 — APP BANNER PLACEMENT (v2.0 rule)
+## ▶ SECTION 10 — SESSION LOG (append after every session)
+
+| Date | What Was Done | Files Changed | Bugs Fixed |
+|---|---|---|---|
+| 2026-06-05 | Fixed `var history` clash in crane_diagnostic.html — renamed to `chatHistory` (6 replacements). Fixed system_design.html 400 error — wrong fetch payload `{message}` → correct `{messages:[]}` array. Fixed response parser `data.content[0].text`. Increased XHR timeout 35s→90s. Added client-side keep-alive ping (8 min) to crane_diagnostic.html. | crane_diagnostic.html, system_design.html | history.push crash, Backend 400, timeout too short, no keep-alive |
 
 - Homepage hero section: YES — with QR code, app description, Google Play link
 - Pricing page: YES — CTA section at bottom only
