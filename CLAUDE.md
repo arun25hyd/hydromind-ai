@@ -195,6 +195,10 @@ Files: index.html, knowledge_base.html, pricing.html, privacy.html, disclaimer.h
 | 26 | Diagonal flow lines in hydraulic schematic | ISO 1219 — ALL lines orthogonal (90° only). No diagonal routing ever |
 | 27 | Circuit not verified against ISO 1219-1 symbols before coding | MANDATORY: check pump/motor/filter/DCV/PRV/cylinder symbols against ISO 1219-1 before writing SVG |
 | 28 | Shipping circuit diagram without self-audit checklist | Run the CIRCUIT DIAGRAM CHECKLIST (Section 11) before every push |
+| 29 | PRV inlet/drain reversed — inlet at top, drain at bottom | ISO 1219-1: INLET=BOTTOM (pressure from rail taps DOWN into PRV_BOT_Y). DRAIN=TOP (exits upward to return/tank via PRV_TOP_Y) |
+| 30 | Motor ports A & B both connecting to top of motor circle | Port A = LEFT side (ACT_X-mR). Port B = RIGHT side (ACT_X+mR). Never use RAIL_Y-mR for both |
+| 31 | Return rail not dropping to tank — offset mismatch | Return rail must drop to TANK_X (not TANK_X+12). Use exact centre of reservoir symbol |
+| 32 | Claiming circuit is correct without live browser verification | NEVER. Browser screenshot of generated circuit = only proof. Verify EVERY fix before saying it is done |
 
 ---
 
@@ -371,19 +375,28 @@ Legend bar: bottom 82px of canvas
 □ Motor triangle pointing INTO circle — opposite to pump
 □ Filter has hatching lines inside circle (not a rectangle)
 □ PRV body is BELOW pressure rail — not above
-□ PRV vent routes DOWN to return rail, not UP over the top of diagram
+□ PRV INLET = BOTTOM of box (rail taps DOWN to PRV_BOT_Y)
+□ PRV DRAIN = TOP of box (exits upward via PRV_TOP_Y to return rail then tank)
+□ PRV spring is on DRAIN side (above box top, between box and fixed seat line)
+□ PRV arrow points FROM bottom (inlet) TOWARD top (drain) — upward
+□ PRV vent routes DOWN from rail to PRV_BOT_Y, then from PRV_TOP_Y to return rail
 □ DCV has THREE separate boxes (not one box with dividers)
 □ DCV P port enters TOP CENTRE of middle box (DCV_P_X = DCV_X)
 □ DCV T port exits BOTTOM CENTRE of middle box (DCV_T_X = DCV_P_X)
 □ DCV A exits LEFT EDGE of left box
 □ DCV B exits RIGHT EDGE of right box
+□ Motor port A connects to LEFT side of motor circle (ACT_X-mR, RAIL_Y)
+□ Motor port B connects to RIGHT side of motor circle (ACT_X+mR, RAIL_Y)
+□ Cylinder port A connects to cap-end port stub, port B to rod-end port stub
 □ ALL flow lines are orthogonal — zero diagonal lines
 □ T-junction dots at every branch point
 □ No component body has a line passing through it
 □ Return path goes: Actuator → DCV T → Cooler → RTN Filter → Tank
+□ Return rail drops to TANK_X (exact centre) not TANK_X+offset
 □ All component positions are named constants
 □ No magic number arithmetic in flow line paths
 □ Canvas wide enough — components not cramped (W=1000 minimum)
+□ BROWSER SCREENSHOT TAKEN AND VERIFIED — no exceptions
 ```
 
 - Homepage hero section: YES — with QR code, app description, Google Play link
