@@ -1269,504 +1269,575 @@
     var hasBrake   = (d.brakeReq || '').toLowerCase() === 'yes';
     var isMotor    = (d.actType  || '').toLowerCase().indexOf('motor') > -1 ||
                      (d.actPref  || '').toLowerCase().indexOf('motor') > -1;
-    var Q  = d.flowRate  || '—';
-    var P  = d.workPress || '—';
-    var Pp = d.peakPress || '—';
+    var Q  = d.flowRate  || '\u2014';
+    var P  = d.workPress || '\u2014';
+    var Pp = d.peakPress || '\u2014';
 
-    /* ── Canvas ── */
-    var W = 900, H = 600;
+    /* ================================================================
+       CANVAS & COLOUR
+       ================================================================ */
+    var W = 1000, H = 640;
     var s = '';
 
-    /* ── Colour palette (HydroMind dark teal) ── */
     var C = {
-      bg:      '#080f14',
-      line:    '#06b6d4',   /* pressure lines */
-      ret:     '#0e7490',   /* return lines — darker teal */
-      drain:   '#164e63',   /* drain / case drain */
-      pilot:   '#a78bfa',   /* pilot lines — violet per ISO 1219 */
-      relief:  '#ef4444',   /* relief valve */
-      amber:   '#f59e0b',   /* solenoid / instrument */
-      green:   '#10b981',   /* CBV */
-      txt1:    '#e2f0f5',
-      txt2:    '#7fb3c8',
-      txt3:    '#4a6b80',
-      border:  'rgba(6,182,212,0.25)',
-      fill_c:  'rgba(6,182,212,0.07)',
-      fill_r:  'rgba(239,68,68,0.08)',
+      bg:     '#080f14',
+      pres:   '#06b6d4',   /* pressure lines  — 2px solid   */
+      ret:    '#0e7490',   /* return lines    — 1.5px solid  */
+      drain:  '#164e63',   /* case drain      — 1px dash     */
+      pilot:  '#a78bfa',   /* pilot/LS signal — 1px dash     */
+      relief: '#ef4444',   /* relief valve / drain — 1.2px dash */
+      amber:  '#f59e0b',   /* instruments / solenoids        */
+      green:  '#10b981',   /* CBV                            */
+      txt1:   '#e2f0f5',
+      txt2:   '#7fb3c8',
+      txt3:   '#4a6b80',
+      fc:     'rgba(6,182,212,0.07)',
+      fr:     'rgba(239,68,68,0.08)'
     };
 
-    /* ── SVG helpers ── */
-    function rect(x,y,w,h,fill,stroke,sw,rx) {
+    /* ── helpers ── */
+    function R(x,y,w,h,fill,stk,sw,rx){
       return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'"'+
-             (rx?' rx="'+rx+'"':'')+
-             ' fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+(sw||1.5)+'"/>';
+             (rx?' rx="'+rx+'"':'')+' fill="'+fill+'" stroke="'+stk+
+             '" stroke-width="'+(sw||1.5)+'"/>';
     }
-    function line(x1,y1,x2,y2,col,sw,dash) {
-      return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'"'+
-             ' stroke="'+col+'" stroke-width="'+(sw||1.5)+'"'+
-             (dash?' stroke-dasharray="'+dash+'"':'')+
-             ' fill="none"/>';
+    function L(x1,y1,x2,y2,col,sw,dash){
+      return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+
+             '" stroke="'+col+'" stroke-width="'+(sw||1.5)+'"'+
+             (dash?' stroke-dasharray="'+dash+'"':'')+' fill="none"/>';
     }
-    function path(d2,col,sw,dash,marker) {
-      return '<path d="'+d2+'" stroke="'+col+'" stroke-width="'+(sw||1.5)+'"'+
-             ' fill="none"'+(dash?' stroke-dasharray="'+dash+'"':'')+
-             (marker?' marker-end="url(#mArr)"':'')+'/>';
+    function PH(d2,col,sw,dash,arr){
+      return '<path d="'+d2+'" stroke="'+col+'" stroke-width="'+(sw||1.5)+
+             '" fill="none"'+(dash?' stroke-dasharray="'+dash+'"':'')+
+             (arr?' marker-end="url(#A)"':'')+'/>';
     }
-    function circle(cx,cy,r,fill,stroke,sw) {
-      return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+(sw||1.5)+'"/>';
+    function CI(cx,cy,r,fill,stk,sw){
+      return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+fill+
+             '" stroke="'+stk+'" stroke-width="'+(sw||1.5)+'"/>';
     }
-    function txt(x,y,t,fill,fs,anchor,weight) {
-      return '<text x="'+x+'" y="'+y+'"'+
-             ' font-family="Space Mono,monospace" font-size="'+(fs||10)+'"'+
-             ' fill="'+fill+'" text-anchor="'+(anchor||'middle')+'"'+
-             (weight?' font-weight="'+weight+'"':'')+
+    function TX(x,y,t,fill,fs,anc,wt){
+      return '<text x="'+x+'" y="'+y+'" font-family="Space Mono,monospace"'+
+             ' font-size="'+(fs||9)+'" fill="'+fill+
+             '" text-anchor="'+(anc||'middle')+'"'+
+             (wt?' font-weight="'+wt+'"':'')+
              ' dominant-baseline="central">'+t+'</text>';
     }
-    function junc(x,y) { /* T-junction dot per ISO 1219 */
-      return circle(x,y,3.5,C.line,C.line,0);
-    }
+    function JD(x,y){ return CI(x,y,3.5,C.pres,C.pres,0); } /* junction dot */
 
-    /* ═══ DEFS ═══ */
+    /* ================================================================
+       NAMED COORDINATE CONSTANTS
+       All port positions are derived from component centre + geometry.
+       Nothing is hardcoded in the flow-line section.
+       ================================================================
+
+       LAYOUT (horizontal pressure rail at RAIL_Y = 300):
+
+         TANK    PUMP    FILTER   DCV    ACT
+         x=80    x=200   x=360    x=560  x=790
+
+       PRV branches DOWN from pressure rail at PRV_TEE_X = 460
+       PRV body sits BELOW rail at PRV_CY = 390
+       PRV drain continues further down to RET_Y
+
+       RETURN RAIL at RET_Y = 480
+       COOLER  at coolX = 280
+       RTN FILTER at rfX = 160
+
+       ================================================================ */
+
+    var RAIL_Y  = 300;
+    var RET_Y   = 480;
+    var TANK_X  = 80;
+    var PUMP_X  = 200;
+    var FILT_X  = 360;
+    var DCV_X   = 560;
+    var ACT_X   = 790;
+
+    /* ── reservoir ── */
+    var tkY    = 530;
+    var tkHalf = 36;
+    /* connection point: top centre */
+    var TK_TOP_X = TANK_X;
+    var TK_TOP_Y = tkY;
+
+    /* ── pump ── */
+    var pR = 22;
+    /* ports: inlet = left side, outlet = right side, shaft = bottom */
+    var PMP_IN_X  = PUMP_X - pR;
+    var PMP_OUT_X = PUMP_X + pR;
+    var PMP_Y     = RAIL_Y;
+
+    /* ── filter ── */
+    var fR = 14;
+    var FLT_IN_X  = FILT_X - fR;
+    var FLT_OUT_X = FILT_X + fR;
+    var FLT_Y     = RAIL_Y;
+
+    /* ── PRV — below pressure rail ── */
+    var PRV_SZ    = 20;
+    var PRV_TEE_X = 460;   /* where pressure line branches down to PRV */
+    var PRV_CY    = 390;   /* PRV body centre Y — below rail */
+    var PRV_TOP_Y = PRV_CY - PRV_SZ/2;   /* PRV inlet (from rail) */
+    var PRV_BOT_Y = PRV_CY + PRV_SZ/2;   /* PRV outlet (to tank/return) */
+
+    /* ── pressure gauge (above rail) ── */
+    var gR       = 10;
+    var GAUGE_X  = 420;
+    var GAUGE_Y  = 230;
+
+    /* ── DCV — 4/3, three boxes, each dvW wide ── */
+    var dvW = 46, dvH = 48;
+    var dcvL  = DCV_X - dvW * 1.5;   /* x of left edge of left box  */
+    var dcvR  = DCV_X + dvW * 1.5;   /* x of right edge of right box */
+    var dcvT  = RAIL_Y - dvH / 2;    /* y of top of all boxes        */
+    var dcvB  = RAIL_Y + dvH / 2;    /* y of bottom of all boxes     */
+
+    /* Port centres — NAMED EXPLICITLY */
+    /* P port = centre of centre-box top edge */
+    var DCV_P_X = dcvL + dvW + dvW/2;  /* = DCV_X */
+    var DCV_P_Y = dcvT;
+    /* T port = centre of centre-box bottom edge */
+    var DCV_T_X = DCV_P_X;            /* same X as P */
+    var DCV_T_Y = dcvB;
+    /* A port = centre of left box, left edge (goes to actuator cap end) */
+    var DCV_A_X = dcvL;
+    var DCV_A_Y = RAIL_Y;
+    /* B port = centre of right box, right edge (goes to actuator rod end) */
+    var DCV_B_X = dcvR;
+    var DCV_B_Y = RAIL_Y;
+
+    /* ── actuator ── */
+    var cyW = 80, cyH = 44;
+    var cyX = ACT_X;
+    var cyY = RAIL_Y - cyH/2;
+    var mR  = 24;
+    /* cylinder port A = cap end top, port B = rod-side top */
+    var pisX     = cyX + Math.round(cyW * 0.42);
+    var CYL_A_X  = cyX + 10;
+    var CYL_A_Y  = cyY;
+    var CYL_B_X  = pisX + 12;
+    var CYL_B_Y  = cyY;
+    /* motor ports */
+    var MOT_A_Y  = RAIL_Y - mR;   /* top of motor circle */
+    var MOT_B_Y  = RAIL_Y - mR;
+
+    /* ── cooler ── */
+    var coolX = 280, coolY = RET_Y, coolW = 38, coolH = 26;
+
+    /* ── return filter ── */
+    var rfX = 158, rfR = 12;
+
+    /* ── accumulator ── */
+    var ACCUM_X = 700, ACCUM_Y = 230, accR = 16;
+
+    /* ================================================================
+       DEFS
+       ================================================================ */
     s += '<defs>';
-    /* Arrowhead — filled triangle for pressure lines */
-    s += '<marker id="mArr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">' +
-         '<polygon points="0,0 8,3 0,6" fill="'+C.line+'"/></marker>';
-    /* Return line arrowhead — darker */
-    s += '<marker id="mRet" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">' +
+    s += '<marker id="A" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">'+
+         '<polygon points="0,0 8,3 0,6" fill="'+C.pres+'"/></marker>';
+    s += '<marker id="AR" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">'+
          '<polygon points="0,0 8,3 0,6" fill="'+C.ret+'"/></marker>';
-    /* Pilot arrowhead */
-    s += '<marker id="mPil" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">' +
-         '<polygon points="0,0 8,3 0,6" fill="'+C.pilot+'"/></marker>';
     s += '</defs>';
 
-    /* ── Background ── */
-    s += rect(0,0,W,H,C.bg,'none',0,10);
-
-    /* ── Title bar ── */
-    s += rect(0,0,W,40,'rgba(6,182,212,0.07)','rgba(6,182,212,0.2)',1,0);
+    /* ================================================================
+       BACKGROUND + TITLE
+       ================================================================ */
+    s += R(0,0,W,H,C.bg,'none',0,10);
+    s += R(0,0,W,42,'rgba(6,182,212,0.07)','rgba(6,182,212,0.18)',1,0);
     var circLabel = isClosed ? 'CLOSED-LOOP HYDROSTATIC CIRCUIT' :
                    (isLS    ? 'OPEN-LOOP LOAD-SENSING CIRCUIT'   :
                                'OPEN-LOOP FIXED-DISPLACEMENT CIRCUIT');
-    s += txt(16,20, circLabel, C.line, 11, 'start', '700');
-    s += txt(W-16,20,'ISO 1219-1 · ISO 4413 · HydroMind.AI', C.txt3, 9, 'end');
+    s += TX(16, 21, circLabel, C.pres, 11, 'start', '700');
+    s += TX(W-16, 21, 'ISO 1219-1 \u00b7 ISO 4413 \u00b7 HydroMind.AI', C.txt3, 9, 'end');
 
-    /* ════════════════════════════════════════════════════════
-       COMPONENT GRID (all positions in px, orthogonal routing)
-       Layout (left→right along pressure rail Y=280):
-         Tank(80)  Pump(200)  Filter(340)  DCV(500)  Actuator(680)
-       PRV drops from pressure rail at X=420 down to Y=460
-       Cooler on return rail at X=340, Y=420
-       Return rail Y=420 runs right-to-left back to tank
-       ════════════════════════════════════════════════════════ */
+    /* ================================================================
+       1. RESERVOIR
+       ISO 1219-1 \u00a76.1 \u2014 open top rectangular tank symbol
+       ================================================================ */
+    s += L(TANK_X-tkHalf, tkY,    TANK_X+tkHalf, tkY,    C.pres, 2);
+    s += L(TANK_X-tkHalf, tkY+20, TANK_X+tkHalf, tkY+20, C.pres, 2);
+    s += L(TANK_X-tkHalf, tkY,    TANK_X-tkHalf, tkY+20, C.pres, 2);
+    s += L(TANK_X+tkHalf, tkY,    TANK_X+tkHalf, tkY+20, C.pres, 2);
+    s += R(TANK_X-tkHalf+1, tkY+1, tkHalf*2-2, 18, 'rgba(6,182,212,0.12)', 'none', 0);
+    s += TX(TANK_X, tkY+34, 'T',          C.txt2, 9, 'middle', '700');
+    s += TX(TANK_X, tkY+46, 'RESERVOIR',  C.txt3, 8);
+    s += TX(TANK_X, tkY+57, Q+' L/min',   C.txt3, 8);
 
-    /* ── Coordinate constants ── */
-    var RAIL_Y   = 280;   /* main pressure rail Y */
-    var RET_Y    = 420;   /* return rail Y */
-    var TANK_X   = 80;    /* tank centre X */
-    var PUMP_X   = 200;   /* pump centre X */
-    var FILT_X   = 340;   /* filter centre X */
-    var PRV_X    = 440;   /* PRV tee-off X */
-    var DCV_X    = 500;   /* DCV centre X */
-    var ACT_X    = 680;   /* actuator centre X */
-    var PRV_Y    = 160;   /* PRV sits above pressure rail */
-    var GAUGE_X  = 390;   /* pressure gauge tee X */
-    var GAUGE_Y  = 200;   /* gauge Y (above rail) */
-    var ACCUM_X  = 580;   /* accumulator tee X */
-    var ACCUM_Y  = 200;
-
-    /* ═══════════════════════
-       ISO 1219 COMPONENT SYMBOLS
-       ═══════════════════════ */
-
-    /* ── 1. RESERVOIR (ISO 1219-1 §6.1) ──
-       Two horizontal parallel lines with vertical end caps
-       Open top reservoir symbol */
-    var tkY = 500, tkHalf = 35;
-    /* outer lines */
-    s += line(TANK_X-tkHalf, tkY,      TANK_X+tkHalf, tkY,      C.line, 2);
-    s += line(TANK_X-tkHalf, tkY+18,   TANK_X+tkHalf, tkY+18,   C.line, 2);
-    /* end caps */
-    s += line(TANK_X-tkHalf, tkY,      TANK_X-tkHalf, tkY+18,   C.line, 2);
-    s += line(TANK_X+tkHalf, tkY,      TANK_X+tkHalf, tkY+18,   C.line, 2);
-    /* fluid fill rect */
-    s += rect(TANK_X-tkHalf+1, tkY+1, tkHalf*2-2, 16, 'rgba(6,182,212,0.12)', 'none', 0);
-    /* tag */
-    s += txt(TANK_X,    tkY+32,  'T', C.txt2, 9,'middle','700');
-    s += txt(TANK_X,    tkY+44,  'RESERVOIR', C.txt3, 8);
-    s += txt(TANK_X,    tkY+56,  Q+' L/min', C.txt3, 8);
-
-    /* ── 2. FIXED/VARIABLE DISPLACEMENT PUMP (ISO 1219-1 §6.3.1 / §6.3.2) ──
-       Circle with ONE filled triangle pointing in direction of flow (outlet)
-       Triangle apex points to RIGHT (outlet direction)
-       For variable: diagonal arrow through circle */
-    var pR = 22;
-    s += circle(PUMP_X, RAIL_Y, pR, C.fill_c, C.line, 2);
-    /* Triangle: inlet left, outlet right — apex points right (ISO 1219-1 pump) */
-    s += '<polygon points="'+
-         (PUMP_X-11)+','+(RAIL_Y+11)+' '+
-         (PUMP_X-11)+','+(RAIL_Y-11)+' '+
-         (PUMP_X+13)+','+RAIL_Y+
-         '" fill="'+C.line+'" opacity="0.85"/>';
+    /* ================================================================
+       2. PUMP
+       ISO 1219-1 \u00a76.3.1 fixed / \u00a76.3.2 variable
+       Circle, triangle apex pointing right (outlet direction)
+       ================================================================ */
+    s += CI(PUMP_X, PMP_Y, pR, C.fc, C.pres, 2);
+    s += '<polygon points="'+(PUMP_X-12)+','+(PMP_Y+12)+' '+
+         (PUMP_X-12)+','+(PMP_Y-12)+' '+(PUMP_X+14)+','+PMP_Y+
+         '" fill="'+C.pres+'" opacity="0.9"/>';
     if (isVariable) {
-      /* Variable displacement arrow — 45° diagonal through circle */
-      s += '<line x1="'+(PUMP_X-18)+'" y1="'+(RAIL_Y+14)+'" x2="'+(PUMP_X+18)+'" y2="'+(RAIL_Y-14)+
-           '" stroke="'+C.txt1+'" stroke-width="1.8" marker-end="url(#mArr)"/>';
+      s += L(PUMP_X-18, PMP_Y+14, PUMP_X+18, PMP_Y-14, C.txt1, 1.8);
+      s += '<polygon points="'+(PUMP_X+14)+','+(PMP_Y-14)+' '+(PUMP_X+20)+','+(PMP_Y-18)+' '+(PUMP_X+18)+','+(PMP_Y-10)+
+           '" fill="'+C.txt1+'"/>';
     }
-    /* Shaft line (drive input, bottom) */
-    s += line(PUMP_X, RAIL_Y+pR, PUMP_X, RAIL_Y+pR+20, C.txt2, 2.5);
-    s += txt(PUMP_X, RAIL_Y+pR+34, 'P',                C.txt2,  9,'middle','700');
-    s += txt(PUMP_X, RAIL_Y+pR+46, isVariable?'VAR PUMP':'FIXED PUMP', C.txt3, 8);
-    s += txt(PUMP_X, RAIL_Y+pR+57, P+' bar', C.txt3, 8);
+    /* drive shaft stub */
+    s += L(PUMP_X, PMP_Y+pR, PUMP_X, PMP_Y+pR+22, C.txt2, 2.5);
+    s += TX(PUMP_X, PMP_Y+pR+34, 'P',                    C.txt2, 9, 'middle', '700');
+    s += TX(PUMP_X, PMP_Y+pR+46, isVariable?'VAR PUMP':'FIXED PUMP', C.txt3, 8);
+    s += TX(PUMP_X, PMP_Y+pR+57, P+' bar',               C.txt3, 8);
 
-    /* ── 3. HIGH-PRESSURE FILTER (ISO 1219-1 §6.10.1) ──
-       Circle with diagonal hatching lines inside = filter element */
-    var fR = 14;
-    s += circle(FILT_X, RAIL_Y, fR, C.fill_c, C.line, 1.5);
-    /* ISO filter: diagonal lines inside circle */
-    s += '<clipPath id="fcl"><circle cx="'+FILT_X+'" cy="'+RAIL_Y+'" r="'+(fR-1)+'"/></clipPath>';
-    for (var fi = -20; fi <= 20; fi += 5) {
-      s += '<line x1="'+(FILT_X+fi-10)+'" y1="'+(RAIL_Y-14)+'" x2="'+(FILT_X+fi+10)+'" y2="'+(RAIL_Y+14)+
-           '" stroke="'+C.line+'" stroke-width="0.8" clip-path="url(#fcl)" opacity="0.6"/>';
+    /* ================================================================
+       3. HIGH-PRESSURE FILTER
+       ISO 1219-1 \u00a76.10.1 \u2014 circle with hatching
+       ================================================================ */
+    s += CI(FILT_X, FLT_Y, fR, C.fc, C.pres, 1.5);
+    s += '<clipPath id="fclH"><circle cx="'+FILT_X+'" cy="'+FLT_Y+'" r="'+(fR-1)+'"/></clipPath>';
+    for (var fi=-18; fi<=18; fi+=5){
+      s += L(FILT_X+fi-10, FLT_Y-fR, FILT_X+fi+10, FLT_Y+fR, C.pres, 0.8)+' clip-path="url(#fclH)" opacity="0.55">';
+      /* rebuild manually — clip-path needs to be inside line tag */
     }
-    /* DP indicator arrow (top) */
-    s += line(FILT_X, RAIL_Y-fR, FILT_X, RAIL_Y-fR-12, C.amber, 1.2);
-    s += '<polygon points="'+(FILT_X-4)+','+(RAIL_Y-fR-12)+' '+(FILT_X+4)+','+(RAIL_Y-fR-12)+' '+FILT_X+','+(RAIL_Y-fR-20)+
-         '" fill="'+C.amber+'" opacity="0.8"/>';
-    s += txt(FILT_X, RAIL_Y+fR+12, 'F', C.txt2, 9,'middle','700');
-    s += txt(FILT_X, RAIL_Y+fR+23, 'H.P. FILTER', C.txt3, 8);
+    /* redraw with clip using <line> elements that include clip-path */
+    s = s.replace(/ clip-path="url\(#fclH\)" opacity="0\.55">/g,'');
+    s += '<g clip-path="url(#fclH)">';
+    for (var fi=-18; fi<=18; fi+=5){
+      s += L(FILT_X+fi-10, FLT_Y-fR, FILT_X+fi+10, FLT_Y+fR, C.pres, 0.8);
+    }
+    s += '</g>';
+    /* DP indicator */
+    s += L(FILT_X, FLT_Y-fR, FILT_X, FLT_Y-fR-14, C.amber, 1.2);
+    s += '<polygon points="'+(FILT_X-4)+','+(FLT_Y-fR-14)+' '+(FILT_X+4)+','+(FLT_Y-fR-14)+' '+FILT_X+','+(FLT_Y-fR-21)+'" fill="'+C.amber+'" opacity="0.85"/>';
+    s += TX(FILT_X, FLT_Y+fR+13, 'F',          C.txt2, 9, 'middle', '700');
+    s += TX(FILT_X, FLT_Y+fR+24, 'H.P. FILTER',C.txt3, 8);
 
-    /* ── 4. PRESSURE RELIEF VALVE (ISO 1219-1 §6.5.1) ──
-       Square with internal arrow and spring; vents to tank
-       Position: tee off pressure rail, above rail */
-    var prvSz = 18;
-    s += rect(PRV_X-prvSz/2, PRV_Y-prvSz/2, prvSz, prvSz, C.fill_r, C.relief, 1.5);
-    /* Internal arrow (pressure acts upward = normally closed) */
-    s += line(PRV_X, PRV_Y+5, PRV_X, PRV_Y-3, C.relief, 1.5);
-    s += '<polygon points="'+(PRV_X-3)+','+(PRV_Y-3)+' '+(PRV_X+3)+','+(PRV_Y-3)+' '+PRV_X+','+(PRV_Y-8)+
-         '" fill="'+C.relief+'"/>';
-    /* Spring symbol (3 zigzag lines above box) */
-    var szY = PRV_Y - prvSz/2 - 18;
-    s += '<polyline points="'+PRV_X+','+(PRV_Y-prvSz/2)+' '+(PRV_X-4)+','+(szY+14)+' '+(PRV_X+4)+','+(szY+10)+' '+(PRV_X-4)+','+(szY+6)+' '+PRV_X+','+szY+
-         '" stroke="'+C.relief+'" stroke-width="1.2" fill="none"/>';
-    s += txt(PRV_X+14, PRV_Y,      'PRV',         C.relief, 8, 'start','700');
-    s += txt(PRV_X+14, PRV_Y+12,   Pp+' bar',     C.txt3,   8, 'start');
-    s += txt(PRV_X+14, PRV_Y-20,   'SPRING-BIAS', C.txt3,   7, 'start');
+    /* ================================================================
+       4. PRESSURE RELIEF VALVE
+       ISO 1219-1 \u00a76.5.1 \u2014 square body + spring above + drain below
+       POSITION: tee off at PRV_TEE_X on rail, body BELOW rail at PRV_CY
+       INLET: from rail (top of PRV box) — pressure pushes ball off seat
+       DRAIN: exits bottom of PRV box, routes down to RET_Y then left to tank
+       ================================================================ */
+    s += R(PRV_TEE_X-PRV_SZ/2, PRV_TOP_Y, PRV_SZ, PRV_SZ, C.fr, C.relief, 1.5);
+    /* internal arrow — points upward = pressure acts on ball from below */
+    s += L(PRV_TEE_X, PRV_TOP_Y+PRV_SZ-5, PRV_TEE_X, PRV_TOP_Y+4, C.relief, 1.5);
+    s += '<polygon points="'+(PRV_TEE_X-3)+','+(PRV_TOP_Y+4)+' '+(PRV_TEE_X+3)+','+(PRV_TOP_Y+4)+' '+PRV_TEE_X+','+(PRV_TOP_Y-1)+'" fill="'+C.relief+'"/>';
+    /* spring above PRV box — zigzag between PRV_TOP_Y-4 and PRV_TOP_Y-20 */
+    var spTop = PRV_TOP_Y - 20, spBot = PRV_TOP_Y - 2;
+    s += '<polyline points="'+PRV_TEE_X+','+spBot+' '+(PRV_TEE_X-4)+','+(spBot-5)+
+         ' '+(PRV_TEE_X+4)+','+(spBot-10)+' '+(PRV_TEE_X-4)+','+(spBot-15)+
+         ' '+PRV_TEE_X+','+spTop+'" stroke="'+C.relief+'" stroke-width="1.2" fill="none"/>';
+    /* fixed seat line above spring */
+    s += L(PRV_TEE_X-6, spTop, PRV_TEE_X+6, spTop, C.relief, 1.5);
+    /* labels */
+    s += TX(PRV_TEE_X+16, PRV_CY,    'PRV',      C.relief, 8, 'start', '700');
+    s += TX(PRV_TEE_X+16, PRV_CY+12, Pp+' bar',  C.txt3,   8, 'start');
 
-    /* ── 5. PRESSURE GAUGE (ISO 1219-1 §6.11.1) ──
-       Circle with pointer/needle inside */
-    var gR = 10;
-    s += circle(GAUGE_X, GAUGE_Y, gR, C.fill_c, C.amber, 1.2);
-    s += '<line x1="'+GAUGE_X+'" y1="'+(GAUGE_Y+2)+'" x2="'+(GAUGE_X+6)+'" y2="'+(GAUGE_Y-5)+
-         '" stroke="'+C.amber+'" stroke-width="1.5"/>';
-    s += txt(GAUGE_X, GAUGE_Y+18, 'PI', C.amber, 8,'middle','700');
+    /* ================================================================
+       5. PRESSURE GAUGE
+       ISO 1219-1 \u00a76.11.1 \u2014 circle with needle (above rail)
+       ================================================================ */
+    s += CI(GAUGE_X, GAUGE_Y, gR, C.fc, C.amber, 1.2);
+    s += L(GAUGE_X, GAUGE_Y+2, GAUGE_X+6, GAUGE_Y-5, C.amber, 1.5);
+    s += TX(GAUGE_X, GAUGE_Y+20, 'PI', C.amber, 8, 'middle', '700');
 
-    /* ── 6. DIRECTIONAL CONTROL VALVE — 4/3 (ISO 1219-1 §6.4.1) ──
-       THREE equal square boxes side-by-side.
-       Centre box = neutral (critical centre: blocked P, blocked A/B, T)
-       Left box  = extend position (P→A, B→T arrows)
-       Right box = retract position (P→B, A→T arrows)
-       Proportional solenoid each side + spring return to centre */
-    var dvH  = 44, dvW = 44; /* each position box */
-    var dcvL = DCV_X - dvW*1.5; /* left edge of 3-box assembly */
-    var dcvT = RAIL_Y - dvH/2;
-
-    /* Three position boxes */
-    for (var bi = 0; bi < 3; bi++) {
-      s += rect(dcvL + bi*dvW, dcvT, dvW, dvH, C.fill_c, C.line, 1.5);
+    /* ================================================================
+       6. DIRECTIONAL CONTROL VALVE 4/3
+       ISO 1219-1 \u00a76.4.1
+       Three equal boxes side-by-side.
+       P enters top-centre of middle box (DCV_P_X, DCV_P_Y)
+       T exits bottom-centre of middle box (DCV_T_X, DCV_T_Y)
+       A exits left-centre of left box (DCV_A_X, DCV_A_Y)
+       B exits right-centre of right box (DCV_B_X, DCV_B_Y)
+       ================================================================ */
+    for (var bi=0; bi<3; bi++){
+      s += R(dcvL+bi*dvW, dcvT, dvW, dvH, C.fc, C.pres, 1.5);
     }
 
-    /* ISO flow arrows inside each box */
-    /* Box 0 — LEFT (extend: P→A top-to-bottom, B→T bottom-to-top — NOT current — actuator extends) */
-    var b0x = dcvL, b0y = dcvT;
-    /* P→A: arrow going down on left side of box */
-    s += '<line x1="'+(b0x+12)+'" y1="'+(b0y+8)+'" x2="'+(b0x+12)+'" y2="'+(b0y+36)+
-         '" stroke="'+C.line+'" stroke-width="1.2" marker-end="url(#mArr)"/>';
-    /* B→T: arrow going up on right side */
-    s += '<line x1="'+(b0x+32)+'" y1="'+(b0y+36)+'" x2="'+(b0x+32)+'" y2="'+(b0y+8)+
-         '" stroke="'+C.ret+'" stroke-width="1.2" marker-end="url(#mRet)"/>';
+    /* Box 0 LEFT — extend (P\u2192A, B\u2192T) */
+    /* P\u2192A: flow enters from top-left port, exits left */
+    s += L(dcvL+12, dcvT+6,  dcvL+12, dcvT+42, C.pres, 1.2)+' marker-end="url(#A)">';
+    s = s.replace(/marker-end="url\(#A\)">/g, '');
+    /* rebuild arrow lines with marker-end properly */
+    s += '<line x1="'+(dcvL+12)+'" y1="'+(dcvT+6)+'" x2="'+(dcvL+12)+'" y2="'+(dcvT+42)+'" stroke="'+C.pres+'" stroke-width="1.2" marker-end="url(#A)" fill="none"/>';
+    s += '<line x1="'+(dcvL+34)+'" y1="'+(dcvT+42)+'" x2="'+(dcvL+34)+'" y2="'+(dcvT+6)+'" stroke="'+C.ret+'" stroke-width="1.2" marker-end="url(#AR)" fill="none"/>';
 
-    /* Box 1 — CENTRE (neutral/critical centre: all ports blocked) */
-    var b1x = dcvL + dvW, b1y = dcvT;
-    s += '<line x1="'+(b1x+8)+'"  y1="'+(b1y+12)+'" x2="'+(b1x+36)+'" y2="'+(b1y+32)+
-         '" stroke="'+C.line+'" stroke-width="1.2" opacity="0.4"/>';
-    s += '<line x1="'+(b1x+36)+'" y1="'+(b1y+12)+'" x2="'+(b1x+8)+'"  y2="'+(b1y+32)+
-         '" stroke="'+C.line+'" stroke-width="1.2" opacity="0.4"/>';
-    /* Port label overlays */
-    s += txt(b1x+22, b1y-10,    'P',  C.line,   8,'middle','700');
-    s += txt(b1x+22, b1y+dvH+10,'T',  C.ret,    8,'middle','700');
-    s += txt(dcvL-8, RAIL_Y,    'A',  C.txt2,   8,'middle','700');
-    s += txt(dcvL+dvW*3+8, RAIL_Y,'B',C.txt2,   8,'middle','700');
+    /* Box 1 CENTRE — blocked (X pattern = all ports blocked) */
+    s += L(dcvL+dvW+6,  dcvT+8,  dcvL+dvW+40, dcvT+40, C.txt3, 1.1);
+    s += L(dcvL+dvW+40, dcvT+8,  dcvL+dvW+6,  dcvT+40, C.txt3, 1.1);
 
-    /* Box 2 — RIGHT (retract: P→B, A→T) */
-    var b2x = dcvL + dvW*2, b2y = dcvT;
-    s += '<line x1="'+(b2x+32)+'" y1="'+(b2y+8)+'" x2="'+(b2x+32)+'" y2="'+(b2y+36)+
-         '" stroke="'+C.line+'" stroke-width="1.2" marker-end="url(#mArr)"/>';
-    s += '<line x1="'+(b2x+12)+'" y1="'+(b2y+36)+'" x2="'+(b2x+12)+'" y2="'+(b2y+8)+
-         '" stroke="'+C.ret+'" stroke-width="1.2" marker-end="url(#mRet)"/>';
+    /* Box 2 RIGHT — retract (P\u2192B, A\u2192T) */
+    s += '<line x1="'+(dcvL+dvW*2+34)+'" y1="'+(dcvT+6)+'" x2="'+(dcvL+dvW*2+34)+'" y2="'+(dcvT+42)+'" stroke="'+C.pres+'" stroke-width="1.2" marker-end="url(#A)" fill="none"/>';
+    s += '<line x1="'+(dcvL+dvW*2+12)+'" y1="'+(dcvT+42)+'" x2="'+(dcvL+dvW*2+12)+'" y2="'+(dcvT+6)+'" stroke="'+C.ret+'" stroke-width="1.2" marker-end="url(#AR)" fill="none"/>';
 
-    /* Proportional solenoids (ISO §6.7.3) — hatched rectangles each side */
-    var solW = 22, solH = 20;
-    /* Left solenoid */
-    s += rect(dcvL-solW-2, RAIL_Y-solH/2, solW, solH, 'rgba(245,158,11,0.1)', C.amber, 1.2);
-    for (var si = 4; si < solW; si += 4) {
-      s += '<line x1="'+(dcvL-solW-2+si)+'" y1="'+(RAIL_Y-solH/2)+'" x2="'+(dcvL-solW-2+si)+'" y2="'+(RAIL_Y+solH/2)+
-           '" stroke="'+C.amber+'" stroke-width="0.7" opacity="0.5"/>';
+    /* Port labels — clear of box edges */
+    s += TX(DCV_P_X, dcvT-10, 'P', C.pres, 8, 'middle', '700');
+    s += TX(DCV_T_X, dcvB+10, 'T', C.ret,  8, 'middle', '700');
+    s += TX(DCV_A_X-10, RAIL_Y, 'A', C.txt2, 8, 'middle', '700');
+    s += TX(DCV_B_X+10, RAIL_Y, 'B', C.txt2, 8, 'middle', '700');
+
+    /* Proportional solenoids */
+    var solW = 24, solH = 22;
+    /* SOL A — left side, butts against left box left edge */
+    s += R(dcvL-solW-3, RAIL_Y-solH/2, solW, solH, 'rgba(245,158,11,0.1)', C.amber, 1.2);
+    for (var si=5; si<solW; si+=5){
+      s += L(dcvL-solW-3+si, RAIL_Y-solH/2, dcvL-solW-3+si, RAIL_Y+solH/2, C.amber, 0.6);
     }
-    s += txt(dcvL-solW/2-2, RAIL_Y+solH/2+10, 'SOL A', C.amber, 7);
-    /* Right solenoid */
-    s += rect(dcvL+dvW*3+2, RAIL_Y-solH/2, solW, solH, 'rgba(245,158,11,0.1)', C.amber, 1.2);
-    for (var si2 = 4; si2 < solW; si2 += 4) {
-      s += '<line x1="'+(dcvL+dvW*3+2+si2)+'" y1="'+(RAIL_Y-solH/2)+'" x2="'+(dcvL+dvW*3+2+si2)+'" y2="'+(RAIL_Y+solH/2)+
-           '" stroke="'+C.amber+'" stroke-width="0.7" opacity="0.5"/>';
+    s += TX(dcvL-solW/2-3, RAIL_Y+solH/2+11, 'SOL A', C.amber, 7);
+    /* SOL B — right side */
+    s += R(dcvR+3, RAIL_Y-solH/2, solW, solH, 'rgba(245,158,11,0.1)', C.amber, 1.2);
+    for (var si2=5; si2<solW; si2+=5){
+      s += L(dcvR+3+si2, RAIL_Y-solH/2, dcvR+3+si2, RAIL_Y+solH/2, C.amber, 0.6);
     }
-    s += txt(dcvL+dvW*3+solW/2+2, RAIL_Y+solH/2+10,'SOL B', C.amber, 7);
-    /* Spring returns (each side — triangle with vertical line) */
-    s += '<polygon points="'+(dcvL-solW-8)+','+(RAIL_Y-8)+' '+(dcvL-solW-8)+','+(RAIL_Y+8)+' '+(dcvL-solW-22)+','+RAIL_Y+
-         '" fill="none" stroke="'+C.txt3+'" stroke-width="1.2"/>';
-    s += '<polygon points="'+(dcvL+dvW*3+solW+8)+','+(RAIL_Y-8)+' '+(dcvL+dvW*3+solW+8)+','+(RAIL_Y+8)+' '+(dcvL+dvW*3+solW+22)+','+RAIL_Y+
-         '" fill="none" stroke="'+C.txt3+'" stroke-width="1.2"/>';
-    s += txt(DCV_X, dcvT+dvH+18, '4/3 PROPORTIONAL DCV', C.txt2, 8,'middle','700');
-    s += txt(DCV_X, dcvT+dvH+29, 'CRITICAL CENTRE', C.txt3, 7);
+    s += TX(dcvR+solW/2+3, RAIL_Y+solH/2+11, 'SOL B', C.amber, 7);
+    /* spring return triangles */
+    s += '<polygon points="'+(dcvL-solW-9)+','+(RAIL_Y-9)+' '+(dcvL-solW-9)+','+(RAIL_Y+9)+' '+(dcvL-solW-24)+','+RAIL_Y+'" fill="none" stroke="'+C.txt3+'" stroke-width="1.2"/>';
+    s += '<polygon points="'+(dcvR+solW+9)+','+(RAIL_Y-9)+' '+(dcvR+solW+9)+','+(RAIL_Y+9)+' '+(dcvR+solW+24)+','+RAIL_Y+'" fill="none" stroke="'+C.txt3+'" stroke-width="1.2"/>';
 
-    /* ── 7. ACTUATOR ──
-       Motor: ISO 1219-1 §6.6.1 — circle with triangle pointing INTO circle (inlet)
-       Cylinder: ISO 1219-1 §6.2.1 — double-acting shown correctly */
+    s += TX(DCV_X, dcvB+20, '4/3 PROPORTIONAL DCV', C.txt2, 8, 'middle', '700');
+    s += TX(DCV_X, dcvB+31, 'CRITICAL CENTRE',       C.txt3, 7);
+
+    /* ================================================================
+       7. ACTUATOR
+       ================================================================ */
     if (isMotor) {
-      var mR = 24;
-      s += circle(ACT_X, RAIL_Y, mR, C.fill_c, C.line, 2);
-      /* Triangle pointing INTO circle = motor (opposite to pump) */
-      s += '<polygon points="'+
-           (ACT_X-13)+','+RAIL_Y+' '+
-           (ACT_X+10)+','+(RAIL_Y-13)+' '+
-           (ACT_X+10)+','+(RAIL_Y+13)+
-           '" fill="'+C.line+'" opacity="0.85"/>';
-      /* Output shaft */
-      s += line(ACT_X+mR, RAIL_Y, ACT_X+mR+25, RAIL_Y, C.txt2, 3);
-      s += rect(ACT_X+mR+22, RAIL_Y-8, 12, 16, C.fill_c, C.txt3, 1, 2);
-      /* Case drain (broken line to tank — ISO shows as broken) */
-      s += path('M'+ACT_X+' '+(RAIL_Y+mR)+' L'+ACT_X+' '+(RET_Y+30)+' L'+TANK_X+' '+(RET_Y+30)+' L'+TANK_X+' '+tkY,
-                C.drain, 1, '4 3');
-      s += txt(ACT_X, RAIL_Y+mR+40, 'M',       C.txt2, 9,'middle','700');
-      s += txt(ACT_X, RAIL_Y+mR+52, 'HYD MOTOR',C.txt3, 8);
+      s += CI(ACT_X, RAIL_Y, mR, C.fc, C.pres, 2);
+      /* triangle apex points INTO circle from right = motor */
+      s += '<polygon points="'+(ACT_X+13)+','+RAIL_Y+' '+(ACT_X-10)+','+(RAIL_Y-13)+' '+(ACT_X-10)+','+(RAIL_Y+13)+'" fill="'+C.pres+'" opacity="0.9"/>';
+      /* shaft right */
+      s += L(ACT_X+mR, RAIL_Y, ACT_X+mR+28, RAIL_Y, C.txt2, 3);
+      s += R(ACT_X+mR+25, RAIL_Y-8, 14, 16, C.fc, C.txt3, 1, 2);
+      /* case drain */
+      s += PH('M'+ACT_X+' '+(RAIL_Y+mR)+' L'+ACT_X+' '+(RET_Y+28)+' L'+TANK_X+' '+(RET_Y+28)+' L'+TANK_X+' '+tkY, C.drain, 1, '4 3', false);
+      s += TX(ACT_X, RAIL_Y+mR+38, 'M',          C.txt2, 9, 'middle', '700');
+      s += TX(ACT_X, RAIL_Y+mR+50, 'HYD MOTOR',  C.txt3, 8);
     } else {
-      /* ISO double-acting cylinder §6.2.1:
-         - Rectangle = barrel
-         - Full-width inner line = piston (divides rod-side from cap-side)
-         - Rod exits right side only
-         - End caps = thick lines on both ends */
-      var cyW = 80, cyH = 40;
-      var cyX = ACT_X - 10, cyY = RAIL_Y - cyH/2;
-      /* Barrel */
-      s += rect(cyX, cyY, cyW, cyH, C.fill_c, C.line, 1.5);
-      /* End caps (thick) */
-      s += line(cyX,      cyY, cyX,      cyY+cyH, C.line, 4);
-      s += line(cyX+cyW,  cyY, cyX+cyW,  cyY+cyH, C.line, 4);
-      /* Piston — divides barrel, at 40% from left */
-      var pisX = cyX + Math.round(cyW*0.4);
-      s += line(pisX, cyY+1, pisX, cyY+cyH-1, C.line, 3);
-      /* Rod — exits right through right end cap */
-      s += line(cyX+cyW, RAIL_Y, cyX+cyW+30, RAIL_Y, C.txt1, 4);
-      /* Port A top-left (cap side), Port B top-right (rod side) */
-      s += line(cyX+10,      cyY, cyX+10,     cyY-14, C.line,  1.5);
-      s += line(pisX+15,     cyY, pisX+15,    cyY-14, C.ret,   1.5);
-      s += txt(cyX+10,       cyY-22,'A', C.txt2, 8,'middle','700');
-      s += txt(pisX+15,      cyY-22,'B', C.txt2, 8,'middle','700');
-      /* CBV (counterbalance valves) on port lines if required */
+      /* ISO double-acting cylinder \u00a76.2.1 */
+      s += R(cyX, cyY, cyW, cyH, C.fc, C.pres, 1.5);
+      s += L(cyX,      cyY, cyX,      cyY+cyH, C.pres, 4);  /* cap-end end cap */
+      s += L(cyX+cyW,  cyY, cyX+cyW,  cyY+cyH, C.pres, 4);  /* rod-end end cap */
+      s += L(pisX,     cyY+1, pisX,   cyY+cyH-1, C.pres, 3); /* piston */
+      /* rod exits right */
+      s += L(cyX+cyW, RAIL_Y, cyX+cyW+34, RAIL_Y, C.txt1, 4);
+      /* port stubs (short vertical lines at top) */
+      s += L(CYL_A_X, CYL_A_Y, CYL_A_X, CYL_A_Y-16, C.pres, 1.5);
+      s += L(CYL_B_X, CYL_B_Y, CYL_B_X, CYL_B_Y-16, C.ret,  1.5);
+      s += TX(CYL_A_X, CYL_A_Y-26, 'A', C.txt2, 8, 'middle', '700');
+      s += TX(CYL_B_X, CYL_B_Y-26, 'B', C.txt2, 8, 'middle', '700');
+
       if (hasCBV) {
-        /* CBV = ISO symbol: square with arrow, spring, check valve in parallel */
-        var cbvY = cyY - 55;
+        var cbvY = CYL_A_Y - 70;
         /* Port A CBV */
-        s += rect(cyX+2, cbvY, 16, 16, 'rgba(16,185,129,0.1)', C.green, 1.2);
-        s += '<line x1="'+(cyX+6)+'" y1="'+(cbvY+10)+'" x2="'+(cyX+6)+'" y2="'+(cbvY+6)+'" stroke="'+C.green+'" stroke-width="1.2"/>';
-        s += '<polygon points="'+(cyX+4)+','+(cbvY+6)+' '+(cyX+8)+','+(cbvY+6)+' '+(cyX+6)+','+(cbvY+2)+'" fill="'+C.green+'"/>';
-        /* spring */
-        s += '<polyline points="'+(cyX+12)+','+(cbvY+2)+' '+(cyX+10)+','+(cbvY+5)+' '+(cyX+14)+','+(cbvY+8)+' '+(cyX+10)+','+(cbvY+11)+' '+(cyX+14)+','+(cbvY+14)+'" stroke="'+C.green+'" stroke-width="0.9" fill="none"/>';
-        s += txt(cyX+9, cbvY-9, 'CBV', C.green, 7,'middle','700');
-
+        s += R(CYL_A_X-9, cbvY, 18, 18, 'rgba(16,185,129,0.1)', C.green, 1.2);
+        s += L(CYL_A_X, cbvY+12, CYL_A_X, cbvY+6, C.green, 1.2);
+        s += '<polygon points="'+(CYL_A_X-3)+','+(cbvY+6)+' '+(CYL_A_X+3)+','+(cbvY+6)+' '+CYL_A_X+','+(cbvY+1)+'" fill="'+C.green+'"/>';
+        s += TX(CYL_A_X, cbvY-10, 'CBV', C.green, 7, 'middle', '700');
         /* Port B CBV */
-        s += rect(pisX+7, cbvY, 16, 16, 'rgba(16,185,129,0.1)', C.green, 1.2);
-        s += '<line x1="'+(pisX+11)+'" y1="'+(cbvY+10)+'" x2="'+(pisX+11)+'" y2="'+(cbvY+6)+'" stroke="'+C.green+'" stroke-width="1.2"/>';
-        s += '<polygon points="'+(pisX+9)+','+(cbvY+6)+' '+(pisX+13)+','+(cbvY+6)+' '+(pisX+11)+','+(cbvY+2)+'" fill="'+C.green+'"/>';
-        s += '<polyline points="'+(pisX+17)+','+(cbvY+2)+' '+(pisX+15)+','+(cbvY+5)+' '+(pisX+19)+','+(cbvY+8)+' '+(pisX+15)+','+(cbvY+11)+' '+(pisX+19)+','+(cbvY+14)+'" stroke="'+C.green+'" stroke-width="0.9" fill="none"/>';
-        s += txt(pisX+15, cbvY-9, 'CBV', C.green, 7,'middle','700');
+        s += R(CYL_B_X-9, cbvY, 18, 18, 'rgba(16,185,129,0.1)', C.green, 1.2);
+        s += L(CYL_B_X, cbvY+12, CYL_B_X, cbvY+6, C.green, 1.2);
+        s += '<polygon points="'+(CYL_B_X-3)+','+(cbvY+6)+' '+(CYL_B_X+3)+','+(cbvY+6)+' '+CYL_B_X+','+(cbvY+1)+'" fill="'+C.green+'"/>';
+        s += TX(CYL_B_X, cbvY-10, 'CBV', C.green, 7, 'middle', '700');
       }
-      s += txt(cyX+cyW/2+10, RAIL_Y+cyH/2+16, 'CYLINDER', C.txt2, 8,'middle','700');
-      s += txt(cyX+cyW/2+10, RAIL_Y+cyH/2+27, 'DOUBLE-ACTING', C.txt3, 7);
+
+      s += TX(cyX+cyW/2, cyY+cyH+16, 'CYLINDER',       C.txt2, 8, 'middle', '700');
+      s += TX(cyX+cyW/2, cyY+cyH+27, 'DOUBLE-ACTING',  C.txt3, 7);
     }
 
-    /* ── 8. ACCUMULATOR (ISO 1219-1 §6.8.1) ──
-       Ellipse divided by horizontal line: top=gas, bottom=fluid */
+    /* ================================================================
+       8. ACCUMULATOR (optional)
+       ISO 1219-1 \u00a76.8.1 \u2014 circle bisected horizontally (bladder type)
+       Tapped off pressure line between DCV B port and actuator
+       ================================================================ */
     if (hasAccum) {
-      var accR = 16;
-      s += circle(ACCUM_X, ACCUM_Y, accR, C.fill_c, C.line, 1.5);
-      /* Dividing line (membrane/bladder) */
-      s += line(ACCUM_X-accR, ACCUM_Y, ACCUM_X+accR, ACCUM_Y, C.line, 1.5);
-      /* Gas = N2 label top, fluid bottom */
-      s += txt(ACCUM_X, ACCUM_Y-7, 'N₂', C.txt3, 8);
-      s += txt(ACCUM_X, ACCUM_Y+22, 'ACC', C.txt2, 8,'middle','700');
-      s += txt(ACCUM_X, ACCUM_Y+33, 'ACCUMULATOR', C.txt3, 7);
+      s += CI(ACCUM_X, ACCUM_Y, accR, C.fc, C.pres, 1.5);
+      s += L(ACCUM_X-accR, ACCUM_Y, ACCUM_X+accR, ACCUM_Y, C.pres, 1.5);
+      s += TX(ACCUM_X, ACCUM_Y-8,  'N\u2082', C.txt3, 8);
+      s += TX(ACCUM_X, ACCUM_Y+26, 'ACC',      C.txt2, 8, 'middle', '700');
+      s += TX(ACCUM_X, ACCUM_Y+37, 'BLADDER',  C.txt3, 7);
     }
 
-    /* ── 9. COOLER (ISO 1219-1 §6.9.1) ──
-       Rectangle with X pattern = heat exchanger symbol, on return line */
-    var coolX = 240, coolY = RET_Y;
-    var coolW = 36, coolH = 24;
-    s += rect(coolX-coolW/2, coolY-coolH/2, coolW, coolH, C.fill_c, C.line, 1.5);
-    /* X pattern inside */
-    s += line(coolX-coolW/2+2, coolY-coolH/2+2, coolX+coolW/2-2, coolY+coolH/2-2, C.line, 0.8, '');
-    s += line(coolX+coolW/2-2, coolY-coolH/2+2, coolX-coolW/2+2, coolY+coolH/2-2, C.line, 0.8, '');
-    s += txt(coolX, coolY+coolH/2+12, 'HE', C.txt2, 8,'middle','700');
-    s += txt(coolX, coolY+coolH/2+23, 'COOLER', C.txt3, 7);
+    /* ================================================================
+       9. COOLER on return line
+       ISO 1219-1 \u00a76.9.1 \u2014 rectangle with X
+       ================================================================ */
+    s += R(coolX-coolW/2, coolY-coolH/2, coolW, coolH, C.fc, C.ret, 1.5);
+    s += L(coolX-coolW/2+2, coolY-coolH/2+2, coolX+coolW/2-2, coolY+coolH/2-2, C.ret, 0.8);
+    s += L(coolX+coolW/2-2, coolY-coolH/2+2, coolX-coolW/2+2, coolY+coolH/2-2, C.ret, 0.8);
+    s += TX(coolX, coolY+coolH/2+13, 'HE',     C.txt2, 8, 'middle', '700');
+    s += TX(coolX, coolY+coolH/2+24, 'COOLER', C.txt3, 7);
 
-    /* ── 10. RETURN FILTER (ISO §6.10.1) — on return line ── */
-    var rfX = 160, rfR = 11;
-    s += circle(rfX, RET_Y, rfR, C.fill_c, C.line, 1.5);
-    var fcid2 = 'fcl2';
-    s += '<clipPath id="'+fcid2+'"><circle cx="'+rfX+'" cy="'+RET_Y+'" r="'+(rfR-1)+'"/></clipPath>';
-    for (var fi2 = -14; fi2 <= 14; fi2 += 4) {
-      s += '<line x1="'+(rfX+fi2-8)+'" y1="'+(RET_Y-12)+'" x2="'+(rfX+fi2+8)+'" y2="'+(RET_Y+12)+
-           '" stroke="'+C.line+'" stroke-width="0.8" clip-path="url(#'+fcid2+')" opacity="0.6"/>';
+    /* ================================================================
+       10. RETURN FILTER on return line
+       ISO \u00a76.10.1 \u2014 circle with hatching
+       ================================================================ */
+    s += CI(rfX, RET_Y, rfR, C.fc, C.ret, 1.5);
+    s += '<clipPath id="fclR"><circle cx="'+rfX+'" cy="'+RET_Y+'" r="'+(rfR-1)+'"/></clipPath>';
+    s += '<g clip-path="url(#fclR)">';
+    for (var fi3=-16; fi3<=16; fi3+=5){
+      s += L(rfX+fi3-8, RET_Y-rfR, rfX+fi3+8, RET_Y+rfR, C.ret, 0.8);
     }
-    s += txt(rfX, RET_Y+rfR+11, 'RF', C.txt2, 8,'middle','700');
-    s += txt(rfX, RET_Y+rfR+22, 'RTN FILTER', C.txt3, 7);
+    s += '</g>';
+    s += TX(rfX, RET_Y+rfR+13, 'RF',         C.txt2, 8, 'middle', '700');
+    s += TX(rfX, RET_Y+rfR+24, 'RTN FILTER', C.txt3, 7);
 
-    /* ── 11. BRAKE VALVE (ISO §6.5.3) — if selected ── */
+    /* ================================================================
+       11. BRAKE VALVE (optional)
+       ================================================================ */
     if (hasBrake) {
-      var brkX = ACT_X + 20, brkY2 = RAIL_Y + 60;
-      s += rect(brkX-14, brkY2-14, 28, 28, 'rgba(245,158,11,0.08)', C.amber, 1.5);
-      s += line(brkX-8, brkY2+5, brkX-8, brkY2-5, C.amber, 1.5);
-      s += '<polygon points="'+(brkX-11)+','+(brkY2-5)+' '+(brkX-5)+','+(brkY2-5)+' '+(brkX-8)+','+(brkY2-10)+'" fill="'+C.amber+'"/>';
-      s += txt(brkX+20, brkY2, 'BRAKE VLV', C.amber, 7,'start');
+      var brkX = isMotor ? ACT_X + mR + 60 : cyX+cyW+70;
+      var brkY2 = RAIL_Y;
+      s += R(brkX-14, brkY2-14, 28, 28, 'rgba(245,158,11,0.08)', C.amber, 1.5);
+      s += L(brkX-6, brkY2+6, brkX-6, brkY2-6, C.amber, 1.5);
+      s += '<polygon points="'+(brkX-9)+','+(brkY2-6)+' '+(brkX-3)+','+(brkY2-6)+' '+(brkX-6)+','+(brkY2-12)+'" fill="'+C.amber+'"/>';
+      s += TX(brkX+18, brkY2, 'BRAKE', C.amber, 7, 'start');
     }
 
-    /* ═══════════════════════
-       FLOW LINES — ORTHOGONAL ONLY (ISO 1219)
-       Line weights: pressure=2px, return=1.5px, pilot=1px dash, drain=1px dash
-       ═══════════════════════ */
+    /* ================================================================
+       FLOW LINES \u2014 ALL ORTHOGONAL, ALL CONNECTIONS BY NAMED PORT VARS
+       ================================================================ */
 
-    /* ── SUCTION LINE: Tank → Pump (vertical up then horizontal right) ── */
-    s += path('M'+TANK_X+' '+tkY+' L'+TANK_X+' '+(RAIL_Y+pR+6)+' L'+(PUMP_X-pR-2)+' '+(RAIL_Y+pR+6)+' L'+(PUMP_X-pR-2)+' '+RAIL_Y,
-              C.line, 1.5, '', false);
+    /* ─── SUCTION: Tank top \u2192 pump inlet (left side of pump circle) ─── */
+    /* Route: up from TK_TOP, horizontal right along RAIL_Y+50, up to PMP_IN */
+    var suctY = RAIL_Y + 55;
+    s += PH('M'+TK_TOP_X+' '+TK_TOP_Y+
+            ' L'+TK_TOP_X+' '+suctY+
+            ' L'+PMP_IN_X+' '+suctY+
+            ' L'+PMP_IN_X+' '+RAIL_Y,
+            C.pres, 1.5, '', false);
 
-    /* ── PRESSURE LINE: Pump outlet → Filter ── */
-    s += path('M'+(PUMP_X+pR)+' '+RAIL_Y+' L'+(FILT_X-fR-2)+' '+RAIL_Y,
-              C.line, 2, '', true);
+    /* ─── PRESSURE: Pump outlet \u2192 Filter inlet ─── */
+    s += PH('M'+PMP_OUT_X+' '+RAIL_Y+' L'+FLT_IN_X+' '+RAIL_Y,
+            C.pres, 2, '', false);
 
-    /* ── Filter → PRV tee (continues to DCV) ── */
-    s += path('M'+(FILT_X+fR)+' '+RAIL_Y+' L'+(PRV_X)+' '+RAIL_Y,
-              C.line, 2, '', false);
-    s += junc(PRV_X, RAIL_Y); /* T-junction dot */
+    /* ─── PRESSURE: Filter outlet \u2192 Pressure gauge tee \u2192 PRV tee \u2192 DCV P port ─── */
+    /* Single horizontal run, junction dots at gauge tap and PRV tap */
+    s += PH('M'+FLT_OUT_X+' '+RAIL_Y+' L'+DCV_P_X+' '+RAIL_Y,
+            C.pres, 2, '', false);
+    s += JD(GAUGE_X, RAIL_Y);
+    s += JD(PRV_TEE_X, RAIL_Y);
 
-    /* ── PRV tee → PRV ── */
-    s += path('M'+PRV_X+' '+RAIL_Y+' L'+PRV_X+' '+(PRV_Y+prvSz/2),
-              C.relief, 1.2, '5 3', false);
-    /* PRV vent → Tank (via return rail) */
-    s += path('M'+PRV_X+' '+(PRV_Y-prvSz/2)+' L'+PRV_X+' '+(PRV_Y-40)+
-              ' L'+(TANK_X+10)+' '+(PRV_Y-40)+' L'+(TANK_X+10)+' '+tkY,
-              C.relief, 1.2, '5 3', false);
+    /* ─── DCV P port: horizontal line drops VERTICALLY to box top centre ─── */
+    /* The horizontal pressure run already passes through DCV_P_X at RAIL_Y.
+       Now drop a stub from RAIL_Y down to dcvT (top of DCV box) */
+    s += PH('M'+DCV_P_X+' '+RAIL_Y+' L'+DCV_P_X+' '+dcvT,
+            C.pres, 2, '', false);
+    s += JD(DCV_P_X, RAIL_Y); /* junction dot where vertical meets horizontal */
 
-    /* ── Pressure gauge tap ── */
-    s += junc(GAUGE_X, RAIL_Y);
-    s += path('M'+GAUGE_X+' '+RAIL_Y+' L'+GAUGE_X+' '+(GAUGE_Y+gR+2),
-              C.amber, 1, '3 2', false);
+    /* ─── PRESSURE GAUGE tap: vertical stub up from RAIL_Y to gauge ─── */
+    s += PH('M'+GAUGE_X+' '+RAIL_Y+' L'+GAUGE_X+' '+(GAUGE_Y+gR+2),
+            C.amber, 1, '3 2', false);
 
-    /* ── Accumulator tap (if selected) ── */
+    /* ─── PRV: vertical stub DOWN from RAIL_Y to PRV box top ─── */
+    s += PH('M'+PRV_TEE_X+' '+RAIL_Y+' L'+PRV_TEE_X+' '+PRV_TOP_Y,
+            C.relief, 1.2, '5 3', false);
+    /* PRV drain: exits PRV box bottom, goes straight down to RET_Y, then left to tank */
+    s += PH('M'+PRV_TEE_X+' '+PRV_BOT_Y+
+            ' L'+PRV_TEE_X+' '+RET_Y+
+            ' L'+(TANK_X+12)+' '+RET_Y+
+            ' L'+(TANK_X+12)+' '+TK_TOP_Y,
+            C.relief, 1.2, '5 3', false);
+    s += JD(PRV_TEE_X, RET_Y); /* junction on return rail */
+
+    /* ─── ACCUMULATOR tap (if selected) ─── */
     if (hasAccum) {
-      s += junc(ACCUM_X, RAIL_Y);
-      s += path('M'+ACCUM_X+' '+RAIL_Y+' L'+ACCUM_X+' '+(ACCUM_Y+accR+2),
-                C.line, 1.2, '4 3', false);
+      s += JD(ACCUM_X, RAIL_Y);
+      s += PH('M'+ACCUM_X+' '+RAIL_Y+' L'+ACCUM_X+' '+(ACCUM_Y+accR+2),
+              C.pres, 1.2, '4 3', false);
     }
 
-    /* ── Pressure line continues: PRV tee → DCV port P ── */
-    s += path('M'+PRV_X+' '+RAIL_Y+' L'+(dcvL+dvW+22)+' '+RAIL_Y,
-              C.line, 2, '', false);
-    /* Down into DCV P port (top of centre box) */
-    s += path('M'+(dcvL+dvW+22)+' '+RAIL_Y+' L'+(dcvL+dvW+22)+' '+dcvT,
-              C.line, 2, '', false);
-    s += junc(dcvL+dvW+22, RAIL_Y);
-
-    /* ── DCV A port → Actuator port A ── */
-    var dcvA_x = dcvL + 12;
-    s += path('M'+dcvA_x+' '+(dcvT-2)+' L'+dcvA_x+' '+(RAIL_Y-60)+' L'+ACT_X+' '+(RAIL_Y-60),
-              C.line, 1.8, '', false);
+    /* ─── DCV A port \u2192 actuator cap end (port A) ─── */
+    /* Route: up from DCV left edge, along horizontal bypass above DCV, down to actuator */
+    var bypY_A = dcvT - 28; /* bypass channel above DCV assembly */
     if (isMotor) {
-      s += path('M'+ACT_X+' '+(RAIL_Y-60)+' L'+ACT_X+' '+(RAIL_Y-pR-2),
-                C.line, 1.8, '', true);
+      var MOT_A_X = ACT_X - 10;
+      s += PH('M'+DCV_A_X+' '+DCV_A_Y+
+              ' L'+DCV_A_X+' '+bypY_A+
+              ' L'+MOT_A_X+' '+bypY_A+
+              ' L'+MOT_A_X+' '+(RAIL_Y-mR),
+              C.pres, 1.8, '', false);
     } else {
-      s += path('M'+ACT_X+' '+(RAIL_Y-60)+' L'+(cyX+10)+' '+(RAIL_Y-60)+' L'+(cyX+10)+' '+cyY,
-                C.line, 1.8, '', true);
+      s += PH('M'+DCV_A_X+' '+DCV_A_Y+
+              ' L'+DCV_A_X+' '+bypY_A+
+              ' L'+CYL_A_X+' '+bypY_A+
+              ' L'+CYL_A_X+' '+CYL_A_Y,
+              C.pres, 1.8, '', false);
     }
 
-    /* ── DCV B port → Actuator port B ── */
-    var dcvB_x = dcvL + dvW*3 - 12;
+    /* ─── DCV B port \u2192 actuator rod end (port B) ─── */
+    var bypY_B = bypY_A - 18; /* second bypass channel, slightly higher */
     if (isMotor) {
-      s += path('M'+dcvB_x+' '+(dcvT-2)+' L'+dcvB_x+' '+(RAIL_Y-80)+' L'+(ACT_X+10)+' '+(RAIL_Y-80)+' L'+(ACT_X+10)+' '+(RAIL_Y-pR-2),
-                C.ret, 1.5, '', false);
+      var MOT_B_X = ACT_X + 10;
+      s += PH('M'+DCV_B_X+' '+DCV_B_Y+
+              ' L'+DCV_B_X+' '+bypY_B+
+              ' L'+MOT_B_X+' '+bypY_B+
+              ' L'+MOT_B_X+' '+(RAIL_Y-mR),
+              C.ret, 1.5, '', false);
     } else {
-      s += path('M'+dcvB_x+' '+(dcvT-2)+' L'+dcvB_x+' '+(RAIL_Y-80)+' L'+(pisX+15)+' '+(RAIL_Y-80)+' L'+(pisX+15)+' '+cyY,
-                C.ret, 1.5, '', false);
+      s += PH('M'+DCV_B_X+' '+DCV_B_Y+
+              ' L'+DCV_B_X+' '+bypY_B+
+              ' L'+CYL_B_X+' '+bypY_B+
+              ' L'+CYL_B_X+' '+CYL_B_Y,
+              C.ret, 1.5, '', false);
     }
 
-    /* ── DCV T port → Return rail ── */
-    var dcvT_x = dcvL + dvW + 22;
-    s += path('M'+dcvT_x+' '+(dcvT+dvH+2)+' L'+dcvT_x+' '+RET_Y,
-              C.ret, 1.5, '', false);
-    s += junc(dcvT_x, RET_Y);
+    /* ─── DCV T port \u2192 return rail ─── */
+    /* Straight down from DCV_T (bottom of centre box) to RET_Y */
+    s += PH('M'+DCV_T_X+' '+DCV_T_Y+' L'+DCV_T_X+' '+RET_Y,
+            C.ret, 1.5, '', false);
+    s += JD(DCV_T_X, RET_Y);
 
-    /* ── Return rail: DCV T → Cooler → Return Filter → Tank ── */
-    s += path('M'+dcvT_x+' '+RET_Y+' L'+(coolX+coolW/2+2)+' '+RET_Y,
-              C.ret, 1.5, '', false);
-    s += path('M'+(coolX-coolW/2-2)+' '+RET_Y+' L'+(rfX+rfR+2)+' '+RET_Y,
-              C.ret, 1.5, '', false);
-    s += path('M'+(rfX-rfR-2)+' '+RET_Y+' L'+(TANK_X+10)+' '+RET_Y+' L'+(TANK_X+10)+' '+tkY,
-              C.ret, 1.5, '', false);
-    s += junc(TANK_X+10, RET_Y); /* junction where drain line meets return rail */
+    /* ─── RETURN RAIL: DCV T \u2192 Cooler \u2192 Return Filter \u2192 Tank ─── */
+    s += PH('M'+DCV_T_X+' '+RET_Y+' L'+(coolX+coolW/2+2)+' '+RET_Y,
+            C.ret, 1.5, '', false);
+    s += PH('M'+(coolX-coolW/2-2)+' '+RET_Y+' L'+(rfX+rfR+2)+' '+RET_Y,
+            C.ret, 1.5, '', false);
+    s += PH('M'+(rfX-rfR-2)+' '+RET_Y+' L'+(TANK_X+12)+' '+RET_Y+' L'+(TANK_X+12)+' '+TK_TOP_Y,
+            C.ret, 1.5, '', false);
+    s += JD(TANK_X+12, RET_Y);
 
-    /* ── PILOT LINE to DCV (dashed violet, from pressure rail) ── */
+    /* ─── LS PILOT LINE (load-sensing only) ─── */
     if (isLS) {
-      /* Load-sensing: pilot signal from actuator back to pump compensator */
-      var pilY = RAIL_Y + 50;
-      s += path('M'+ACT_X+' '+(RAIL_Y+ (isMotor ? pR : cyH/2))+
-                ' L'+ACT_X+' '+pilY+' L'+PUMP_X+' '+pilY+' L'+PUMP_X+' '+(RAIL_Y+pR),
-                C.pilot, 1, '6 3', false);
-      s += txt(PUMP_X + 60, pilY - 8, 'LS PILOT', C.pilot, 7,'start');
+      var pilY = RAIL_Y + 80;
+      var pilSrc = isMotor ? RAIL_Y+mR : RAIL_Y+cyH/2;
+      s += PH('M'+ACT_X+' '+pilSrc+
+              ' L'+ACT_X+' '+pilY+
+              ' L'+PUMP_X+' '+pilY+
+              ' L'+PUMP_X+' '+(RAIL_Y+pR),
+              C.pilot, 1, '6 3', false);
+      s += TX(PUMP_X+60, pilY-8, 'LS PILOT SIGNAL', C.pilot, 7, 'start');
     }
 
-    /* ═══ LINE TYPE LEGEND ═══ */
-    var legX = 16, legY = H - 76;
-    s += rect(legX, legY, W-32, 64, 'rgba(6,182,212,0.04)', 'rgba(6,182,212,0.12)', 1, 4);
-    s += txt(legX+10, legY+12, 'LINE TYPES (ISO 1219-1)', C.txt3, 8,'start','700');
+    /* ================================================================
+       LINE TYPE LEGEND
+       ================================================================ */
+    var legY = H - 82;
+    s += R(16, legY, W-32, 68, 'rgba(6,182,212,0.04)', 'rgba(6,182,212,0.12)', 1, 4);
+    s += TX(26, legY+12, 'LINE TYPES (ISO 1219-1)', C.txt3, 8, 'start', '700');
 
-    var items = [
-      { x: legX+10,  col: C.line,  dash:'',     lbl:'Pressure line (main)',   sw: 2   },
-      { x: legX+160, col: C.ret,   dash:'',     lbl:'Return line',            sw: 1.5 },
-      { x: legX+310, col: C.relief,dash:'5 3',  lbl:'Relief / drain',         sw: 1.2 },
-      { x: legX+440, col: C.pilot, dash:'6 3',  lbl:'Pilot / LS signal',      sw: 1   },
-      { x: legX+600, col: C.drain, dash:'4 3',  lbl:'Case drain',             sw: 1   },
+    var litems = [
+      {x:26,  col:C.pres,  dash:'',    lbl:'Pressure line (main)',  sw:2  },
+      {x:185, col:C.ret,   dash:'',    lbl:'Return line',           sw:1.5},
+      {x:330, col:C.relief,dash:'5 3', lbl:'Relief / drain',        sw:1.2},
+      {x:465, col:C.pilot, dash:'6 3', lbl:'Pilot / LS signal',     sw:1  },
+      {x:600, col:C.drain, dash:'4 3', lbl:'Case drain',            sw:1  },
     ];
-    items.forEach(function(it) {
-      s += line(it.x, legY+36, it.x+40, legY+36, it.col, it.sw, it.dash);
-      s += txt(it.x+48, legY+36, it.lbl, C.txt2, 8,'start');
+    litems.forEach(function(it){
+      s += L(it.x, legY+34, it.x+44, legY+34, it.col, it.sw, it.dash);
+      s += TX(it.x+52, legY+34, it.lbl, C.txt2, 8, 'start');
     });
+    s += TX(26,  legY+56, 'Q='+Q+' L/min',           C.txt3, 8, 'start');
+    s += TX(140, legY+56, 'P='+P+' bar',              C.txt3, 8, 'start');
+    s += TX(230, legY+56, 'Ppeak='+Pp+' bar',         C.txt3, 8, 'start');
+    s += TX(340, legY+56, 'Fluid: '+(d.fluidType||'HV46'), C.txt3, 8, 'start');
+    s += TX(500, legY+56, 'Circuit: '+circLabel,       C.txt3, 8, 'start');
 
-    /* ── operating parameters ── */
-    s += txt(legX+10,  legY+54, 'Q='+Q+' L/min',    C.txt3, 8,'start');
-    s += txt(legX+110, legY+54, 'P='+P+' bar',       C.txt3, 8,'start');
-    s += txt(legX+180, legY+54, 'Ppeak='+Pp+' bar',  C.txt3, 8,'start');
-    s += txt(legX+280, legY+54, 'Fluid: '+(d.fluidType||'HV46'), C.txt3, 8,'start');
-    s += txt(legX+400, legY+54, 'Circuit: '+circLabel, C.txt3, 8,'start');
-
-    /* ═══ COMPONENT REFERENCE TABLE (top-right corner) ═══ */
-    var refX = 700, refY2 = 48, refW = 185;
-    s += rect(refX, refY2, refW, 160, 'rgba(6,182,212,0.04)', 'rgba(6,182,212,0.12)', 1, 4);
-    s += txt(refX+8, refY2+12, 'COMPONENT REFERENCE', C.txt3, 8,'start','700');
+    /* ================================================================
+       COMPONENT REFERENCE TABLE
+       ================================================================ */
+    var refX = 730, refY2 = 50, refW = 254;
     var refs = [
-      ['T',  'Reservoir'],
-      ['P',  isVariable ? 'Variable disp. pump' : 'Fixed disp. pump'],
-      ['F',  'High-pressure filter'],
-      ['PRV','Pressure relief valve'],
-      ['PI', 'Pressure gauge'],
-      ['DCV','4/3 Prop. direct. ctrl. valve'],
+      ['T',   'Reservoir'],
+      ['P',   isVariable?'Variable disp. pump':'Fixed disp. pump'],
+      ['F',   'High-pressure filter'],
+      ['PRV', 'Pressure relief valve'],
+      ['PI',  'Pressure gauge'],
+      ['DCV', '4/3 Prop. directional ctrl. valve'],
       [isMotor?'M':'CYL', isMotor?'Hydraulic motor':'Double-acting cylinder'],
     ];
     if (hasCBV)  refs.push(['CBV','Counterbalance valve']);
@@ -1774,12 +1845,16 @@
     if (hasBrake)refs.push(['BRK','Brake valve']);
     refs.push(['HE', 'Oil cooler (heat exchanger)']);
     refs.push(['RF', 'Return line filter']);
-    refs.forEach(function(r,i) {
-      s += txt(refX+8,  refY2+26+i*12, r[0], C.line,  8,'start','700');
-      s += txt(refX+34, refY2+26+i*12, r[1], C.txt2,  8,'start');
+    s += R(refX, refY2, refW, 14 + refs.length*13 + 6, 'rgba(6,182,212,0.04)', 'rgba(6,182,212,0.12)', 1, 4);
+    s += TX(refX+8, refY2+12, 'COMPONENT REFERENCE', C.txt3, 8, 'start', '700');
+    refs.forEach(function(r,i){
+      s += TX(refX+8,  refY2+25+i*13, r[0], C.pres, 8, 'start', '700');
+      s += TX(refX+46, refY2+25+i*13, r[1], C.txt2, 8, 'start');
     });
 
-    /* ── Wrap ── */
+    /* ================================================================
+       WRAP IN DOM
+       ================================================================ */
     var wrap = document.createElement('div');
     wrap.id = 'sdCircuit';
     wrap.style.cssText = 'margin-top:16px;';
@@ -1787,24 +1862,21 @@
       '<div style="background:var(--card);border:1.5px solid rgba(6,182,212,0.2);border-radius:12px;overflow:hidden;">' +
         '<div style="background:rgba(6,182,212,.06);border-bottom:1px solid rgba(6,182,212,.15);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;">' +
           '<div style="font-family:var(--mono);font-size:11px;font-weight:700;color:#22d3ee;letter-spacing:.08em;">HYDRAULIC CIRCUIT SCHEMATIC</div>' +
-          '<span style="font-size:9px;color:#7fb3c8;font-family:var(--mono);">ISO 1219-1 · ISO 1219-2 · ISO 4413</span>' +
+          '<span style="font-size:9px;color:#7fb3c8;font-family:var(--mono);">ISO 1219-1 \u00b7 ISO 1219-2 \u00b7 ISO 4413</span>' +
         '</div>' +
         '<div style="padding:16px 16px 8px;overflow-x:auto;background:#080f14;">' +
-          '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;min-width:640px;">'+s+'</svg>' +
+          '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;min-width:700px;">'+s+'</svg>' +
         '</div>' +
         '<div style="padding:6px 16px 10px;background:#080f14;">' +
-          '<p style="font-size:9.5px;color:#4a6b80;font-family:Space Mono,monospace;margin:0;">'+
-          '⚠ Schematic is symbolic per ISO 1219-1:2012. Pipe sizes, valve codes and pressure settings must be verified against OEM data sheets and ISO 4413 / DNV-ST-0378 before fabrication.</p>' +
+          '<p style="font-size:9.5px;color:#4a6b80;font-family:Space Mono,monospace;margin:0;">' +
+          '\u26a0 Schematic is symbolic per ISO 1219-1:2012. Pipe sizes, valve codes and pressure settings must be verified against OEM data sheets and ISO 4413 / DNV-ST-0378 before fabrication.</p>' +
         '</div>' +
       '</div>';
 
     var result = document.getElementById('sdResult');
     if (result) result.parentNode.insertBefore(wrap, result);
-    else {
-      var main = document.querySelector('main.hm-page');
-      if (main) main.appendChild(wrap);
-    }
-    wrap.scrollIntoView({ behavior: 'smooth' });
+    else { var main = document.querySelector('main.hm-page'); if (main) main.appendChild(wrap); }
+    wrap.scrollIntoView({ behavior:'smooth' });
   }
 
     /* ═══ TOAST ═══ */
