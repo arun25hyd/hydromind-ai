@@ -1114,6 +1114,7 @@
       var data = await res.json();
       var text = (data.content && data.content[0] && data.content[0].text) || data.response || data.message || data.answer || 'No response received.';
       showResult(formatOutput(text));
+      renderCircuitDiagram(d);
     } catch(err) {
       clearInterval(animInterval);
       if (genDiv) genDiv.style.display = 'none';
@@ -1121,15 +1122,113 @@
     }
   }
 
-  /* ═══ FORMAT OUTPUT ═══ */
-  function formatOutput(text) {
-    var html = text
-      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-      .replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--text1);">$1</strong>')
-      .replace(/^#{1,3} (.+)$/gm,'<div style="color:var(--accent);font-weight:700;font-family:var(--mono);font-size:12px;margin:16px 0 6px;letter-spacing:.05em;text-transform:uppercase;">$1</div>')
-      .replace(/\n\n/g,'<br><br>')
-      .replace(/\n/g,'<br>');
-    return '<div style="color:var(--text2);">' + html + '</div>';
+  /* ═══ FORMAT OUTPUT — Full Professional Renderer ═══ */
+  function formatOutput(raw) {
+    var lines = (raw || '').split('\n');
+    var out = '';
+    var inTable = false, inUl = false, inOl = false, inPre = false;
+
+    function closeLists() {
+      if (inUl) { out += '</ul>'; inUl = false; }
+      if (inOl) { out += '</ol>'; inOl = false; }
+    }
+
+    function inlineFmt(t) {
+      return t
+        .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>')
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/`([^`]+)`/g,'<code style="background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.2);border-radius:4px;padding:1px 6px;font-family:var(--mono);font-size:11.5px;color:#22d3ee;">$1</code>')
+        .replace(/\*\*([^*]+)\*\*/g,'<strong style="color:#e2f0f5;font-weight:700;">$1</strong>')
+        .replace(/\*([^*]+)\*/g,'<em style="color:#7fb3c8;">$1</em>');
+    }
+
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i];
+
+      /* Code blocks */
+      if (line.trim().indexOf('```') === 0) {
+        closeLists();
+        if (inPre) { out += '</code></pre>'; inPre = false; }
+        else { out += '<pre style="background:var(--surface);border:1px solid var(--border-md);border-radius:8px;padding:14px;font-family:var(--mono);font-size:11.5px;color:#e2f0f5;overflow-x:auto;margin:10px 0;line-height:1.6;"><code>'; inPre = true; }
+        continue;
+      }
+      if (inPre) { out += line.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '\n'; continue; }
+
+      /* Tables */
+      if (line.trim().indexOf('|') === 0 && line.trim().lastIndexOf('|') === line.trim().length - 1) {
+        if (line.match(/^\s*\|[-| :]+\|\s*$/)) continue; /* separator row */
+        if (!inTable) {
+          closeLists();
+          out += '<div style="overflow-x:auto;margin:12px 0;"><table style="border-collapse:collapse;width:100%;font-size:12px;">';
+          inTable = true;
+          var cells = line.split('|').filter(function(c,ix,a){return ix>0&&ix<a.length-1;});
+          out += '<thead><tr>';
+          cells.forEach(function(c){ out += '<th style="background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.2);padding:7px 12px;color:#22d3ee;font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;">' + inlineFmt(c.trim()) + '</th>'; });
+          out += '</tr></thead><tbody>';
+        } else {
+          var cells = line.split('|').filter(function(c,ix,a){return ix>0&&ix<a.length-1;});
+          out += '<tr>';
+          cells.forEach(function(c,ci){ out += '<td style="border:1px solid rgba(255,255,255,.07);padding:6px 12px;color:#7fb3c8;' + (ci===0?'font-weight:600;color:#e2f0f5;':'') + '">' + inlineFmt(c.trim()) + '</td>'; });
+          out += '</tr>';
+        }
+        continue;
+      }
+      if (inTable) { out += '</tbody></table></div>'; inTable = false; }
+
+      /* Horizontal rules */
+      if (line.trim() === '---' || line.trim() === '***') {
+        closeLists();
+        out += '<hr style="border:none;border-top:1px solid rgba(6,182,212,.15);margin:16px 0;">';
+        continue;
+      }
+
+      /* Section headers — numbered like "1. PUMP SELECTION" or "## Heading" */
+      var numHeader = line.match(/^(\d+)\.\s+\*\*(.+)\*\*\s*$/) || line.match(/^(\d+)\.\s+([A-Z][A-Z &\/\-]+)$/);
+      if (numHeader) {
+        closeLists();
+        out += '<div style="display:flex;align-items:center;gap:10px;margin:22px 0 10px;padding:10px 14px;background:rgba(6,182,212,.06);border-left:3px solid #06b6d4;border-radius:0 8px 8px 0;">' +
+               '<span style="font-family:var(--mono);font-size:11px;font-weight:800;color:#06b6d4;background:rgba(6,182,212,.15);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' + numHeader[1] + '</span>' +
+               '<span style="font-family:var(--mono);font-size:12px;font-weight:800;color:#22d3ee;letter-spacing:.08em;text-transform:uppercase;">' + inlineFmt(numHeader[2]) + '</span></div>';
+        continue;
+      }
+
+      if (line.indexOf('#### ') === 0) { closeLists(); out += '<h4 style="font-size:12px;font-weight:700;color:#06b6d4;margin:12px 0 5px;letter-spacing:.04em;">' + inlineFmt(line.slice(5)) + '</h4>'; continue; }
+      if (line.indexOf('### ')  === 0) { closeLists(); out += '<h3 style="font-size:13px;font-weight:700;color:#22d3ee;margin:14px 0 6px;">' + inlineFmt(line.slice(4)) + '</h3>'; continue; }
+      if (line.indexOf('## ')   === 0) { closeLists(); out += '<h2 style="font-size:14px;font-weight:800;color:#22d3ee;margin:18px 0 8px;padding-bottom:5px;border-bottom:1px solid rgba(6,182,212,.2);">' + inlineFmt(line.slice(3)) + '</h2>'; continue; }
+      if (line.indexOf('# ')    === 0) { closeLists(); out += '<h2 style="font-size:15px;font-weight:800;color:#e2f0f5;margin:20px 0 10px;">' + inlineFmt(line.slice(2)) + '</h2>'; continue; }
+
+      /* Sub-section labels like "**PUMP SPECIFICATION:**" on own line */
+      if (line.match(/^\*\*[^*]+\*\*\s*:?\s*$/)) {
+        closeLists();
+        out += '<div style="font-size:11.5px;font-weight:800;color:#22d3ee;margin:12px 0 4px;letter-spacing:.04em;text-transform:uppercase;">' + inlineFmt(line) + '</div>';
+        continue;
+      }
+
+      /* Lists */
+      if (/^[-*•]\s/.test(line)) {
+        if (!inUl) { if (inOl){out+='</ol>';inOl=false;} out += '<ul style="margin:6px 0 6px 0;padding:0;list-style:none;">'; inUl = true; }
+        out += '<li style="display:flex;align-items:flex-start;gap:8px;padding:3px 0;color:#7fb3c8;font-size:12.5px;line-height:1.6;"><span style="color:#06b6d4;flex-shrink:0;margin-top:5px;">▸</span><span>' + inlineFmt(line.replace(/^[-*•]\s+/,'')) + '</span></li>';
+        continue;
+      }
+      if (/^\d+[.)]\s/.test(line)) {
+        var num = line.match(/^(\d+)/)[1];
+        if (!inOl) { if (inUl){out+='</ul>';inUl=false;} out += '<ol style="margin:6px 0 6px 0;padding:0;list-style:none;counter-reset:li;">'; inOl = true; }
+        out += '<li style="display:flex;align-items:flex-start;gap:8px;padding:3px 0;color:#7fb3c8;font-size:12.5px;line-height:1.6;"><span style="color:#06b6d4;font-family:var(--mono);font-size:10px;font-weight:800;flex-shrink:0;margin-top:4px;background:rgba(6,182,212,.1);border-radius:4px;padding:1px 5px;">' + num + '</span><span>' + inlineFmt(line.replace(/^\d+[.)]\s+/,'')) + '</span></li>';
+        continue;
+      }
+
+      /* Empty line */
+      if (line.trim() === '') { closeLists(); out += '<div style="height:6px;"></div>'; continue; }
+
+      /* Regular paragraph */
+      closeLists();
+      out += '<p style="margin:4px 0;color:#7fb3c8;font-size:12.5px;line-height:1.7;">' + inlineFmt(line) + '</p>';
+    }
+
+    closeLists();
+    if (inTable) out += '</tbody></table></div>';
+    if (inPre)   out += '</code></pre>';
+    return out;
   }
 
   /* ═══ COPY & NEW DESIGN ═══ */
@@ -1144,9 +1243,222 @@
   function newDesign() {
     var result = document.getElementById('sdResult');
     if (result) result.remove();
+    var circ = document.getElementById('sdCircuit');
+    if (circ) circ.remove();
     var gen = document.getElementById('sdGenerating');
     if (gen) gen.style.display = 'none';
     goToStep(1);
+  }
+
+  /* ═══ CIRCUIT DIAGRAM RENDERER ═══ */
+  function renderCircuitDiagram(d) {
+    var old = document.getElementById('sdCircuit');
+    if (old) old.remove();
+
+    var circuit = d.circuit || 'open';
+    var isClosedLoop = circuit === 'closed';
+    var isLoadSensing = circuit === 'open_var';
+    var hasCBV = d.cbvReq === 'yes' || d.cbvReq === 'Yes';
+    var hasAccum = d.accumReq === 'yes' || d.accumReq === 'Yes';
+    var hasBrake = d.brakeReq === 'yes' || d.brakeReq === 'Yes';
+    var isMotor = d.actType === 'motor' || (d.actPref && d.actPref.indexOf('motor') > -1);
+
+    /* ── SVG ISO schematic (800 × 520) ── */
+    var W = 800, H = isClosedLoop ? 560 : 520;
+    var s = '';
+
+    /* defs */
+    s += '<defs>';
+    s += '<marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#06b6d4"/></marker>';
+    s += '<marker id="arr2" markerWidth="8" markerHeight="6" refX="0" refY="3" orient="auto"><polygon points="8 0,0 3,8 6" fill="#06b6d4"/></marker>';
+    s += '<filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+    s += '</defs>';
+
+    /* background */
+    s += '<rect width="' + W + '" height="' + H + '" fill="#080f14" rx="10"/>';
+
+    /* title bar */
+    s += '<rect x="0" y="0" width="' + W + '" height="36" fill="rgba(6,182,212,0.08)" rx="10"/>';
+    s += '<rect x="0" y="26" width="' + W + '" height="10" fill="rgba(6,182,212,0.08)"/>';
+    s += '<rect x="0" y="35" width="' + W + '" height="1" fill="rgba(6,182,212,0.2)"/>';
+    var circLabel = isClosedLoop ? 'CLOSED LOOP' : (isLoadSensing ? 'OPEN LOOP — LOAD SENSING' : 'OPEN LOOP — FIXED DISPLACEMENT');
+    s += '<text x="16" y="23" font-family="Space Mono,monospace" font-size="11" font-weight="700" fill="#22d3ee" letter-spacing="2">' + circLabel + ' HYDRAULIC CIRCUIT</text>';
+    s += '<text x="' + (W-16) + '" y="23" font-family="Space Mono,monospace" font-size="9" fill="#7fb3c8" text-anchor="end">ISO 4413 · HydroMind.AI</text>';
+
+    /* ── COMPONENT POSITIONS ── */
+    var tankX = 60, tankY = 380, tankW = 90, tankH = 60;
+    var pumpX = 220, pumpY = 370;
+    var filtX = 340, filtY = 363;
+    var dcvX  = 460, dcvY  = 355;
+    var actX  = 620, actY  = isMotor ? 310 : 280;
+    var relX  = 230, relY  = 270;
+    var coolerX = 110, coolerY = 260;
+
+    /* ── RESERVOIR ── */
+    s += '<rect x="' + tankX + '" y="' + tankY + '" width="' + tankW + '" height="' + tankH + '" fill="rgba(6,182,212,0.06)" stroke="#06b6d4" stroke-width="1.5" rx="3"/>';
+    /* fluid level line */
+    s += '<line x1="' + (tankX+8) + '" y1="' + (tankY+20) + '" x2="' + (tankX+tankW-8) + '" y2="' + (tankY+20) + '" stroke="#22d3ee" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>';
+    /* breather */
+    s += '<rect x="' + (tankX+tankW/2-8) + '" y="' + (tankY-12) + '" width="16" height="12" fill="rgba(6,182,212,0.1)" stroke="#06b6d4" stroke-width="1" rx="2"/>';
+    s += '<text x="' + (tankX+tankW/2) + '" y="' + (tankY-3) + '" font-family="Space Mono" font-size="7" fill="#22d3ee" text-anchor="middle">▼</text>';
+    s += '<text x="' + (tankX+tankW/2) + '" y="' + (tankY+tankH+14) + '" font-family="Space Mono" font-size="9" fill="#7fb3c8" text-anchor="middle" font-weight="600">RESERVOIR</text>';
+    s += '<text x="' + (tankX+tankW/2) + '" y="' + (tankY+tankH+25) + '" font-family="Space Mono" font-size="8" fill="#4a6b80" text-anchor="middle">' + d.flowRate + ' L/min</text>';
+
+    /* ── PUMP (circle with triangle — ISO symbol) ── */
+    var pR = 24;
+    s += '<circle cx="' + pumpX + '" cy="' + (pumpY+pR) + '" r="' + pR + '" fill="rgba(6,182,212,0.08)" stroke="#06b6d4" stroke-width="2"/>';
+    /* triangle pointing right = fixed disp pump */
+    s += '<polygon points="' + (pumpX-12) + ',' + (pumpY+pR+12) + ' ' + (pumpX-12) + ',' + (pumpY+pR-12) + ' ' + (pumpX+12) + ',' + (pumpY+pR) + '" fill="#06b6d4" opacity="0.7"/>';
+    if (isLoadSensing) {
+      /* arrow through pump = variable */
+      s += '<line x1="' + (pumpX-18) + '" y1="' + (pumpY+pR+14) + '" x2="' + (pumpX+18) + '" y2="' + (pumpY+pR-14) + '" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arr)"/>';
+    }
+    s += '<text x="' + pumpX + '" y="' + (pumpY+pR*2+14) + '" font-family="Space Mono" font-size="9" fill="#7fb3c8" text-anchor="middle" font-weight="600">PUMP</text>';
+    s += '<text x="' + pumpX + '" y="' + (pumpY+pR*2+24) + '" font-family="Space Mono" font-size="8" fill="#4a6b80" text-anchor="middle">' + d.workPress + ' bar</text>';
+
+    /* ── RELIEF VALVE ── */
+    s += '<rect x="' + (relX-12) + '" y="' + (relY-12) + '" width="24" height="24" fill="rgba(239,68,68,0.08)" stroke="#ef4444" stroke-width="1.5" rx="2" transform="rotate(45,' + relX + ',' + relY + ')"/>';
+    s += '<line x1="' + (relX-6) + '" y1="' + (relY+4) + '" x2="' + (relX+6) + '" y2="' + (relY-4) + '" stroke="#ef4444" stroke-width="1.5"/>';
+    s += '<text x="' + (relX+22) + '" y="' + (relY+4) + '" font-family="Space Mono" font-size="8" fill="#ef4444" font-weight="700">PRV</text>';
+    s += '<text x="' + (relX+22) + '" y="' + (relY+14) + '" font-family="Space Mono" font-size="7" fill="#4a6b80">' + d.peakPress + 'bar</text>';
+
+    /* ── FILTER ── */
+    s += '<rect x="' + (filtX-16) + '" y="' + (filtY-10) + '" width="32" height="20" fill="rgba(6,182,212,0.06)" stroke="#06b6d4" stroke-width="1.5" rx="3"/>';
+    s += '<line x1="' + (filtX-10) + '" y1="' + (filtY-4) + '" x2="' + (filtX+10) + '" y2="' + (filtY-4) + '" stroke="#22d3ee" stroke-width="1" opacity="0.5"/>';
+    s += '<line x1="' + (filtX-8)  + '" y1="' + filtY + '" x2="' + (filtX+8)  + '" y2="' + filtY + '" stroke="#22d3ee" stroke-width="1" opacity="0.5"/>';
+    s += '<line x1="' + (filtX-6)  + '" y1="' + (filtY+4) + '" x2="' + (filtX+6) + '" y2="' + (filtY+4) + '" stroke="#22d3ee" stroke-width="1" opacity="0.5"/>';
+    s += '<text x="' + filtX + '" y="' + (filtY+26) + '" font-family="Space Mono" font-size="9" fill="#7fb3c8" text-anchor="middle" font-weight="600">FILTER</text>';
+
+    /* ── DCV (4/3 proportional valve box) ── */
+    var dvW = 80, dvH = 36;
+    s += '<rect x="' + (dcvX-dvW/2) + '" y="' + (dcvY-dvH/2) + '" width="' + dvW + '" height="' + dvH + '" fill="rgba(6,182,212,0.08)" stroke="#06b6d4" stroke-width="1.5" rx="2"/>';
+    /* spool position boxes */
+    s += '<line x1="' + (dcvX-dvW/2+dvW/3) + '" y1="' + (dcvY-dvH/2) + '" x2="' + (dcvX-dvW/2+dvW/3) + '" y2="' + (dcvY+dvH/2) + '" stroke="#06b6d4" stroke-width="1" opacity="0.5"/>';
+    s += '<line x1="' + (dcvX+dvW/2-dvW/3) + '" y1="' + (dcvY-dvH/2) + '" x2="' + (dcvX+dvW/2-dvW/3) + '" y2="' + (dcvY+dvH/2) + '" stroke="#06b6d4" stroke-width="1" opacity="0.5"/>';
+    /* centre cross = critical centre */
+    s += '<line x1="' + (dcvX-dvW/6) + '" y1="' + (dcvY-8) + '" x2="' + (dcvX+dvW/6) + '" y2="' + (dcvY+8) + '" stroke="#22d3ee" stroke-width="1.5"/>';
+    s += '<line x1="' + (dcvX+dvW/6) + '" y1="' + (dcvY-8) + '" x2="' + (dcvX-dvW/6) + '" y2="' + (dcvY+8) + '" stroke="#22d3ee" stroke-width="1.5"/>';
+    /* solenoid symbols */
+    s += '<rect x="' + (dcvX-dvW/2-14) + '" y="' + (dcvY-6) + '" width="14" height="12" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="1" rx="1"/>';
+    s += '<rect x="' + (dcvX+dvW/2) + '"   y="' + (dcvY-6) + '" width="14" height="12" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="1" rx="1"/>';
+    s += '<text x="' + dcvX + '" y="' + (dcvY+dvH/2+14) + '" font-family="Space Mono" font-size="9" fill="#7fb3c8" text-anchor="middle" font-weight="600">4/3 DCV</text>';
+    s += '<text x="' + dcvX + '" y="' + (dcvY+dvH/2+24) + '" font-family="Space Mono" font-size="8" fill="#4a6b80" text-anchor="middle">PROPORTIONAL</text>';
+
+    /* ── ACTUATOR (motor or cylinder) ── */
+    if (isMotor) {
+      /* Motor circle with M */
+      var mR = 26;
+      s += '<circle cx="' + actX + '" cy="' + (actY+mR) + '" r="' + mR + '" fill="rgba(6,182,212,0.06)" stroke="#06b6d4" stroke-width="2"/>';
+      s += '<text x="' + actX + '" y="' + (actY+mR+5) + '" font-family="Space Mono" font-size="14" font-weight="700" fill="#22d3ee" text-anchor="middle">M</text>';
+      /* shaft */
+      s += '<line x1="' + (actX+mR) + '" y1="' + (actY+mR) + '" x2="' + (actX+mR+20) + '" y2="' + (actY+mR) + '" stroke="#7fb3c8" stroke-width="3"/>';
+      s += '<text x="' + actX + '" y="' + (actY+mR*2+14) + '" font-family="Space Mono" font-size="9" fill="#7fb3c8" text-anchor="middle" font-weight="600">MOTOR</text>';
+    } else {
+      /* Cylinder — rod+barrel */
+      var cyW = 70, cyH = 36;
+      s += '<rect x="' + actX + '" y="' + actY + '" width="' + cyW + '" height="' + cyH + '" fill="rgba(6,182,212,0.06)" stroke="#06b6d4" stroke-width="1.5"/>';
+      /* piston */
+      s += '<line x1="' + (actX+cyW*0.45) + '" y1="' + actY + '" x2="' + (actX+cyW*0.45) + '" y2="' + (actY+cyH) + '" stroke="#22d3ee" stroke-width="3"/>';
+      /* rod */
+      s += '<line x1="' + (actX+cyW*0.45) + '" y1="' + (actY+cyH/2) + '" x2="' + (actX+cyW+20) + '" y2="' + (actY+cyH/2) + '" stroke="#7fb3c8" stroke-width="4"/>';
+      /* end cap */
+      s += '<rect x="' + actX + '" y="' + actY + '" width="8" height="' + cyH + '" fill="rgba(6,182,212,0.15)" stroke="#06b6d4" stroke-width="1"/>';
+      s += '<text x="' + (actX+cyW/2) + '" y="' + (actY+cyH+14) + '" font-family="Space Mono" font-size="9" fill="#7fb3c8" text-anchor="middle" font-weight="600">CYLINDER</text>';
+      if (hasCBV) {
+        /* CBV symbols on A/B ports */
+        var cbvY = actY - 30;
+        s += '<rect x="' + (actX+10) + '" y="' + cbvY + '" width="16" height="16" fill="rgba(16,185,129,0.1)" stroke="#10b981" stroke-width="1.2" rx="2" transform="rotate(45,' + (actX+18) + ',' + (cbvY+8) + ')"/>';
+        s += '<text x="' + (actX+18) + '" y="' + (cbvY-10) + '" font-family="Space Mono" font-size="7.5" fill="#10b981" text-anchor="middle" font-weight="700">CBV</text>';
+      }
+    }
+
+    /* ── PRESSURE GAUGE ── */
+    var gaugeX = 310, gaugeY = 300;
+    s += '<circle cx="' + gaugeX + '" cy="' + gaugeY + '" r="11" fill="rgba(245,158,11,0.08)" stroke="#f59e0b" stroke-width="1.2"/>';
+    s += '<line x1="' + gaugeX + '" y1="' + (gaugeY+3) + '" x2="' + (gaugeX+7) + '" y2="' + (gaugeY-5) + '" stroke="#f59e0b" stroke-width="1.5"/>';
+    s += '<text x="' + gaugeX + '" y="' + (gaugeY+24) + '" font-family="Space Mono" font-size="7.5" fill="#f59e0b" text-anchor="middle">GAUGE</text>';
+
+    /* ── ACCUMULATOR (if selected) ── */
+    if (hasAccum) {
+      var accX = 390, accY = 280;
+      s += '<ellipse cx="' + accX + '" cy="' + (accY+20) + '" rx="14" ry="20" fill="rgba(6,182,212,0.06)" stroke="#06b6d4" stroke-width="1.5"/>';
+      s += '<line x1="' + (accX-14) + '" y1="' + (accY+20) + '" x2="' + (accX+14) + '" y2="' + (accY+20) + '" stroke="#22d3ee" stroke-width="1" stroke-dasharray="3,2"/>';
+      s += '<text x="' + accX + '" y="' + (accY+50) + '" font-family="Space Mono" font-size="7.5" fill="#22d3ee" text-anchor="middle">ACCUM</text>';
+    }
+
+    /* ── COOLER (air blast symbol) ── */
+    s += '<rect x="' + (coolerX-18) + '" y="' + (coolerY-12) + '" width="36" height="24" fill="rgba(6,182,212,0.04)" stroke="rgba(6,182,212,0.4)" stroke-width="1.2" rx="4"/>';
+    for (var cx = coolerX-12; cx <= coolerX+12; cx += 8) {
+      s += '<line x1="' + cx + '" y1="' + (coolerY-8) + '" x2="' + cx + '" y2="' + (coolerY+8) + '" stroke="rgba(6,182,212,0.4)" stroke-width="1"/>';
+    }
+    s += '<text x="' + coolerX + '" y="' + (coolerY+26) + '" font-family="Space Mono" font-size="8" fill="#7fb3c8" text-anchor="middle">COOLER</text>';
+
+    /* ══ FLOW LINES ══ */
+    var ps = 'stroke="#06b6d4" stroke-width="2" fill="none" marker-end="url(#arr)"';
+    var rs = 'stroke="rgba(6,182,212,0.45)" stroke-width="1.5" fill="none" stroke-dasharray="6,3"';
+
+    /* Tank → Pump suction */
+    s += '<path d="M' + (tankX+tankW) + ',' + (tankY+tankH/2) + ' L' + (pumpX-pR) + ',' + (pumpY+pR) + '" ' + ps + '/>';
+    /* Pump → Filter */
+    s += '<path d="M' + (pumpX+pR) + ',' + (pumpY+pR) + ' L' + (filtX-16) + ',' + (filtY) + '" ' + ps + '/>';
+    /* Filter → DCV */
+    s += '<path d="M' + (filtX+16) + ',' + filtY + ' L' + (dcvX-dvW/2) + ',' + dcvY + '" ' + ps + '/>';
+    /* DCV → Actuator */
+    var actInY = isMotor ? (actY+26) : (actY + cyH/3);
+    s += '<path d="M' + (dcvX+dvW/2) + ',' + (dcvY-8) + ' L' + actX + ',' + actInY + '" ' + ps + '/>';
+    /* Actuator return → Tank (dashed) */
+    var actRetX = isMotor ? actX : actX;
+    var actRetY = isMotor ? (actY+26+20) : (actY + cyH*2/3);
+    s += '<path d="M' + actRetX + ',' + actRetY + ' L' + (dcvX+dvW/2) + ',' + (dcvY+8) + ' L' + (dcvX-dvW/2) + ',' + (dcvY+8) + ' L' + (filtX) + ',' + (filtY+30) + ' L' + (coolerX) + ',' + (coolerY+12) + ' L' + (coolerX) + ',' + (tankY+10) + ' L' + (tankX+tankW/2) + ',' + (tankY+10) + '" ' + rs + '/>';
+    /* PRV line from pump pressure line → tank */
+    s += '<path d="M' + (pumpX+pR+30) + ',' + (pumpY+pR-10) + ' L' + relX + ',' + (relY+18) + '" stroke="#ef4444" stroke-width="1.2" fill="none" stroke-dasharray="4,3"/>';
+    s += '<path d="M' + relX + ',' + (relY+18) + ' L' + relX + ',' + (tankY) + ' L' + (tankX+tankW/2+20) + ',' + tankY + '" stroke="#ef4444" stroke-width="1.2" fill="none" stroke-dasharray="4,3"/>';
+    /* Gauge tap */
+    s += '<path d="M' + (filtX+8) + ',' + (filtY-10) + ' L' + gaugeX + ',' + (gaugeY+11) + '" stroke="#f59e0b" stroke-width="1" fill="none" stroke-dasharray="3,2"/>';
+
+    /* ── BRAKE SOLENOID (if selected) ── */
+    if (hasBrake) {
+      var brkX = actX + (isMotor ? 0 : cyW/2), brkY = isMotor ? (actY+65) : (actY+cyH+50);
+      s += '<rect x="' + (brkX-20) + '" y="' + brkY + '" width="40" height="18" fill="rgba(245,158,11,0.08)" stroke="#f59e0b" stroke-width="1.2" rx="3"/>';
+      s += '<text x="' + brkX + '" y="' + (brkY+12) + '" font-family="Space Mono" font-size="8" fill="#f59e0b" text-anchor="middle" font-weight="600">BRAKE</text>';
+    }
+
+    /* ── LEGEND ── */
+    var legY = H - 48;
+    s += '<rect x="16" y="' + legY + '" width="' + (W-32) + '" height="36" fill="rgba(6,182,212,0.04)" stroke="rgba(6,182,212,0.1)" stroke-width="1" rx="4"/>';
+    s += '<line x1="30" y1="' + (legY+11) + '" x2="60" y2="' + (legY+11) + '" stroke="#06b6d4" stroke-width="2" marker-end="url(#arr)"/>';
+    s += '<text x="68" y="' + (legY+15) + '" font-family="Space Mono" font-size="8" fill="#7fb3c8">Pressure line</text>';
+    s += '<line x1="160" y1="' + (legY+11) + '" x2="190" y2="' + (legY+11) + '" stroke="rgba(6,182,212,0.45)" stroke-width="1.5" stroke-dasharray="5,3"/>';
+    s += '<text x="198" y="' + (legY+15) + '" font-family="Space Mono" font-size="8" fill="#7fb3c8">Return line</text>';
+    s += '<line x1="290" y1="' + (legY+11) + '" x2="320" y2="' + (legY+11) + '" stroke="#ef4444" stroke-width="1.2" stroke-dasharray="4,3"/>';
+    s += '<text x="328" y="' + (legY+15) + '" font-family="Space Mono" font-size="8" fill="#7fb3c8">Relief / drain</text>';
+    s += '<line x1="420" y1="' + (legY+11) + '" x2="450" y2="' + (legY+11) + '" stroke="#f59e0b" stroke-width="1" stroke-dasharray="3,2"/>';
+    s += '<text x="458" y="' + (legY+15) + '" font-family="Space Mono" font-size="8" fill="#7fb3c8">Instrumentation</text>';
+    /* second legend row */
+    s += '<text x="30"  y="' + (legY+28) + '" font-family="Space Mono" font-size="7.5" fill="#4a6b80">Q=' + d.flowRate + 'L/min</text>';
+    s += '<text x="130" y="' + (legY+28) + '" font-family="Space Mono" font-size="7.5" fill="#4a6b80">P=' + d.workPress + 'bar</text>';
+    s += '<text x="210" y="' + (legY+28) + '" font-family="Space Mono" font-size="7.5" fill="#4a6b80">Peak=' + d.peakPress + 'bar</text>';
+    s += '<text x="310" y="' + (legY+28) + '" font-family="Space Mono" font-size="7.5" fill="#4a6b80">Circuit: ' + circLabel + '</text>';
+    s += '<text x="' + (W-16) + '" y="' + (legY+28) + '" font-family="Space Mono" font-size="7.5" fill="#4a6b80" text-anchor="end">ISO 4413 Compliant</text>';
+
+    /* ── WRAP IN CONTAINER ── */
+    var circ = document.createElement('div');
+    circ.id = 'sdCircuit';
+    circ.style.cssText = 'margin-top:16px;';
+    circ.innerHTML =
+      '<div style="background:var(--card);border:1.5px solid rgba(6,182,212,0.2);border-radius:12px;overflow:hidden;">' +
+        '<div style="background:rgba(6,182,212,.08);border-bottom:1px solid rgba(6,182,212,.15);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;">' +
+          '<div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.08em;">⚡ HYDRAULIC CIRCUIT SCHEMATIC</div>' +
+          '<span style="font-size:10px;color:#7fb3c8;font-family:var(--mono);">ISO 4413 Symbolic Representation</span>' +
+        '</div>' +
+        '<div style="padding:16px;overflow-x:auto;">' +
+          '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" style="max-width:' + W + 'px;display:block;margin:0 auto;">' + s + '</svg>' +
+        '</div>' +
+      '</div>';
+
+    var result = document.getElementById('sdResult');
+    if (result) result.parentNode.insertBefore(circ, result);
+    circ.scrollIntoView({ behavior: 'smooth' });
   }
 
   /* ═══ TOAST ═══ */
