@@ -1054,7 +1054,7 @@ var BACKEND = 'https://hydromind-backend.onrender.com/api/chat';
 var activeCrane = 'Liebherr LHBL-D 80';
 var activeCraneType = 'Offshore Pedestal Crane';
 var activeMfr = 'Liebherr';
-var history = [];
+var chatHistory = [];
 var isLoading = false;
 var currentPlcStep = 0;
 
@@ -1304,7 +1304,7 @@ function diagSend() {
   var reqTimer = null;
   try {
     addMsg('user', text);
-    history.push({ role: 'user', content: text });
+    chatHistory.push({ role: 'user', content: text });
     showTyping();
     controller = new AbortController();
     reqTimer = setTimeout(function() { controller.abort(); }, 35000);
@@ -1314,7 +1314,7 @@ function diagSend() {
     var msgs = [
       { role: 'user', content: systemContext },
       { role: 'assistant', content: 'HydroMind Crane Diagnostic Agent ready. Monitoring ' + activeCrane + '. Please describe the fault.' }
-    ].concat(history.slice(-10)).concat([{ role: 'user', content: text }]);
+    ].concat(chatHistory.slice(-10)).concat([{ role: 'user', content: text }]);
     var xhr = new XMLHttpRequest();
     xhr.open('POST', BACKEND, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
@@ -1329,8 +1329,8 @@ function diagSend() {
           var kbRefs = [];
           var kbMatch = answer.match(/KB-\d+/g);
           if (kbMatch) { var seen = {}; kbMatch.forEach(function(r){if(!seen[r]){seen[r]=1;kbRefs.push(r);}}); }
-          history.push({ role: 'assistant', content: answer });
-          if (history.length > 20) history = history.slice(-20);
+          chatHistory.push({ role: 'assistant', content: answer });
+          if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
           addMsg('ai', answer, kbRefs);
         } catch(e) {
           addMsg('ai', 'Error parsing response. Please retry.', []);
@@ -1380,7 +1380,7 @@ function exportDiagReport() {
   lines.push('');
   lines.push('DIAGNOSTIC CONVERSATION');
   lines.push('------------------------');
-  history.forEach(function(m) {
+  chatHistory.forEach(function(m) {
     lines.push('[' + m.role.toUpperCase() + '] ' + m.content);
     lines.push('');
   });
