@@ -218,20 +218,25 @@ h1 { margin: 0; font-family: Syne, sans-serif; font-size: clamp(28px, 4vw, 42px)
 </head>
 <body>
 <div class="sd-app">
-  <nav class="sd-nav">
-    <a class="sd-logo" href="index.html">Hydro <span>Mind</span></a>
-    <div class="sd-links">
-      <a href="ai_advisor.html">AI Advisor</a>
-      <a href="crane_diagnostic.html">Crane Diagnostic</a>
-      <a class="active" href="system_design.html">System Design</a>
-      <a href="knowledge_base.html">Knowledge Base</a>
-      <a href="pricing.html">Pricing</a>
-    </div>
-    <div class="sd-nav-right">
-      <button class="sd-chip sd-chip-btn" type="button" onclick="openDesignAssistant()">DESIGN ASSISTANT</button>
-      <button class="btn primary" onclick="setStep(5)">Review</button>
-    </div>
-  </nav>
+  <nav class="hm-nav">
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon">HM</div>
+    <span>HydroMind<span class="logo-ai">.AI</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="navbar-link">Home</a>
+    <a href="ai_advisor.html" class="navbar-link">AI Advisor</a>
+    <a href="system_design.html" class="navbar-link active">System Design</a>
+    <a href="crane_diagnostic.html" class="navbar-link">Crane Diagnostic</a>
+    <a href="knowledge_base.html" class="navbar-link">Knowledge Base</a>
+    <a href="pricing.html" class="navbar-link">Pricing</a>
+  </div>
+  <div class="nav-right" id="hmNavCta">
+    <div class="nav-status"><div class="nav-status-dot"></div>AI Online</div>
+    <a href="#" class="btn btn-ghost btn-sm">Log In</a>
+    <a href="pricing.html" class="btn btn-primary btn-sm">Get Started</a>
+  </div>
+</nav>
 
   <div class="sd-shell">
     <aside class="sd-left">
@@ -363,9 +368,11 @@ h1 { margin: 0; font-family: Syne, sans-serif; font-size: clamp(28px, 4vw, 42px)
 </div>
 
 <div class="footer-bar">
+  <button class="btn ghost" type="button" onclick="openDesignAssistant()">Design Assistant</button>
   <button class="btn ghost" id="backBtn" onclick="prevStep()">Back</button>
   <button class="btn primary" id="nextBtn" onclick="nextStep()">Next</button>
   <button class="btn primary" onclick="generateReview()">Generate Review</button>
+  <button class="btn ghost" type="button" onclick="setStep(5)">Review</button>
   <div class="spacer"></div>
   <span class="sd-chip" id="footerStep">STEP 1 / 5</span>
 </div>
