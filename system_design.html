@@ -65,7 +65,8 @@ body {
 button, input, textarea, select { font-family: inherit; }
 button { cursor: pointer; }
 a { color: inherit; text-decoration: none; }
-.sd-app { height: 100vh; display: grid; grid-template-rows: 60px 1fr; }
+.hm-nav { z-index: 40; }
+.sd-app { height: 100vh; padding-top: var(--nav-h, 60px); display: block; }
 .sd-nav {
   display: flex; align-items: center; gap: 22px;
   height: 60px; padding: 0 28px;
@@ -84,7 +85,7 @@ a { color: inherit; text-decoration: none; }
 .sd-chip { border: 1px solid var(--sd-line2); background: rgba(45,212,191,.09); color: var(--sd-accent); border-radius: 999px; padding: 5px 10px; font-size: 11px; font-family: "Space Mono", monospace; font-weight: 700; }
 .sd-chip-btn { cursor: pointer; transition: background .15s, border-color .15s, color .15s, transform .15s; }
 .sd-chip-btn:hover, .sd-chip-btn:focus-visible { background: rgba(45,212,191,.18); border-color: rgba(45,212,191,.65); color: var(--sd-text); transform: translateY(-1px); }
-.sd-shell { min-height: 0; display: grid; grid-template-columns: 260px minmax(0, 1fr) 300px; }
+.sd-shell { height: calc(100vh - var(--nav-h, 60px)); min-height: 0; display: grid; grid-template-columns: 260px minmax(0, 1fr) 300px; }
 .sd-left, .sd-right {
   min-height: 0; overflow-y: auto;
   background: linear-gradient(180deg, rgba(103,213,255,.04), transparent 240px), rgba(8,18,24,.9);
@@ -92,7 +93,7 @@ a { color: inherit; text-decoration: none; }
 }
 .sd-left { border-right: 1px solid var(--sd-line); padding: 22px 16px; }
 .sd-right { border-left: 1px solid var(--sd-line); padding: 18px 16px; }
-.sd-main { min-width: 0; min-height: 0; overflow-y: auto; padding: 26px 30px 90px; }
+.sd-main { min-width: 0; min-height: 0; overflow-y: auto; padding: 28px 30px 96px; }
 .step-list { display: grid; gap: 14px; margin-top: 18px; }
 .step-item { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: start; color: var(--sd-muted); padding: 11px 10px; border-radius: var(--sd-radius); border: 1px solid transparent; }
 .step-item.active { background: rgba(103,213,255,.1); border-color: rgba(103,213,255,.2); color: var(--sd-text); }
@@ -106,6 +107,146 @@ a { color: inherit; text-decoration: none; }
 .eyebrow { color: var(--sd-accent); font-family: "Space Mono", monospace; font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 8px; }
 h1 { margin: 0; font-family: Syne, sans-serif; font-size: clamp(28px, 4vw, 42px); line-height: 1.05; letter-spacing: -.035em; }
 .lead { margin: 10px 0 0; color: var(--sd-muted); max-width: 720px; line-height: 1.65; font-size: 14px; }
+.sd-hero {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(340px, .8fr);
+  align-items: stretch;
+  gap: 22px;
+  padding: 26px;
+  min-height: 310px;
+  border: 1px solid rgba(103,213,255,.18);
+  border-radius: 18px;
+  background:
+    linear-gradient(115deg, rgba(45,212,191,.16), transparent 36%),
+    linear-gradient(180deg, rgba(103,213,255,.06), rgba(7,16,21,.1)),
+    #0b151c;
+  box-shadow: var(--sd-shadow);
+}
+.sd-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(90deg, rgba(0,0,0,.85), rgba(0,0,0,.18));
+  pointer-events: none;
+}
+.sd-hero::after {
+  content: "";
+  position: absolute;
+  width: 360px;
+  height: 360px;
+  right: -110px;
+  top: -150px;
+  border: 1px solid rgba(45,212,191,.26);
+  transform: rotate(22deg);
+  background: linear-gradient(135deg, rgba(45,212,191,.08), rgba(251,191,36,.035));
+  pointer-events: none;
+}
+.hero-copy, .hero-schematic-card { position: relative; z-index: 1; }
+.hero-kicker {
+  color: var(--sd-accent);
+  font-family: "Space Mono", monospace;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.hero-title {
+  max-width: 780px;
+  font-size: clamp(38px, 5.8vw, 76px);
+  letter-spacing: -.045em;
+}
+.hero-lead {
+  max-width: 700px;
+  font-size: 15px;
+  color: #b7c9d0;
+}
+.hero-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+.hero-chip-row span {
+  border: 1px solid rgba(125,211,252,.18);
+  background: rgba(7,16,21,.55);
+  color: #a9c2cb;
+  border-radius: 999px;
+  padding: 7px 10px;
+  font-size: 11px;
+  font-weight: 800;
+}
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+.hero-schematic-card {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 260px;
+  border: 1px solid rgba(125,211,252,.2);
+  border-radius: 14px;
+  background: rgba(7,16,21,.74);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+  padding: 16px;
+}
+.hero-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--sd-faint);
+  font-family: "Space Mono", monospace;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.hero-live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--sd-good);
+  box-shadow: 0 0 0 5px rgba(34,197,94,.1);
+}
+.mini-circuit {
+  width: 100%;
+  height: 170px;
+  margin: 14px 0 10px;
+}
+.hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.hero-metric {
+  border: 1px solid rgba(125,211,252,.12);
+  border-radius: 9px;
+  background: rgba(103,213,255,.05);
+  padding: 10px;
+}
+.hero-metric strong {
+  display: block;
+  color: var(--sd-blue);
+  font-family: "Space Mono", monospace;
+  font-size: 14px;
+}
+.hero-metric span {
+  display: block;
+  margin-top: 3px;
+  color: var(--sd-faint);
+  font-size: 10px;
+  line-height: 1.25;
+}
+.hero-step { position: absolute; top: 20px; right: 20px; z-index: 2; }
 .panel {
   background: linear-gradient(135deg, rgba(103,213,255,.055), transparent 44%), var(--sd-card);
   border: 1px solid var(--sd-line);
@@ -200,17 +341,20 @@ h1 { margin: 0; font-family: Syne, sans-serif; font-size: clamp(28px, 4vw, 42px)
 .footer-bar {
   position: fixed; left: 260px; right: 300px; bottom: 0; height: 66px;
   display: flex; align-items: center; gap: 10px; padding: 0 30px;
-  background: rgba(7,16,21,.94); border-top: 1px solid var(--sd-line); backdrop-filter: blur(16px); z-index: 4;
+  background: rgba(7,16,21,.94); border-top: 1px solid var(--sd-line); backdrop-filter: blur(16px); z-index: 30;
 }
 .footer-bar .spacer { flex: 1; }
 @media (max-width: 1200px) {
   body { overflow: auto; }
-  .sd-app { height: auto; min-height: 100vh; grid-template-rows: auto 1fr; }
+  .sd-app { height: auto; min-height: 100vh; padding-top: var(--nav-h, 60px); }
   .sd-nav { flex-wrap: wrap; height: auto; min-height: 60px; padding: 10px 14px; }
   .sd-links { order: 3; width: 100%; }
-  .sd-shell { grid-template-columns: 1fr; }
+  .sd-shell { height: auto; min-height: calc(100vh - var(--nav-h, 60px)); grid-template-columns: 1fr; }
   .sd-left, .sd-right { display: none; }
   .sd-main { padding: 20px 14px 90px; }
+  .sd-hero { grid-template-columns: 1fr; padding: 22px; }
+  .hero-title { font-size: clamp(34px, 10vw, 58px); }
+  .hero-schematic-card { min-height: 230px; }
   .footer-bar { left: 0; right: 0; padding: 0 14px; }
   .grid.two, .grid.three { grid-template-columns: 1fr; }
 }
@@ -248,13 +392,63 @@ h1 { margin: 0; font-family: Syne, sans-serif; font-size: clamp(28px, 4vw, 42px)
     </aside>
 
     <main class="sd-main">
-      <div class="page-head">
-        <div>
-          <div class="eyebrow">Hydraulic System Design</div>
-          <h1 id="pageTitle">Application Brief</h1>
-          <p class="lead" id="pageLead">Describe the system in normal engineering language. HydroMind will extract requirements, ask missing questions, and build the design from validated rules.</p>
+      <div class="page-head sd-hero">
+        <div class="hero-copy">
+          <div class="hero-kicker">Hydraulic System Design</div>
+          <h1 id="pageTitle" class="hero-title">Application Brief</h1>
+          <p class="lead hero-lead" id="pageLead">Describe the system in normal engineering language. HydroMind extracts requirements, asks the missing engineering questions, calculates pressure and flow, then builds a validated circuit from selected components.</p>
+          <div class="hero-chip-row" aria-label="Design workflow">
+            <span>Requirement parser</span>
+            <span>Pressure + flow sizing</span>
+            <span>Valve safety reasons</span>
+            <span>Hydraulic-symbol circuit</span>
+          </div>
+          <div class="hero-actions">
+            <button class="btn primary" type="button" onclick="analyzeBrief()">Start AI Sizing</button>
+            <button class="btn ghost" type="button" onclick="setStep(5)">Preview Review</button>
+          </div>
         </div>
-        <span class="sd-chip" id="statusChip">STEP 1 / 5</span>
+        <div class="hero-schematic-card" aria-hidden="true">
+          <div class="hero-card-top">
+            <span>Validated design chain</span>
+            <span class="hero-live-dot"></span>
+          </div>
+          <svg class="mini-circuit" viewBox="0 0 420 170" role="img">
+            <defs>
+              <marker id="heroArrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                <path d="M0,0 L9,4.5 L0,9 Z" fill="#67d5ff"></path>
+              </marker>
+            </defs>
+            <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="20" y="112" width="72" height="34" stroke="#dbeafe" stroke-width="2"></rect>
+              <path d="M36 130 H76" stroke="#dbeafe" stroke-width="2"></path>
+              <path d="M56 112 V92" stroke="#111827" stroke-width="3"></path>
+              <circle cx="56" cy="72" r="22" stroke="#dbeafe" stroke-width="2"></circle>
+              <path d="M49 60 L72 72 L49 84 Z" stroke="#dbeafe" stroke-width="2"></path>
+              <path d="M78 72 H158" stroke="#111827" stroke-width="4"></path>
+              <path d="M78 72 H158" stroke="#67d5ff" stroke-width="2.5" marker-end="url(#heroArrow)"></path>
+              <rect x="158" y="42" width="96" height="62" stroke="#dbeafe" stroke-width="2"></rect>
+              <path d="M190 42 V104 M222 42 V104" stroke="#dbeafe" stroke-width="2"></path>
+              <path d="M173 82 L197 58 M174 58 L197 82" stroke="#dbeafe" stroke-width="2"></path>
+              <path d="M232 58 L244 58 M232 82 L244 82" stroke="#dbeafe" stroke-width="2" marker-end="url(#heroArrow)"></path>
+              <path d="M254 58 H292" stroke="#67d5ff" stroke-width="2.5" marker-end="url(#heroArrow)"></path>
+              <path d="M254 82 H292" stroke="#67d5ff" stroke-width="2.5" marker-end="url(#heroArrow)"></path>
+              <rect x="292" y="44" width="82" height="56" stroke="#dbeafe" stroke-width="2"></rect>
+              <path d="M318 44 V100 M374 72 H404" stroke="#dbeafe" stroke-width="2"></path>
+              <rect x="404" y="63" width="12" height="18" stroke="#dbeafe" stroke-width="2"></rect>
+              <path d="M206 104 V138 H72" stroke="#7fb3c8" stroke-width="2" stroke-dasharray="6 5"></path>
+              <path d="M136 72 V26 H90" stroke="#fbbf24" stroke-width="2"></path>
+              <rect x="70" y="12" width="38" height="30" stroke="#fbbf24" stroke-width="2"></rect>
+              <path d="M78 34 L100 18" stroke="#fbbf24" stroke-width="2"></path>
+            </g>
+          </svg>
+          <div class="hero-metrics">
+            <div class="hero-metric"><strong>5 steps</strong><span>brief to BOM</span></div>
+            <div class="hero-metric"><strong>0 errors</strong><span>validated ports</span></div>
+            <div class="hero-metric"><strong>DNV</strong><span>rule-aware output</span></div>
+          </div>
+        </div>
+        <span class="sd-chip hero-step" id="statusChip">STEP 1 / 5</span>
       </div>
 
       <section class="panel step-panel" id="step1">
@@ -386,6 +580,14 @@ const steps = [
   ['Review & Generate', 'Circuit, BOM, commissioning']
 ];
 
+const stepLeads = [
+  'Describe the system in normal engineering language. HydroMind extracts requirements, asks the missing engineering questions, calculates pressure and flow, then builds a validated circuit from selected components.',
+  'Confirm the load case and missing inputs. HydroMind converts the requirement into working pressure, flow rate, relief setting and pump power.',
+  'Select the pump, actuator, fluid, cooler and filtration package from the calculated duty and operating environment.',
+  'Review valve choices with plain-language reasons, controlled risks, failure concerns and safety logic before the circuit is accepted.',
+  'Generate the final package: design summary, calculation trail, selected component models, hydraulic-symbol circuit, BOM and commissioning checklist.'
+];
+
 const KB_COMPONENT_MODELS = {
   pumpClosed: [
     { id: 'pump-a10vo', type: 'Pressure-compensated axial piston pump', model: 'Rexroth A10VO variable displacement piston pump', kb: 'KB098', ref: 'Rexroth A10VO Variable Displacement Piston Pump' },
@@ -446,6 +648,7 @@ function setStep(n) {
   currentStep = Math.max(1, Math.min(5, n));
   document.querySelectorAll('.step-panel').forEach((p, i) => p.hidden = i + 1 !== currentStep);
   $('pageTitle').textContent = steps[currentStep - 1][0];
+  $('pageLead').textContent = stepLeads[currentStep - 1];
   $('statusChip').textContent = `STEP ${currentStep} / 5`;
   $('footerStep').textContent = `STEP ${currentStep} / 5`;
   $('backBtn').disabled = currentStep === 1;
