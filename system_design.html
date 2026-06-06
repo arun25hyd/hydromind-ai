@@ -1,1704 +1,1813 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>System Design — HydroMind.AI</title>
-<meta name="description" content="Hydraulic system design tool for marine and offshore applications. Configure your system parameters and get an AI-generated design specification.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="css/hm-design.css">
-<style>
-/* ══ SYSTEM DESIGN PAGE STYLES ══ */
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Design — HydroMind AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/hm-design.css">
+  <style>
+    /* ─── PAGE RESET ─────────────────────────────────────────── */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-.page-hero {
-  padding: 44px 0 32px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 28px;
-}
-.page-eyebrow {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: var(--accent-dim); border: 1px solid var(--accent-glow);
-  border-radius: 20px; padding: 5px 14px;
-  font-size: 11px; font-weight: 700; color: var(--accent-bright);
-  margin-bottom: 16px; letter-spacing: .06em; text-transform: uppercase;
-}
-.page-eyebrow .dot { width: 6px; height: 6px; background: var(--accent-bright); border-radius: 50%; animation: pulse-dot 2s ease-in-out infinite; }
-.page-h1 {
-  font-family: var(--syne); font-size: clamp(22px,3vw,34px);
-  font-weight: 800; color: var(--text1); line-height: 1.1;
-  letter-spacing: -.025em; margin-bottom: 10px;
-}
-.page-h1 span { color: var(--accent-bright); }
-.page-sub { font-size: 14px; color: var(--text2); line-height: 1.6; max-width: 600px; }
+    /* Hide sidebars on this shell page */
+    .hm-sidebar-left,
+    .hm-sidebar-right,
+    #hmAdSidebar {
+      display: none !important;
+    }
+    body {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      background: #080f14;
+      color: #e8edf2;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
 
-/* Step tabs */
-.sd-steps {
-  display: flex; gap: 0; margin-bottom: 28px;
-  border: 1px solid var(--border-md); border-radius: var(--radius-lg);
-  overflow: hidden; background: var(--surface);
-}
-.sd-step {
-  flex: 1; display: flex; align-items: center; gap: 10px;
-  padding: 14px 16px; cursor: pointer; transition: all .18s;
-  border-right: 1px solid var(--border); position: relative;
-}
-.sd-step:last-child { border-right: none; }
-.sd-step:hover { background: var(--card); }
-.sd-step.active { background: var(--accent-dim); }
-.sd-step.done .step-num { background: var(--success); color: #fff; }
-.sd-step.active .step-num { background: var(--accent); color: #fff; box-shadow: 0 0 12px rgba(6,182,212,.4); }
-.step-num {
-  width: 26px; height: 26px; border-radius: 50%;
-  background: var(--card-raised); color: var(--text3);
-  font-size: 11px; font-weight: 800; font-family: var(--mono);
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  transition: all .18s;
-}
-.step-label { font-size: 11.5px; font-weight: 700; color: var(--text2); }
-.sd-step.active .step-label { color: var(--accent-bright); }
-.sd-step.done .step-label { color: var(--success); }
-.step-sub { font-size: 9.5px; color: var(--text3); margin-top: 1px; }
+    /* ─── NAV ────────────────────────────────────────────────── */
+    .hm-topnav {
+      height: 60px;
+      flex-shrink: 0;
+      background: #0b1420;
+      border-bottom: 1px solid rgba(6,182,212,0.15);
+      display: flex;
+      align-items: center;
+      padding: 0 28px;
+      gap: 20px;
+      position: relative;
+      z-index: 50;
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #06b6d4;
+      text-decoration: none;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+    .nav-logo span { color: #e8edf2; }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: 16px;
+      flex: 1;
+    }
+    .nav-links a {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: #8a9ab0;
+      text-decoration: none;
+      padding: 5px 10px;
+      border-radius: 6px;
+      transition: all 0.15s;
+    }
+    .nav-links a:hover { color: #e8edf2; background: rgba(255,255,255,0.05); }
+    .nav-links a.active { color: #06b6d4; background: rgba(6,182,212,0.1); }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+    }
+    .nav-badge {
+      background: rgba(6,182,212,0.15);
+      border: 1px solid rgba(6,182,212,0.3);
+      color: #06b6d4;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+    .btn-nav {
+      background: #06b6d4;
+      color: #080f14;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-nav:hover { background: #0891b2; }
+    #navUser {
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    #navUserInitials {
+      width: 32px; height: 32px;
+      background: rgba(6,182,212,0.2);
+      border: 1px solid rgba(6,182,212,0.4);
+      border-radius: 50%;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #06b6d4;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
 
-/* Progress connector */
-.sd-step.done::after {
-  content: ""; position: absolute; right: -1px; top: 50%; transform: translateY(-50%);
-  width: 2px; height: 20px; background: var(--success);
-}
+    /* ─── TICKER ─────────────────────────────────────────────── */
+    .ticker-bar {
+      height: 34px;
+      flex-shrink: 0;
+      background: rgba(6,182,212,0.04);
+      border-bottom: 1px solid rgba(6,182,212,0.08);
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .ticker-label {
+      background: #06b6d4;
+      color: #080f14;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 0 12px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      letter-spacing: 0.08em;
+      flex-shrink: 0;
+      z-index: 2;
+    }
+    .ticker-track {
+      flex: 1;
+      overflow: hidden;
+    }
+    .ticker-inner {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      white-space: nowrap;
+      animation: tickerScroll 32s linear infinite;
+    }
+    .ticker-inner span {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.64rem;
+      color: #8a9ab0;
+      letter-spacing: 0.03em;
+    }
+    .ticker-inner span em {
+      color: #06b6d4;
+      font-style: normal;
+    }
+    @keyframes tickerScroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
 
-/* Panel */
-.sd-panel { display: none; }
-.sd-panel.active { display: block; }
+    /* ─── MAIN SHELL ─────────────────────────────────────────── */
+    .sd-main {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
 
-/* Form cards */
-.form-card {
-  background: var(--card); border: 1px solid var(--border-md);
-  border-radius: var(--radius-lg); padding: 22px 24px;
-  margin-bottom: 16px;
-}
-.form-card-title {
-  font-size: 12px; font-weight: 800; color: var(--text3);
-  letter-spacing: .08em; text-transform: uppercase; margin-bottom: 16px;
-  display: flex; align-items: center; gap: 8px;
-}
-.form-card-title::before {
-  content: ""; width: 14px; height: 2px; background: var(--accent);
-}
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
-.form-group { display: flex; flex-direction: column; gap: 5px; }
-.form-group.full { grid-column: 1 / -1; }
-.form-label { font-size: 11px; font-weight: 700; color: var(--text2); letter-spacing: .03em; }
-.form-label span { color: var(--text3); font-weight: 400; }
-.form-input, .form-select, .form-textarea {
-  background: var(--surface); border: 1.5px solid var(--border-md);
-  border-radius: var(--radius-sm); padding: 9px 12px;
-  font-size: 12.5px; color: var(--text1); font-family: var(--sans);
-  transition: border-color .15s, box-shadow .15s;
-}
-.form-input:focus, .form-select:focus, .form-textarea:focus {
-  outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(6,182,212,.12);
-}
-.form-input::placeholder { color: var(--text3); }
-.form-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237fb3c8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; cursor: pointer; }
-.form-select option { background: var(--card); color: var(--text1); }
-.form-textarea { resize: vertical; min-height: 70px; line-height: 1.5; }
-.form-hint { font-size: 10px; color: var(--text3); line-height: 1.4; }
+    /* ─── LEFT PANEL — WIZARD STEPS ─────────────────────────── */
+    .sd-steps {
+      width: 240px;
+      flex-shrink: 0;
+      background: #0b1420;
+      border-right: 1px solid rgba(6,182,212,0.1);
+      display: flex;
+      flex-direction: column;
+      padding: 20px 16px;
+      gap: 4px;
+      overflow-y: auto;
+    }
+    .sd-steps-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #06b6d4;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      padding-left: 4px;
+    }
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+      position: relative;
+    }
+    .step-item:hover { background: rgba(6,182,212,0.05); }
+    .step-item.active { background: rgba(6,182,212,0.1); }
+    .step-item.done .step-num { background: rgba(34,197,94,0.2); border-color: #22c55e; color: #22c55e; }
+    .step-num {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(6,182,212,0.3);
+      background: rgba(6,182,212,0.08);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #06b6d4;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .step-item.active .step-num {
+      background: #06b6d4;
+      color: #080f14;
+      border-color: #06b6d4;
+    }
+    .step-text { flex: 1; }
+    .step-name {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #c8d4e0;
+      line-height: 1.3;
+    }
+    .step-item.active .step-name { color: #e8edf2; }
+    .step-sub {
+      font-size: 0.68rem;
+      color: #5a6a7a;
+      margin-top: 2px;
+    }
+    .step-connector {
+      width: 1.5px;
+      height: 12px;
+      background: rgba(6,182,212,0.15);
+      margin: 0 0 0 23px;
+    }
 
-/* App type cards */
-.app-type-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-.app-type-card {
-  background: var(--surface); border: 1.5px solid var(--border);
-  border-radius: var(--radius); padding: 14px 10px; text-align: center;
-  cursor: pointer; transition: all .18s;
-}
-.app-type-card:hover { border-color: var(--accent-glow); background: var(--accent-dim); }
-.app-type-card.selected {
-  border-color: var(--accent); background: var(--accent-dim);
-  box-shadow: 0 0 12px rgba(6,182,212,.15);
-}
-.app-type-card svg { width: 28px; height: 28px; color: var(--text3); margin: 0 auto 8px; display: block; transition: color .18s; }
-.app-type-card.selected svg { color: var(--accent-bright); }
-.app-type-card .at-label { font-size: 11px; font-weight: 700; color: var(--text2); }
-.app-type-card.selected .at-label { color: var(--accent-bright); }
-.app-type-card .at-sub { font-size: 9.5px; color: var(--text3); margin-top: 2px; }
+    /* Saved designs section */
+    .sd-saved-section {
+      margin-top: auto;
+      border-top: 1px solid rgba(6,182,212,0.1);
+      padding-top: 14px;
+    }
+    .sd-saved-title {
+      font-size: 0.65rem;
+      color: #5a6a7a;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      padding-left: 4px;
+    }
+    .saved-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .saved-item:hover { background: rgba(255,255,255,0.04); }
+    .saved-dot {
+      width: 6px; height: 6px;
+      background: #06b6d4;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .saved-name {
+      font-size: 0.7rem;
+      color: #8a9ab0;
+    }
 
-/* Circuit type */
-.circuit-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-.circuit-card {
-  background: var(--surface); border: 1.5px solid var(--border);
-  border-radius: var(--radius); padding: 16px 14px; cursor: pointer;
-  transition: all .18s; position: relative; overflow: hidden;
-}
-.circuit-card:hover { border-color: var(--accent-glow); }
-.circuit-card.selected { border-color: var(--accent); background: var(--card); }
-.circuit-card .cc-badge {
-  display: inline-block; font-size: 9px; font-weight: 700;
-  padding: 2px 7px; border-radius: 20px; margin-bottom: 8px;
-  background: var(--accent-dim); color: var(--accent); font-family: var(--mono);
-}
-.circuit-card .cc-title { font-size: 12.5px; font-weight: 800; color: var(--text1); margin-bottom: 5px; }
-.circuit-card .cc-desc { font-size: 10.5px; color: var(--text2); line-height: 1.5; }
-.circuit-card .cc-apps { font-size: 9.5px; color: var(--text3); margin-top: 6px; font-style: italic; }
+    /* ─── CENTER PANEL — WIZARD CONTENT ─────────────────────── */
+    .sd-center {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .sd-panel-header {
+      padding: 18px 28px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      flex-shrink: 0;
+    }
+    .sd-panel-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #e8edf2;
+      letter-spacing: -0.02em;
+    }
+    .sd-panel-sub {
+      font-size: 0.78rem;
+      color: #5a6a7a;
+      margin-top: 4px;
+    }
+    .sd-wizard-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 28px 24px;
+    }
+    .sd-wizard-body::-webkit-scrollbar { width: 5px; }
+    .sd-wizard-body::-webkit-scrollbar-track { background: transparent; }
+    .sd-wizard-body::-webkit-scrollbar-thumb { background: rgba(6,182,212,0.2); border-radius: 4px; }
 
-/* Nav buttons */
-.sd-nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; }
-.btn-row { display: flex; gap: 10px; }
+    /* ─── WIZARD STEP PANELS ─────────────────────────────────── */
+    .wizard-panel { display: none; }
+    .wizard-panel.active { display: block; }
 
-/* ═══ OUTPUT PANEL ═══ */
-.sd-output { display: none; }
-.sd-output.visible { display: block; }
-.output-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 20px;
-}
-.output-title-group h2 {
-  font-family: var(--syne); font-size: 20px; font-weight: 800; color: var(--text1);
-}
-.output-title-group p { font-size: 12px; color: var(--text2); margin-top: 3px; }
-.output-actions { display: flex; gap: 8px; }
+    /* Section label */
+    .form-section {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #06b6d4;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin: 18px 0 10px;
+    }
+    .form-section:first-child { margin-top: 0; }
 
-/* Design summary card */
-.design-summary {
-  background: linear-gradient(135deg, var(--card), var(--card-raised));
-  border: 1px solid var(--border-bright); border-radius: var(--radius-lg);
-  padding: 22px 24px; margin-bottom: 20px;
-}
-.ds-header { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
-.ds-badge {
-  background: var(--accent-dim); border: 1px solid var(--accent-glow);
-  border-radius: 8px; padding: 10px; flex-shrink: 0;
-}
-.ds-badge svg { width: 24px; height: 24px; color: var(--accent-bright); }
-.ds-title { font-family: var(--syne); font-size: 16px; font-weight: 800; color: var(--text1); }
-.ds-ref { font-size: 10.5px; color: var(--text3); font-family: var(--mono); margin-top: 2px; }
-.ds-params {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
-}
-.ds-param { background: var(--surface); border-radius: var(--radius-sm); padding: 10px 12px; }
-.ds-param-val { font-size: 18px; font-weight: 800; color: var(--accent-bright); font-family: var(--mono); }
-.ds-param-label { font-size: 9.5px; color: var(--text3); margin-top: 2px; text-transform: uppercase; letter-spacing: .04em; }
+    /* Grid row */
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .form-row.col3 { grid-template-columns: repeat(3, 1fr); }
+    .form-row.col1 { grid-template-columns: 1fr; }
 
-/* Component sections */
-.comp-section { margin-bottom: 16px; }
-.comp-section-title {
-  display: flex; align-items: center; gap: 8px; padding: 10px 14px;
-  background: var(--surface); border: 1px solid var(--border-md);
-  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-  font-size: 11.5px; font-weight: 800; color: var(--text1); cursor: pointer;
-}
-.comp-section-title svg { width: 14px; height: 14px; color: var(--accent); }
-.comp-section-title .toggle-arrow { margin-left: auto; width: 14px; height: 14px; color: var(--text3); transition: transform .18s; }
-.comp-section-title.open .toggle-arrow { transform: rotate(180deg); }
-.comp-section-body {
-  border: 1px solid var(--border-md); border-top: none;
-  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-  overflow: hidden;
-}
-.comp-row {
-  display: grid; grid-template-columns: 180px 1fr 120px 100px;
-  gap: 12px; padding: 11px 14px; align-items: start;
-  border-bottom: 1px solid var(--border);
-  background: var(--card);
-  transition: background .12s;
-}
-.comp-row:last-child { border-bottom: none; }
-.comp-row:hover { background: var(--card-raised); }
-.comp-row:nth-child(even) { background: var(--surface); }
-.comp-row:nth-child(even):hover { background: var(--card); }
-.comp-item-name { font-size: 12px; font-weight: 700; color: var(--text1); }
-.comp-item-sub { font-size: 10px; color: var(--text3); margin-top: 2px; font-family: var(--mono); }
-.comp-item-spec { font-size: 11.5px; color: var(--text2); line-height: 1.5; }
-.comp-item-spec strong { color: var(--accent-bright); font-weight: 700; }
-.comp-item-note { font-size: 10px; color: var(--text3); line-height: 1.4; }
-.comp-qty { font-size: 13px; font-weight: 800; color: var(--accent-bright); font-family: var(--mono); text-align: center; }
-.comp-status { text-align: center; }
-.status-pill {
-  display: inline-block; padding: 3px 9px; border-radius: 20px;
-  font-size: 9.5px; font-weight: 700; letter-spacing: .04em;
-}
-.status-required { background: rgba(239,68,68,.12); color: #ef4444; border: 1px solid rgba(239,68,68,.25); }
-.status-rec { background: var(--warning-dim); color: var(--warning); border: 1px solid rgba(245,158,11,.25); }
-.status-opt { background: var(--success-dim); color: var(--success); border: 1px solid rgba(16,185,129,.25); }
+    /* Field */
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #8a9ab0;
+      letter-spacing: 0.02em;
+    }
+    .field input,
+    .field select,
+    .field textarea {
+      background: #0f1825;
+      border: 1.5px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      color: #e8edf2;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      padding: 9px 12px;
+      transition: border-color 0.15s;
+      outline: none;
+      width: 100%;
+    }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: rgba(6,182,212,0.5);
+      box-shadow: 0 0 0 3px rgba(6,182,212,0.08);
+    }
+    .field select option { background: #0f1825; }
+    .field textarea { resize: vertical; min-height: 70px; }
+    .field-hint {
+      font-size: 0.67rem;
+      color: #5a6a7a;
+      margin-top: -2px;
+    }
 
-/* Design notes */
-.design-notes {
-  background: var(--card); border: 1px solid var(--border-md); border-left: 3px solid var(--accent);
-  border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 16px;
-  margin-bottom: 16px;
-}
-.design-notes h4 { font-size: 11.5px; font-weight: 800; color: var(--accent-bright); margin-bottom: 8px; }
-.design-notes ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
-.design-notes li { font-size: 11.5px; color: var(--text2); padding-left: 14px; position: relative; line-height: 1.5; }
-.design-notes li::before { content: "→"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+    /* Radio group */
+    .radio-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .radio-opt {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #0f1825;
+      border: 1.5px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-size: 0.78rem;
+      color: #8a9ab0;
+    }
+    .radio-opt:has(input:checked) {
+      border-color: rgba(6,182,212,0.5);
+      background: rgba(6,182,212,0.08);
+      color: #06b6d4;
+    }
+    .radio-opt input { display: none; }
 
-/* Safety flags */
-.safety-flags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-.safety-flag {
-  display: flex; align-items: center; gap: 7px;
-  background: rgba(245,158,11,.08); border: 1px solid rgba(245,158,11,.22);
-  border-radius: 8px; padding: 8px 12px; font-size: 11px; color: var(--text1);
-}
-.safety-flag svg { width: 14px; height: 14px; color: var(--warning); flex-shrink: 0; }
-.flag-critical { background: rgba(239,68,68,.08); border-color: rgba(239,68,68,.22); }
-.flag-critical svg { color: var(--danger); }
+    /* Checkbox row */
+    .check-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .check-opt {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #0f1825;
+      border: 1.5px solid rgba(255,255,255,0.08);
+      border-radius: 7px;
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-size: 0.76rem;
+      color: #8a9ab0;
+    }
+    .check-opt:has(input:checked) {
+      border-color: rgba(6,182,212,0.5);
+      background: rgba(6,182,212,0.08);
+      color: #06b6d4;
+    }
+    .check-opt input { display: none; }
+    .check-icon {
+      width: 16px; height: 16px;
+      border: 1.5px solid rgba(6,182,212,0.4);
+      border-radius: 4px;
+      background: transparent;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem;
+      color: #06b6d4;
+    }
+    .check-opt:has(input:checked) .check-icon {
+      background: #06b6d4;
+      border-color: #06b6d4;
+      color: #080f14;
+    }
+    .check-opt:has(input:checked) .check-icon::after { content: "✓"; }
 
-/* Loading state */
-.sd-generating {
-  display: none; text-align: center; padding: 48px 24px;
-  background: var(--card); border: 1px solid var(--border-md); border-radius: var(--radius-lg);
-}
-.sd-generating.visible { display: block; }
-.gen-spinner {
-  width: 44px; height: 44px; margin: 0 auto 16px;
-  border: 3px solid var(--border-md); border-top-color: var(--accent);
-  border-radius: 50%; animation: spin .8s linear infinite;
-}
-.gen-status { font-size: 13px; color: var(--text2); margin-bottom: 8px; }
-.gen-steps { display: flex; flex-direction: column; gap: 5px; max-width: 320px; margin: 0 auto; }
-.gen-step { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text3); }
-.gen-step.done { color: var(--success); }
-.gen-step.active { color: var(--accent-bright); }
-.gen-step-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
-.gen-step.active .gen-step-dot { animation: pulse-dot 1s infinite; }
+    /* Info card */
+    .info-card {
+      background: rgba(6,182,212,0.06);
+      border: 1px solid rgba(6,182,212,0.15);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.75rem;
+      color: #8a9ab0;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .info-card strong { color: #06b6d4; }
 
-/* BOM table */
-.bom-section { margin-bottom: 16px; }
-.bom-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
-.bom-table th {
-  background: var(--surface); color: var(--text3); font-size: 10px;
-  font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
-  padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--border-md);
-}
-.bom-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--text2); }
-.bom-table tr:hover td { background: var(--card-raised); color: var(--text1); }
-.bom-table .col-item { color: var(--text1); font-weight: 600; }
-.bom-table .col-spec { font-family: var(--mono); font-size: 11px; color: var(--accent-bright); }
-.bom-table .col-qty { text-align: center; font-weight: 700; color: var(--text1); }
-.bom-table .col-make { color: var(--text3); font-style: italic; }
+    /* ─── REVIEW PANEL (Step 5) ──────────────────────────────── */
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .review-card {
+      background: #0f1825;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .review-card-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      color: #06b6d4;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .review-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      gap: 12px;
+    }
+    .review-row:last-child { border-bottom: none; }
+    .review-key {
+      font-size: 0.71rem;
+      color: #5a6a7a;
+    }
+    .review-val {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #c8d4e0;
+      text-align: right;
+    }
 
-@keyframes spin { to { transform: rotate(360deg); } }
-@keyframes pulse-dot { 0%,100% { opacity:1; } 50% { opacity:.3; } }
+    /* ─── AI OUTPUT PANEL ────────────────────────────────────── */
+    .ai-output-wrap {
+      background: #0d1a26;
+      border: 1.5px solid rgba(6,182,212,0.2);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .ai-output-header {
+      background: rgba(6,182,212,0.08);
+      border-bottom: 1px solid rgba(6,182,212,0.15);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .ai-output-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      color: #06b6d4;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ai-dot {
+      width: 7px; height: 7px;
+      background: #06b6d4;
+      border-radius: 50%;
+      animation: pulseDot 1.8s infinite;
+    }
+    .ai-dot.idle { animation: none; background: #5a6a7a; }
+    @keyframes pulseDot {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+    .ai-output-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-sm {
+      background: transparent;
+      border: 1px solid rgba(6,182,212,0.3);
+      color: #06b6d4;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-sm:hover { background: rgba(6,182,212,0.1); }
+    .btn-sm.danger {
+      border-color: rgba(239,68,68,0.3);
+      color: #ef4444;
+    }
+    .btn-sm.danger:hover { background: rgba(239,68,68,0.1); }
+    .ai-output-body {
+      padding: 16px;
+      font-size: 0.8rem;
+      color: #8a9ab0;
+      line-height: 1.7;
+      min-height: 180px;
+      max-height: 360px;
+      overflow-y: auto;
+      font-family: 'Inter', sans-serif;
+    }
+    .ai-output-body::-webkit-scrollbar { width: 4px; }
+    .ai-output-body::-webkit-scrollbar-thumb { background: rgba(6,182,212,0.2); border-radius: 4px; }
+    .ai-output-body.generating { color: #5a6a7a; }
+    .ai-output-body pre {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.71rem;
+      overflow-x: auto;
+      margin: 8px 0;
+    }
+    .ai-output-body table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.74rem;
+      margin: 10px 0;
+    }
+    .ai-output-body th {
+      background: rgba(6,182,212,0.1);
+      color: #06b6d4;
+      font-weight: 700;
+      padding: 7px 10px;
+      text-align: left;
+      border: 1px solid rgba(6,182,212,0.15);
+    }
+    .ai-output-body td {
+      padding: 6px 10px;
+      border: 1px solid rgba(255,255,255,0.05);
+      color: #c8d4e0;
+      vertical-align: top;
+    }
+    .ai-output-body tr:hover td { background: rgba(255,255,255,0.02); }
 
-/* ─── HOW TO USE ─── */
-.htu-panel{background:rgba(6,182,212,.04);border:1.5px solid rgba(6,182,212,.2);border-radius:10px;margin-bottom:16px;overflow:hidden;}
-.htu-header{display:flex;align-items:center;justify-content:space-between;padding:11px 15px;cursor:pointer;user-select:none;border-bottom:1.5px solid transparent;transition:border-color .2s;}
-.htu-header:hover{border-bottom-color:rgba(6,182,212,.15);}
-.htu-header-left{display:flex;align-items:center;gap:9px;}
-.htu-header-icon{font-size:1rem;}
-.htu-header-title{font-size:12.5px;font-weight:700;color:var(--text1);}
-.htu-header-sub{font-size:10.5px;color:var(--text3);margin-top:1px;}
-.htu-arrow{font-size:10px;color:var(--accent);transition:transform .25s ease;}
-.htu-arrow.open{transform:rotate(180deg);}
-.htu-body{display:none;padding:13px 15px 15px;border-top:1px solid rgba(6,182,212,.1);}
-.htu-body.open{display:block;}
-.htu-steps{display:flex;flex-direction:column;gap:9px;margin-bottom:13px;}
-.htu-step{display:flex;align-items:flex-start;gap:11px;background:rgba(6,182,212,.05);border:1px solid rgba(6,182,212,.12);border-radius:8px;padding:10px 13px;transition:border-color .15s;}
-.htu-step:hover{border-color:rgba(6,182,212,.28);}
-.htu-step-num{width:25px;height:25px;background:rgba(6,182,212,.15);border:1.5px solid rgba(6,182,212,.35);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:var(--accent);flex-shrink:0;}
-.htu-step-title{font-size:12.5px;font-weight:700;color:var(--text1);margin-bottom:3px;}
-.htu-step-desc{font-size:11.5px;color:var(--text2);line-height:1.55;}
-.htu-tips{background:rgba(6,182,212,.04);border:1px solid rgba(6,182,212,.12);border-radius:8px;padding:11px 13px;}
-.htu-tips-title{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:7px;letter-spacing:.04em;}
-.htu-tip-row{display:flex;align-items:flex-start;gap:7px;margin-bottom:5px;}
-.htu-tip-row:last-child{margin-bottom:0;}
-.htu-tip-dot{width:5px;height:5px;background:var(--accent);border-radius:50%;flex-shrink:0;margin-top:5px;}
-.htu-tip-text{font-size:11px;color:var(--text2);line-height:1.5;}
-</style>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5756895689951807" crossorigin="anonymous"></script>
+    /* ─── RIGHT PANEL — PARAMETERS + TOOLS ──────────────────── */
+    .sd-right {
+      width: 260px;
+      flex-shrink: 0;
+      background: #0b1420;
+      border-left: 1px solid rgba(6,182,212,0.1);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    .sd-right::-webkit-scrollbar { width: 4px; }
+    .sd-right::-webkit-scrollbar-thumb { background: rgba(6,182,212,0.15); border-radius: 4px; }
+    .rp-section {
+      padding: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .rp-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      color: #5a6a7a;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    /* Progress ring */
+    .progress-ring-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+    .progress-svg { transform: rotate(-90deg); }
+    .ring-bg { fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 4; }
+    .ring-fill {
+      fill: none;
+      stroke: #06b6d4;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-dasharray: 125.66;
+      stroke-dashoffset: 125.66;
+      transition: stroke-dashoffset 0.5s ease;
+    }
+    .ring-text {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #e8edf2;
+    }
+    .ring-sub { font-size: 0.65rem; color: #5a6a7a; margin-top: 2px; }
+
+    /* Quick spec panel */
+    .spec-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .spec-row:last-child { border-bottom: none; }
+    .spec-key {
+      font-size: 0.69rem;
+      color: #5a6a7a;
+    }
+    .spec-val {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.69rem;
+      font-weight: 700;
+      color: #06b6d4;
+    }
+    .spec-val.empty { color: #2a3a4a; }
+
+    /* Tool buttons */
+    .tool-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      background: #0f1825;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 8px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+      margin-bottom: 7px;
+      text-align: left;
+    }
+    .tool-btn:hover {
+      border-color: rgba(6,182,212,0.3);
+      background: rgba(6,182,212,0.05);
+    }
+    .tool-btn:last-child { margin-bottom: 0; }
+    .tool-icon {
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .tool-name {
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: #c8d4e0;
+    }
+    .tool-desc {
+      font-size: 0.67rem;
+      color: #5a6a7a;
+      margin-top: 1px;
+    }
+
+    /* ─── BOTTOM ACTION BAR ──────────────────────────────────── */
+    .sd-action-bar {
+      height: 56px;
+      flex-shrink: 0;
+      background: #0b1420;
+      border-top: 1px solid rgba(6,182,212,0.1);
+      display: flex;
+      align-items: center;
+      padding: 0 28px;
+      gap: 12px;
+      z-index: 10;
+    }
+    .btn-prev {
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,0.12);
+      color: #8a9ab0;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-prev:hover { border-color: rgba(6,182,212,0.4); color: #06b6d4; }
+    .btn-prev:disabled { opacity: 0.3; pointer-events: none; }
+    .btn-next {
+      background: #06b6d4;
+      border: none;
+      color: #080f14;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 9px 22px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-next:hover { background: #0891b2; }
+    .btn-generate {
+      background: linear-gradient(135deg, #06b6d4, #0891b2);
+      border: none;
+      color: #080f14;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 9px 28px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: none;
+    }
+    .btn-generate:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(6,182,212,0.3); }
+    .btn-generate.visible { display: flex; align-items: center; gap: 8px; }
+    .step-counter {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      color: #5a6a7a;
+      margin-left: auto;
+    }
+    .step-counter span { color: #06b6d4; font-weight: 700; }
+
+    /* Loading spinner */
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(8,15,20,0.3);
+      border-top-color: #080f14;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    .btn-generate.loading .spinner { display: block; }
+    .btn-generate.loading .btn-label { opacity: 0.7; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── NOTIFICATIONS ──────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0f1825;
+      border: 1px solid rgba(6,182,212,0.3);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 0.77rem;
+      color: #e8edf2;
+      z-index: 999;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      max-width: 300px;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-color: rgba(34,197,94,0.4); }
+    .toast.error { border-color: rgba(239,68,68,0.4); }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 1080px) {
+      .sd-right { display: none; }
+    }
+    @media (max-width: 760px) {
+      .sd-steps { display: none; }
+      .sd-wizard-body { padding: 16px; }
+      .form-row { grid-template-columns: 1fr; }
+      .form-row.col3 { grid-template-columns: 1fr 1fr; }
+      .review-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- ═══ NAV ═══ -->
-<nav class="hm-nav">
-  <a href="index.html" class="nav-logo">
-    <div class="logo-icon">HM</div>
-    Hydro<span class="logo-ai">Mind</span><span style="color:var(--text3);font-size:11px;font-weight:400;margin-left:2px;">.AI</span>
-  </a>
-  <div class="nav-links">
-    <a href="index.html" class="navbar-link">Home</a>
-    <a href="ai_advisor.html" class="navbar-link">AI Advisor</a>
-    <a href="crane_diagnostic.html" class="navbar-link">Crane Diag</a>
-    <a href="knowledge_base.html" class="navbar-link">Knowledge Base</a>
-    <a href="system_design.html" class="navbar-link active">System Design</a>
-    <a href="pricing.html" class="navbar-link">Pricing</a>
-  </div>
-  <div class="nav-right" id="hmNavCta">
-    <div class="nav-status"><div class="nav-status-dot"></div>AI Online</div>
-    <a href="#" class="btn btn-ghost btn-sm" onclick="openAuthModal('login')">Log In</a>
-    <a href="pricing.html" class="btn btn-primary btn-sm">Get Started →</a>
-  </div>
-</nav>
-
-<!-- ═══ LEFT SIDEBAR ═══ -->
-<aside class="hm-sidebar-left">
-  <div id="hmSidebarNoAuth">
-    <div class="sb-section-label">Navigation</div>
-    <a href="index.html" class="sb-nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Home
-    </a>
-    <a href="ai_advisor.html" class="sb-nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>AI Advisor
-    </a>
-    <a href="crane_diagnostic.html" class="sb-nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6m-6 4h6m-6 4h4"/></svg>Crane Diag
-    </a>
-    <a href="knowledge_base.html" class="sb-nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 006.5 7H20v13H6.5A2.5 2.5 0 014 17.5z"/></svg>KB
-    </a>
-    <a href="system_design.html" class="sb-nav-link active">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Sys Design
-    </a>
-    <a href="pricing.html" class="sb-nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Pricing
-    </a>
-    <div style="margin-top:6px;padding:10px 8px;background:var(--accent-dim);border:1px solid var(--accent-glow);border-radius:8px;text-align:center;">
-      <div style="font-size:10px;color:var(--text2);margin-bottom:6px;line-height:1.4;">Sign in to save designs</div>
-      <button onclick="openAuthModal('login')" style="width:100%;padding:6px;background:var(--accent);border:none;border-radius:6px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;">Sign In</button>
+  <!-- ═══════════════════ TOP NAV ═══════════════════════ -->
+  <nav class="hm-topnav">
+    <a href="index.html" class="nav-logo">Hydro<span>Mind</span></a>
+    <div class="nav-links">
+      <a href="ai_advisor.html">AI Advisor</a>
+      <a href="crane_diagnostic.html">Crane Diagnostic</a>
+      <a href="system_design.html" class="active">System Design</a>
+      <a href="knowledge_base.html">Knowledge Base</a>
+      <a href="pricing.html">Pricing</a>
     </div>
-  </div>
-  <div id="hmSidebarProfile" style="display:none;">
-    <div class="hm-profile-card">
-      <div class="sb-avatar-wrap">
-        <div class="sb-avatar" id="hmProfAvatar">AT</div>
+    <div class="nav-right">
+      <span class="nav-badge">BETA</span>
+      <div id="navUser">
+        <div id="navUserInitials" title="Profile">--</div>
       </div>
-      <div class="sb-username" id="hmProfName">User</div>
-      <div class="sb-useremail" id="hmProfEmail">user@email.com</div>
-      <div class="sb-plan-badge" id="hmProfPlan">Free</div>
+      <button class="btn-nav" id="navLoginBtn" onclick="openAuth && openAuth()">Login</button>
     </div>
-  </div>
-  <div id="hmSidebarHistory" style="display:none;">
-    <div class="sb-section-label">Saved Designs</div>
-    <div id="hmHistoryList"><div style="font-size:10px;color:var(--text3);text-align:center;padding:8px 0;">No saved designs</div></div>
-  </div>
-  <div id="hmSidebarLinks" style="display:none;">
-    <div class="sb-section-label" style="margin-top:6px;">Pages</div>
-    <a href="index.html" class="sb-nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Home</a>
-    <a href="ai_advisor.html" class="sb-nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>AI Advisor</a>
-    <a href="crane_diagnostic.html" class="sb-nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6m-6 4h6m-6 4h4"/></svg>Crane Diag</a>
-    <a href="knowledge_base.html" class="sb-nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 006.5 7H20v13H6.5A2.5 2.5 0 014 17.5z"/></svg>KB</a>
-    <a href="system_design.html" class="sb-nav-link active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Sys Design</a>
-    <a href="pricing.html" class="sb-nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Pricing</a>
-    <button id="hmLogoutBtn" onclick="doLogout()" style="display:none;width:100%;margin-top:6px;padding:7px;background:var(--danger-dim);border:1px solid rgba(239,68,68,.18);border-radius:7px;font-size:11px;font-weight:600;color:var(--danger);cursor:pointer;">Sign Out</button>
-  </div>
-</aside>
+  </nav>
 
-<!-- ═══ RIGHT SIDEBAR ═══ -->
-<aside class="hm-sidebar-right" id="hmAdSidebar">
-  <div class="sb-app-banner">
-    <div class="banner-title">HydroMind AI App</div>
-    <div class="banner-sub">Full platform on Android — free download worldwide</div>
-    <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" rel="noopener" class="qr-wrap" title="Scan to download HydroMind AI">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.hydromind.app&format=png&margin=4&qzone=1" alt="QR code" width="80" height="80" style="border-radius:4px;display:block;">
-    </a>
-    <div class="banner-dl">Scan to Download</div>
-    <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" rel="noopener" class="store-badge">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76a2 2 0 001.91-.19l11.12-6.37-2.93-2.93-10.1 9.49zM20.5 10.36L17.84 8.8l-3.19 3.19 3.19 3.2 2.69-1.56a2 2 0 000-3.27zM1.54.27A2 2 0 001 1.5v21l10.29-10.3L1.54.27zM14.65 12L4.09.24 3.18.24 14.65 12z"/></svg>
-      Google Play
-    </a>
-    <div style="font-size:9px;color:var(--text3);text-align:center;line-height:1.4;">6 installs · 177 countries<br>Version 1.0.39</div>
-  </div>
-  <div style="height:1px;background:var(--border);margin:2px 0;"></div>
-  <div id="hmNoAdBadge" style="display:none;background:var(--success-dim);border:1px solid rgba(16,185,129,.20);border-radius:8px;padding:9px 8px;text-align:center;">
-    <div style="font-size:11px;font-weight:700;color:var(--success);">✓ Ad-Free</div>
-    <div style="font-size:9.5px;color:var(--text2);margin-top:2px;">Pro subscriber benefit</div>
-  </div>
-  <div id="hmAd1" class="sb-ad">
-    <div class="sb-ad-label">Advertisement</div>
-    <ins class="adsbygoogle"
-         style="display:block;width:100%;min-height:100px;"
-         data-ad-client="ca-pub-5756895689951807"
-         data-ad-slot="auto"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
-  </div>
-  <div id="hmAd2" class="sb-pro-cta">
-    <h4>🚀 Go Pro</h4>
-    <ul>
-      <li>Unlimited System Designs</li>
-      <li>BOM Export (PDF/Excel)</li>
-      <li>86+ KB documents</li>
-      <li>Crane Diagnostic AI</li>
-      <li>Ad-free experience</li>
-    </ul>
-    <a href="pricing.html" class="upgrade-btn">Upgrade Now →</a>
-  </div>
-  <div id="hmAd3" class="sb-ad">
-    <div class="sb-ad-label">Sponsor Slot</div>
-    <ins class="adsbygoogle"
-         style="display:block;width:100%;min-height:100px;"
-         data-ad-client="ca-pub-5756895689951807"
-         data-ad-slot="auto"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
-  </div>
-</aside>
-
-
-<!-- ═══ MAIN CONTENT ═══ -->
-<main class="hm-page">
-
-  <!-- PAGE HERO -->
-  <div class="page-hero">
-    <div class="page-eyebrow"><span class="dot"></span>Hydraulic System Design Tool · AI-Assisted · Marine Grade</div>
-    <h1 class="page-h1">Hydraulic <span>System Design</span></h1>
-    <p class="page-sub">Define your application parameters and receive a complete hydraulic system specification — pump sizing, motor selection, valve architecture, filter ratings, tank volume, and full BOM.</p>
-  </div>
-
-  <!-- STEP PROGRESS BAR -->
-  <div class="sd-steps" id="sdStepBar">
-    <div class="sd-step active" id="tab1" onclick="goToStep(1)">
-      <div class="step-num">1</div>
-      <div><div class="step-label">Application</div><div class="step-sub">Type & duty</div></div>
-    </div>
-    <div class="sd-step" id="tab2" onclick="goToStep(2)">
-      <div class="step-num">2</div>
-      <div><div class="step-label">Parameters</div><div class="step-sub">Flow, pressure, power</div></div>
-    </div>
-    <div class="sd-step" id="tab3" onclick="goToStep(3)">
-      <div class="step-num">3</div>
-      <div><div class="step-label">Circuit</div><div class="step-sub">Architecture & control</div></div>
-    </div>
-    <div class="sd-step" id="tab4" onclick="goToStep(4)">
-      <div class="step-num">4</div>
-      <div><div class="step-label">Environment</div><div class="step-sub">Fluid, temp, class</div></div>
+  <!-- ═══════════════════ TICKER ════════════════════════ -->
+  <div class="ticker-bar">
+    <div class="ticker-label">DESIGN WIZARD</div>
+    <div class="ticker-track">
+      <div class="ticker-inner" id="tickerInner">
+        <span>SYSTEM TYPE: <em>—</em></span>
+        <span>WORKING PRESSURE: <em id="tWP">—</em></span>
+        <span>FLOW RATE: <em id="tFR">—</em></span>
+        <span>CIRCUIT: <em id="tCT">—</em></span>
+        <span>PRIME MOVER: <em id="tPM">—</em></span>
+        <span>ACTUATOR: <em id="tAC">—</em></span>
+        <span>COOLANT: <em id="tCO">—</em></span>
+        <span>FILTRATION: <em id="tFT">—</em></span>
+        <span>SYSTEM TYPE: <em>—</em></span>
+        <span>WORKING PRESSURE: <em>—</em></span>
+        <span>FLOW RATE: <em>—</em></span>
+        <span>CIRCUIT: <em>—</em></span>
+        <span>PRIME MOVER: <em>—</em></span>
+        <span>ACTUATOR: <em>—</em></span>
+        <span>COOLANT: <em>—</em></span>
+        <span>FILTRATION: <em>—</em></span>
+      </div>
     </div>
   </div>
 
-  <!-- ═══ STEP 1: APPLICATION TYPE ═══ -->
-  <div class="sd-panel active" id="panel1">
+  <!-- ═══════════════════ MAIN ══════════════════════════ -->
+  <div class="sd-main">
 
-    <!-- HOW TO USE DROPDOWN -->
-    <div class="htu-panel">
-      <div class="htu-header" onclick="toggleHtu()">
-        <div class="htu-header-left">
-          <div class="htu-header-icon">📋</div>
+    <!-- LEFT: STEPS -->
+    <aside class="sd-steps">
+      <div class="sd-steps-title">Design Wizard</div>
+
+      <div class="step-item active" data-step="1" onclick="goToStep(1)">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <div class="step-name">Application Brief</div>
+          <div class="step-sub">System type, location, duty</div>
+        </div>
+      </div>
+      <div class="step-connector"></div>
+
+      <div class="step-item" data-step="2" onclick="goToStep(2)">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <div class="step-name">Power Requirements</div>
+          <div class="step-sub">Pressure, flow, load</div>
+        </div>
+      </div>
+      <div class="step-connector"></div>
+
+      <div class="step-item" data-step="3" onclick="goToStep(3)">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <div class="step-name">Fluid & Thermal</div>
+          <div class="step-sub">Oil type, viscosity, cooling</div>
+        </div>
+      </div>
+      <div class="step-connector"></div>
+
+      <div class="step-item" data-step="4" onclick="goToStep(4)">
+        <div class="step-num">4</div>
+        <div class="step-text">
+          <div class="step-name">Control & Safety</div>
+          <div class="step-sub">Circuit type, valves, protection</div>
+        </div>
+      </div>
+      <div class="step-connector"></div>
+
+      <div class="step-item" data-step="5" onclick="goToStep(5)">
+        <div class="step-num">5</div>
+        <div class="step-text">
+          <div class="step-name">Review & Generate</div>
+          <div class="step-sub">Confirm inputs → AI design</div>
+        </div>
+      </div>
+
+      <div class="sd-saved-section">
+        <div class="sd-saved-title">Saved Designs</div>
+        <div class="saved-item"><div class="saved-dot"></div><div class="saved-name">Winch HPU — 250 bar</div></div>
+        <div class="saved-item"><div class="saved-dot"></div><div class="saved-name">Crane Slew — 280 bar</div></div>
+        <div class="saved-item" style="opacity:0.4;"><div class="saved-dot" style="background:#2a3a4a;"></div><div class="saved-name" style="color:#2a3a4a;">New design...</div></div>
+      </div>
+    </aside>
+
+    <!-- CENTER: WIZARD PANELS + OUTPUT -->
+    <div class="sd-center">
+      <div class="sd-panel-header">
+        <div class="sd-panel-title" id="panelTitle">Step 1 — Application Brief</div>
+        <div class="sd-panel-sub" id="panelSub">Define the system application, operating environment, and primary duty cycle.</div>
+      </div>
+
+      <div class="sd-wizard-body">
+
+        <!-- ─── STEP 1: APPLICATION BRIEF ─── -->
+        <div class="wizard-panel active" id="panel1">
+          <div class="info-card">
+            Enter the application context. The AI will use this to determine circuit architecture, component sizing strategy, and applicable standards (ISO 4413, DNVGL-ST-0378).
+          </div>
+
+          <div class="form-section">System Identification</div>
+          <div class="form-row">
+            <div class="field">
+              <label>Project / Vessel Name</label>
+              <input type="text" id="f_project" placeholder="e.g. FPSO Jasmine — HPU-03">
+            </div>
+            <div class="field">
+              <label>System Name</label>
+              <input type="text" id="f_sysname" placeholder="e.g. Anchor Winch Hydraulic System">
+            </div>
+          </div>
+
+          <div class="form-section">Application Type</div>
+          <div class="radio-group" id="rg_apptype">
+            <label class="radio-opt"><input type="radio" name="apptype" value="Deck Crane HPU"> 🏗 Deck Crane HPU</label>
+            <label class="radio-opt"><input type="radio" name="apptype" value="Anchor Winch"> ⚓ Anchor Winch</label>
+            <label class="radio-opt"><input type="radio" name="apptype" value="Mooring Winch"> 🔗 Mooring Winch</label>
+            <label class="radio-opt"><input type="radio" name="apptype" value="Steering Gear"> 🚢 Steering Gear</label>
+            <label class="radio-opt"><input type="radio" name="apptype" value="Thruster HPU"> 🌀 Thruster HPU</label>
+            <label class="radio-opt"><input type="radio" name="apptype" value="Valve Remote Control"> 🔧 Valve Remote Control</label>
+            <label class="radio-opt"><input type="radio" name="apptype" value="Custom / Other"> ⚙️ Custom / Other</label>
+          </div>
+
+          <div class="form-section">Operating Environment</div>
+          <div class="form-row col3">
+            <div class="field">
+              <label>Installation Type</label>
+              <select id="f_install">
+                <option value="">Select...</option>
+                <option>Offshore FPSO</option>
+                <option>Jack-up Platform</option>
+                <option>Drillship</option>
+                <option>OSV / PSV</option>
+                <option>Semi-submersible</option>
+                <option>Onshore / Shore-base</option>
+                <option>Mobile Crane (land)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Operating Temp. Range (°C)</label>
+              <select id="f_temprange">
+                <option value="">Select...</option>
+                <option>-10 to +40°C (Temperate)</option>
+                <option>-20 to +40°C (Arctic)</option>
+                <option>+10 to +55°C (Tropical)</option>
+                <option>0 to +50°C (General Marine)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Duty Classification</label>
+              <select id="f_duty">
+                <option value="">Select...</option>
+                <option>Continuous (24/7)</option>
+                <option>Intermittent (S3/S6)</option>
+                <option>Short-time (S2)</option>
+                <option>Standby / Emergency</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-section">Additional Context</div>
+          <div class="form-row col1">
+            <div class="field">
+              <label>Describe the Operation (optional — helps AI refine design)</label>
+              <textarea id="f_context" placeholder="e.g. Single drum anchor winch for FPSO mooring. Pull force 150T. Must hold load without power. DNVGL Class notation required."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── STEP 2: POWER REQUIREMENTS ─── -->
+        <div class="wizard-panel" id="panel2">
+          <div class="info-card">
+            Define the hydraulic power envelope. The AI will cross-check your inputs for circuit feasibility and flag any undersizing or mismatches.
+          </div>
+
+          <div class="form-section">Actuator Type & Load</div>
+          <div class="radio-group" id="rg_actuator">
+            <label class="radio-opt"><input type="radio" name="actuator" value="Hydraulic Motor"> ⚙️ Hydraulic Motor</label>
+            <label class="radio-opt"><input type="radio" name="actuator" value="Hydraulic Cylinder"> 🔩 Hydraulic Cylinder</label>
+            <label class="radio-opt"><input type="radio" name="actuator" value="Both (Motor + Cylinder)"> ↕️ Both</label>
+          </div>
+
+          <div class="form-section" style="margin-top:14px;">Working Pressure</div>
+          <div class="form-row col3">
+            <div class="field">
+              <label>Design Working Pressure (bar)</label>
+              <input type="number" id="f_wp" placeholder="e.g. 250">
+              <span class="field-hint">Normal operating setpoint</span>
+            </div>
+            <div class="field">
+              <label>Relief Valve Setting (bar)</label>
+              <input type="number" id="f_rv" placeholder="e.g. 280">
+              <span class="field-hint">≈ 110–115% of working pressure</span>
+            </div>
+            <div class="field">
+              <label>Max Allowable System Pressure (bar)</label>
+              <input type="number" id="f_maxp" placeholder="e.g. 350">
+              <span class="field-hint">Component pressure rating</span>
+            </div>
+          </div>
+
+          <div class="form-section">Flow Rate</div>
+          <div class="form-row">
+            <div class="field">
+              <label>Required Flow Rate (L/min)</label>
+              <input type="number" id="f_flow" placeholder="e.g. 120">
+              <span class="field-hint">Peak demand at actuator</span>
+            </div>
+            <div class="field">
+              <label>Rated Speed / Velocity</label>
+              <input type="text" id="f_speed" placeholder="e.g. 15 rpm / 0.2 m/s">
+            </div>
+          </div>
+
+          <div class="form-section">Load Characteristics</div>
+          <div class="form-row col3">
+            <div class="field">
+              <label>Load Type</label>
+              <select id="f_loadtype">
+                <option value="">Select...</option>
+                <option>Resistive (unidirectional)</option>
+                <option>Overrunning (gravity load)</option>
+                <option>Bidirectional</option>
+                <option>Alternating / Shock</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Max Load / Torque</label>
+              <input type="text" id="f_load" placeholder="e.g. 80 kN / 1200 Nm">
+            </div>
+            <div class="field">
+              <label>Load Holding Required?</label>
+              <select id="f_hold">
+                <option value="">Select...</option>
+                <option>Yes — static load hold</option>
+                <option>Yes — dynamic braking</option>
+                <option>No load holding required</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-section">Prime Mover</div>
+          <div class="form-row">
+            <div class="field">
+              <label>Prime Mover Type</label>
+              <select id="f_pm">
+                <option value="">Select...</option>
+                <option>Electric Motor (fixed speed)</option>
+                <option>Electric Motor (VFD)</option>
+                <option>Diesel Engine (direct drive)</option>
+                <option>Diesel Engine (PTO)</option>
+                <option>Shaft PTO (vessel main engine)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Rated Power / Speed</label>
+              <input type="text" id="f_pmpower" placeholder="e.g. 45 kW / 1450 rpm">
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── STEP 3: FLUID & THERMAL ─── -->
+        <div class="wizard-panel" id="panel3">
+          <div class="info-card">
+            Fluid selection, viscosity grade, and thermal management are critical for marine hydraulic reliability. The AI will recommend reservoir sizing, cooler duty, and oil specification.
+          </div>
+
+          <div class="form-section">Hydraulic Fluid</div>
+          <div class="form-row col3">
+            <div class="field">
+              <label>Fluid Type</label>
+              <select id="f_fluid">
+                <option value="">Select...</option>
+                <option>Mineral oil — ISO VG 46</option>
+                <option>Mineral oil — ISO VG 68</option>
+                <option>Mineral oil — ISO VG 32</option>
+                <option>Synthetic ester (biodegradable)</option>
+                <option>HVLP — Multigrade</option>
+                <option>Fire resistant — HFD (phosphate ester)</option>
+                <option>Fire resistant — HFDU</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Viscosity at Operating Temp</label>
+              <input type="text" id="f_visc" placeholder="e.g. 46 cSt at 40°C">
+            </div>
+            <div class="field">
+              <label>Fluid Cleanliness Target</label>
+              <select id="f_isocode">
+                <option value="">Select...</option>
+                <option>ISO 4406 — 17/15/12</option>
+                <option>ISO 4406 — 16/14/11</option>
+                <option>ISO 4406 — 15/13/10</option>
+                <option>ISO 4406 — 14/12/09</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-section">Reservoir</div>
+          <div class="form-row">
+            <div class="field">
+              <label>Reservoir Type</label>
+              <select id="f_restype">
+                <option value="">Select...</option>
+                <option>Vented (atmospheric)</option>
+                <option>Pressurised (bladder-type)</option>
+                <option>Vertical tank</option>
+                <option>Horizontal tank</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Available Space for Tank (L)</label>
+              <input type="number" id="f_tankspace" placeholder="e.g. 300">
+              <span class="field-hint">Rule of thumb: 3–5× pump flow rate (L/min)</span>
+            </div>
+          </div>
+
+          <div class="form-section">Thermal Management</div>
+          <div class="form-row col3">
+            <div class="field">
+              <label>Cooler Type</label>
+              <select id="f_cooler">
+                <option value="">Select...</option>
+                <option>Sea water cooled (shell & tube)</option>
+                <option>Air-blast cooler (fin fan)</option>
+                <option>Fresh water cooled (central cooling)</option>
+                <option>No cooler (natural convection only)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Target Oil Temperature (°C)</label>
+              <input type="number" id="f_oiltemp" placeholder="e.g. 55">
+            </div>
+            <div class="field">
+              <label>Max Ambient Temperature (°C)</label>
+              <input type="number" id="f_ambient" placeholder="e.g. 45">
+            </div>
+          </div>
+
+          <div class="form-section">Filtration Strategy</div>
+          <div class="check-grid" id="cg_filters">
+            <label class="check-opt"><input type="checkbox" value="Suction strainer (100–150 µm)"><span class="check-icon"></span>Suction strainer (100–150 µm)</label>
+            <label class="check-opt"><input type="checkbox" value="Pressure filter (10–25 µm)"><span class="check-icon"></span>Pressure filter (10–25 µm)</label>
+            <label class="check-opt"><input type="checkbox" value="Return line filter (10 µm)"><span class="check-icon"></span>Return line filter (10 µm)</label>
+            <label class="check-opt"><input type="checkbox" value="Offline / kidney loop filter"><span class="check-icon"></span>Offline / kidney loop filter</label>
+            <label class="check-opt"><input type="checkbox" value="Differential pressure indicators"><span class="check-icon"></span>Differential pressure indicators</label>
+            <label class="check-opt"><input type="checkbox" value="Magnetic plugs in reservoir"><span class="check-icon"></span>Magnetic plugs in reservoir</label>
+          </div>
+        </div>
+
+        <!-- ─── STEP 4: CONTROL & SAFETY ─── -->
+        <div class="wizard-panel" id="panel4">
+          <div class="info-card">
+            Define the control architecture and safety protection layers. The AI will determine valve selection, accumulator sizing, and protection hierarchy.
+          </div>
+
+          <div class="form-section">Circuit Architecture</div>
+          <div class="radio-group" id="rg_circuit">
+            <label class="radio-opt"><input type="radio" name="circuit" value="Open loop"> Open Loop</label>
+            <label class="radio-opt"><input type="radio" name="circuit" value="Closed loop (transmission)"> Closed Loop (Transmission)</label>
+            <label class="radio-opt"><input type="radio" name="circuit" value="Semi-closed loop"> Semi-Closed Loop</label>
+            <label class="radio-opt"><input type="radio" name="circuit" value="Load sensing"> Load Sensing (LS)</label>
+            <label class="radio-opt"><input type="radio" name="circuit" value="Pressure-compensated"> Pressure-Compensated</label>
+          </div>
+
+          <div class="form-section" style="margin-top:14px;">Control Method</div>
+          <div class="radio-group" id="rg_control">
+            <label class="radio-opt"><input type="radio" name="control" value="Manual (direct lever)"> Manual (Direct Lever)</label>
+            <label class="radio-opt"><input type="radio" name="control" value="Hydraulic pilot (joystick)"> Hydraulic Pilot (Joystick)</label>
+            <label class="radio-opt"><input type="radio" name="control" value="Electrohydraulic proportional"> Electrohydraulic Proportional</label>
+            <label class="radio-opt"><input type="radio" name="control" value="On/Off solenoid (binary)"> On/Off Solenoid (Binary)</label>
+          </div>
+
+          <div class="form-section" style="margin-top:14px;">Directional Control Valve (DCV)</div>
+          <div class="form-row col3">
+            <div class="field">
+              <label>DCV Type</label>
+              <select id="f_dcv">
+                <option value="">Select...</option>
+                <option>4/3 — Open centre</option>
+                <option>4/3 — Closed centre</option>
+                <option>4/3 — Tandem centre</option>
+                <option>4/3 — Float centre</option>
+                <option>4/2 — Spring return</option>
+                <option>Proportional directional valve</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>DCV Actuation</label>
+              <select id="f_dcvact">
+                <option value="">Select...</option>
+                <option>Hydraulic pilot (both sides)</option>
+                <option>Solenoid (24VDC)</option>
+                <option>Manual lever</option>
+                <option>Pneumatic pilot</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Number of Actuators</label>
+              <input type="number" id="f_numact" placeholder="e.g. 1" min="1" max="20">
+            </div>
+          </div>
+
+          <div class="form-section">Safety & Protection Devices</div>
+          <div class="check-grid" id="cg_safety">
+            <label class="check-opt"><input type="checkbox" value="Main system relief valve"><span class="check-icon"></span>Main system relief valve</label>
+            <label class="check-opt"><input type="checkbox" value="Anti-cavitation check valves"><span class="check-icon"></span>Anti-cavitation check valves</label>
+            <label class="check-opt"><input type="checkbox" value="Counterbalance valves (CBV)"><span class="check-icon"></span>Counterbalance valves (CBV)</label>
+            <label class="check-opt"><input type="checkbox" value="Brake valve / over-centre valve"><span class="check-icon"></span>Brake valve / over-centre valve</label>
+            <label class="check-opt"><input type="checkbox" value="Accumulator (nitrogen-charged)"><span class="check-icon"></span>Accumulator (nitrogen-charged)</label>
+            <label class="check-opt"><input type="checkbox" value="Emergency stop / unload circuit"><span class="check-icon"></span>Emergency stop / unload circuit</label>
+            <label class="check-opt"><input type="checkbox" value="Pressure switch & gauge points"><span class="check-icon"></span>Pressure switches & gauge points</label>
+            <label class="check-opt"><input type="checkbox" value="Thermal relief valves"><span class="check-icon"></span>Thermal relief valves</label>
+          </div>
+
+          <div class="form-section">Classification & Standards</div>
+          <div class="check-grid" id="cg_class">
+            <label class="check-opt"><input type="checkbox" value="DNV GL — DNVGL-ST-0378"><span class="check-icon"></span>DNV GL — DNVGL-ST-0378</label>
+            <label class="check-opt"><input type="checkbox" value="Lloyd's Register (LR)"><span class="check-icon"></span>Lloyd's Register (LR)</label>
+            <label class="check-opt"><input type="checkbox" value="Bureau Veritas (BV)"><span class="check-icon"></span>Bureau Veritas (BV)</label>
+            <label class="check-opt"><input type="checkbox" value="ISO 4413 — General rules"><span class="check-icon"></span>ISO 4413 — General rules</label>
+            <label class="check-opt"><input type="checkbox" value="ATEX / Ex-zone rated"><span class="check-icon"></span>ATEX / Ex-zone rated</label>
+            <label class="check-opt"><input type="checkbox" value="No classification required"><span class="check-icon"></span>No classification required</label>
+          </div>
+        </div>
+
+        <!-- ─── STEP 5: REVIEW & GENERATE ─── -->
+        <div class="wizard-panel" id="panel5">
+          <div class="info-card">
+            Review all parameters below. Click <strong>Generate Design</strong> to run the AI analysis. Output includes: component sizing, BOM, pipe schedule, commissioning parameters, and fault isolation points.
+          </div>
+
+          <div class="review-grid" id="reviewGrid">
+            <!-- Populated by JS -->
+          </div>
+
+          <!-- AI Output -->
+          <div class="ai-output-wrap" id="aiOutputWrap" style="margin-top:4px;">
+            <div class="ai-output-header">
+              <div class="ai-output-label">
+                <div class="ai-dot idle" id="aiDot"></div>
+                AI DESIGN OUTPUT
+              </div>
+              <div class="ai-output-actions">
+                <button class="btn-sm" onclick="copyOutput()">Copy</button>
+                <button class="btn-sm" onclick="exportReport()">Export PDF</button>
+                <button class="btn-sm danger" onclick="clearOutput()">Clear</button>
+              </div>
+            </div>
+            <div class="ai-output-body" id="aiOutputBody">
+              <span style="color:#2a3a4a;font-family:'Space Mono',monospace;font-size:0.72rem;">
+                — Awaiting design parameters. Complete all steps and click Generate Design. —
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /sd-wizard-body -->
+    </div><!-- /sd-center -->
+
+    <!-- RIGHT PANEL -->
+    <aside class="sd-right">
+
+      <!-- Progress -->
+      <div class="rp-section">
+        <div class="rp-title">Completion</div>
+        <div class="progress-ring-wrap">
+          <svg class="progress-svg" width="50" height="50" viewBox="0 0 50 50">
+            <circle class="ring-bg" cx="25" cy="25" r="20"/>
+            <circle class="ring-fill" cx="25" cy="25" r="20" id="ringFill"/>
+          </svg>
           <div>
-            <div class="htu-header-title">How to Use System Design Wizard</div>
-            <div class="htu-header-sub">Click to expand — 5-step guide + pro tips</div>
+            <div class="ring-text" id="ringPct">20%</div>
+            <div class="ring-sub">Step <span id="ringStep">1</span> of 5</div>
           </div>
         </div>
-        <div class="htu-arrow" id="htu-arrow">▼</div>
       </div>
-      <div class="htu-body" id="htu-body">
-        <div class="htu-steps">
-          <div class="htu-step">
-            <div class="htu-step-num">1</div>
-            <div>
-              <div class="htu-step-title">Select Application Type & Identification</div>
-              <div class="htu-step-desc">Choose the system type (winch, offshore crane, steering gear, thruster, etc.) and enter your project and vessel name. Select the installation environment and duty cycle — these set the AI context for all downstream sizing decisions.</div>
-            </div>
-          </div>
-          <div class="htu-step">
-            <div class="htu-step-num">2</div>
-            <div>
-              <div class="htu-step-title">Enter Power Requirements</div>
-              <div class="htu-step-desc">Specify working pressure (bar), required flow rate (L/min), actuator type, load characteristics, and prime mover rating. Always enter your actual design working pressure — not the component rated pressure. The AI will set relief valves at 110–115% automatically.</div>
-            </div>
-          </div>
-          <div class="htu-step">
-            <div class="htu-step-num">3</div>
-            <div>
-              <div class="htu-step-title">Select Fluid, Thermal & Circuit Architecture</div>
-              <div class="htu-step-desc">Choose hydraulic fluid type, ISO cleanliness target, cooler strategy, and circuit architecture (open loop, closed loop, load sensing). Select all safety devices required. For offshore classified systems, select your classification society — DNV, LR, or BV.</div>
-            </div>
-          </div>
-          <div class="htu-step">
-            <div class="htu-step-num">4</div>
-            <div>
-              <div class="htu-step-title">Review Summary & Generate AI Design</div>
-              <div class="htu-step-desc">Confirm all parameters in the summary review table, then click "Generate Design." The AI produces a structured 10-section output: circuit architecture, pump/motor sizing, DCV selection, pipe schedule, BOM table, thermal duty, accumulator sizing, and commissioning parameters.</div>
-            </div>
-          </div>
-        </div>
-        <div class="htu-tips">
-          <div class="htu-tips-title">💡 Pro Tips</div>
-          <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Enter <strong>actual working pressure</strong> — not component rated pressure — for accurate relief valve and pipe sizing.</div></div>
-          <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">For <strong>overrunning loads</strong> (gravity-loaded winches, crane luffing), tick Counterbalance Valves — the AI will include CBV setting calculations.</div></div>
-          <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Use the <strong>Application Description</strong> field for specific requirements (load hold time, fail-safe behaviour, redundancy) — this significantly improves AI design output.</div></div>
-          <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">After generation, click <strong>Copy</strong> to paste the BOM table directly into your procurement or engineering document.</div></div>
-          <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Use synthetic ester fluid (biodegradable) for environmentally sensitive offshore zones — the AI will adjust filtration and sealing recommendations accordingly.</div></div>
-        </div>
-      </div>
-    </div>
 
-    <div class="form-card">
-      <div class="form-card-title">Select Application Type</div>
-      <div class="app-type-grid" id="appTypeGrid">
-        <div class="app-type-card selected" data-app="winch" onclick="selectApp(this)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="9" stroke-dasharray="3 2"/></svg>
-          <div class="at-label">Winch / Hoist</div>
-          <div class="at-sub">Mooring, anchor, cargo</div>
-        </div>
-        <div class="app-type-card" data-app="crane" onclick="selectApp(this)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 3H7v18h10V3z"/><path d="M7 8H3v6h4"/><path d="M17 8h4v6h-4"/><path d="M10 12h4"/></svg>
-          <div class="at-label">Offshore Crane</div>
-          <div class="at-sub">Deck, knuckle boom</div>
-        </div>
-        <div class="app-type-card" data-app="steering" onclick="selectApp(this)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/></svg>
-          <div class="at-label">Steering Gear</div>
-          <div class="at-sub">Ram, rotary vane</div>
-        </div>
-        <div class="app-type-card" data-app="thruster" onclick="selectApp(this)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M15 8l4 4-4 4"/><path d="M9 4l-4 8 4 8"/></svg>
-          <div class="at-label">Thruster / Azimuth</div>
-          <div class="at-sub">Bow thruster, azipod</div>
-        </div>
-        <div class="app-type-card" data-app="ramp" onclick="selectApp(this)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 17l4-8 6 4 4-8"/><path d="M3 21h18"/></svg>
-          <div class="at-label">Ramp / Hatch</div>
-          <div class="at-sub">Watertight, cargo door</div>
-        </div>
-        <div class="app-type-card" data-app="deck" onclick="selectApp(this)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/></svg>
-          <div class="at-label">Deck Machinery</div>
-          <div class="at-sub">Capstan, windlass</div>
-        </div>
-        <div class="app-type-card" data-app="vcs" onclick="selectApp(this)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22V12M12 12L7 7M12 12l5-5"/><circle cx="12" cy="5" r="3"/><path d="M4 22h16"/></svg>
-          <div class="at-label">Valve Control Sys</div>
-          <div class="at-sub">Pipeline, manifold</div>
-        </div>
-        <div class="app-type-card" data-app="custom" onclick="selectApp(this)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
-          <div class="at-label">Custom</div>
-          <div class="at-sub">Describe below</div>
-        </div>
+      <!-- Quick Spec -->
+      <div class="rp-section">
+        <div class="rp-title">Quick Spec</div>
+        <div class="spec-row"><span class="spec-key">Pressure</span><span class="spec-val empty" id="sp_wp">—</span></div>
+        <div class="spec-row"><span class="spec-key">Flow Rate</span><span class="spec-val empty" id="sp_fr">—</span></div>
+        <div class="spec-row"><span class="spec-key">Circuit</span><span class="spec-val empty" id="sp_ct">—</span></div>
+        <div class="spec-row"><span class="spec-key">Fluid</span><span class="spec-val empty" id="sp_fl">—</span></div>
+        <div class="spec-row"><span class="spec-key">Cooler</span><span class="spec-val empty" id="sp_co">—</span></div>
+        <div class="spec-row"><span class="spec-key">Filtration</span><span class="spec-val empty" id="sp_ft">—</span></div>
       </div>
-    </div>
 
-    <div class="form-card">
-      <div class="form-card-title">System Identification</div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">Vessel / Platform Name <span>(optional)</span></label>
-          <input type="text" class="form-input" id="vesselName" placeholder="e.g. MV Atlantic Supplier">
-        </div>
-        <div class="form-group">
-          <label class="form-label">System Name / Tag</label>
-          <input type="text" class="form-input" id="sysTag" placeholder="e.g. Cargo Winch HPU No.1">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Design Standard</label>
-          <select class="form-select" id="designStd">
-            <option value="dnv">DNV-RU-SHIP (recommended)</option>
-            <option value="lr">Lloyd's Register</option>
-            <option value="abs">ABS</option>
-            <option value="bv">Bureau Veritas</option>
-            <option value="imo">IMO — general</option>
-            <option value="none">No specific class</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Number of Consumers / Actuators</label>
-          <select class="form-select" id="numConsumers">
-            <option value="1">1 — Single actuator</option>
-            <option value="2">2 — Two consumers</option>
-            <option value="3" selected>3–4 — Small group</option>
-            <option value="6">5–8 — Medium group</option>
-            <option value="12">9–16 — Large group</option>
-          </select>
-        </div>
-        <div class="form-group full">
-          <label class="form-label">Application Description <span>(for custom / special requirements)</span></label>
-          <textarea class="form-textarea" id="appDesc" placeholder="Describe the application, any special requirements, or constraints..."></textarea>
-        </div>
+      <!-- Tools -->
+      <div class="rp-section">
+        <div class="rp-title">Quick Tools</div>
+        <button class="tool-btn" onclick="showTool('pump')">
+          <div class="tool-icon">⚙️</div>
+          <div><div class="tool-name">Pump Sizer</div><div class="tool-desc">Displacement → flow → kW</div></div>
+        </button>
+        <button class="tool-btn" onclick="showTool('pipe')">
+          <div class="tool-icon">📐</div>
+          <div><div class="tool-name">Pipe Scheduler</div><div class="tool-desc">Velocity → bore → wall</div></div>
+        </button>
+        <button class="tool-btn" onclick="showTool('accum')">
+          <div class="tool-icon">🔋</div>
+          <div><div class="tool-name">Accumulator Sizer</div><div class="tool-desc">Volume → precharge</div></div>
+        </button>
+        <button class="tool-btn" onclick="showTool('cbv')">
+          <div class="tool-icon">🔒</div>
+          <div><div class="tool-name">CBV Setting</div><div class="tool-desc">110–130% load guide</div></div>
+        </button>
       </div>
-    </div>
 
-    <div class="sd-nav-row">
-      <div style="font-size:11px;color:var(--text3);">Step 1 of 4 — Select application type and identification</div>
-      <button class="btn btn-primary" onclick="goToStep(2)">Next: Parameters →</button>
-    </div>
+      <!-- Standards ref -->
+      <div class="rp-section">
+        <div class="rp-title">Standards Ref</div>
+        <div class="spec-row"><span class="spec-key" style="font-size:0.68rem;">ISO 4413</span><span class="spec-val" style="font-size:0.64rem; color:#8a9ab0;">General rules</span></div>
+        <div class="spec-row"><span class="spec-key" style="font-size:0.68rem;">DNVGL-ST-0378</span><span class="spec-val" style="font-size:0.64rem; color:#8a9ab0;">Offshore cranes</span></div>
+        <div class="spec-row"><span class="spec-key" style="font-size:0.68rem;">ISO 23309</span><span class="spec-val" style="font-size:0.64rem; color:#8a9ab0;">Integrated circuits</span></div>
+        <div class="spec-row"><span class="spec-key" style="font-size:0.68rem;">ISO 1219</span><span class="spec-val" style="font-size:0.64rem; color:#8a9ab0;">Symbols</span></div>
+      </div>
+
+    </aside>
+  </div><!-- /sd-main -->
+
+  <!-- ═══════════════════ ACTION BAR ════════════════════ -->
+  <div class="sd-action-bar">
+    <button class="btn-prev" id="btnPrev" onclick="prevStep()" disabled>← Back</button>
+    <button class="btn-next" id="btnNext" onclick="nextStep()">Next →</button>
+    <button class="btn-generate" id="btnGenerate" onclick="generateDesign()">
+      <div class="spinner" id="genSpinner"></div>
+      <span class="btn-label">⚡ Generate Design</span>
+    </button>
+    <span class="step-counter">Step <span id="stepCounterCur">1</span> of <span>5</span></span>
   </div>
 
-  <!-- ═══ STEP 2: HYDRAULIC PARAMETERS ═══ -->
-  <div class="sd-panel" id="panel2">
-    <div class="form-card">
-      <div class="form-card-title">Operating Parameters</div>
-      <div class="form-grid-3">
-        <div class="form-group">
-          <label class="form-label">Required Flow Rate <span>(L/min)</span></label>
-          <input type="number" class="form-input" id="flowRate" value="120" min="1" max="5000" placeholder="e.g. 120">
-          <div class="form-hint">Total flow at max speed. For motor: Q = D×N/1000</div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Working Pressure <span>(bar)</span></label>
-          <input type="number" class="form-input" id="workPress" value="250" min="10" max="450" placeholder="e.g. 250">
-          <div class="form-hint">Continuous operating pressure at actuator</div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Peak Pressure <span>(bar)</span></label>
-          <input type="number" class="form-input" id="peakPress" value="310" min="10" max="500" placeholder="e.g. 310">
-          <div class="form-hint">Maximum allowable transient pressure</div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Drive Motor Speed <span>(RPM)</span></label>
-          <input type="number" class="form-input" id="motorSpeed" value="1480" min="100" max="6000" placeholder="e.g. 1480">
-          <div class="form-hint">Prime mover rated speed</div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Duty Cycle <span>(%)</span></label>
-          <select class="form-select" id="dutyCycle">
-            <option value="25">25% — Intermittent (S2)</option>
-            <option value="50">50% — Moderate (S3)</option>
-            <option value="75" selected>75% — Heavy (S4)</option>
-            <option value="100">100% — Continuous (S1)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">System Efficiency Target <span>(%)</span></label>
-          <select class="form-select" id="sysEff">
-            <option value="75">75% — Basic design</option>
-            <option value="82" selected>82% — Standard marine</option>
-            <option value="88">88% — High efficiency</option>
-          </select>
-        </div>
-      </div>
-    </div>
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
 
-    <div class="form-card">
-      <div class="form-card-title">Actuator / Motor Type</div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">Primary Actuator Type</label>
-          <select class="form-select" id="actType">
-            <option value="hmotor">Hydraulic Motor (rotary)</option>
-            <option value="cylinder">Hydraulic Cylinder</option>
-            <option value="hmotor_cyl">Motor + Cylinder (combined)</option>
-            <option value="rotary_vane">Rotary Vane Actuator</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Motor / Cylinder Preference</label>
-          <select class="form-select" id="actPref">
-            <option value="radial">Radial Piston (high torque, low speed)</option>
-            <option value="axial" selected>Axial Piston (variable, high speed)</option>
-            <option value="gear_motor">Gear Motor (simple, cost-effective)</option>
-            <option value="vane_motor">Vane Motor (medium duty)</option>
-            <option value="cylinder_single">Cylinder — Single Acting</option>
-            <option value="cylinder_double">Cylinder — Double Acting</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Required Output Torque <span>(kNm, if motor)</span></label>
-          <input type="number" class="form-input" id="reqTorque" placeholder="e.g. 45" min="0">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Required Cylinder Force <span>(kN, if cylinder)</span></label>
-          <input type="number" class="form-input" id="reqForce" placeholder="e.g. 180" min="0">
-        </div>
-      </div>
-    </div>
-
-    <div class="sd-nav-row">
-      <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
-      <button class="btn btn-primary" onclick="goToStep(3)">Next: Circuit →</button>
-    </div>
-  </div>
-
-  <!-- ═══ STEP 3: CIRCUIT ARCHITECTURE ═══ -->
-  <div class="sd-panel" id="panel3">
-    <div class="form-card">
-      <div class="form-card-title">Circuit Architecture</div>
-      <div class="circuit-grid" id="circuitGrid">
-        <div class="circuit-card selected" data-circuit="open" onclick="selectCircuit(this)">
-          <div class="cc-badge">OPEN LOOP</div>
-          <div class="cc-title">Open Loop — Fixed Displacement</div>
-          <div class="cc-desc">Gear or vane pump → DCV → actuator → tank. Simple, robust, cost-effective. Good for intermittent duty.</div>
-          <div class="cc-apps">Windlass, hatches, ramps, steering assists</div>
-        </div>
-        <div class="circuit-card" data-circuit="open_var" onclick="selectCircuit(this)">
-          <div class="cc-badge">OPEN LOOP</div>
-          <div class="cc-title">Open Loop — Variable Displacement</div>
-          <div class="cc-desc">Variable axial piston pump with pressure compensator → DCV → actuator. Load-sensing available. Better efficiency.</div>
-          <div class="cc-apps">Cranes, heavy winches, multi-consumer HPU</div>
-        </div>
-        <div class="circuit-card" data-circuit="closed" onclick="selectCircuit(this)">
-          <div class="cc-badge">CLOSED LOOP</div>
-          <div class="cc-title">Closed Loop — Hydrostatic Drive</div>
-          <div class="cc-desc">Variable pump ↔ motor with charge circuit. High efficiency, infinitely variable speed, four-quadrant operation. Needs charge pump & flushing valve.</div>
-          <div class="cc-apps">Thrusters, anchor winches, propulsion</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-card">
-      <div class="form-card-title">Control Method</div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">Pump Control</label>
-          <select class="form-select" id="pumpCtrl">
-            <option value="pressure_comp">Pressure Compensator (PC)</option>
-            <option value="ls" selected>Load Sensing (LS) — recommended</option>
-            <option value="torque_limit">Torque Limiting</option>
-            <option value="fixed">Fixed Displacement (gear/vane)</option>
-            <option value="manual_servo">Manual Servo (closed loop)</option>
-            <option value="electro_servo">Electro-hydraulic Servo (closed loop)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Directional Control Valve Type</label>
-          <select class="form-select" id="dcvType">
-            <option value="manual">Manual Lever (direct)</option>
-            <option value="pilot_hyd">Pilot-Operated Hydraulic</option>
-            <option value="electrohyd" selected>Electro-hydraulic (solenoid pilot)</option>
-            <option value="prop_valve">Proportional Valve</option>
-            <option value="servo_valve">Servo Valve (high precision)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Counterbalance / Load Holding</label>
-          <select class="form-select" id="cbvReq">
-            <option value="yes_dual" selected>Dual CBV — suspended load (recommended)</option>
-            <option value="yes_single">Single CBV — unidirectional load</option>
-            <option value="pilot_check">Pilot-Operated Check Valves</option>
-            <option value="no">Not Required</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Brake / Motor Protection</label>
-          <select class="form-select" id="brakeReq">
-            <option value="spring_applied" selected>Spring-Applied Hydraulic Release (fail-safe)</option>
-            <option value="hydraulic">Hydraulic Multi-disc Brake</option>
-            <option value="none">No Dedicated Brake</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Redundancy</label>
-          <select class="form-select" id="redundancy">
-            <option value="none">Single train — no redundancy</option>
-            <option value="standby" selected>Duty / Standby pump arrangement</option>
-            <option value="full">Full redundant train (2×100%)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Accumulator</label>
-          <select class="form-select" id="accumReq">
-            <option value="none">Not Required</option>
-            <option value="pulsation">Pulsation Dampener only</option>
-            <option value="emergency" selected>Emergency / Backup Operation</option>
-            <option value="energy_storage">Energy Storage (peak shaving)</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <div class="sd-nav-row">
-      <button class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
-      <button class="btn btn-primary" onclick="goToStep(4)">Next: Environment →</button>
-    </div>
-  </div>
-
-  <!-- ═══ STEP 4: ENVIRONMENT & FLUID ═══ -->
-  <div class="sd-panel" id="panel4">
-    <div class="form-card">
-      <div class="form-card-title">Operating Environment</div>
-      <div class="form-grid-3">
-        <div class="form-group">
-          <label class="form-label">Fluid Type</label>
-          <select class="form-select" id="fluidType">
-            <option value="iso46" selected>ISO VG 46 — Mineral (standard)</option>
-            <option value="iso68">ISO VG 68 — Mineral (high load)</option>
-            <option value="hees46">HEES 46 — Biodegradable ester</option>
-            <option value="hwcf">HW-CF — Water glycol (fire resistant)</option>
-            <option value="hfdu">HFD-U — Phosphate ester (fire resistant)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Ambient Temp Range <span>(°C)</span></label>
-          <select class="form-select" id="ambientTemp">
-            <option value="-10_50">–10 to +50°C (temperate)</option>
-            <option value="-20_45" selected>–20 to +45°C (offshore standard)</option>
-            <option value="0_55">0 to +55°C (tropical)</option>
-            <option value="-35_40">–35 to +40°C (Arctic / subarctic)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Max Fluid Temperature <span>(°C)</span></label>
-          <input type="number" class="form-input" id="maxFluidTemp" value="65" min="40" max="100">
-          <div class="form-hint">System should be designed to maintain fluid below this limit</div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Desired Cleanliness Level</label>
-          <select class="form-select" id="cleanLevel">
-            <option value="iso18_16">ISO 4406 — 20/18/15 (general hydraulics)</option>
-            <option value="iso17_15" selected>ISO 4406 — 18/16/13 (servo/prop valves)</option>
-            <option value="iso16_14">ISO 4406 — 17/15/12 (precision servo)</option>
-            <option value="iso14_12">ISO 4406 — 16/14/11 (critical servo)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Offshore Location / ATEX Zone</label>
-          <select class="form-select" id="atexReq">
-            <option value="none" selected>No ATEX / standard marine</option>
-            <option value="zone2">ATEX Zone 2 — EEx e / EEx d</option>
-            <option value="zone1">ATEX Zone 1 — EEx d (flameproof)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Noise Level Requirement</label>
-          <select class="form-select" id="noiseReq">
-            <option value="standard">Standard (&lt;85 dBA)</option>
-            <option value="low" selected>Low Noise (&lt;75 dBA, pulsation dampened)</option>
-            <option value="acoustic">Acoustic Cabinet Required</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-card">
-      <div class="form-card-title">Additional Requirements</div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">Cooler Type</label>
-          <select class="form-select" id="coolerType">
-            <option value="sea_water" selected>Sea Water Cooled (plate type)</option>
-            <option value="air_blast">Air Blast Cooler</option>
-            <option value="fresh_water">Fresh Water Circuit</option>
-            <option value="none">No Active Cooling</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Filter Location</label>
-          <select class="form-select" id="filterLoc">
-            <option value="return_suction" selected>Return Line + Suction Strainer</option>
-            <option value="pressure_return">Pressure Line + Return Line</option>
-            <option value="offline">Offline Kidney Loop</option>
-            <option value="full">Full Filtration (all lines)</option>
-          </select>
-        </div>
-        <div class="form-group full">
-          <label class="form-label">Special Notes / Constraints</label>
-          <textarea class="form-textarea" id="specialNotes" placeholder="Space constraints, interface requirements, existing equipment to mate with, special sealing requirements..."></textarea>
-        </div>
-      </div>
-    </div>
-
-    <div class="sd-nav-row">
-      <button class="btn btn-secondary" onclick="goToStep(3)">← Back</button>
-      <button class="btn btn-primary" onclick="generateDesign()" style="padding:10px 24px;font-size:13px;">
-        <svg style="width:16px;height:16px;display:inline;margin-right:6px;vertical-align:-2px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        Generate Design
-      </button>
-    </div>
-  </div>
-
-  <!-- ═══ GENERATING ANIMATION ═══ -->
-  <div class="sd-generating" id="sdGenerating">
-    <div class="gen-spinner"></div>
-    <div class="gen-status" id="genStatusText">Analysing parameters...</div>
-    <div class="gen-steps">
-      <div class="gen-step active" id="gs1"><div class="gen-step-dot"></div>Calculating pump displacement & sizing</div>
-      <div class="gen-step" id="gs2"><div class="gen-step-dot"></div>Selecting motor / actuator specifications</div>
-      <div class="gen-step" id="gs3"><div class="gen-step-dot"></div>Sizing directional control valves</div>
-      <div class="gen-step" id="gs4"><div class="gen-step-dot"></div>Calculating filter ratings & tank volume</div>
-      <div class="gen-step" id="gs5"><div class="gen-step-dot"></div>Sizing cooler and thermal analysis</div>
-      <div class="gen-step" id="gs6"><div class="gen-step-dot"></div>Generating BOM and design notes</div>
-    </div>
-  </div>
+  <!-- Auth script -->
+  <script src="js/auth.js"></script>
 
   <script>
-  /* ═══ CONSTANTS ═══ */
-  var BACKEND = 'https://hydromind-backend.onrender.com/api/chat';
-  var currentStep = 1;
-  var selectedApp = 'winch';
-  var selectedCircuit = 'open';
+    // ─────────────────────────────────────────────
+    //  STATE
+    // ─────────────────────────────────────────────
+    let currentStep = 1;
+    const TOTAL_STEPS = 5;
+    const BACKEND = 'https://hydromind-backend.onrender.com/api/chat';
 
-  /* ═══ HOW TO USE TOGGLE ═══ */
-  function toggleHtu() {
-    var body  = document.getElementById('htu-body');
-    var arrow = document.getElementById('htu-arrow');
-    if (!body) return;
-    body.classList.toggle('open');
-    arrow.classList.toggle('open');
-  }
+    const STEP_META = [
+      { title: 'Step 1 — Application Brief',    sub: 'Define the system application, operating environment, and primary duty cycle.' },
+      { title: 'Step 2 — Power Requirements',   sub: 'Specify working pressure, flow rate, load characteristics, and prime mover.' },
+      { title: 'Step 3 — Fluid & Thermal',      sub: 'Select hydraulic fluid, reservoir sizing, cooling strategy, and filtration.' },
+      { title: 'Step 4 — Control & Safety',     sub: 'Define circuit architecture, valve selection, and safety protection devices.' },
+      { title: 'Step 5 — Review & Generate',    sub: 'Confirm all design parameters and generate your AI hydraulic system design.' },
+    ];
 
-  /* ═══ STEP NAVIGATION ═══ */
-  function goToStep(n) {
-    if (n < 1 || n > 4) return;
-    // Hide all panels
-    document.querySelectorAll('.sd-panel').forEach(function(p) {
-      p.classList.remove('active');
-    });
-    // Show target panel
-    var target = document.getElementById('panel' + n);
-    if (target) target.classList.add('active');
-    // Update tab bar
-    document.querySelectorAll('.sd-step').forEach(function(t) {
-      t.classList.remove('active', 'done');
-      var s = parseInt(t.id.replace('tab', ''));
-      if (s === n) t.classList.add('active');
-      if (s < n)  t.classList.add('done');
-    });
-    currentStep = n;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  /* ═══ APPLICATION TYPE SELECTION ═══ */
-  function selectApp(el) {
-    document.querySelectorAll('.app-type-card').forEach(function(c) {
-      c.classList.remove('selected');
-    });
-    el.classList.add('selected');
-    selectedApp = el.dataset.app;
-  }
-
-  /* ═══ CIRCUIT SELECTION ═══ */
-  function selectCircuit(el) {
-    document.querySelectorAll('.circuit-card').forEach(function(c) {
-      c.classList.remove('selected');
-    });
-    el.classList.add('selected');
-    selectedCircuit = el.dataset.circuit;
-  }
-
-  /* ═══ COLLECT ALL INPUTS ═══ */
-  function collectInputs() {
-    var g = function(id) {
-      var el = document.getElementById(id);
-      return el ? el.value : '';
-    };
-    return {
-      appType:      selectedApp,
-      projectName:  g('projectName'),
-      vesselName:   g('vesselName'),
-      craneModel:   g('craneModel'),
-      numActuators: g('numActuators'),
-      appDesc:      g('appDesc'),
-      flowRate:     g('flowRate'),
-      workPress:    g('workPress'),
-      peakPress:    g('peakPress'),
-      motorSpeed:   g('motorSpeed'),
-      dutyCycle:    g('dutyCycle'),
-      sysEff:       g('sysEff'),
-      actType:      g('actType'),
-      actPref:      g('actPref'),
-      reqTorque:    g('reqTorque'),
-      reqForce:     g('reqForce'),
-      circuit:      selectedCircuit,
-      pumpCtrl:     g('pumpCtrl'),
-      dcvType:      g('dcvType'),
-      cbvReq:       g('cbvReq'),
-      brakeReq:     g('brakeReq'),
-      redundancy:   g('redundancy'),
-      accumReq:     g('accumReq'),
-      fluidType:    g('fluidType'),
-      ambientTemp:  g('ambientTemp'),
-      maxFluidTemp: g('maxFluidTemp'),
-      cleanLevel:   g('cleanLevel'),
-      atexReq:      g('atexReq'),
-      noiseReq:     g('noiseReq'),
-      coolerType:   g('coolerType'),
-      filterLoc:    g('filterLoc'),
-      specialNotes: g('specialNotes')
-    };
-  }
-
-  /* ═══ BUILD PROMPT ═══ */
-  function buildPrompt(d) {
-    return 'You are a Senior Hydraulic Systems Engineer. Generate a complete structured hydraulic system design based on these inputs:\n\n' +
-      '**APPLICATION**\n' +
-      '- Type: ' + d.appType + ' | Project: ' + (d.projectName||'N/A') + ' | Vessel: ' + (d.vesselName||'N/A') + '\n' +
-      '- Model/Tag: ' + (d.craneModel||'N/A') + ' | Actuators: ' + (d.numActuators||1) + '\n' +
-      '- Description: ' + (d.appDesc||'Standard application') + '\n\n' +
-      '**HYDRAULIC PARAMETERS**\n' +
-      '- Flow Rate: ' + d.flowRate + ' L/min | Working Pressure: ' + d.workPress + ' bar | Peak: ' + d.peakPress + ' bar\n' +
-      '- Drive Speed: ' + d.motorSpeed + ' RPM | Duty: ' + d.dutyCycle + '% | Efficiency Target: ' + d.sysEff + '%\n' +
-      '- Actuator Type: ' + d.actType + ' | Preference: ' + d.actPref + '\n' +
-      '- Required Torque: ' + (d.reqTorque||'N/A') + ' kNm | Required Force: ' + (d.reqForce||'N/A') + ' kN\n\n' +
-      '**CIRCUIT ARCHITECTURE**\n' +
-      '- Circuit: ' + d.circuit + ' | Pump Control: ' + d.pumpCtrl + ' | DCV: ' + d.dcvType + '\n' +
-      '- CBV/Load Holding: ' + d.cbvReq + ' | Brake: ' + d.brakeReq + '\n' +
-      '- Redundancy: ' + d.redundancy + ' | Accumulator: ' + d.accumReq + '\n\n' +
-      '**ENVIRONMENT & FLUID**\n' +
-      '- Fluid: ' + d.fluidType + ' | Ambient: ' + d.ambientTemp + ' | Max Fluid Temp: ' + d.maxFluidTemp + '°C\n' +
-      '- Cleanliness: ' + d.cleanLevel + ' | ATEX: ' + d.atexReq + ' | Noise: ' + d.noiseReq + '\n' +
-      '- Cooler: ' + d.coolerType + ' | Filtration: ' + d.filterLoc + '\n' +
-      '- Notes: ' + (d.specialNotes||'None') + '\n\n' +
-      '---\n' +
-      'Provide a complete design covering:\n' +
-      '1. **Pump Selection** — type, displacement (cc/rev), control type, manufacturer recommendations\n' +
-      '2. **Motor / Cylinder Sizing** — displacement, speed range, torque/force output\n' +
-      '3. **Drive Power Calculation** — shaft power (kW), motor frame size recommendation\n' +
-      '4. **DCV & Valve Specification** — DCV size, pilot pressure, CBV settings (bar), relief valve settings\n' +
-      '5. **Reservoir Sizing** — volume (L), construction notes\n' +
-      '6. **Filtration Specification** — filter ratings (µm), ISO code achievable\n' +
-      '7. **Thermal Analysis** — heat rejection (kW), cooler sizing, expected steady-state temperature\n' +
-      '8. **Piping Schedule** — bore sizes for pressure, return, and drain lines (mm)\n' +
-      '9. **Accumulator Sizing** — volume (L), pre-charge pressure (bar)\n' +
-      '10. **BOM Summary** — table: Component | Specification | Qty | Manufacturer options\n' +
-      '11. **Commissioning Parameters** — initial settings, flushing requirements\n' +
-      '12. **Design Notes & Warnings** — any conflicts, undersizing risks, or standards requirements (ISO 4413, DNV-ST-0378)\n\n' +
-      'Use tables for BOM and piping. Be specific with numbers.';
-  }
-
-  /* ═══ ANIMATE GENERATION STEPS ═══ */
-  function animateGenSteps(callback) {
-    var steps = ['gs1','gs2','gs3','gs4','gs5','gs6'];
-    var i = 0;
-    var interval = setInterval(function() {
-      if (i > 0) {
-        var prev = document.getElementById(steps[i-1]);
-        if (prev) { prev.classList.remove('active'); prev.classList.add('done'); }
-      }
-      if (i < steps.length) {
-        var cur = document.getElementById(steps[i]);
-        if (cur) cur.classList.add('active');
-        i++;
-      } else {
-        clearInterval(interval);
-        if (callback) callback();
-      }
-    }, 1400);
-    return interval;
-  }
-
-  /* ═══ SHOW RESULT ═══ */
-  function showResult(html) {
-    var gen = document.getElementById('sdGenerating');
-    if (gen) gen.style.display = 'none';
-    var result = document.getElementById('sdResult');
-    if (!result) {
-      result = document.createElement('div');
-      result.id = 'sdResult';
-      result.style.cssText = 'margin-top:20px;';
-      var main = document.querySelector('main.hm-page');
-      if (main) main.appendChild(result);
-    }
-    result.innerHTML =
-      '<div style="background:var(--card);border:1.5px solid var(--accent-glow);border-radius:12px;overflow:hidden;">' +
-        '<div style="background:rgba(6,182,212,.08);border-bottom:1px solid rgba(6,182,212,.15);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;">' +
-          '<div style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.08em;">AI DESIGN OUTPUT</div>' +
-          '<div style="display:flex;gap:8px;">' +
-            '<button onclick="copyDesign()" style="background:transparent;border:1px solid rgba(6,182,212,.3);color:var(--accent);font-size:11px;font-weight:600;padding:4px 10px;border-radius:5px;cursor:pointer;">Copy</button>' +
-            '<button onclick="newDesign()" style="background:transparent;border:1px solid rgba(239,68,68,.3);color:#ef4444;font-size:11px;font-weight:600;padding:4px 10px;border-radius:5px;cursor:pointer;">New Design</button>' +
-          '</div>' +
-        '</div>' +
-        '<div id="sdResultBody" style="padding:18px;font-size:13px;color:var(--text2);line-height:1.7;">' + html + '</div>' +
-      '</div>';
-    result.scrollIntoView({ behavior: 'smooth' });
-  }
-
-  /* ═══ GENERATE DESIGN ═══ */
-  async function generateDesign() {
-    var d = collectInputs();
-    // Show generating panel
-    document.querySelectorAll('.sd-panel').forEach(function(p) { p.classList.remove('active'); });
-    var genDiv = document.getElementById('sdGenerating');
-    if (genDiv) genDiv.style.display = 'flex';
-    // Reset gen steps
-    ['gs1','gs2','gs3','gs4','gs5','gs6'].forEach(function(id) {
-      var el = document.getElementById(id);
-      if (el) { el.classList.remove('active','done'); }
-    });
-    var animInterval = animateGenSteps(null);
-    var prompt = buildPrompt(d);
-    try {
-      var res = await fetch(BACKEND, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [
-            {
-              role: 'user',
-              content: 'You are HydroMind AI — an expert hydraulic system design engineer specialising in marine and offshore applications. Generate a complete, structured hydraulic system design specification based on the parameters provided. Include: pump sizing rationale, motor selection, DCV architecture, filter ratings, tank volume, pipe sizing, BOM summary, and any applicable ISO 4413 / DNV-ST-0378 considerations. Be precise and technical.\n\n' + prompt
-            }
-          ]
-        })
-      });
-      clearInterval(animInterval);
-      if (!res.ok) throw new Error('Backend error ' + res.status);
-      var data = await res.json();
-      var text = (data.content && data.content[0] && data.content[0].text) || data.response || data.message || data.answer || 'No response received.';
-      showResult(formatOutput(text));
-      renderCircuitDiagram(d);
-    } catch(err) {
-      clearInterval(animInterval);
-      if (genDiv) genDiv.style.display = 'none';
-      showResult('<div style="color:#ef4444;font-size:13px;padding:8px 0;">Error: ' + err.message + '<br>Check connection to HydroMind backend (hydromind-backend.onrender.com). The server may be spinning up — try again in 30 seconds.</div>');
-    }
-  }
-
-  /* ═══ FORMAT OUTPUT — Full Professional Renderer ═══ */
-  function formatOutput(raw) {
-    var lines = (raw || '').split('\n');
-    var out = '';
-    var inTable = false, inUl = false, inOl = false, inPre = false;
-
-    function closeLists() {
-      if (inUl) { out += '</ul>'; inUl = false; }
-      if (inOl) { out += '</ol>'; inOl = false; }
-    }
-
-    function inlineFmt(t) {
-      return t
-        .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>')
-        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-        .replace(/`([^`]+)`/g,'<code style="background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.2);border-radius:4px;padding:1px 6px;font-family:var(--mono);font-size:11.5px;color:#22d3ee;">$1</code>')
-        .replace(/\*\*([^*]+)\*\*/g,'<strong style="color:#e2f0f5;font-weight:700;">$1</strong>')
-        .replace(/\*([^*]+)\*/g,'<em style="color:#7fb3c8;">$1</em>');
-    }
-
-    for (var i = 0; i < lines.length; i++) {
-      var line = lines[i];
-
-      /* Code blocks */
-      if (line.trim().indexOf('```') === 0) {
-        closeLists();
-        if (inPre) { out += '</code></pre>'; inPre = false; }
-        else { out += '<pre style="background:var(--surface);border:1px solid var(--border-md);border-radius:8px;padding:14px;font-family:var(--mono);font-size:11.5px;color:#e2f0f5;overflow-x:auto;margin:10px 0;line-height:1.6;"><code>'; inPre = true; }
-        continue;
-      }
-      if (inPre) { out += line.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '\n'; continue; }
-
-      /* Tables */
-      if (line.trim().indexOf('|') === 0 && line.trim().lastIndexOf('|') === line.trim().length - 1) {
-        if (line.match(/^\s*\|[-| :]+\|\s*$/)) continue; /* separator row */
-        if (!inTable) {
-          closeLists();
-          out += '<div style="overflow-x:auto;margin:12px 0;"><table style="border-collapse:collapse;width:100%;font-size:12px;">';
-          inTable = true;
-          var cells = line.split('|').filter(function(c,ix,a){return ix>0&&ix<a.length-1;});
-          out += '<thead><tr>';
-          cells.forEach(function(c){ out += '<th style="background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.2);padding:7px 12px;color:#22d3ee;font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;">' + inlineFmt(c.trim()) + '</th>'; });
-          out += '</tr></thead><tbody>';
-        } else {
-          var cells = line.split('|').filter(function(c,ix,a){return ix>0&&ix<a.length-1;});
-          out += '<tr>';
-          cells.forEach(function(c,ci){ out += '<td style="border:1px solid rgba(255,255,255,.07);padding:6px 12px;color:#7fb3c8;' + (ci===0?'font-weight:600;color:#e2f0f5;':'') + '">' + inlineFmt(c.trim()) + '</td>'; });
-          out += '</tr>';
+    // ─────────────────────────────────────────────
+    //  NAV AUTH
+    // ─────────────────────────────────────────────
+    function restoreAuthNav() {
+      try {
+        const u = JSON.parse(localStorage.getItem('hm_user') || 'null');
+        if (u && u.email) {
+          document.getElementById('navLoginBtn').style.display = 'none';
+          const nu = document.getElementById('navUser');
+          nu.style.display = 'flex';
+          const parts = (u.name || u.email).split(' ');
+          document.getElementById('navUserInitials').textContent =
+            (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
         }
-        continue;
+      } catch(e){}
+    }
+    document.addEventListener('DOMContentLoaded', restoreAuthNav);
+    window.addEventListener('load', restoreAuthNav);
+    setTimeout(restoreAuthNav, 400);
+
+    // ─────────────────────────────────────────────
+    //  WIZARD NAVIGATION
+    // ─────────────────────────────────────────────
+    function goToStep(n) {
+      if (n < 1 || n > TOTAL_STEPS) return;
+      currentStep = n;
+      renderStep();
+    }
+
+    function nextStep() {
+      if (currentStep < TOTAL_STEPS) {
+        currentStep++;
+        renderStep();
       }
-      if (inTable) { out += '</tbody></table></div>'; inTable = false; }
+    }
 
-      /* Horizontal rules */
-      if (line.trim() === '---' || line.trim() === '***') {
-        closeLists();
-        out += '<hr style="border:none;border-top:1px solid rgba(6,182,212,.15);margin:16px 0;">';
-        continue;
+    function prevStep() {
+      if (currentStep > 1) {
+        currentStep--;
+        renderStep();
+      }
+    }
+
+    function renderStep() {
+      // Panels
+      document.querySelectorAll('.wizard-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel' + currentStep).classList.add('active');
+
+      // Step items
+      document.querySelectorAll('.step-item').forEach(item => {
+        const s = parseInt(item.dataset.step);
+        item.classList.remove('active', 'done');
+        if (s === currentStep) item.classList.add('active');
+        if (s < currentStep) item.classList.add('done');
+      });
+
+      // Header
+      const m = STEP_META[currentStep - 1];
+      document.getElementById('panelTitle').textContent = m.title;
+      document.getElementById('panelSub').textContent   = m.sub;
+
+      // Buttons
+      document.getElementById('btnPrev').disabled = (currentStep === 1);
+      const isLast = currentStep === TOTAL_STEPS;
+      document.getElementById('btnNext').style.display    = isLast ? 'none' : '';
+      const gb = document.getElementById('btnGenerate');
+      if (isLast) gb.classList.add('visible');
+      else gb.classList.remove('visible');
+
+      // Counter
+      document.getElementById('stepCounterCur').textContent = currentStep;
+
+      // Progress ring
+      const pct = Math.round((currentStep / TOTAL_STEPS) * 100);
+      document.getElementById('ringPct').textContent = pct + '%';
+      document.getElementById('ringStep').textContent = currentStep;
+      const circumf = 125.66;
+      const offset = circumf - (circumf * pct / 100);
+      document.getElementById('ringFill').style.strokeDashoffset = offset;
+
+      // If step 5, populate review
+      if (currentStep === 5) populateReview();
+    }
+
+    // ─────────────────────────────────────────────
+    //  COLLECT ALL INPUTS
+    // ─────────────────────────────────────────────
+    function collectInputs() {
+      const g = id => (document.getElementById(id) || {}).value || '';
+      const radio = name => { const el = document.querySelector(`input[name="${name}"]:checked`); return el ? el.value : ''; };
+      const checks = cgId => {
+        const els = document.querySelectorAll(`#${cgId} input:checked`);
+        return Array.from(els).map(e => e.value);
+      };
+
+      return {
+        project:      g('f_project'),
+        sysname:      g('f_sysname'),
+        apptype:      radio('apptype'),
+        install:      g('f_install'),
+        temprange:    g('f_temprange'),
+        duty:         g('f_duty'),
+        context:      g('f_context'),
+        actuator:     radio('actuator'),
+        wp:           g('f_wp'),
+        rv:           g('f_rv'),
+        maxp:         g('f_maxp'),
+        flow:         g('f_flow'),
+        speed:        g('f_speed'),
+        loadtype:     g('f_loadtype'),
+        load:         g('f_load'),
+        hold:         g('f_hold'),
+        pm:           g('f_pm'),
+        pmpower:      g('f_pmpower'),
+        fluid:        g('f_fluid'),
+        visc:         g('f_visc'),
+        isocode:      g('f_isocode'),
+        restype:      g('f_restype'),
+        tankspace:    g('f_tankspace'),
+        cooler:       g('f_cooler'),
+        oiltemp:      g('f_oiltemp'),
+        ambient:      g('f_ambient'),
+        filters:      checks('cg_filters'),
+        circuit:      radio('circuit'),
+        control:      radio('control'),
+        dcv:          g('f_dcv'),
+        dcvact:       g('f_dcvact'),
+        numact:       g('f_numact'),
+        safety:       checks('cg_safety'),
+        classif:      checks('cg_class'),
+      };
+    }
+
+    // ─────────────────────────────────────────────
+    //  REVIEW PANEL
+    // ─────────────────────────────────────────────
+    function populateReview() {
+      const d = collectInputs();
+      const rg = document.getElementById('reviewGrid');
+
+      const cards = [
+        {
+          title: 'APPLICATION',
+          rows: [
+            ['Project',      d.project   || '—'],
+            ['System',       d.sysname   || '—'],
+            ['Type',         d.apptype   || '—'],
+            ['Installation', d.install   || '—'],
+            ['Duty',         d.duty      || '—'],
+          ]
+        },
+        {
+          title: 'POWER',
+          rows: [
+            ['Actuator',  d.actuator || '—'],
+            ['Work Press',d.wp ? d.wp + ' bar' : '—'],
+            ['Relief',    d.rv ? d.rv + ' bar' : '—'],
+            ['Flow Rate', d.flow ? d.flow + ' L/min' : '—'],
+            ['Prime Mover',d.pm || '—'],
+          ]
+        },
+        {
+          title: 'FLUID & THERMAL',
+          rows: [
+            ['Fluid',     d.fluid    || '—'],
+            ['ISO Code',  d.isocode  || '—'],
+            ['Cooler',    d.cooler   || '—'],
+            ['Target Temp',d.oiltemp ? d.oiltemp + '°C' : '—'],
+            ['Filtration', d.filters.length ? d.filters.length + ' devices' : '—'],
+          ]
+        },
+        {
+          title: 'CONTROL & SAFETY',
+          rows: [
+            ['Circuit',   d.circuit   || '—'],
+            ['Control',   d.control   || '—'],
+            ['DCV Type',  d.dcv       || '—'],
+            ['Safety',    d.safety.length ? d.safety.length + ' devices' : '—'],
+            ['Standards', d.classif.length ? d.classif.join(', ') : '—'],
+          ]
+        },
+      ];
+
+      rg.innerHTML = cards.map(c => `
+        <div class="review-card">
+          <div class="review-card-title">${c.title}</div>
+          ${c.rows.map(r => `
+            <div class="review-row">
+              <span class="review-key">${r[0]}</span>
+              <span class="review-val">${r[1]}</span>
+            </div>
+          `).join('')}
+        </div>
+      `).join('');
+
+      // Update quick spec panel
+      updateQuickSpec(d);
+    }
+
+    function updateQuickSpec(d) {
+      const set = (id, v, unit='') => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (v) { el.textContent = v + unit; el.classList.remove('empty'); }
+        else { el.textContent = '—'; el.classList.add('empty'); }
+      };
+      set('sp_wp', d.wp, ' bar');
+      set('sp_fr', d.flow, ' L/min');
+      set('sp_ct', d.circuit);
+      set('sp_fl', d.fluid ? d.fluid.split('—')[0].trim() : '');
+      set('sp_co', d.cooler ? d.cooler.split('(')[0].trim() : '');
+      set('sp_ft', d.filters.length ? d.filters.length + ' devices' : '');
+
+      // Update ticker
+      const t = id => {
+        const el = document.getElementById(id);
+        if (el) return el;
+        return null;
+      };
+      if (d.wp)     { updateTicker('tWP', d.wp + ' bar'); }
+      if (d.flow)   { updateTicker('tFR', d.flow + ' L/min'); }
+      if (d.circuit){ updateTicker('tCT', d.circuit); }
+      if (d.pm)     { updateTicker('tPM', d.pm.split(' ')[0]+' '+d.pm.split(' ')[1]); }
+      if (d.actuator){ updateTicker('tAC', d.actuator); }
+      if (d.cooler) { updateTicker('tCO', d.cooler.split('(')[0].trim()); }
+      if (d.filters.length) { updateTicker('tFT', d.filters.length + ' devices'); }
+    }
+
+    function updateTicker(id, val) {
+      // Update both copies in the duplicated ticker
+      document.querySelectorAll('#' + id).forEach(el => { el.textContent = val; });
+    }
+
+    // ─────────────────────────────────────────────
+    //  GENERATE DESIGN
+    // ─────────────────────────────────────────────
+    async function generateDesign() {
+      const d = collectInputs();
+      const gb = document.getElementById('btnGenerate');
+      const dot = document.getElementById('aiDot');
+      const body = document.getElementById('aiOutputBody');
+
+      gb.classList.add('loading');
+      dot.classList.remove('idle');
+      body.classList.add('generating');
+      body.innerHTML = '<span style="font-family:\'Space Mono\',monospace;font-size:0.72rem;color:#5a6a7a;">⟳ Generating hydraulic system design... This may take 15–30 seconds.</span>';
+
+      const prompt = buildPrompt(d);
+
+      try {
+        const res = await fetch(BACKEND, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: prompt,
+            systemContext: 'hydraulic_system_design'
+          })
+        });
+
+        if (!res.ok) throw new Error('Backend returned ' + res.status);
+        const data = await res.json();
+        const text = data.response || data.message || data.content || 'No response received.';
+        body.classList.remove('generating');
+        body.innerHTML = formatAIOutput(text);
+        dot.classList.add('idle');
+      } catch(err) {
+        body.classList.remove('generating');
+        body.innerHTML = `<span style="color:#ef4444;font-size:0.75rem;">Error: ${err.message}. Check connection to HydroMind backend.</span>`;
+        dot.classList.add('idle');
+        showToast('Backend error — check your connection.', 'error');
       }
 
-      /* Section headers — numbered like "1. PUMP SELECTION" or "## Heading" */
-      var numHeader = line.match(/^(\d+)\.\s+\*\*(.+)\*\*\s*$/) || line.match(/^(\d+)\.\s+([A-Z][A-Z &\/\-]+)$/);
-      if (numHeader) {
-        closeLists();
-        out += '<div style="display:flex;align-items:center;gap:10px;margin:22px 0 10px;padding:10px 14px;background:rgba(6,182,212,.06);border-left:3px solid #06b6d4;border-radius:0 8px 8px 0;">' +
-               '<span style="font-family:var(--mono);font-size:11px;font-weight:800;color:#06b6d4;background:rgba(6,182,212,.15);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' + numHeader[1] + '</span>' +
-               '<span style="font-family:var(--mono);font-size:12px;font-weight:800;color:#22d3ee;letter-spacing:.08em;text-transform:uppercase;">' + inlineFmt(numHeader[2]) + '</span></div>';
-        continue;
-      }
-
-      if (line.indexOf('#### ') === 0) { closeLists(); out += '<h4 style="font-size:12px;font-weight:700;color:#06b6d4;margin:12px 0 5px;letter-spacing:.04em;">' + inlineFmt(line.slice(5)) + '</h4>'; continue; }
-      if (line.indexOf('### ')  === 0) { closeLists(); out += '<h3 style="font-size:13px;font-weight:700;color:#22d3ee;margin:14px 0 6px;">' + inlineFmt(line.slice(4)) + '</h3>'; continue; }
-      if (line.indexOf('## ')   === 0) { closeLists(); out += '<h2 style="font-size:14px;font-weight:800;color:#22d3ee;margin:18px 0 8px;padding-bottom:5px;border-bottom:1px solid rgba(6,182,212,.2);">' + inlineFmt(line.slice(3)) + '</h2>'; continue; }
-      if (line.indexOf('# ')    === 0) { closeLists(); out += '<h2 style="font-size:15px;font-weight:800;color:#e2f0f5;margin:20px 0 10px;">' + inlineFmt(line.slice(2)) + '</h2>'; continue; }
-
-      /* Sub-section labels like "**PUMP SPECIFICATION:**" on own line */
-      if (line.match(/^\*\*[^*]+\*\*\s*:?\s*$/)) {
-        closeLists();
-        out += '<div style="font-size:11.5px;font-weight:800;color:#22d3ee;margin:12px 0 4px;letter-spacing:.04em;text-transform:uppercase;">' + inlineFmt(line) + '</div>';
-        continue;
-      }
-
-      /* Lists */
-      if (/^[-*•]\s/.test(line)) {
-        if (!inUl) { if (inOl){out+='</ol>';inOl=false;} out += '<ul style="margin:6px 0 6px 0;padding:0;list-style:none;">'; inUl = true; }
-        out += '<li style="display:flex;align-items:flex-start;gap:8px;padding:3px 0;color:#7fb3c8;font-size:12.5px;line-height:1.6;"><span style="color:#06b6d4;flex-shrink:0;margin-top:5px;">▸</span><span>' + inlineFmt(line.replace(/^[-*•]\s+/,'')) + '</span></li>';
-        continue;
-      }
-      if (/^\d+[.)]\s/.test(line)) {
-        var num = line.match(/^(\d+)/)[1];
-        if (!inOl) { if (inUl){out+='</ul>';inUl=false;} out += '<ol style="margin:6px 0 6px 0;padding:0;list-style:none;counter-reset:li;">'; inOl = true; }
-        out += '<li style="display:flex;align-items:flex-start;gap:8px;padding:3px 0;color:#7fb3c8;font-size:12.5px;line-height:1.6;"><span style="color:#06b6d4;font-family:var(--mono);font-size:10px;font-weight:800;flex-shrink:0;margin-top:4px;background:rgba(6,182,212,.1);border-radius:4px;padding:1px 5px;">' + num + '</span><span>' + inlineFmt(line.replace(/^\d+[.)]\s+/,'')) + '</span></li>';
-        continue;
-      }
-
-      /* Empty line */
-      if (line.trim() === '') { closeLists(); out += '<div style="height:6px;"></div>'; continue; }
-
-      /* Regular paragraph */
-      closeLists();
-      out += '<p style="margin:4px 0;color:#7fb3c8;font-size:12.5px;line-height:1.7;">' + inlineFmt(line) + '</p>';
+      gb.classList.remove('loading');
     }
 
-    closeLists();
-    if (inTable) out += '</tbody></table></div>';
-    if (inPre)   out += '</code></pre>';
-    return out;
-  }
+    function buildPrompt(d) {
+      const flist = d.filters.join(', ') || 'Not specified';
+      const slist = d.safety.join(', ') || 'Not specified';
+      const clist = d.classif.join(', ') || 'None specified';
 
-  /* ═══ COPY & NEW DESIGN ═══ */
-  function copyDesign() {
-    var el = document.getElementById('sdResultBody');
-    if (el) {
-      navigator.clipboard.writeText(el.innerText)
-        .then(function() { showToast('Design copied to clipboard.'); });
-    }
-  }
+      return `You are a Senior Hydraulic Systems Engineer. Generate a structured hydraulic system design based on the following inputs:
 
-  function newDesign() {
-    var result = document.getElementById('sdResult');
-    if (result) result.remove();
-    var circ = document.getElementById('sdCircuit');
-    if (circ) circ.remove();
-    var gen = document.getElementById('sdGenerating');
-    if (gen) gen.style.display = 'none';
-    goToStep(1);
-  }
+**APPLICATION**
+- Project: ${d.project || 'Not specified'}
+- System: ${d.sysname || 'Not specified'}
+- Type: ${d.apptype || 'Not specified'}
+- Installation: ${d.install || 'Not specified'}
+- Temp Range: ${d.temprange || 'Not specified'}
+- Duty: ${d.duty || 'Not specified'}
+- Context: ${d.context || 'None'}
 
-  /* ═══════════════════════════════════════════════════════════════════
-     HYDRAULIC CIRCUIT SCHEMATIC RENDERER — ISO 1219-1 / ISO 1219-2
-     All symbols per ISO 1219-1:2012. Lines orthogonal only.
-     Topology: Tank → Pump → Filter → PRV tap → DCV → Actuator
-               Return: Actuator → DCV → Cooler → Return Filter → Tank
-     ═══════════════════════════════════════════════════════════════════ */
-  function renderCircuitDiagram(d) {
-    var old = document.getElementById('sdCircuit');
-    if (old) old.remove();
+**POWER REQUIREMENTS**
+- Actuator: ${d.actuator || 'Not specified'}
+- Working Pressure: ${d.wp || '?'} bar | Relief: ${d.rv || '?'} bar | Max: ${d.maxp || '?'} bar
+- Flow Rate: ${d.flow || '?'} L/min | Speed/Velocity: ${d.speed || 'Not specified'}
+- Load Type: ${d.loadtype || 'Not specified'} | Load: ${d.load || 'Not specified'}
+- Load Holding: ${d.hold || 'Not specified'}
+- Prime Mover: ${d.pm || 'Not specified'} — ${d.pmpower || 'Not specified'}
 
-    var circuit  = d.circuit || 'open';
-    var isClosed = circuit === 'closed';
-    var isLS     = circuit === 'open_var';
-    var isVar    = isClosed || isLS;
-    var hasCBV   = (d.cbvReq   || '').toLowerCase() === 'yes';
-    var hasAccum = (d.accumReq || '').toLowerCase() === 'yes';
-    var hasBrake = (d.brakeReq || '').toLowerCase() === 'yes';
-    var isMotor  = (d.actType  || '').toLowerCase().indexOf('motor') > -1 ||
-                   (d.actPref  || '').toLowerCase().indexOf('motor') > -1;
-    var Q  = d.flowRate  || '\u2014';
-    var P  = d.workPress || '\u2014';
-    var Pp = d.peakPress || '\u2014';
+**FLUID & THERMAL**
+- Fluid: ${d.fluid || 'Not specified'} | Viscosity: ${d.visc || 'Not specified'}
+- ISO Cleanliness: ${d.isocode || 'Not specified'}
+- Reservoir: ${d.restype || 'Not specified'} | Space: ${d.tankspace || '?'} L
+- Cooler: ${d.cooler || 'Not specified'} | Target Oil Temp: ${d.oiltemp || '?'}°C | Ambient: ${d.ambient || '?'}°C
+- Filtration: ${flist}
 
-    /* ═══════════════════════════════════════════════
-       CORRECTED GRID v2 - W=1100 H=660
-       ═══════════════════════════════════════════════
-       KEY FIX: DCV sits ABOVE pressure rail.
-       dcvB (bottom of boxes) = Y_RAIL - 10 = 290
-       So DCV boxes span Y=240..290 — entirely above rail.
+**CONTROL & SAFETY**
+- Circuit: ${d.circuit || 'Not specified'} | Control: ${d.control || 'Not specified'}
+- DCV: ${d.dcv || 'Not specified'} — ${d.dcvact || 'Not specified'} | Actuators: ${d.numact || 1}
+- Safety Devices: ${slist}
+- Standards: ${clist}
 
-       ISO 1219-1 4/3 DCV port layout:
-         P port = BOTTOM of CENTRE box (pressure supply from rail below)
-         T port = BOTTOM of CENTRE box (separate stub, also exits bottom)
-         A port = TOP of CENTRE box, left quarter  (work port to actuator)
-         B port = TOP of CENTRE box, right quarter (work port from actuator)
+---
 
-       ALL FOUR ports connect to the CENTRE box only.
-       Left and right boxes show spool positions only.
+Provide a structured design covering:
+1. **Circuit Architecture** — recommended topology with justification
+2. **Pump Selection** — type, displacement range, control type
+3. **Motor / Cylinder Sizing** — displacement or bore/stroke guidance
+4. **DCV & Valve Specification** — DCV type, CBV settings if applicable, pilot ratios
+5. **Reservoir & Filtration** — recommended tank volume, filter ratings, ISO code path
+6. **Thermal Management** — cooler sizing guidance (heat rejection kW estimate)
+7. **Piping Schedule** — recommended bore sizes for pressure, return, and drain lines
+8. **Accumulator** — if required, sizing guidance and precharge pressure
+9. **Key Commissioning Parameters** — initial pressures, flush specifications, break-in procedure
+10. **BOM Summary** — concise table: Component | Specification | Quantity | Notes
 
-       With dcvL=485 dvW=50:
-         Centre box: X=535..585, centre=560
-         DCV_P_X  = 560  (centre bottom — P enters from below)
-         DCV_T_X  = 560  (centre bottom — T exits downward, same X as P)
-         DCV_A_X  = 547  (centre box top, 25% from left  = 535+12)
-         DCV_B_X  = 573  (centre box top, 75% from left  = 535+38)
-         DCV_P_Y  = 290  (= dcvB = Y_RAIL — bottom of boxes)
-         DCV_T_Y  = 290  (= dcvB — T also exits bottom, separate path)
-         DCV_A_Y  = 240  (= dcvT — top of boxes)
-         DCV_B_Y  = 240  (= dcvT — top of boxes)
-
-       P stub:  DCV_P_X(560), Y_RAIL(290) is junction on rail
-                Pressure rail already AT dcvB — no extra stub needed.
-                Rail connects directly to P port at (560, dcvB).
-
-       T stub:  DCV_T_X(560), dcvB(290) → DCV_T_X, Y_RET (straight down)
-
-       A line:  DCV_A_X(547), dcvT(240) → up to bypY_A(210) → actuator A
-       B line:  DCV_B_X(573), dcvT(240) → up to bypY_B(194) → actuator B
-
-       bypY_A = dcvT - 30 = 210  (30px clear above DCV top)
-       bypY_B = dcvT - 46 = 194  (46px above DCV top, 16px above bypY_A)
-       ═══════════════════════════════════════════════ */
-    var W=1100, H=660;
-    var Y_RAIL=290, Y_RET=470, Y_SUCT=350;
-    var TK_CX=70, TK_TOP=540, TK_HALF=36;
-    var PUMP_X=190, PUMP_Y=290, P_R=22, PMP_IN=168, PMP_OUT=212;
-    var FILT_X=320, FILT_Y=290, F_R=14, FLT_IN=306, FLT_OUT=334;
-    var PRV_X=420, PRV_CY=410, PRV_SZ=20, PRV_BOT=430, PRV_TOP=400, PRV_SPR=378;
-    var GAU_X=380, GAU_Y=210, G_R=10;
-    /* DCV: boxes sit ABOVE rail. dcvB = Y_RAIL = 290. dcvT = dcvB - dvH = 240 */
-    var dvW=50, dvH=50;
-    var dcvL=485, dcvR=635, DCV_X=560;
-    var dcvB=290, dcvT=240;  /* bottom=Y_RAIL, top=240 */
-    /* ALL ports on CENTRE box only */
-    var DCV_P_X=560, DCV_T_X=560;          /* P and T: centre bottom */
-    var DCV_A_X=547, DCV_B_X=573;          /* A and B: centre top, ±13px from centre */
-    var DCV_P_Y=290, DCV_T_Y=290;          /* = dcvB = Y_RAIL */
-    var DCV_A_Y=240, DCV_B_Y=240;          /* = dcvT */
-    /* Bypass channels above DCV top (dcvT=240) */
-    var bypY_A=210, bypY_B=194;            /* 30px and 46px above dcvT */
-    var cyX=780, cyY=268, cyW=90, cyH=44;
-    var CYL_A_X=790, CYL_A_Y=268, CYL_B_X=818, CYL_B_Y=268;
-    var M_R=24, MOT_X=830, MOT_Y=290, MOT_L=806, MOT_R=854;
-    var coolX=240, coolY=470, coolW=40, coolH=28;
-    var rfX=150, rfY=470, rfR=12;
-    var ACCUM_X=700, ACCUM_Y=200, ACC_R=16;
-    var solW=22, solH=22;
-    var C={bg:'#080f14',pres:'#06b6d4',ret:'#0e7490',drain:'#164e63',
-           pilot:'#a78bfa',relief:'#ef4444',amber:'#f59e0b',green:'#10b981',
-           t1:'#e2f0f5',t2:'#7fb3c8',t3:'#4a6b80',fc:'rgba(6,182,212,0.07)',fr:'rgba(239,68,68,0.08)'};
-
-    var s='';
-    function R(x,y,w,h,f,sk,sw,rx){return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'"'+(rx?' rx="'+rx+'"':'')+' fill="'+f+'" stroke="'+sk+'" stroke-width="'+(sw||1.5)+'"/>';}
-    function L(x1,y1,x2,y2,c,sw,dash){return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+c+'" stroke-width="'+(sw||1.5)+'"'+(dash?' stroke-dasharray="'+dash+'"':'')+' fill="none"/>';}
-    function PH(d2,c,sw,dash){return '<path d="'+d2+'" stroke="'+c+'" stroke-width="'+(sw||1.5)+'" fill="none"'+(dash?' stroke-dasharray="'+dash+'"':'')+'/>';}
-    function CI(cx,cy,r,f,sk,sw){return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+f+'" stroke="'+sk+'" stroke-width="'+(sw||1.5)+'"/>';}
-    function TX(x,y,t,f,fs,anc,wt){return '<text x="'+x+'" y="'+y+'" font-family="Space Mono,monospace" font-size="'+(fs||9)+'" fill="'+f+'" text-anchor="'+(anc||'middle')+'"'+(wt?' font-weight="'+wt+'"':'')+' dominant-baseline="central">'+t+'</text>';}
-    function JD(x,y){return CI(x,y,3.5,C.pres,C.pres,0);}
-
-    /* DEFS */
-    s+='<defs>';
-    s+='<marker id="mA" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0,0 8,3 0,6" fill="'+C.pres+'"/></marker>';
-    s+='<marker id="mR" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0,0 8,3 0,6" fill="'+C.ret+'"/></marker>';
-    s+='<clipPath id="fH"><circle cx="'+FILT_X+'" cy="'+FILT_Y+'" r="'+(F_R-1)+'"/></clipPath>';
-    s+='<clipPath id="fRF"><circle cx="'+rfX+'" cy="'+rfY+'" r="'+(rfR-1)+'"/></clipPath>';
-    s+='</defs>';
-
-    /* BACKGROUND + TITLE */
-    s+=R(0,0,W,H,C.bg,'none',0,10);
-    s+=R(0,0,W,42,'rgba(6,182,212,0.07)','rgba(6,182,212,0.18)',1,0);
-    var cLbl=isClosed?'CLOSED-LOOP HYDROSTATIC CIRCUIT':(isLS?'OPEN-LOOP LOAD-SENSING CIRCUIT':'OPEN-LOOP FIXED-DISPLACEMENT CIRCUIT');
-    s+=TX(16,21,cLbl,C.pres,11,'start','700');
-    s+=TX(W-16,21,'ISO 1219-1 \u00b7 ISO 4413 \u00b7 HydroMind.AI',C.t3,9,'end');
-
-    /* 1 RESERVOIR */
-    s+=L(TK_CX-TK_HALF,TK_TOP,TK_CX+TK_HALF,TK_TOP,C.pres,2);
-    s+=L(TK_CX-TK_HALF,TK_TOP+20,TK_CX+TK_HALF,TK_TOP+20,C.pres,2);
-    s+=L(TK_CX-TK_HALF,TK_TOP,TK_CX-TK_HALF,TK_TOP+20,C.pres,2);
-    s+=L(TK_CX+TK_HALF,TK_TOP,TK_CX+TK_HALF,TK_TOP+20,C.pres,2);
-    s+=R(TK_CX-TK_HALF+1,TK_TOP+1,TK_HALF*2-2,18,'rgba(6,182,212,0.12)','none',0);
-    s+=TX(TK_CX,TK_TOP+34,'T',C.t2,9,'middle','700');
-    s+=TX(TK_CX,TK_TOP+46,'RESERVOIR',C.t3,8);
-    s+=TX(TK_CX,TK_TOP+57,Q+' L/min',C.t3,8);
-
-    /* 2 PUMP (circle, triangle apex RIGHT=outlet) */
-    s+=CI(PUMP_X,PUMP_Y,P_R,C.fc,C.pres,2);
-    s+='<polygon points="'+(PUMP_X-12)+','+(PUMP_Y+12)+' '+(PUMP_X-12)+','+(PUMP_Y-12)+' '+(PUMP_X+14)+','+PUMP_Y+'" fill="'+C.pres+'" opacity="0.9"/>';
-    if(isVar){s+=L(PUMP_X-18,PUMP_Y+14,PUMP_X+18,PUMP_Y-14,C.t1,1.8);s+='<polygon points="'+(PUMP_X+14)+','+(PUMP_Y-14)+' '+(PUMP_X+20)+','+(PUMP_Y-18)+' '+(PUMP_X+18)+','+(PUMP_Y-10)+'" fill="'+C.t1+'"/>';}
-    s+=L(PUMP_X,PUMP_Y+P_R,PUMP_X,PUMP_Y+P_R+20,C.t2,2.5);
-    s+=TX(PUMP_X,PUMP_Y+P_R+32,'P',C.t2,9,'middle','700');
-    s+=TX(PUMP_X,PUMP_Y+P_R+44,isVar?'VAR PUMP':'FIXED PUMP',C.t3,8);
-    s+=TX(PUMP_X,PUMP_Y+P_R+55,P+' bar',C.t3,8);
-
-    /* 3 HP FILTER (circle + hatching) */
-    s+=CI(FILT_X,FILT_Y,F_R,C.fc,C.pres,1.5);
-    s+='<g clip-path="url(#fH)">';
-    for(var fi=-18;fi<=18;fi+=5)s+=L(FILT_X+fi-10,FILT_Y-F_R,FILT_X+fi+10,FILT_Y+F_R,C.pres,0.8);
-    s+='</g>';
-    s+=L(FILT_X,FILT_Y-F_R,FILT_X,FILT_Y-F_R-14,C.amber,1.2);
-    s+='<polygon points="'+(FILT_X-4)+','+(FILT_Y-F_R-14)+' '+(FILT_X+4)+','+(FILT_Y-F_R-14)+' '+FILT_X+','+(FILT_Y-F_R-21)+'" fill="'+C.amber+'" opacity="0.85"/>';
-    s+=TX(FILT_X,FILT_Y+F_R+13,'F',C.t2,9,'middle','700');
-    s+=TX(FILT_X,FILT_Y+F_R+24,'H.P. FILTER',C.t3,8);
-
-    /* 4 PRV: INLET=BOTTOM(PRV_BOT=430) DRAIN=TOP(PRV_TOP=400)
-       Spring above box top (drain side). Arrow points UP (inlet->drain). */
-    s+=R(PRV_X-PRV_SZ/2,PRV_TOP,PRV_SZ,PRV_SZ,C.fr,C.relief,1.5);
-    s+=L(PRV_X,PRV_BOT-4,PRV_X,PRV_TOP+6,C.relief,1.5);
-    s+='<polygon points="'+(PRV_X-3)+','+(PRV_TOP+6)+' '+(PRV_X+3)+','+(PRV_TOP+6)+' '+PRV_X+','+(PRV_TOP+1)+'" fill="'+C.relief+'"/>';
-    s+='<polyline points="'+PRV_X+','+PRV_TOP+' '+(PRV_X-4)+','+(PRV_TOP-5)+' '+(PRV_X+4)+','+(PRV_TOP-10)+' '+(PRV_X-4)+','+(PRV_TOP-15)+' '+PRV_X+','+PRV_SPR+'" stroke="'+C.relief+'" stroke-width="1.2" fill="none"/>';
-    s+=L(PRV_X-6,PRV_SPR,PRV_X+6,PRV_SPR,C.relief,1.8);
-    s+=TX(PRV_X+14,PRV_CY,'PRV',C.relief,8,'start','700');
-    s+=TX(PRV_X+14,PRV_CY+12,Pp+' bar',C.t3,8,'start');
-
-    /* 5 PRESSURE GAUGE */
-    s+=CI(GAU_X,GAU_Y,G_R,C.fc,C.amber,1.2);
-    s+=L(GAU_X,GAU_Y+2,GAU_X+6,GAU_Y-5,C.amber,1.5);
-    s+=TX(GAU_X,GAU_Y+20,'PI',C.amber,8,'middle','700');
-
-    /* ═══════════════════════════════════════════════
-       6. DCV 4/3 — ISO 1219-1 §6.4.1
-       Three equal boxes: dcvL=485..535 | 535..585 | 585..635
-       Boxes span Y=240(dcvT) to Y=290(dcvB=Y_RAIL)
-       DCV sits ABOVE pressure rail — bottom edge touches rail.
-
-       PORT CONNECTIONS (all on CENTRE box):
-         P enters BOTTOM-CENTRE = (DCV_P_X=560, dcvB=290)
-         T exits  BOTTOM-CENTRE = (DCV_T_X=560, dcvB=290)  separate stub down
-         A exits  TOP at 25% from left of centre box = (DCV_A_X=547, dcvT=240)
-         B exits  TOP at 75% from left of centre box = (DCV_B_X=573, dcvT=240)
-
-       Port stub lines:
-         P stub: short vertical from dcvB upward into box (drawn as part of box)
-         T stub: vertical from dcvB downward to Y_RET
-         A stub: short vertical from dcvT upward (bypY_A channel above)
-         B stub: short vertical from dcvT upward (bypY_B channel above)
-
-       Inside each box — flow arrows show spool positions:
-         Box0 LEFT  (extend):  P->A = down-left arrow, B->T = up-right arrow
-         Box1 CENTRE (neutral): X pattern = all ports blocked
-         Box2 RIGHT (retract): P->B = down-right arrow, A->T = up-left arrow
-       ═══════════════════════════════════════════════ */
-
-    /* Three position boxes */
-    for(var bi=0;bi<3;bi++) s+=R(dcvL+bi*dvW, dcvT, dvW, dvH, C.fc, C.pres, 1.5);
-
-    /* Box0 LEFT — extend position: two arrows */
-    s+='<line x1="'+(dcvL+14)+'" y1="'+(dcvT+8)+'" x2="'+(dcvL+14)+'" y2="'+(dcvT+42)+
-        '" stroke="'+C.pres+'" stroke-width="1.2" marker-end="url(#mA)" fill="none"/>';
-    s+='<line x1="'+(dcvL+36)+'" y1="'+(dcvT+42)+'" x2="'+(dcvL+36)+'" y2="'+(dcvT+8)+
-        '" stroke="'+C.ret+'" stroke-width="1.2" marker-end="url(#mR)" fill="none"/>';
-
-    /* Box1 CENTRE — neutral (critical centre): X pattern */
-    var b1x=dcvL+dvW;
-    s+=L(b1x+6, dcvT+8,  b1x+44, dcvT+42, C.t3, 1.1);
-    s+=L(b1x+44,dcvT+8,  b1x+6,  dcvT+42, C.t3, 1.1);
-    /* P port stub — short line UP from dcvB into box centre */
-    s+=L(DCV_P_X, dcvB, DCV_P_X, dcvB-8, C.pres, 1.8);
-    /* T port stub — short line UP from dcvB into box centre (same X, shown offset) */
-    s+=L(DCV_T_X+6, dcvB, DCV_T_X+6, dcvB-8, C.ret, 1.5);
-    /* A port stub — short line DOWN from dcvT (will connect to bypass above) */
-    s+=L(DCV_A_X, dcvT, DCV_A_X, dcvT+8, C.pres, 1.8);
-    /* B port stub — short line DOWN from dcvT */
-    s+=L(DCV_B_X, dcvT, DCV_B_X, dcvT+8, C.ret, 1.5);
-
-    /* Box2 RIGHT — retract position: two arrows */
-    s+='<line x1="'+(dcvL+2*dvW+36)+'" y1="'+(dcvT+8)+'" x2="'+(dcvL+2*dvW+36)+'" y2="'+(dcvT+42)+
-        '" stroke="'+C.pres+'" stroke-width="1.2" marker-end="url(#mA)" fill="none"/>';
-    s+='<line x1="'+(dcvL+2*dvW+14)+'" y1="'+(dcvT+42)+'" x2="'+(dcvL+2*dvW+14)+'" y2="'+(dcvT+8)+
-        '" stroke="'+C.ret+'" stroke-width="1.2" marker-end="url(#mR)" fill="none"/>';
-
-    /* Port labels — P and T below centre box, A and B above centre box */
-    s+=TX(DCV_P_X-8, dcvB+12, 'P', C.pres, 8, 'middle', '700');
-    s+=TX(DCV_T_X+8, dcvB+12, 'T', C.ret,  8, 'middle', '700');
-    s+=TX(DCV_A_X,   dcvT-12, 'A', C.t2,   8, 'middle', '700');
-    s+=TX(DCV_B_X,   dcvT-12, 'B', C.t2,   8, 'middle', '700');
-
-    /* Solenoids — butting against outer box edges at mid-height of boxes */
-    var solMY = dcvT + dvH/2;  /* vertical mid of boxes = 265 */
-    s+=R(dcvL-solW-3, solMY-solH/2, solW, solH, 'rgba(245,158,11,0.1)', C.amber, 1.2);
-    for(var si=5;si<solW;si+=5) s+=L(dcvL-solW-3+si, solMY-solH/2, dcvL-solW-3+si, solMY+solH/2, C.amber, 0.6);
-    s+=TX(dcvL-solW/2-3, solMY+solH/2+11, 'SOL A', C.amber, 7);
-    s+=R(dcvR+3, solMY-solH/2, solW, solH, 'rgba(245,158,11,0.1)', C.amber, 1.2);
-    for(var si2=5;si2<solW;si2+=5) s+=L(dcvR+3+si2, solMY-solH/2, dcvR+3+si2, solMY+solH/2, C.amber, 0.6);
-    s+=TX(dcvR+solW/2+3, solMY+solH/2+11, 'SOL B', C.amber, 7);
-    /* Spring return triangles */
-    s+='<polygon points="'+(dcvL-solW-9)+','+(solMY-9)+' '+(dcvL-solW-9)+','+(solMY+9)+' '+(dcvL-solW-24)+','+solMY+'" fill="none" stroke="'+C.t3+'" stroke-width="1.2"/>';
-    s+='<polygon points="'+(dcvR+solW+9)+','+(solMY-9)+' '+(dcvR+solW+9)+','+(solMY+9)+' '+(dcvR+solW+24)+','+solMY+'" fill="none" stroke="'+C.t3+'" stroke-width="1.2"/>';
-
-    s+=TX(DCV_X, dcvB+22, '4/3 PROPORTIONAL DCV',  C.t2, 8, 'middle', '700');
-    s+=TX(DCV_X, dcvB+33, 'CRITICAL CENTRE',         C.t3, 7);
-
-    /* 7 ACTUATOR */
-    if(isMotor){
-      s+=CI(MOT_X,MOT_Y,M_R,C.fc,C.pres,2);
-      s+='<polygon points="'+(MOT_X+13)+','+MOT_Y+' '+(MOT_X-10)+','+(MOT_Y-13)+' '+(MOT_X-10)+','+(MOT_Y+13)+'" fill="'+C.pres+'" opacity="0.9"/>';
-      s+=L(MOT_X+M_R,MOT_Y,MOT_X+M_R+26,MOT_Y,C.t2,3);
-      s+=R(MOT_X+M_R+23,MOT_Y-8,14,16,C.fc,C.t3,1,2);
-      s+=PH('M'+MOT_X+' '+(MOT_Y+M_R)+' L'+MOT_X+' '+(Y_RET+28)+' L'+TK_CX+' '+(Y_RET+28)+' L'+TK_CX+' '+TK_TOP,C.drain,1,'4 3');
-      s+=TX(MOT_X,MOT_Y+M_R+38,'M',C.t2,9,'middle','700');
-      s+=TX(MOT_X,MOT_Y+M_R+50,'HYD MOTOR',C.t3,8);
-    } else {
-      var pisX=cyX+Math.round(cyW*0.42);
-      s+=R(cyX,cyY,cyW,cyH,C.fc,C.pres,1.5);
-      s+=L(cyX,cyY,cyX,cyY+cyH,C.pres,4);
-      s+=L(cyX+cyW,cyY,cyX+cyW,cyY+cyH,C.pres,4);
-      s+=L(pisX,cyY+1,pisX,cyY+cyH-1,C.pres,3);
-      s+=L(cyX+cyW,cyY+cyH/2,cyX+cyW+32,cyY+cyH/2,C.t1,4);
-      s+=L(CYL_A_X,CYL_A_Y,CYL_A_X,CYL_A_Y-16,C.pres,1.5);
-      s+=L(CYL_B_X,CYL_B_Y,CYL_B_X,CYL_B_Y-16,C.ret,1.5);
-      s+=TX(CYL_A_X,CYL_A_Y-26,'A',C.t2,8,'middle','700');
-      s+=TX(CYL_B_X,CYL_B_Y-26,'B',C.t2,8,'middle','700');
-      if(hasCBV){
-        var cbvY=CYL_A_Y-60;
-        s+=R(CYL_A_X-9,cbvY,18,18,'rgba(16,185,129,0.1)',C.green,1.2);
-        s+=L(CYL_A_X,cbvY+12,CYL_A_X,cbvY+6,C.green,1.2);
-        s+='<polygon points="'+(CYL_A_X-3)+','+(cbvY+6)+' '+(CYL_A_X+3)+','+(cbvY+6)+' '+CYL_A_X+','+(cbvY+1)+'" fill="'+C.green+'"/>';
-        s+=TX(CYL_A_X,cbvY-9,'CBV',C.green,7,'middle','700');
-        s+=R(CYL_B_X-9,cbvY,18,18,'rgba(16,185,129,0.1)',C.green,1.2);
-        s+=L(CYL_B_X,cbvY+12,CYL_B_X,cbvY+6,C.green,1.2);
-        s+='<polygon points="'+(CYL_B_X-3)+','+(cbvY+6)+' '+(CYL_B_X+3)+','+(cbvY+6)+' '+CYL_B_X+','+(cbvY+1)+'" fill="'+C.green+'"/>';
-        s+=TX(CYL_B_X,cbvY-9,'CBV',C.green,7,'middle','700');
-      }
-      s+=TX(cyX+cyW/2,cyY+cyH+15,'CYLINDER',C.t2,8,'middle','700');
-      s+=TX(cyX+cyW/2,cyY+cyH+26,'DOUBLE-ACTING',C.t3,7);
+Use tables where appropriate. Be specific — state component specifications, not general descriptions. Flag any input conflicts or sizing concerns explicitly.`;
     }
 
-    /* 8 ACCUMULATOR */
-    if(hasAccum){
-      s+=CI(ACCUM_X,ACCUM_Y,ACC_R,C.fc,C.pres,1.5);
-      s+=L(ACCUM_X-ACC_R,ACCUM_Y,ACCUM_X+ACC_R,ACCUM_Y,C.pres,1.5);
-      s+=TX(ACCUM_X,ACCUM_Y-8,'N\u2082',C.t3,8);
-      s+=TX(ACCUM_X,ACCUM_Y+26,'ACC',C.t2,8,'middle','700');
+    function formatAIOutput(text) {
+      // Convert markdown-like formatting to HTML
+      let html = text
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/\*\*(.+?)\*\*/g, '<strong style="color:#e8edf2;">$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/^#{1,3} (.+)$/gm, '<div style="color:#06b6d4;font-weight:700;font-family:\'Space Mono\',monospace;font-size:0.75rem;margin:14px 0 6px;letter-spacing:0.05em;">$1</div>')
+        .replace(/\n\n/g, '<br><br>')
+        .replace(/\n/g, '<br>');
+
+      // Simple table detection: lines with | characters
+      const tableRegex = /(<br>)?(\|.+\|(<br>)?)+((<br>)?\|[-| ]+\|(<br>)?)?/g;
+      html = html.replace(tableRegex, match => convertTable(match));
+
+      return '<div style="color:#c8d4e0;">' + html + '</div>';
     }
 
-    /* 9 COOLER */
-    s+=R(coolX-coolW/2,coolY-coolH/2,coolW,coolH,C.fc,C.ret,1.5);
-    s+=L(coolX-coolW/2+2,coolY-coolH/2+2,coolX+coolW/2-2,coolY+coolH/2-2,C.ret,0.8);
-    s+=L(coolX+coolW/2-2,coolY-coolH/2+2,coolX-coolW/2+2,coolY+coolH/2-2,C.ret,0.8);
-    s+=TX(coolX,coolY+coolH/2+12,'HE',C.t2,8,'middle','700');
-    s+=TX(coolX,coolY+coolH/2+23,'COOLER',C.t3,7);
-
-    /* 10 RETURN FILTER */
-    s+=CI(rfX,rfY,rfR,C.fc,C.ret,1.5);
-    s+='<g clip-path="url(#fRF)">';
-    for(var fi2=-14;fi2<=14;fi2+=5)s+=L(rfX+fi2-8,rfY-rfR,rfX+fi2+8,rfY+rfR,C.ret,0.8);
-    s+='</g>';
-    s+=TX(rfX,rfY+rfR+12,'RF',C.t2,8,'middle','700');
-    s+=TX(rfX,rfY+rfR+23,'RTN FILTER',C.t3,7);
-
-    /* 11 BRAKE */
-    if(hasBrake){
-      var brkX=isMotor?MOT_X+M_R+60:cyX+cyW+70, brkY=Y_RAIL;
-      s+=R(brkX-14,brkY-14,28,28,'rgba(245,158,11,0.08)',C.amber,1.5);
-      s+=L(brkX-6,brkY+6,brkX-6,brkY-6,C.amber,1.5);
-      s+='<polygon points="'+(brkX-9)+','+(brkY-6)+' '+(brkX-3)+','+(brkY-6)+' '+(brkX-6)+','+(brkY-11)+'" fill="'+C.amber+'"/>';
-      s+=TX(brkX+18,brkY,'BRAKE',C.amber,7,'start');
+    function convertTable(raw) {
+      const lines = raw.replace(/<br>/g, '\n').split('\n').filter(l => l.trim().startsWith('|'));
+      if (lines.length < 2) return raw;
+      let tableHtml = '<table>';
+      lines.forEach((line, i) => {
+        if (line.replace(/\|/g,'').replace(/-/g,'').trim() === '') return; // separator row
+        const cells = line.split('|').filter(c => c.trim() !== '');
+        const tag = i === 0 ? 'th' : 'td';
+        tableHtml += '<tr>' + cells.map(c => `<${tag}>${c.trim()}</${tag}>`).join('') + '</tr>';
+      });
+      tableHtml += '</table>';
+      return tableHtml;
     }
 
-    /* ====== FLOW LINES (ALL NAMED CONSTANTS, NO INLINE ARITHMETIC) ======
-
-       PRESSURE PATH:
-         Suction:  TK_CX(70),TK_TOP(540) -> TK_CX,Y_SUCT(350) -> PMP_IN(168),Y_SUCT -> PMP_IN,Y_RAIL(290)
-         Main:     PMP_OUT(212),Y_RAIL -> DCV_P_X(560),Y_RAIL   [gauge tap at 380, PRV tap at 420]
-         P stub:   DCV_P_X(560),Y_RAIL -> DCV_P_X,DCV_P_Y(265)  [junction dot at Y_RAIL]
-
-       PRV BRANCH:
-         Inlet:    PRV_X(420),Y_RAIL(290) -> PRV_X,PRV_BOT(430) [taps DOWN from rail to PRV bottom]
-         Drain:    PRV_X,PRV_TOP(400) -> PRV_X,Y_RET(470) -> TK_CX(70),Y_RET -> TK_CX,TK_TOP(540)
-
-       WORK LINES:
-         A line:   DCV_A_X(485),Y_RAIL -> DCV_A_X,bypY_A(233) -> port_A_X,bypY_A -> port_A_X,port_A_Y
-         B line:   DCV_B_X(635),Y_RAIL -> DCV_B_X,bypY_B(213) -> port_B_X,bypY_B -> port_B_X,port_B_Y
-         CYL A:    port_A = CYL_A_X(790), CYL_A_Y(268)
-         CYL B:    port_B = CYL_B_X(818), CYL_B_Y(268)
-         MOT A:    port_A = MOT_L(806),   Y_RAIL(290)
-         MOT B:    port_B = MOT_R(854),   Y_RAIL(290)
-
-       RETURN PATH:
-         T stub:   DCV_T_X(560),DCV_T_Y(315) -> DCV_T_X,Y_RET(470)  [junction at Y_RET]
-         Rail:     DCV_T_X,Y_RET -> cooler in -> cooler out -> rf in -> rf out -> TK_CX,Y_RET -> TK_CX,TK_TOP
-    */
-
-    /* SUCTION */
-    s+=PH('M'+TK_CX+' '+TK_TOP+' L'+TK_CX+' '+Y_SUCT+' L'+PMP_IN+' '+Y_SUCT+' L'+PMP_IN+' '+Y_RAIL,C.pres,1.5);
-
-    /* PRESSURE MAIN RAIL: PMP_OUT -> DCV P port
-       Rail runs at Y_RAIL=290 = dcvB (bottom of DCV boxes).
-       Rail terminates at DCV_P_X=560 (bottom-centre of middle box).
-       No separate P stub needed — rail arrives directly at P port. */
-    s+=PH('M'+PMP_OUT+' '+Y_RAIL+' L'+DCV_P_X+' '+Y_RAIL,C.pres,2);
-    s+=JD(GAU_X,Y_RAIL);
-    s+=JD(PRV_X,Y_RAIL);
-    s+=JD(DCV_P_X,Y_RAIL);  /* junction where rail meets DCV P port */
-
-    /* GAUGE tap (above rail) */
-    s+=PH('M'+GAU_X+' '+Y_RAIL+' L'+GAU_X+' '+(GAU_Y+G_R+2),C.amber,1,'3 2');
-
-    /* PRV: rail -> PRV_BOT (inlet). PRV_TOP -> Y_RET -> TK_CX -> TK_TOP */
-    s+=PH('M'+PRV_X+' '+Y_RAIL+' L'+PRV_X+' '+PRV_BOT,C.relief,1.2,'5 3');
-    s+=PH('M'+PRV_X+' '+PRV_TOP+' L'+PRV_X+' '+Y_RET+' L'+TK_CX+' '+Y_RET+' L'+TK_CX+' '+TK_TOP,C.relief,1.2,'5 3');
-    s+=JD(PRV_X,Y_RET);
-
-    /* ACCUMULATOR tap */
-    if(hasAccum){s+=JD(ACCUM_X,Y_RAIL);s+=PH('M'+ACCUM_X+' '+Y_RAIL+' L'+ACCUM_X+' '+(ACCUM_Y+ACC_R+2),C.pres,1.2,'4 3');}
-
-    /* DCV A -> actuator port A
-       A exits TOP of centre box at (DCV_A_X=547, dcvT=240).
-       Goes UP to bypY_A=210, then horizontal to actuator port A. */
-    if(isMotor){
-      s+=PH('M'+DCV_A_X+' '+DCV_A_Y+' L'+DCV_A_X+' '+bypY_A+' L'+MOT_L+' '+bypY_A+' L'+MOT_L+' '+MOT_Y,C.pres,1.8);
-    } else {
-      s+=PH('M'+DCV_A_X+' '+DCV_A_Y+' L'+DCV_A_X+' '+bypY_A+' L'+CYL_A_X+' '+bypY_A+' L'+CYL_A_X+' '+CYL_A_Y,C.pres,1.8);
+    // ─────────────────────────────────────────────
+    //  OUTPUT ACTIONS
+    // ─────────────────────────────────────────────
+    function copyOutput() {
+      const text = document.getElementById('aiOutputBody').innerText;
+      navigator.clipboard.writeText(text).then(() => showToast('Design copied to clipboard.', 'success'));
     }
 
-    /* DCV B -> actuator port B
-       B exits TOP of centre box at (DCV_B_X=573, dcvT=240).
-       Goes UP to bypY_B=194, then horizontal to actuator port B. */
-    if(isMotor){
-      s+=PH('M'+DCV_B_X+' '+DCV_B_Y+' L'+DCV_B_X+' '+bypY_B+' L'+MOT_R+' '+bypY_B+' L'+MOT_R+' '+MOT_Y,C.ret,1.5);
-    } else {
-      s+=PH('M'+DCV_B_X+' '+DCV_B_Y+' L'+DCV_B_X+' '+bypY_B+' L'+CYL_B_X+' '+bypY_B+' L'+CYL_B_X+' '+CYL_B_Y,C.ret,1.5);
+    function clearOutput() {
+      document.getElementById('aiOutputBody').innerHTML =
+        '<span style="color:#2a3a4a;font-family:\'Space Mono\',monospace;font-size:0.72rem;">— Cleared. Ready for new generation. —</span>';
+      document.getElementById('aiDot').classList.add('idle');
     }
 
-    /* DCV T -> return rail
-       T port exits bottom of centre box at (DCV_T_X+6, dcvB).
-       Runs straight down to Y_RET. */
-    s+=PH('M'+(DCV_T_X+6)+' '+dcvB+' L'+(DCV_T_X+6)+' '+Y_RET,C.ret,1.5);
-    s+=JD(DCV_T_X+6,Y_RET);
-
-    /* RETURN RAIL: DCV_T -> cooler -> rf -> tank */
-    s+=PH('M'+(DCV_T_X+6)+' '+Y_RET+' L'+(coolX+coolW/2+2)+' '+Y_RET,C.ret,1.5);
-    s+=PH('M'+(coolX-coolW/2-2)+' '+Y_RET+' L'+(rfX+rfR+2)+' '+Y_RET,C.ret,1.5);
-    s+=PH('M'+(rfX-rfR-2)+' '+Y_RET+' L'+TK_CX+' '+Y_RET+' L'+TK_CX+' '+TK_TOP,C.ret,1.5);
-    s+=JD(TK_CX,Y_RET);
-
-    /* LS PILOT — taps from DCV A work port back to pump compensator
-       Per ISO 4413: LS signal originates at the DCV A-port (high-pressure
-       work line), not at the actuator. Routes back to pump swashplate control.
-       Source: DCV_A_X(547), bypY_A(210) — the A work line bypass channel
-       Destination: PUMP_X, PUMP_Y+P_R (pump compensator inlet) */
-    if(isLS){
-      var pilY = bypY_A - 16;   /* 16px above bypass A channel = 194 */
-      s+=PH('M'+DCV_A_X+' '+bypY_A+
-            ' L'+DCV_A_X+' '+pilY+
-            ' L'+PUMP_X+' '+pilY+
-            ' L'+PUMP_X+' '+(PUMP_Y+P_R),
-            C.pilot,1,'6 3');
-      s+=TX(DCV_A_X-8, pilY-9, 'LS', C.pilot, 7, 'end', '700');
-      s+=TX(PUMP_X+8,  pilY-9, 'PUMP COMPENSATOR', C.pilot, 7, 'start');
+    function exportReport() {
+      showToast('PDF export: use browser Print → Save as PDF.', '');
+      setTimeout(() => window.print(), 600);
     }
 
-    /* LEGEND */
-    var legY=H-80;
-    s+=R(16,legY,W-32,68,C.fc,'rgba(6,182,212,0.12)',1,4);
-    s+=TX(26,legY+12,'LINE TYPES (ISO 1219-1)',C.t3,8,'start','700');
-    [{x:26,col:C.pres,dash:'',lbl:'Pressure line',sw:2},{x:165,col:C.ret,dash:'',lbl:'Return line',sw:1.5},{x:295,col:C.relief,dash:'5 3',lbl:'Relief / drain',sw:1.2},{x:430,col:C.pilot,dash:'6 3',lbl:'Pilot / LS',sw:1},{x:545,col:C.drain,dash:'4 3',lbl:'Case drain',sw:1}].forEach(function(it){
-      s+=L(it.x,legY+34,it.x+40,legY+34,it.col,it.sw,it.dash);
-      s+=TX(it.x+48,legY+34,it.lbl,C.t2,8,'start');
+    // ─────────────────────────────────────────────
+    //  TOOLS MODAL (stub)
+    // ─────────────────────────────────────────────
+    function showTool(type) {
+      const msgs = {
+        pump:  'Pump Sizer: Enter displacement (cc/rev) and speed (rpm) → AI will calculate flow and power.',
+        pipe:  'Pipe Scheduler: Enter flow rate and max velocity (3 m/s pressure, 2 m/s return) → bore recommendation.',
+        accum: 'Accumulator Sizer: Enter volume demand and pressure ratio → pre-charge and total volume.',
+        cbv:   'CBV Setting: Enter maximum load-induced pressure → CBV = load press × 1.10 to 1.30.'
+      };
+      showToast(msgs[type] || 'Tool coming soon.', '');
+    }
+
+    // ─────────────────────────────────────────────
+    //  TOAST
+    // ─────────────────────────────────────────────
+    function showToast(msg, type='') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast show ' + type;
+      setTimeout(() => { t.classList.remove('show'); }, 3500);
+    }
+
+    // ─────────────────────────────────────────────
+    //  LIVE TICKER UPDATE ON INPUT CHANGE
+    // ─────────────────────────────────────────────
+    ['f_wp','f_flow'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', () => {
+        const v = el.value;
+        if (id === 'f_wp' && v) { updateTicker('tWP', v + ' bar'); document.getElementById('sp_wp').textContent = v + ' bar'; document.getElementById('sp_wp').classList.remove('empty'); }
+        if (id === 'f_flow' && v) { updateTicker('tFR', v + ' L/min'); document.getElementById('sp_fr').textContent = v + ' L/min'; document.getElementById('sp_fr').classList.remove('empty'); }
+      });
     });
-    s+=TX(26,legY+54,'Q='+Q+' L/min',C.t3,8,'start');
-    s+=TX(130,legY+54,'P='+P+' bar',C.t3,8,'start');
-    s+=TX(210,legY+54,'Ppeak='+Pp+' bar',C.t3,8,'start');
-    s+=TX(310,legY+54,'Circuit: '+cLbl,C.t3,8,'start');
 
-    /* REFERENCE TABLE */
-    var refs=[['T','Reservoir'],['P',isVar?'Variable disp. pump':'Fixed disp. pump'],['F','High-pressure filter'],['PRV','Pressure relief valve'],['PI','Pressure gauge'],['DCV','4/3 Prop. directional ctrl. valve'],[isMotor?'M':'CYL',isMotor?'Hydraulic motor':'Double-acting cylinder']];
-    if(hasCBV)refs.push(['CBV','Counterbalance valve']);
-    if(hasAccum)refs.push(['ACC','Bladder accumulator']);
-    if(hasBrake)refs.push(['BRK','Brake valve']);
-    refs.push(['HE','Oil cooler (heat exchanger)'],['RF','Return line filter']);
-    var rX=800,rY=50,rW=285;
-    s+=R(rX,rY,rW,14+refs.length*13+6,C.fc,'rgba(6,182,212,0.12)',1,4);
-    s+=TX(rX+8,rY+12,'COMPONENT REFERENCE',C.t3,8,'start','700');
-    refs.forEach(function(r,i){s+=TX(rX+8,rY+25+i*13,r[0],C.pres,8,'start','700');s+=TX(rX+46,rY+25+i*13,r[1],C.t2,8,'start');});
-
-    /* WRAP */
-    var wrap=document.createElement('div');
-    wrap.id='sdCircuit';
-    wrap.style.cssText='margin-top:16px;';
-    wrap.innerHTML='<div style="background:var(--card);border:1.5px solid rgba(6,182,212,0.2);border-radius:12px;overflow:hidden;"><div style="background:rgba(6,182,212,.06);border-bottom:1px solid rgba(6,182,212,.15);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;"><div style="font-family:var(--mono);font-size:11px;font-weight:700;color:#22d3ee;letter-spacing:.08em;">HYDRAULIC CIRCUIT SCHEMATIC</div><span style="font-size:9px;color:#7fb3c8;font-family:var(--mono);">ISO 1219-1 \u00b7 ISO 1219-2 \u00b7 ISO 4413</span></div><div style="padding:16px 16px 8px;overflow-x:auto;background:#080f14;"><svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block;min-width:700px;">'+s+'</svg></div><div style="padding:6px 16px 10px;background:#080f14;"><p style="font-size:9.5px;color:#4a6b80;font-family:Space Mono,monospace;margin:0;">\u26a0 Schematic symbolic per ISO 1219-1:2012. Verify against OEM data sheets and ISO 4413 / DNV-ST-0378 before fabrication.</p></div></div>';
-    var result=document.getElementById('sdResult');
-    if(result)result.parentNode.insertBefore(wrap,result);
-    else{var main=document.querySelector('main.hm-page');if(main)main.appendChild(wrap);}
-    wrap.scrollIntoView({ behavior:'smooth' });
-  }
-
-    /* ═══ TOAST ═══ */
-    function showToast(msg) {
-    var t = document.getElementById('hmToast');
-    if (!t) {
-      t = document.createElement('div');
-      t.id = 'hmToast';
-      t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid rgba(6,182,212,.3);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--text1);z-index:9999;transform:translateY(80px);opacity:0;transition:all .3s ease;max-width:300px;';
-      document.body.appendChild(t);
-    }
-    t.textContent = msg;
-    t.style.transform = 'translateY(0)';
-    t.style.opacity = '1';
-    setTimeout(function() {
-      t.style.transform = 'translateY(80px)';
-      t.style.opacity = '0';
-    }, 3000);
-  }
-
-  /* ═══ INIT ═══ */
-  document.addEventListener('DOMContentLoaded', function() {
-    goToStep(1);
-  });
+    // ─────────────────────────────────────────────
+    //  INIT
+    // ─────────────────────────────────────────────
+    renderStep();
   </script>
-<script src="js/auth.js"></script>
 </body>
 </html>
