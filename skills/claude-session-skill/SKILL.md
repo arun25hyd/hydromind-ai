@@ -376,7 +376,38 @@ A wrong symbol, reversed port, or broken connection destroys platform credibilit
 
 ---
 
-### ══ STEP 0 — GRID-FIRST LAW (THE ROOT CAUSE FIX) ══
+### ══ CRITICAL DCV PORT RULE — THE MOST REPEATED MISTAKE ══
+
+**ALL FOUR ports (P, T, A, B) connect to the CENTRE box only.**
+
+```
+        A    B          ← A and B: TOP of CENTRE box
+        |    |
+   ┌────┬────┬────┐
+   │ ↑↓ │ XX │ ↑↓ │    ← Left=extend, Centre=neutral(blocked), Right=retract
+   └────┴────┴────┘
+             |    |
+             P    T    ← P and T: BOTTOM of CENTRE box
+
+Left/right boxes = spool positions only. No pipes connect to them.
+
+DCV_A_X = dcvL + dvW + dvW*0.25  (25% into centre box from left)
+DCV_B_X = dcvL + dvW + dvW*0.75  (75% into centre box from left)
+DCV_P_X = dcvL + dvW + dvW*0.5   (centre bottom)
+DCV_T_X = DCV_P_X + 6            (centre bottom, offset 6px right of P)
+DCV_A_Y = dcvT                   (top of boxes)
+DCV_B_Y = dcvT                   (top of boxes)
+DCV_P_Y = dcvB                   (bottom of boxes = Y_RAIL)
+DCV_T_Y = dcvB                   (bottom of boxes)
+
+DCV MUST SIT ABOVE PRESSURE RAIL:
+  dcvB = Y_RAIL (bottom of DCV boxes touches pressure rail)
+  dcvT = dcvB - dvH
+  This way P connects directly where rail meets DCV bottom.
+  A and B exit upward into bypass channels above dcvT.
+```
+
+---
 
 **BEFORE writing a single line of SVG code, you MUST define the full coordinate grid.**
 

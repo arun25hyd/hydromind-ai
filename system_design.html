@@ -1273,23 +1273,45 @@
     var P  = d.workPress || '\u2014';
     var Pp = d.peakPress || '\u2014';
 
-    /* VERIFIED GRID - W=1100 H=660
-       Y_RAIL=290 Y_RET=470 Y_SUCT=350
-       PUMP X=190 r=22  PMP_IN=168 PMP_OUT=212
-       FILT X=320 r=14  FLT_IN=306 FLT_OUT=334
-       PRV  X=420 CY=410 SZ=20 PRV_BOT=430 PRV_TOP=400 PRV_SPR=378
-       GAUGE X=380 Y=210 r=10
-       DCV  CX=560 L=485 R=635 T=265 B=315  dvW=50 dvH=50
-       BYPASS bypY_A=233 bypY_B=213  (32px and 52px above dcvT=265)
-       CYL  X=780 Y=268 W=90 H=44  pisX=818
-            CYL_A_X=790 CYL_A_Y=268  CYL_B_X=818 CYL_B_Y=268
-       MOTOR X=830 Y=290 r=24  MOT_L=806 MOT_R=854
-       COOLER X=240 Y=470  RTN_FLT X=150 Y=470
-       TANK  CX=70 TOP=540
-       Port constants:
-         DCV_P_X=560 DCV_T_X=560 DCV_A_X=485 DCV_B_X=635
-         DCV_P_Y=265 DCV_T_Y=315
-    */
+    /* ═══════════════════════════════════════════════
+       CORRECTED GRID v2 - W=1100 H=660
+       ═══════════════════════════════════════════════
+       KEY FIX: DCV sits ABOVE pressure rail.
+       dcvB (bottom of boxes) = Y_RAIL - 10 = 290
+       So DCV boxes span Y=240..290 — entirely above rail.
+
+       ISO 1219-1 4/3 DCV port layout:
+         P port = BOTTOM of CENTRE box (pressure supply from rail below)
+         T port = BOTTOM of CENTRE box (separate stub, also exits bottom)
+         A port = TOP of CENTRE box, left quarter  (work port to actuator)
+         B port = TOP of CENTRE box, right quarter (work port from actuator)
+
+       ALL FOUR ports connect to the CENTRE box only.
+       Left and right boxes show spool positions only.
+
+       With dcvL=485 dvW=50:
+         Centre box: X=535..585, centre=560
+         DCV_P_X  = 560  (centre bottom — P enters from below)
+         DCV_T_X  = 560  (centre bottom — T exits downward, same X as P)
+         DCV_A_X  = 547  (centre box top, 25% from left  = 535+12)
+         DCV_B_X  = 573  (centre box top, 75% from left  = 535+38)
+         DCV_P_Y  = 290  (= dcvB = Y_RAIL — bottom of boxes)
+         DCV_T_Y  = 290  (= dcvB — T also exits bottom, separate path)
+         DCV_A_Y  = 240  (= dcvT — top of boxes)
+         DCV_B_Y  = 240  (= dcvT — top of boxes)
+
+       P stub:  DCV_P_X(560), Y_RAIL(290) is junction on rail
+                Pressure rail already AT dcvB — no extra stub needed.
+                Rail connects directly to P port at (560, dcvB).
+
+       T stub:  DCV_T_X(560), dcvB(290) → DCV_T_X, Y_RET (straight down)
+
+       A line:  DCV_A_X(547), dcvT(240) → up to bypY_A(210) → actuator A
+       B line:  DCV_B_X(573), dcvT(240) → up to bypY_B(194) → actuator B
+
+       bypY_A = dcvT - 30 = 210  (30px clear above DCV top)
+       bypY_B = dcvT - 46 = 194  (46px above DCV top, 16px above bypY_A)
+       ═══════════════════════════════════════════════ */
     var W=1100, H=660;
     var Y_RAIL=290, Y_RET=470, Y_SUCT=350;
     var TK_CX=70, TK_TOP=540, TK_HALF=36;
@@ -1297,10 +1319,17 @@
     var FILT_X=320, FILT_Y=290, F_R=14, FLT_IN=306, FLT_OUT=334;
     var PRV_X=420, PRV_CY=410, PRV_SZ=20, PRV_BOT=430, PRV_TOP=400, PRV_SPR=378;
     var GAU_X=380, GAU_Y=210, G_R=10;
-    var dvW=50, dvH=50, dcvL=485, dcvR=635, dcvT=265, dcvB=315, DCV_X=560;
-    var DCV_P_X=560, DCV_T_X=560, DCV_A_X=485, DCV_B_X=635;
-    var DCV_P_Y=265, DCV_T_Y=315;
-    var bypY_A=233, bypY_B=213;
+    /* DCV: boxes sit ABOVE rail. dcvB = Y_RAIL = 290. dcvT = dcvB - dvH = 240 */
+    var dvW=50, dvH=50;
+    var dcvL=485, dcvR=635, DCV_X=560;
+    var dcvB=290, dcvT=240;  /* bottom=Y_RAIL, top=240 */
+    /* ALL ports on CENTRE box only */
+    var DCV_P_X=560, DCV_T_X=560;          /* P and T: centre bottom */
+    var DCV_A_X=547, DCV_B_X=573;          /* A and B: centre top, ±13px from centre */
+    var DCV_P_Y=290, DCV_T_Y=290;          /* = dcvB = Y_RAIL */
+    var DCV_A_Y=240, DCV_B_Y=240;          /* = dcvT */
+    /* Bypass channels above DCV top (dcvT=240) */
+    var bypY_A=210, bypY_B=194;            /* 30px and 46px above dcvT */
     var cyX=780, cyY=268, cyW=90, cyH=44;
     var CYL_A_X=790, CYL_A_Y=268, CYL_B_X=818, CYL_B_Y=268;
     var M_R=24, MOT_X=830, MOT_Y=290, MOT_L=806, MOT_R=854;
@@ -1379,32 +1408,78 @@
     s+=L(GAU_X,GAU_Y+2,GAU_X+6,GAU_Y-5,C.amber,1.5);
     s+=TX(GAU_X,GAU_Y+20,'PI',C.amber,8,'middle','700');
 
-    /* 6 DCV 4/3: three 50x50 boxes, dcvL=485..635
-       P enters TOP centre=DCV_P_X=560 at DCV_P_Y=265
-       T exits BOTTOM centre=DCV_T_X=560 at DCV_T_Y=315
-       A exits LEFT edge=DCV_A_X=485 at Y_RAIL=290
-       B exits RIGHT edge=DCV_B_X=635 at Y_RAIL=290 */
-    for(var bi=0;bi<3;bi++)s+=R(dcvL+bi*dvW,dcvT,dvW,dvH,C.fc,C.pres,1.5);
-    s+='<line x1="'+(dcvL+13)+'" y1="'+(dcvT+7)+'" x2="'+(dcvL+13)+'" y2="'+(dcvT+43)+'" stroke="'+C.pres+'" stroke-width="1.2" marker-end="url(#mA)" fill="none"/>';
-    s+='<line x1="'+(dcvL+37)+'" y1="'+(dcvT+43)+'" x2="'+(dcvL+37)+'" y2="'+(dcvT+7)+'" stroke="'+C.ret+'" stroke-width="1.2" marker-end="url(#mR)" fill="none"/>';
-    s+=L(dcvL+dvW+5,dcvT+8,dcvL+dvW+45,dcvT+42,C.t3,1.1);
-    s+=L(dcvL+dvW+45,dcvT+8,dcvL+dvW+5,dcvT+42,C.t3,1.1);
-    s+='<line x1="'+(dcvL+2*dvW+37)+'" y1="'+(dcvT+7)+'" x2="'+(dcvL+2*dvW+37)+'" y2="'+(dcvT+43)+'" stroke="'+C.pres+'" stroke-width="1.2" marker-end="url(#mA)" fill="none"/>';
-    s+='<line x1="'+(dcvL+2*dvW+13)+'" y1="'+(dcvT+43)+'" x2="'+(dcvL+2*dvW+13)+'" y2="'+(dcvT+7)+'" stroke="'+C.ret+'" stroke-width="1.2" marker-end="url(#mR)" fill="none"/>';
-    s+=TX(DCV_P_X,dcvT-10,'P',C.pres,8,'middle','700');
-    s+=TX(DCV_T_X,dcvB+10,'T',C.ret,8,'middle','700');
-    s+=TX(DCV_A_X-10,Y_RAIL,'A',C.t2,8,'middle','700');
-    s+=TX(DCV_B_X+10,Y_RAIL,'B',C.t2,8,'middle','700');
-    s+=R(dcvL-solW-3,Y_RAIL-solH/2,solW,solH,'rgba(245,158,11,0.1)',C.amber,1.2);
-    for(var si=5;si<solW;si+=5)s+=L(dcvL-solW-3+si,Y_RAIL-solH/2,dcvL-solW-3+si,Y_RAIL+solH/2,C.amber,0.6);
-    s+=TX(dcvL-solW/2-3,Y_RAIL+solH/2+11,'SOL A',C.amber,7);
-    s+=R(dcvR+3,Y_RAIL-solH/2,solW,solH,'rgba(245,158,11,0.1)',C.amber,1.2);
-    for(var si2=5;si2<solW;si2+=5)s+=L(dcvR+3+si2,Y_RAIL-solH/2,dcvR+3+si2,Y_RAIL+solH/2,C.amber,0.6);
-    s+=TX(dcvR+solW/2+3,Y_RAIL+solH/2+11,'SOL B',C.amber,7);
-    s+='<polygon points="'+(dcvL-solW-9)+','+(Y_RAIL-9)+' '+(dcvL-solW-9)+','+(Y_RAIL+9)+' '+(dcvL-solW-24)+','+Y_RAIL+'" fill="none" stroke="'+C.t3+'" stroke-width="1.2"/>';
-    s+='<polygon points="'+(dcvR+solW+9)+','+(Y_RAIL-9)+' '+(dcvR+solW+9)+','+(Y_RAIL+9)+' '+(dcvR+solW+24)+','+Y_RAIL+'" fill="none" stroke="'+C.t3+'" stroke-width="1.2"/>';
-    s+=TX(DCV_X,dcvB+20,'4/3 PROPORTIONAL DCV',C.t2,8,'middle','700');
-    s+=TX(DCV_X,dcvB+31,'CRITICAL CENTRE',C.t3,7);
+    /* ═══════════════════════════════════════════════
+       6. DCV 4/3 — ISO 1219-1 §6.4.1
+       Three equal boxes: dcvL=485..535 | 535..585 | 585..635
+       Boxes span Y=240(dcvT) to Y=290(dcvB=Y_RAIL)
+       DCV sits ABOVE pressure rail — bottom edge touches rail.
+
+       PORT CONNECTIONS (all on CENTRE box):
+         P enters BOTTOM-CENTRE = (DCV_P_X=560, dcvB=290)
+         T exits  BOTTOM-CENTRE = (DCV_T_X=560, dcvB=290)  separate stub down
+         A exits  TOP at 25% from left of centre box = (DCV_A_X=547, dcvT=240)
+         B exits  TOP at 75% from left of centre box = (DCV_B_X=573, dcvT=240)
+
+       Port stub lines:
+         P stub: short vertical from dcvB upward into box (drawn as part of box)
+         T stub: vertical from dcvB downward to Y_RET
+         A stub: short vertical from dcvT upward (bypY_A channel above)
+         B stub: short vertical from dcvT upward (bypY_B channel above)
+
+       Inside each box — flow arrows show spool positions:
+         Box0 LEFT  (extend):  P->A = down-left arrow, B->T = up-right arrow
+         Box1 CENTRE (neutral): X pattern = all ports blocked
+         Box2 RIGHT (retract): P->B = down-right arrow, A->T = up-left arrow
+       ═══════════════════════════════════════════════ */
+
+    /* Three position boxes */
+    for(var bi=0;bi<3;bi++) s+=R(dcvL+bi*dvW, dcvT, dvW, dvH, C.fc, C.pres, 1.5);
+
+    /* Box0 LEFT — extend position: two arrows */
+    s+='<line x1="'+(dcvL+14)+'" y1="'+(dcvT+8)+'" x2="'+(dcvL+14)+'" y2="'+(dcvT+42)+
+        '" stroke="'+C.pres+'" stroke-width="1.2" marker-end="url(#mA)" fill="none"/>';
+    s+='<line x1="'+(dcvL+36)+'" y1="'+(dcvT+42)+'" x2="'+(dcvL+36)+'" y2="'+(dcvT+8)+
+        '" stroke="'+C.ret+'" stroke-width="1.2" marker-end="url(#mR)" fill="none"/>';
+
+    /* Box1 CENTRE — neutral (critical centre): X pattern */
+    var b1x=dcvL+dvW;
+    s+=L(b1x+6, dcvT+8,  b1x+44, dcvT+42, C.t3, 1.1);
+    s+=L(b1x+44,dcvT+8,  b1x+6,  dcvT+42, C.t3, 1.1);
+    /* P port stub — short line UP from dcvB into box centre */
+    s+=L(DCV_P_X, dcvB, DCV_P_X, dcvB-8, C.pres, 1.8);
+    /* T port stub — short line UP from dcvB into box centre (same X, shown offset) */
+    s+=L(DCV_T_X+6, dcvB, DCV_T_X+6, dcvB-8, C.ret, 1.5);
+    /* A port stub — short line DOWN from dcvT (will connect to bypass above) */
+    s+=L(DCV_A_X, dcvT, DCV_A_X, dcvT+8, C.pres, 1.8);
+    /* B port stub — short line DOWN from dcvT */
+    s+=L(DCV_B_X, dcvT, DCV_B_X, dcvT+8, C.ret, 1.5);
+
+    /* Box2 RIGHT — retract position: two arrows */
+    s+='<line x1="'+(dcvL+2*dvW+36)+'" y1="'+(dcvT+8)+'" x2="'+(dcvL+2*dvW+36)+'" y2="'+(dcvT+42)+
+        '" stroke="'+C.pres+'" stroke-width="1.2" marker-end="url(#mA)" fill="none"/>';
+    s+='<line x1="'+(dcvL+2*dvW+14)+'" y1="'+(dcvT+42)+'" x2="'+(dcvL+2*dvW+14)+'" y2="'+(dcvT+8)+
+        '" stroke="'+C.ret+'" stroke-width="1.2" marker-end="url(#mR)" fill="none"/>';
+
+    /* Port labels — P and T below centre box, A and B above centre box */
+    s+=TX(DCV_P_X-8, dcvB+12, 'P', C.pres, 8, 'middle', '700');
+    s+=TX(DCV_T_X+8, dcvB+12, 'T', C.ret,  8, 'middle', '700');
+    s+=TX(DCV_A_X,   dcvT-12, 'A', C.t2,   8, 'middle', '700');
+    s+=TX(DCV_B_X,   dcvT-12, 'B', C.t2,   8, 'middle', '700');
+
+    /* Solenoids — butting against outer box edges at mid-height of boxes */
+    var solMY = dcvT + dvH/2;  /* vertical mid of boxes = 265 */
+    s+=R(dcvL-solW-3, solMY-solH/2, solW, solH, 'rgba(245,158,11,0.1)', C.amber, 1.2);
+    for(var si=5;si<solW;si+=5) s+=L(dcvL-solW-3+si, solMY-solH/2, dcvL-solW-3+si, solMY+solH/2, C.amber, 0.6);
+    s+=TX(dcvL-solW/2-3, solMY+solH/2+11, 'SOL A', C.amber, 7);
+    s+=R(dcvR+3, solMY-solH/2, solW, solH, 'rgba(245,158,11,0.1)', C.amber, 1.2);
+    for(var si2=5;si2<solW;si2+=5) s+=L(dcvR+3+si2, solMY-solH/2, dcvR+3+si2, solMY+solH/2, C.amber, 0.6);
+    s+=TX(dcvR+solW/2+3, solMY+solH/2+11, 'SOL B', C.amber, 7);
+    /* Spring return triangles */
+    s+='<polygon points="'+(dcvL-solW-9)+','+(solMY-9)+' '+(dcvL-solW-9)+','+(solMY+9)+' '+(dcvL-solW-24)+','+solMY+'" fill="none" stroke="'+C.t3+'" stroke-width="1.2"/>';
+    s+='<polygon points="'+(dcvR+solW+9)+','+(solMY-9)+' '+(dcvR+solW+9)+','+(solMY+9)+' '+(dcvR+solW+24)+','+solMY+'" fill="none" stroke="'+C.t3+'" stroke-width="1.2"/>';
+
+    s+=TX(DCV_X, dcvB+22, '4/3 PROPORTIONAL DCV',  C.t2, 8, 'middle', '700');
+    s+=TX(DCV_X, dcvB+33, 'CRITICAL CENTRE',         C.t3, 7);
 
     /* 7 ACTUATOR */
     if(isMotor){
@@ -1500,13 +1575,14 @@
     /* SUCTION */
     s+=PH('M'+TK_CX+' '+TK_TOP+' L'+TK_CX+' '+Y_SUCT+' L'+PMP_IN+' '+Y_SUCT+' L'+PMP_IN+' '+Y_RAIL,C.pres,1.5);
 
-    /* PRESSURE MAIN RAIL: PMP_OUT -> DCV_P_X */
+    /* PRESSURE MAIN RAIL: PMP_OUT -> DCV P port
+       Rail runs at Y_RAIL=290 = dcvB (bottom of DCV boxes).
+       Rail terminates at DCV_P_X=560 (bottom-centre of middle box).
+       No separate P stub needed — rail arrives directly at P port. */
     s+=PH('M'+PMP_OUT+' '+Y_RAIL+' L'+DCV_P_X+' '+Y_RAIL,C.pres,2);
     s+=JD(GAU_X,Y_RAIL);
     s+=JD(PRV_X,Y_RAIL);
-    s+=JD(DCV_P_X,Y_RAIL);
-    /* P stub vertical */
-    s+=PH('M'+DCV_P_X+' '+Y_RAIL+' L'+DCV_P_X+' '+DCV_P_Y,C.pres,2);
+    s+=JD(DCV_P_X,Y_RAIL);  /* junction where rail meets DCV P port */
 
     /* GAUGE tap (above rail) */
     s+=PH('M'+GAU_X+' '+Y_RAIL+' L'+GAU_X+' '+(GAU_Y+G_R+2),C.amber,1,'3 2');
@@ -1519,26 +1595,32 @@
     /* ACCUMULATOR tap */
     if(hasAccum){s+=JD(ACCUM_X,Y_RAIL);s+=PH('M'+ACCUM_X+' '+Y_RAIL+' L'+ACCUM_X+' '+(ACCUM_Y+ACC_R+2),C.pres,1.2,'4 3');}
 
-    /* DCV A -> actuator port A (bypY_A=233) */
+    /* DCV A -> actuator port A
+       A exits TOP of centre box at (DCV_A_X=547, dcvT=240).
+       Goes UP to bypY_A=210, then horizontal to actuator port A. */
     if(isMotor){
-      s+=PH('M'+DCV_A_X+' '+Y_RAIL+' L'+DCV_A_X+' '+bypY_A+' L'+MOT_L+' '+bypY_A+' L'+MOT_L+' '+MOT_Y,C.pres,1.8);
+      s+=PH('M'+DCV_A_X+' '+DCV_A_Y+' L'+DCV_A_X+' '+bypY_A+' L'+MOT_L+' '+bypY_A+' L'+MOT_L+' '+MOT_Y,C.pres,1.8);
     } else {
-      s+=PH('M'+DCV_A_X+' '+Y_RAIL+' L'+DCV_A_X+' '+bypY_A+' L'+CYL_A_X+' '+bypY_A+' L'+CYL_A_X+' '+CYL_A_Y,C.pres,1.8);
+      s+=PH('M'+DCV_A_X+' '+DCV_A_Y+' L'+DCV_A_X+' '+bypY_A+' L'+CYL_A_X+' '+bypY_A+' L'+CYL_A_X+' '+CYL_A_Y,C.pres,1.8);
     }
 
-    /* DCV B -> actuator port B (bypY_B=213) */
+    /* DCV B -> actuator port B
+       B exits TOP of centre box at (DCV_B_X=573, dcvT=240).
+       Goes UP to bypY_B=194, then horizontal to actuator port B. */
     if(isMotor){
-      s+=PH('M'+DCV_B_X+' '+Y_RAIL+' L'+DCV_B_X+' '+bypY_B+' L'+MOT_R+' '+bypY_B+' L'+MOT_R+' '+MOT_Y,C.ret,1.5);
+      s+=PH('M'+DCV_B_X+' '+DCV_B_Y+' L'+DCV_B_X+' '+bypY_B+' L'+MOT_R+' '+bypY_B+' L'+MOT_R+' '+MOT_Y,C.ret,1.5);
     } else {
-      s+=PH('M'+DCV_B_X+' '+Y_RAIL+' L'+DCV_B_X+' '+bypY_B+' L'+CYL_B_X+' '+bypY_B+' L'+CYL_B_X+' '+CYL_B_Y,C.ret,1.5);
+      s+=PH('M'+DCV_B_X+' '+DCV_B_Y+' L'+DCV_B_X+' '+bypY_B+' L'+CYL_B_X+' '+bypY_B+' L'+CYL_B_X+' '+CYL_B_Y,C.ret,1.5);
     }
 
-    /* DCV T -> return rail */
-    s+=PH('M'+DCV_T_X+' '+DCV_T_Y+' L'+DCV_T_X+' '+Y_RET,C.ret,1.5);
-    s+=JD(DCV_T_X,Y_RET);
+    /* DCV T -> return rail
+       T port exits bottom of centre box at (DCV_T_X+6, dcvB).
+       Runs straight down to Y_RET. */
+    s+=PH('M'+(DCV_T_X+6)+' '+dcvB+' L'+(DCV_T_X+6)+' '+Y_RET,C.ret,1.5);
+    s+=JD(DCV_T_X+6,Y_RET);
 
     /* RETURN RAIL: DCV_T -> cooler -> rf -> tank */
-    s+=PH('M'+DCV_T_X+' '+Y_RET+' L'+(coolX+coolW/2+2)+' '+Y_RET,C.ret,1.5);
+    s+=PH('M'+(DCV_T_X+6)+' '+Y_RET+' L'+(coolX+coolW/2+2)+' '+Y_RET,C.ret,1.5);
     s+=PH('M'+(coolX-coolW/2-2)+' '+Y_RET+' L'+(rfX+rfR+2)+' '+Y_RET,C.ret,1.5);
     s+=PH('M'+(rfX-rfR-2)+' '+Y_RET+' L'+TK_CX+' '+Y_RET+' L'+TK_CX+' '+TK_TOP,C.ret,1.5);
     s+=JD(TK_CX,Y_RET);
