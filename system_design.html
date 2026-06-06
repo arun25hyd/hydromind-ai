@@ -1625,13 +1625,20 @@
     s+=PH('M'+(rfX-rfR-2)+' '+Y_RET+' L'+TK_CX+' '+Y_RET+' L'+TK_CX+' '+TK_TOP,C.ret,1.5);
     s+=JD(TK_CX,Y_RET);
 
-    /* LS PILOT */
+    /* LS PILOT — taps from DCV A work port back to pump compensator
+       Per ISO 4413: LS signal originates at the DCV A-port (high-pressure
+       work line), not at the actuator. Routes back to pump swashplate control.
+       Source: DCV_A_X(547), bypY_A(210) — the A work line bypass channel
+       Destination: PUMP_X, PUMP_Y+P_R (pump compensator inlet) */
     if(isLS){
-      var pilY=Y_RAIL+70;
-      var pilSrcX=isMotor?MOT_X:(cyX+cyW/2);
-      var pilSrcY=isMotor?(MOT_Y+M_R):(cyY+cyH/2);
-      s+=PH('M'+pilSrcX+' '+pilSrcY+' L'+pilSrcX+' '+pilY+' L'+PUMP_X+' '+pilY+' L'+PUMP_X+' '+(PUMP_Y+P_R),C.pilot,1,'6 3');
-      s+=TX(PUMP_X+50,pilY-8,'LS PILOT',C.pilot,7,'start');
+      var pilY = bypY_A - 16;   /* 16px above bypass A channel = 194 */
+      s+=PH('M'+DCV_A_X+' '+bypY_A+
+            ' L'+DCV_A_X+' '+pilY+
+            ' L'+PUMP_X+' '+pilY+
+            ' L'+PUMP_X+' '+(PUMP_Y+P_R),
+            C.pilot,1,'6 3');
+      s+=TX(DCV_A_X-8, pilY-9, 'LS', C.pilot, 7, 'end', '700');
+      s+=TX(PUMP_X+8,  pilY-9, 'PUMP COMPENSATOR', C.pilot, 7, 'start');
     }
 
     /* LEGEND */

@@ -379,32 +379,45 @@ A wrong symbol, reversed port, or broken connection destroys platform credibilit
 ### ══ CRITICAL DCV PORT RULE — THE MOST REPEATED MISTAKE ══
 
 **ALL FOUR ports (P, T, A, B) connect to the CENTRE box only.**
+**A and B are TOP. P and T are BOTTOM.**
 
 ```
-        A    B          ← A and B: TOP of CENTRE box
-        |    |
-   ┌────┬────┬────┐
-   │ ↑↓ │ XX │ ↑↓ │    ← Left=extend, Centre=neutral(blocked), Right=retract
-   └────┴────┴────┘
-             |    |
-             P    T    ← P and T: BOTTOM of CENTRE box
+     A    B        ← TOP of symbol  (work ports → actuator)
+     |    |
+ ┌───┼────┼───┐
+ │ ↑↓│ XX │↑↓ │   3 boxes: extend | neutral(blocked) | retract
+ └───┼────┼───┘
+     |    |
+     P    T        ← BOTTOM of symbol (P=pump inlet, T=tank return)
 
-Left/right boxes = spool positions only. No pipes connect to them.
+Left/right boxes = spool positions only. NO pipes connect to outer boxes.
+```
 
-DCV_A_X = dcvL + dvW + dvW*0.25  (25% into centre box from left)
-DCV_B_X = dcvL + dvW + dvW*0.75  (75% into centre box from left)
-DCV_P_X = dcvL + dvW + dvW*0.5   (centre bottom)
-DCV_T_X = DCV_P_X + 6            (centre bottom, offset 6px right of P)
-DCV_A_Y = dcvT                   (top of boxes)
-DCV_B_Y = dcvT                   (top of boxes)
-DCV_P_Y = dcvB                   (bottom of boxes = Y_RAIL)
-DCV_T_Y = dcvB                   (bottom of boxes)
+**DCV must sit ABOVE the pressure rail:**
+```
+dcvB = Y_RAIL = 290   (DCV bottom edge = pressure rail level)
+dcvT = dcvB - dvH     (DCV top edge = 240)
+P port at (DCV_P_X, dcvB) — pressure rail arrives here directly
+T port at (DCV_T_X+6, dcvB) — exits bottom, stub goes down to return rail
+A port at (DCV_A_X, dcvT) — exits top, bypass channel goes UP to actuator
+B port at (DCV_B_X, dcvT) — exits top, bypass channel goes UP to actuator
+```
 
-DCV MUST SIT ABOVE PRESSURE RAIL:
-  dcvB = Y_RAIL (bottom of DCV boxes touches pressure rail)
-  dcvT = dcvB - dvH
-  This way P connects directly where rail meets DCV bottom.
-  A and B exit upward into bypass channels above dcvT.
+### ══ LOAD SENSING (LS) PILOT LINE RULE ══
+
+**LS pilot taps from DCV A-port work line — NOT from the actuator/cylinder.**
+
+```
+WRONG: LS line from cylinder/motor back to pump
+RIGHT: LS line from DCV A work port (bypY_A channel) back to pump compensator
+
+Per ISO 4413: the LS signal is the highest load pressure signal,
+taken from the DCV work port, fed back to the pump displacement control.
+
+Code:
+  pilY = bypY_A - 16   (16px above A bypass channel, clear of it)
+  Path: DCV_A_X,bypY_A → DCV_A_X,pilY → PUMP_X,pilY → PUMP_X,PUMP_Y+P_R
+  Label: "LS" near DCV end, "PUMP COMPENSATOR" near pump end
 ```
 
 ---
