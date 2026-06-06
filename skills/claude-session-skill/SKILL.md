@@ -1,6 +1,6 @@
 ---
 name: session-skill
-version: v4.2
+version: v4.3
 date: 2026-06-05
 description: >
   Session orientation skill for Claude working on the HydroMind AI project with Arun
@@ -70,10 +70,15 @@ NEVER patch a patch — restore from clean Downloads source if broken.
 | 22 | Frontend/backend API contract drift after backend hardening | When validateChatRequest changes — audit ALL pages that call /api/chat |
 | 23 | Not updating CLAUDE.md, SKILL.md, memory at session end | MANDATORY — Arun's standing rule — always update all three before closing |
 | 24 | Circuit diagram magic number offsets for port connections | ALWAYS named coordinate constants — DCV_P_X, DCV_T_X, PMP_OUT_X etc. Never arithmetic |
-| 25 | PRV body placed above pressure rail — vent wraps over top of diagram | PRV ALWAYS below rail. Inlet taps DOWN from rail. Drain exits bottom to RET_Y then tank |
+| 25 | PRV body placed above pressure rail — vent wraps over top of diagram | PRV ALWAYS below rail. Inlet taps DOWN from rail to PRV_BOT. Drain exits PRV_TOP upward to return rail then tank |
 | 26 | DCV P/T ports not on centre of middle box | DCV_P_X = dcvL + dvW + dvW/2. DCV_T_X = same X. Never use offset like +22 |
 | 27 | Diagonal flow lines in hydraulic circuit | ISO 1219 — ALL lines orthogonal only. Zero diagonal routing ever |
-| 28 | No pre-push circuit checklist | Run full ISO 1219 checklist (see CIRCUIT DIAGRAM SECTION below) before every push |
+| 28 | No pre-push circuit checklist | Run full ISO 1219 checklist (see RULE 16 below) before every push |
+| 29 | PRV inlet/drain reversed — inlet at top, drain at bottom | ISO 1219-1: INLET=BOTTOM (PRV_BOT). DRAIN=TOP (PRV_TOP). Spring on DRAIN side. Arrow points UP (inlet→drain) |
+| 30 | Motor ports A & B both connecting to top of motor circle | Port A = LEFT side (MOT_X-mR). Port B = RIGHT side (MOT_X+mR). Never use RAIL_Y-mR for both |
+| 31 | Return rail final drop offset from tank centre | Return rail must drop to TK_CX exactly — not TK_CX+offset |
+| 32 | Writing circuit SVG code WITHOUT a topology grid plan first | MANDATORY: define the full grid table FIRST (all component centres, all port XY, all gap checks) BEFORE writing any SVG. Never generate coordinates mentally while coding |
+| 33 | Claiming circuit correct without live browser screenshot | Screenshot = only proof. Never claim done without verifying in browser with zoomed audit |
 
 ---
 
@@ -366,58 +371,203 @@ Container /mnt ≠ Mac filesystem. NEVER confuse them.
 
 ## RULE 16 — HYDRAULIC CIRCUIT DIAGRAM STANDARDS (MANDATORY)
 
-HydroMind AI serves real offshore hydraulic engineers and field designers.
-A single wrong circuit symbol or incorrect port connection DESTROYS platform credibility.
-Read this section completely before touching any circuit rendering code.
+HydroMind AI is tested by real offshore hydraulic engineers and field designers.
+A wrong symbol, reversed port, or broken connection destroys platform credibility instantly.
+
+---
+
+### ══ STEP 0 — GRID-FIRST LAW (THE ROOT CAUSE FIX) ══
+
+**BEFORE writing a single line of SVG code, you MUST define the full coordinate grid.**
+
+This is the lesson from 6+ failed circuit iterations on June 05 2026. Every single failure
+was caused by generating coordinates mentally while writing code. Fixing one value broke
+another. The grid-first approach eliminates this entire class of error.
+
+**THE MANDATORY PROCESS — no exceptions:**
+
+```
+STEP 1: Define full grid table (copy-paste this template, fill in values)
+────────────────────────────────────────────────────────────────
+Canvas:    W=1100, H=660
+RAILS:     Y_RAIL=290  Y_RET=470  Y_SUCT=350
+TANK:      TK_CX=70    TK_TOP=540  TK_HALF=36
+PUMP:      PUMP_X=190  PUMP_Y=290  P_R=22    PMP_IN=168   PMP_OUT=212
+FILTER:    FILT_X=320  FILT_Y=290  F_R=14    FLT_IN=306   FLT_OUT=334
+PRV:       PRV_X=420   PRV_CY=410  PRV_SZ=20 PRV_BOT=430  PRV_TOP=400  PRV_SPR=378
+GAUGE:     GAU_X=380   GAU_Y=210   G_R=10
+DCV:       dcvL=485 dcvR=635 dcvT=265 dcvB=315 DCV_X=560  dvW=50 dvH=50
+           DCV_P_X=560  DCV_T_X=560  DCV_A_X=485  DCV_B_X=635
+           DCV_P_Y=265  DCV_T_Y=315
+BYPASS:    bypY_A=233   bypY_B=213   (A=32px above dcvT, B=52px above dcvT)
+CYLINDER:  cyX=780 cyY=268 cyW=90 cyH=44  pisX=818
+           CYL_A_X=790  CYL_A_Y=268  CYL_B_X=818  CYL_B_Y=268
+MOTOR:     MOT_X=830  MOT_Y=290  M_R=24  MOT_L=806  MOT_R=854
+COOLER:    coolX=240  coolY=470  coolW=40 coolH=28
+RTN FILT:  rfX=150    rfY=470    rfR=12
+ACCUM:     ACCUM_X=700  ACCUM_Y=200  ACC_R=16
+
+STEP 2: Collision check BEFORE writing SVG (minimum 60px gap between components)
+────────────────────────────────────────────────────────────────
+Pump right (PMP_OUT=212) → Filter left (FLT_IN=306):     gap=94  ✓
+Filter right (FLT_OUT=334) → PRV centre (PRV_X=420):     gap=86  ✓
+PRV centre (420) → DCV left edge (dcvL=485):              gap=65  ✓
+DCV right edge (dcvR=635) → Cylinder left (cyX=780):      gap=145 ✓
+bypY_A (233) vs DCV top (dcvT=265):                       gap=32  ✓
+bypY_B (213) vs bypY_A (233):                             gap=20  ✓
+PRV_TOP (400) vs Y_RAIL (290):                            gap=110 ✓  (PRV is BELOW rail)
+PRV_BOT (430) vs Y_RET (470):                             gap=40  ✓
+
+STEP 3: Only now write the SVG code — all values from grid, no inline arithmetic
+────────────────────────────────────────────────────────────────
+```
+
+---
 
 ### ISO 1219-1:2012 SYMBOL REFERENCE
 
 | Component | ISO Correct Symbol | NEVER Do This |
 |---|---|---|
-| Fixed pump | Circle + solid triangle, apex pointing RIGHT (outlet) | Triangle wrong direction or outside circle |
+| Fixed pump | Circle + solid triangle, apex pointing RIGHT (outlet) | Triangle wrong direction, outside circle, or text only |
 | Variable pump | Fixed pump + diagonal arrow through circle | Writing "VAR" as text label only |
-| Hydraulic motor | Circle + triangle apex pointing INTO circle from right side | Letter "M" inside circle — not ISO |
-| Double-acting cylinder | Rect + thick end-caps BOTH sides + piston line at ~40% + rod exits ONE side | Rod both sides, missing end caps |
-| HP/Return filter | Circle with diagonal hatching lines INSIDE (requires clipPath) | Striped rectangle |
-| PRV | Square body + upward arrow inside + spring zigzag ABOVE box | Rotated diamond, wrong orientation |
-| 4/3 DCV | THREE separate equal adjacent squares + internal flow arrows per position + solenoid hatched rects + spring triangles | Single rect with dividers |
-| Accumulator | Circle bisected by horizontal line — gas top, fluid bottom | Plain ellipse or circle only |
+| Hydraulic motor | Circle + triangle apex pointing INTO circle from RIGHT | Letter "M" inside circle, or same symbol as pump |
+| Double-acting cylinder | Rect + thick end-caps BOTH sides + piston line at 42% + rod exits ONE side only | Rod both sides, no end caps, wrong piston position |
+| HP/Return filter | Circle with diagonal hatching lines INSIDE (needs clipPath) | Striped rectangle |
+| PRV | Square body + arrow UP inside + spring zigzag ABOVE box + fixed seat line | Rotated diamond, arrow wrong direction, spring below box |
+| 4/3 DCV | THREE separate equal adjacent squares + internal flow arrows + solenoid hatched rects + spring triangles | Single rect with dividers |
+| Accumulator | Circle bisected by horizontal line — gas top (N₂), fluid bottom | Plain ellipse or circle |
 | Cooler / HE | Rectangle with X pattern inside | Rectangle with plus or empty |
 | Reservoir | Two horizontal parallel lines + vertical end caps both sides | Filled rectangle |
-| T-junction dot | Filled circle r=3.5 at EVERY branch point | Missing junction dots |
+| T-junction dot | Filled circle r=3.5 at EVERY branch point on pressure/return rails | Missing — engineers expect and look for junction dots |
+
+---
 
 ### MANDATORY NAMED PORT CONSTANTS
 
-NEVER use magic number offsets in flow line paths. All port XY positions must be named variables:
+Every single port position MUST be declared as a named variable from the grid.
+NEVER calculate port positions inline inside flow line path strings.
 
-DCV_P_X = dcvL + dvW + dvW/2 (exact centre-top of middle box — P port)
-DCV_T_X = DCV_P_X (same X — T port exits centre-bottom)
-DCV_A_X = dcvL (left edge of left box — A port)
-DCV_B_X = dcvL + dvW*3 (right edge of right box — B port)
-PMP_IN_X = PUMP_X - pR | PMP_OUT_X = PUMP_X + pR
-FLT_IN_X = FILT_X - fR | FLT_OUT_X = FILT_X + fR
-PRV_TOP_Y = PRV_CY - PRV_SZ/2 | PRV_BOT_Y = PRV_CY + PRV_SZ/2
+```javascript
+// PRESSURE RAIL PORTS
+PMP_IN  = PUMP_X - P_R    // pump inlet  = left  of circle
+PMP_OUT = PUMP_X + P_R    // pump outlet = right of circle
+FLT_IN  = FILT_X - F_R   // filter inlet
+FLT_OUT = FILT_X + F_R   // filter outlet
+
+// DCV PORTS — all derived from dcvL, dvW
+DCV_P_X = dcvL + dvW + dvW/2  // = dcvL+75 = exact centre of middle box TOP
+DCV_T_X = DCV_P_X             // same X — centre of middle box BOTTOM
+DCV_A_X = dcvL                // left  edge of left  box (A port)
+DCV_B_X = dcvR                // right edge of right box (B port)
+DCV_P_Y = dcvT                // top  of DCV boxes
+DCV_T_Y = dcvB                // bottom of DCV boxes
+
+// PRV PORTS — INLET=BOTTOM, DRAIN=TOP
+PRV_BOT = PRV_CY + PRV_SZ/2  // INLET: pressure rail taps DOWN to this point
+PRV_TOP = PRV_CY - PRV_SZ/2  // DRAIN: exits upward through spring to return/tank
+PRV_SPR = PRV_TOP - 22        // top of spring zigzag / fixed seat line
+
+// ACTUATOR PORTS
+CYL_A_X = cyX + 10           // cylinder: cap-end port (left area)
+CYL_A_Y = cyY                 // top of barrel
+CYL_B_X = cyX + cyW*0.42     // cylinder: rod-side port (piston position)
+CYL_B_Y = cyY                 // top of barrel
+MOT_L   = MOT_X - M_R        // motor port A: LEFT  side of circle
+MOT_R   = MOT_X + M_R        // motor port B: RIGHT side of circle
+```
+
+---
 
 ### CIRCUIT TOPOLOGY (ISO 4413)
 
-PRESSURE PATH:  Tank → Pump → HP Filter → [Gauge tap] → [PRV tap] → DCV P → Actuator
-RETURN PATH:    Actuator → DCV T → RTN Filter → Cooler → Tank
-PRV ROUTING:    Branch BELOW rail. Body at PRV_CY > RAIL_Y. Drain straight DOWN to RET_Y.
-SUCTION LINE:   Routes below RAIL_Y via suctY = RAIL_Y+55 — never through pump body
-A/B BYPASS:     Route above DCV assembly: bypY_A = dcvT-28, bypY_B = dcvT-46
+```
+PRESSURE PATH (solid line, 2px):
+  Tank (TK_CX,TK_TOP) → up to Y_SUCT → horizontal to PMP_IN → up to Y_RAIL
+  PMP_OUT → [gauge tap at GAU_X] → [PRV tap at PRV_X] → DCV_P_X (horizontal)
+  DCV_P_X,Y_RAIL → DCV_P_X,DCV_P_Y (vertical stub down into P port)
 
-### STANDARD CANVAS (open-loop)
+PRV BRANCH (red dashed, 1.2px):
+  PRV_X,Y_RAIL → PRV_X,PRV_BOT     (inlet: rail taps VERTICALLY DOWN)
+  PRV_X,PRV_TOP → PRV_X,Y_RET      (drain: exits VERTICALLY DOWN from box top)
+  PRV_X,Y_RET → TK_CX,Y_RET        (horizontal left along return rail)
+  TK_CX,Y_RET → TK_CX,TK_TOP       (vertical down to tank)
+  Junction dot at PRV_X,Y_RET
 
-W=1000 H=640 | TANK_X=80 PUMP_X=200 FILT_X=360 PRV_TEE_X=460 DCV_X=560 ACT_X=790
-RAIL_Y=300 PRV_CY=390 RET_Y=480 tkY=530
+WORK LINES A and B (via bypass channels ABOVE DCV assembly):
+  A (pressure, 1.8px): DCV_A_X,Y_RAIL → DCV_A_X,bypY_A → port_A_X,bypY_A → port_A_X,port_A_Y
+  B (return,  1.5px): DCV_B_X,Y_RAIL → DCV_B_X,bypY_B → port_B_X,bypY_B → port_B_X,port_B_Y
+  Cylinder: port_A=(CYL_A_X,CYL_A_Y)  port_B=(CYL_B_X,CYL_B_Y)
+  Motor:    port_A=(MOT_L,MOT_Y)       port_B=(MOT_R,MOT_Y)
 
-### PRE-PUSH CHECKLIST (every circuit push)
+DCV T PORT → RETURN RAIL (solid, 1.5px):
+  DCV_T_X,DCV_T_Y → DCV_T_X,Y_RET (straight vertical down)
+  Junction dot at DCV_T_X,Y_RET
 
-□ Pump triangle RIGHT | □ Motor triangle INTO circle | □ Filter = hatched circle
-□ PRV BELOW rail | □ PRV drain DOWN to RET_Y | □ DCV = 3 separate boxes
-□ P=DCV_P_X=DCV_X | □ T=DCV_T_X=same X | □ A=left edge B=right edge
-□ ALL lines orthogonal | □ Junction dots at every T | □ No lines through components
-□ All ports are named constants | □ W≥1000 | □ Component reference table present
+RETURN RAIL (solid, 1.5px, darker teal):
+  DCV_T_X,Y_RET → cooler_right → cooler_left → rf_right → rf_left → TK_CX,Y_RET → TK_CX,TK_TOP
+  Junction dot at TK_CX,Y_RET
+```
+
+---
+
+### BYPASS CHANNEL RULES (A and B lines above DCV)
+
+```
+bypY_A = dcvT - 32    // 32px clear above DCV top — no component within ±20px
+bypY_B = dcvT - 52    // 52px above, 20px above bypY_A — two distinct channels
+Both channels must have clear horizontal run from DCV port X to actuator port X.
+No solenoid box, no label, no other component crosses these channels.
+```
+
+---
+
+### COMPLETE PRE-PUSH CHECKLIST (run BEFORE every circuit push, no exceptions)
+
+```
+GRID CHECK:
+□ Full grid table defined with all component centres and port positions
+□ Collision check run — all gaps ≥ 60px confirmed
+□ No port positions calculated inline — all from named constants
+
+SYMBOL CHECK (ISO 1219-1):
+□ Pump:      circle + triangle apex RIGHT (outlet direction)
+□ Motor:     circle + triangle apex INTO circle from RIGHT (opposite pump)
+□ Filter:    circle with diagonal hatching inside (clipPath used)
+□ PRV:       square body + arrow UP inside + spring zigzag ABOVE box + fixed seat
+□ PRV inlet: BOTTOM of box (PRV_BOT) — pressure taps DOWN from rail
+□ PRV drain: TOP of box (PRV_TOP) — exits upward through spring to return/tank
+□ DCV:       THREE separate equal boxes side by side (not one box with dividers)
+□ DCV P:     enters top-centre of middle box = DCV_P_X = DCV_X
+□ DCV T:     exits bottom-centre of middle box = DCV_T_X = DCV_P_X (same X)
+□ DCV A:     exits left edge of left box = DCV_A_X = dcvL
+□ DCV B:     exits right edge of right box = DCV_B_X = dcvR
+□ Cylinder:  thick end-caps both sides, piston line, rod exits ONE side only
+□ Cylinder A port: cap-end top stub (left of piston)
+□ Cylinder B port: rod-end top stub (right of piston)
+□ Motor A port: LEFT side of motor circle = MOT_L = MOT_X - M_R
+□ Motor B port: RIGHT side of motor circle = MOT_R = MOT_X + M_R
+□ Accumulator: circle bisected by horizontal line (gas top, fluid bottom)
+□ Reservoir: two parallel lines + end caps (not filled rectangle)
+□ Junction dots: at EVERY T-branch on pressure rail, return rail, PRV drain
+
+LINE CHECK:
+□ ALL flow lines orthogonal — zero diagonal lines
+□ Suction line routes via Y_SUCT offset (not through pump body)
+□ Bypass A and B have clear separate channels above DCV (bypY_A, bypY_B)
+□ No line passes through any component body
+□ Return rail drops to TK_CX exactly (not TK_CX+offset)
+□ PRV drain AND return rail share Y_RET with junction dot
+□ Component reference table present (top-right)
+□ Legend with line types present (bottom)
+□ ISO 1219-1 disclaimer in footer
+□ Canvas W ≥ 1100
+
+BROWSER VERIFICATION (MANDATORY — no exceptions):
+□ Deployed to Vercel and hard-refreshed
+□ Screenshot taken of full circuit
+□ Each section zoomed and compared against this checklist
+□ Only after all 26+ points confirmed = circuit is done
+```
 
 ---
 
@@ -474,8 +624,9 @@ If ANY is NO — stop and fix first.
 | v3.0 | 2026-05-01 | CRITICAL UPDATE: shell layout rules, safe nav template, browser verify mandatory, May 1 site state, full mistake registry from today's failures |
 | v3.1 | 2026-05-03 | KB87–KB90 added: ISO 4413, Rexroth VT-VRPA2, VT-VRPA1, Palfinger PK10000 |
 | v4.0 | 2026-06-01 | Full redesign to dark teal v4.0, new page structure rules, sidebar rules |
-| v4.1 | 2026-06-05 | Added mistakes #19–23: wrong fetch payload, 35s timeout, no keep-alive, API drift, mandatory session-end file updates. Page status table updated. |
-| v4.2 | 2026-06-05 | CRITICAL: Added RULE 16 — full hydraulic circuit diagram standards. ISO 1219-1 symbol reference table, mandatory named port constants, topology rules, pre-push checklist. Added mistakes #24–28: magic offsets, PRV above rail, DCV P/T misalignment, diagonal lines, no checklist. This rule is NON-NEGOTIABLE — real engineers test this platform. |
+| v4.1 | 2026-06-05 | Added mistakes #19–23. Page status table updated. |
+| v4.2 | 2026-06-05 | Added RULE 16 — full hydraulic circuit diagram standards. ISO symbols, named port constants, topology rules, pre-push checklist. Mistakes #24–28. |
+| v4.3 | 2026-06-05 | CRITICAL UPDATE: RULE 16 completely rewritten with GRID-FIRST LAW. Full verified grid template (W=1100, all 13 named port constants, collision check table). Complete 30-point pre-push checklist including grid check + symbol check + line check + browser verification. Mistakes #29–33 added. Root cause of all circuit failures: writing SVG without topology grid first. This is now fixed permanently. |
 
 ---
 

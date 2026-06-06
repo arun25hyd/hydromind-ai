@@ -1,4 +1,4 @@
-# CLAUDE.md — HydroMind AI | Master System Protocol v3.2
+# CLAUDE.md — HydroMind AI | Master System Protocol v3.3
 # STATUS: ONLINE | PRECISION MODE: ACTIVE | Last updated: June 05 2026
 # READ THIS FIRST. Every session. No exceptions.
 
@@ -265,7 +265,7 @@ If page looks wrong:
 | Date | What Was Done | Files Changed | Bugs Fixed |
 |---|---|---|---|
 | 2026-06-05 | Fixed `var history` clash in crane_diagnostic.html. Fixed system_design.html 400 error — wrong payload. Fixed response parser. XHR timeout 35s→90s. Added keep-alive ping. | crane_diagnostic.html, system_design.html | history.push crash, Backend 400, timeout, no keep-alive |
-| 2026-06-05 | Full circuit diagram rebuild — ISO 1219-1 compliant symbols, named port coordinates, PRV below rail, P/T DCV ports centred, orthogonal routing, W=1000 canvas, component reference table | system_design.html | All 10 circuit diagram faults from audit |
+| 2026-06-05 | Circuit diagram — 6 iterations to get correct. Root cause: writing SVG without grid plan. Final fix: complete grid-based rewrite (W=1100, 13 named port constants, collision check). PRV inlet=BOT/drain=TOP, motor A=left/B=right, return→TK_CX exact. Browser verified all 26 checklist points. SKILL.md v4.3 with GRID-FIRST LAW. | system_design.html, CLAUDE.md, SKILL.md | All circuit faults — PRV reversed, motor ports wrong, tank disconnect, diagonal lines, no grid |
 
 ---
 
