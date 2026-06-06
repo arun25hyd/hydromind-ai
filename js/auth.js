@@ -438,10 +438,41 @@ function _injectNavUserChip(user){
   navRight.appendChild(chip);
 }
 
+/* ── Accessibility helper: connect controls with usable labels ── */
+function hmImproveA11yLabels(){
+  document.querySelectorAll('.field').forEach((field, index)=>{
+    const label=field.querySelector('label');
+    const control=field.querySelector('input, textarea, select');
+    if(!label||!control)return;
+    if(!control.id)control.id='hm-field-'+index;
+    label.setAttribute('for',control.id);
+    if(!control.getAttribute('aria-label')){
+      control.setAttribute('aria-label',(label.textContent||'').trim());
+    }
+  });
+
+  document.querySelectorAll('input, textarea, select').forEach((control, index)=>{
+    if(control.type==='hidden')return;
+    if(control.getAttribute('aria-label')||control.getAttribute('aria-labelledby'))return;
+    const wrap=control.closest('label');
+    const labelText=wrap&&(wrap.textContent||'').replace(/\s+/g,' ').trim();
+    const fallback=labelText||control.placeholder||control.name||control.id||('HydroMind field '+(index+1));
+    control.setAttribute('aria-label',fallback);
+  });
+
+  document.querySelectorAll('button').forEach((button, index)=>{
+    if(button.getAttribute('aria-label')||button.getAttribute('aria-labelledby'))return;
+    const text=(button.textContent||'').replace(/\s+/g,' ').trim();
+    const title=button.getAttribute('title');
+    button.setAttribute('aria-label',text||title||('HydroMind action '+(index+1)));
+  });
+}
+
 /* ── Init ── */
 function hmInit(){
   _injectAuthModal();
   _wireAuthButtons();
+  hmImproveA11yLabels();
   // Mobile nav toggle
   const toggle=document.getElementById('navToggle');
   const mobileNav=document.getElementById('navMobile');

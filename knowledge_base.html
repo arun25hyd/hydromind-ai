@@ -5,8 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Knowledge Base — HydroMind.AI</title>
 <meta name="description" content="86+ indexed OEM hydraulic manuals — Rexroth, Danfoss, Parker, Liebherr, MacGregor, NOV and more.">
+<link rel="canonical" href="https://www.hydromindai.com/knowledge_base.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="HydroMind.AI">
+<meta property="og:title" content="Knowledge Base — HydroMind.AI">
+<meta property="og:description" content="86+ indexed OEM hydraulic manuals — Rexroth, Danfoss, Parker, Liebherr, MacGregor, NOV and more.">
+<meta property="og:url" content="https://www.hydromindai.com/knowledge_base.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Knowledge Base — HydroMind.AI">
+<meta name="twitter:description" content="86+ indexed OEM hydraulic manuals — Rexroth, Danfoss, Parker, Liebherr, MacGregor, NOV and more.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="css/hm-design.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "HydroMind.AI Knowledge Base",
+  "url": "https://www.hydromindai.com/knowledge_base.html",
+  "description": "Searchable hydraulic knowledge base with indexed OEM manuals and engineering references."
+}
+</script>
 <style>
 /* ══ KB PAGE STYLES ══ */
 
@@ -330,6 +348,13 @@
       <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input id="kb-search" type="text" placeholder="Search by title, manufacturer, component, KB number, or keyword…" oninput="onSearch(this.value)" autocomplete="off" spellcheck="false">
       <div class="kb-search-clear" id="kb-clear" onclick="clearSearch()">✕</div>
+    </div>
+
+    <div class="kb-search-suggestions" aria-label="Popular knowledge base searches">
+      <span onclick="document.getElementById('kb-search').value='Rexroth A4VG case drain';onSearch('Rexroth A4VG case drain')">Rexroth A4VG case drain</span>
+      <span onclick="document.getElementById('kb-search').value='Danfoss H1 charge pressure';onSearch('Danfoss H1 charge pressure')">Danfoss H1 charge pressure</span>
+      <span onclick="document.getElementById('kb-search').value='DNV-ST-0378 hose inspection';onSearch('DNV-ST-0378 hose inspection')">DNV-ST-0378 hose inspection</span>
+      <span onclick="document.getElementById('kb-search').value='Counterbalance valve setting';onSearch('Counterbalance valve setting')">Counterbalance valve setting</span>
     </div>
 
     <!-- Filter chips -->
