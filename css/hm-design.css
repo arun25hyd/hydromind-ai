@@ -1208,10 +1208,11 @@ select:focus {
 }
 
 .hm-action-strip {
-  max-width: 1180px;
+  max-width: 1320px;
   margin: 28px auto 10px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
   gap: 14px;
 }
 
@@ -1224,6 +1225,7 @@ select:focus {
   padding: 18px;
   min-height: 128px;
   display: grid;
+  grid-template-rows: auto auto 1fr auto;
   gap: 10px;
   transition: border-color 0.16s, transform 0.16s, box-shadow 0.16s;
 }

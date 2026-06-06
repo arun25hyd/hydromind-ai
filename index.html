@@ -15,7 +15,7 @@
 <meta name="twitter:title" content="HydroMind.AI — Hydraulic Intelligence for Marine &amp; Offshore">
 <meta name="twitter:description" content="AI-powered hydraulic fault diagnosis, crane diagnostics, system design and knowledge base for marine and offshore engineers.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="css/hm-design.css">
+<link rel="stylesheet" href="css/hm-design.css?v=20260606-right-align">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -32,13 +32,13 @@
 /* Hero */
 .hero-section {
   position: relative;
-  max-width: 1180px !important;
+  max-width: 1320px !important;
   min-height: 0 !important;
-  padding: 34px 0 36px;
-  margin: 0 auto 0 0 !important;
+  padding: 44px 0 46px 40px;
+  margin: 0 auto !important;
   display: grid;
-  grid-template-columns: minmax(440px, 620px) minmax(360px, 430px);
-  gap: clamp(44px, 5vw, 76px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
   align-items: start;
   overflow: hidden;
   border-bottom: 1px solid var(--border-md);
@@ -60,6 +60,7 @@
   z-index: 1;
 }
 .hero-section > div:first-child {
+  grid-column: span 2;
   padding-left: 0;
 }
 .hero-eyebrow {
@@ -71,13 +72,13 @@
 }
 .hero-eyebrow .pulse { width: 6px; height: 6px; background: var(--accent-bright); border-radius: 50%; animation: pulse-dot 2s ease-in-out infinite; }
 .hero-h1 {
-  max-width: 580px;
+  max-width: 660px;
   font-family: var(--syne); font-size: clamp(34px,3.45vw,48px);
   font-weight: 800; color: var(--text1); line-height: 1.08;
   letter-spacing: -.02em; margin-bottom: 18px;
 }
 .hero-h1 .hl { color: var(--accent-bright); }
-.hero-sub { font-size: 14.5px; color: var(--text2); line-height: 1.65; max-width: 540px; margin-bottom: 22px; }
+.hero-sub { font-size: 14.5px; color: var(--text2); line-height: 1.65; max-width: 720px; margin-bottom: 22px; }
 .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
 .hero-note { margin-top: 18px; font-size: 11.5px; color: var(--text3); display: flex; align-items: center; gap: 8px; }
 .hero-note::before { content: ""; width: 18px; height: 1px; background: var(--text3); }
@@ -85,7 +86,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
-  max-width: 640px;
+  max-width: 100%;
   margin-top: 20px;
 }
 .hero-proof-item {
@@ -114,9 +115,9 @@
 }
 
 /* Hero chat card */
-.hero-visual { display: grid; gap: 14px; align-items: start; justify-content: start; padding-top: 22px; }
+.hero-visual { display: grid; gap: 14px; align-items: start; justify-content: stretch; justify-self: stretch; width: 100%; padding-top: 22px; }
 .hero-chat {
-  width: 100%; max-width: 410px;
+  width: 100%; max-width: none;
   background: var(--card); border: 1px solid var(--border-md);
   border-radius: 16px; overflow: hidden; box-shadow: var(--card-shadow), 0 0 32px rgba(6,182,212,.08);
 }
@@ -125,10 +126,11 @@
     grid-template-columns: 1fr;
     max-width: 100% !important;
     min-height: 0 !important;
-    padding: 48px 0 42px;
+    padding: 42px 24px;
     margin: 0 !important;
   }
   .hero-section > div:first-child {
+    grid-column: auto;
     padding-left: 0;
   }
   .hero-sub {
@@ -185,20 +187,41 @@
 
 /* Stats bar */
 .stats-bar {
-  max-width: 1180px !important;
+  max-width: 1320px !important;
   background:
     linear-gradient(90deg, rgba(45,212,191,.075), rgba(103,213,255,.035), transparent),
     rgba(13,23,32,.78);
   border: 1px solid var(--border-md);
   border-radius: 16px;
   padding: 24px 26px;
-  margin: 4px auto 0 0 !important;
+  margin: 4px auto 0 !important;
   display: grid; grid-template-columns: repeat(4,1fr); gap: 20px;
   box-shadow: var(--card-shadow);
 }
 .stat-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
 .stat-val { font-family: var(--mono); font-size: 26px; font-weight: 700; color: var(--accent-bright); letter-spacing: -.02em; }
 .stat-lbl { font-size: 11.5px; color: var(--text2); margin-top: 3px; }
+
+.hm-page > .hero-section,
+.hm-page > .stats-bar,
+.hm-page > .hm-action-strip,
+.hm-page > .features-section,
+.hm-page > .how-section,
+.hm-page > .testi-section,
+.hm-page > .app-section,
+.hm-page > .calc-section,
+.hm-page > .cta-section {
+  width: min(100%, 1320px);
+  max-width: 1320px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.hm-home-page {
+  width: min(100%, 1320px);
+  margin: var(--nav-h) auto 0 !important;
+  padding: 32px 0;
+}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5756895689951807" crossorigin="anonymous"></script>
 </head>
@@ -510,7 +533,7 @@
 <!-- ═══════════════════════════════════════
      MAIN CONTENT
 ════════════════════════════════════════ -->
-<main class="hm-page">
+<main class="hm-page hm-home-page">
 
   <!-- HERO -->
   <section class="hero-section">
