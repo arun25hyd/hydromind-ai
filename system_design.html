@@ -85,6 +85,55 @@ a { color: inherit; text-decoration: none; }
 .sd-chip { border: 1px solid var(--sd-line2); background: rgba(45,212,191,.09); color: var(--sd-accent); border-radius: 999px; padding: 5px 10px; font-size: 11px; font-family: "Space Mono", monospace; font-weight: 700; }
 .sd-chip-btn { cursor: pointer; transition: background .15s, border-color .15s, color .15s, transform .15s; }
 .sd-chip-btn:hover, .sd-chip-btn:focus-visible { background: rgba(45,212,191,.18); border-color: rgba(45,212,191,.65); color: var(--sd-text); transform: translateY(-1px); }
+.sd-unit-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  border: 1px solid rgba(125,211,252,.2);
+  border-radius: 999px;
+  background: rgba(7,16,21,.72);
+  padding: 5px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
+}
+.sd-unit-switch-label {
+  padding: 0 7px 0 9px;
+  color: var(--sd-faint);
+  font-family: "Space Mono", monospace;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.sd-unit-btn {
+  min-height: 28px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 6px 11px;
+  background: transparent;
+  color: var(--sd-muted);
+  font-size: 11px;
+  font-weight: 850;
+  transition: background .16s, color .16s, border-color .16s;
+}
+.sd-unit-btn.active {
+  background: linear-gradient(135deg, var(--sd-accent), #0284c7);
+  color: #021116;
+  border-color: transparent;
+}
+.unit-tag {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  padding: 2px 6px;
+  border: 1px solid rgba(125,211,252,.16);
+  border-radius: 999px;
+  color: var(--sd-blue);
+  background: rgba(103,213,255,.06);
+  font-family: "Space Mono", monospace;
+  font-size: 10px;
+  font-weight: 800;
+}
 .sd-shell { height: calc(100vh - var(--nav-h, 60px)); min-height: 0; display: grid; grid-template-columns: 260px minmax(0, 1fr) 300px; }
 .sd-left, .sd-right {
   min-height: 0; overflow-y: auto;
@@ -408,6 +457,11 @@ h1 { margin: 0; font-family: Syne, sans-serif; font-size: clamp(28px, 4vw, 42px)
           <div class="hero-actions">
             <button class="btn primary" type="button" onclick="analyzeBrief()">Start AI Sizing</button>
             <button class="btn ghost" type="button" onclick="setStep(5)">Preview Review</button>
+            <div class="sd-unit-switch" role="group" aria-label="Unit system">
+              <span class="sd-unit-switch-label">Units</span>
+              <button class="sd-unit-btn active" id="unitMetric" type="button" onclick="setUnitSystem('metric')">Metric</button>
+              <button class="sd-unit-btn" id="unitImperial" type="button" onclick="setUnitSystem('imperial')">Imperial</button>
+            </div>
           </div>
         </div>
         <div class="hero-schematic-card" aria-hidden="true">
@@ -491,12 +545,12 @@ h1 { margin: 0; font-family: Syne, sans-serif; font-size: clamp(28px, 4vw, 42px)
           <div class="question-list" id="questions"></div>
         </div>
         <div class="grid three" style="margin-top:16px">
-          <div class="field"><label>Load</label><input class="input" id="loadTon" type="number" step="0.1"></div>
-          <div class="field"><label>Stroke / travel</label><input class="input" id="strokeM" type="number" step="0.05"></div>
+          <div class="field"><label>Load <span class="unit-tag" id="unitLoad">t</span></label><input class="input" id="loadTon" type="number" step="0.1"></div>
+          <div class="field"><label>Stroke / travel <span class="unit-tag" id="unitStroke">m</span></label><input class="input" id="strokeM" type="number" step="0.05"></div>
           <div class="field"><label>Extend time</label><input class="input" id="timeSec" type="number" step="1"></div>
-          <div class="field"><label>Working pressure</label><input class="input" id="workPressure" type="number" step="10"></div>
-          <div class="field"><label>Flow rate</label><input class="input" id="flowRate" type="number" step="5"></div>
-          <div class="field"><label>Pump power</label><input class="input" id="pumpPower" type="number" step="1"></div>
+          <div class="field"><label>Working pressure <span class="unit-tag" id="unitPressure">bar</span></label><input class="input" id="workPressure" type="number" step="10"></div>
+          <div class="field"><label>Flow rate <span class="unit-tag" id="unitFlow">L/min</span></label><input class="input" id="flowRate" type="number" step="5"></div>
+          <div class="field"><label>Pump power <span class="unit-tag" id="unitPower">kW</span></label><input class="input" id="pumpPower" type="number" step="1"></div>
         </div>
         <div class="grid three" id="calcCards" style="margin-top:16px"></div>
       </section>
@@ -621,6 +675,7 @@ const KB_COMPONENT_MODELS = {
 };
 
 let currentStep = 1;
+let unitSystem = 'metric';
 const state = {
   extracted: {},
   questions: [],
@@ -636,6 +691,123 @@ function val(id) { return ($(id) && $(id).value || '').trim(); }
 function num(id) { return parseFloat(val(id)) || 0; }
 function fmt(n, d=1) { return Number.isFinite(n) ? Number(n).toFixed(d).replace(/\.0$/, '') : '-'; }
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+const UNIT_DEFS = {
+  metric: {
+    load: 't',
+    stroke: 'm',
+    pressure: 'bar',
+    flow: 'L/min',
+    power: 'kW',
+    force: 'kN',
+    diameter: 'mm',
+    reservoir: 'L'
+  },
+  imperial: {
+    load: 'lbf',
+    stroke: 'in',
+    pressure: 'psi',
+    flow: 'gpm',
+    power: 'hp',
+    force: 'lbf',
+    diameter: 'in',
+    reservoir: 'gal'
+  }
+};
+
+function unitLabel(kind) {
+  return UNIT_DEFS[unitSystem][kind] || '';
+}
+
+function metricToDisplay(value, kind) {
+  if (!Number.isFinite(value) || unitSystem === 'metric') return value;
+  const map = {
+    load: value * 2204.6226218,
+    stroke: value * 39.37007874,
+    pressure: value * 14.5037738,
+    flow: value * 0.2641720524,
+    power: value * 1.34102209,
+    force: value * 224.8089431,
+    diameter: value * 0.0393700787,
+    reservoir: value * 0.2641720524
+  };
+  return map[kind] ?? value;
+}
+
+function displayToMetric(value, kind) {
+  if (!Number.isFinite(value) || unitSystem === 'metric') return value;
+  const map = {
+    load: value / 2204.6226218,
+    stroke: value / 39.37007874,
+    pressure: value / 14.5037738,
+    flow: value / 0.2641720524,
+    power: value / 1.34102209,
+    force: value / 224.8089431,
+    diameter: value / 0.0393700787,
+    reservoir: value / 0.2641720524
+  };
+  return map[kind] ?? value;
+}
+
+function metricInput(id, kind, fallback = 0) {
+  const raw = parseFloat(val(id));
+  return Number.isFinite(raw) && raw > 0 ? displayToMetric(raw, kind) : fallback;
+}
+
+function setMetricInput(id, kind, value, decimals = 1) {
+  const el = $(id);
+  if (el) el.value = fmt(metricToDisplay(value, kind), decimals);
+}
+
+function fmtUnit(value, kind, decimals = 1) {
+  return `${fmt(metricToDisplay(value, kind), decimals)} <small>${unitLabel(kind)}</small>`;
+}
+
+function txtUnit(value, kind, decimals = 1) {
+  return `${fmt(metricToDisplay(value, kind), decimals)} ${unitLabel(kind)}`;
+}
+
+function updateUnitLabels() {
+  const labels = {
+    unitLoad: 'load',
+    unitStroke: 'stroke',
+    unitPressure: 'pressure',
+    unitFlow: 'flow',
+    unitPower: 'power'
+  };
+  Object.entries(labels).forEach(([id, kind]) => {
+    const el = $(id);
+    if (el) el.textContent = unitLabel(kind);
+  });
+  const metricBtn = $('unitMetric');
+  const imperialBtn = $('unitImperial');
+  if (metricBtn) metricBtn.classList.toggle('active', unitSystem === 'metric');
+  if (imperialBtn) imperialBtn.classList.toggle('active', unitSystem === 'imperial');
+}
+
+function setUnitSystem(system) {
+  if (system !== 'metric' && system !== 'imperial') return;
+  if (system === unitSystem) return;
+  const snapshot = {
+    loadTon: metricInput('loadTon', 'load', state.calculations.loadTon || state.extracted.loadTon || 10),
+    strokeM: metricInput('strokeM', 'stroke', state.calculations.strokeM || state.extracted.strokeM || 1),
+    pressure: metricInput('workPressure', 'pressure', state.calculations.pressure || state.extracted.pressureBar || 250),
+    flow: metricInput('flowRate', 'flow', state.calculations.flow || 0),
+    power: metricInput('pumpPower', 'power', state.calculations.powerKw || 0)
+  };
+  unitSystem = system;
+  updateUnitLabels();
+  setMetricInput('loadTon', 'load', snapshot.loadTon, unitSystem === 'metric' ? 1 : 0);
+  setMetricInput('strokeM', 'stroke', snapshot.strokeM, unitSystem === 'metric' ? 2 : 1);
+  setMetricInput('workPressure', 'pressure', snapshot.pressure, 0);
+  if (snapshot.flow) setMetricInput('flowRate', 'flow', snapshot.flow, 1);
+  if (snapshot.power) setMetricInput('pumpPower', 'power', snapshot.power, 1);
+  calculatePower();
+  if (state.components.pump) selectComponents();
+  if (state.valves.length) selectValves();
+  if (currentStep === 5) generateReview();
+  renderLiveSpec();
+}
 
 function renderSteps() {
   $('stepList').innerHTML = steps.map((s, i) => {
@@ -712,10 +884,10 @@ function analyzeBrief() {
     pressureBar: pressure || 250
   };
 
-  $('loadTon').value = state.extracted.loadTon;
-  $('strokeM').value = state.extracted.strokeM;
+  setMetricInput('loadTon', 'load', state.extracted.loadTon, unitSystem === 'metric' ? 1 : 0);
+  setMetricInput('strokeM', 'stroke', state.extracted.strokeM, unitSystem === 'metric' ? 2 : 1);
   $('timeSec').value = state.extracted.timeSec;
-  $('workPressure').value = state.extracted.pressureBar;
+  setMetricInput('workPressure', 'pressure', state.extracted.pressureBar, 0);
   state.questions = buildQuestions();
   renderQuestions();
   calculatePower();
@@ -743,10 +915,10 @@ function renderQuestions() {
 }
 
 function calculatePower() {
-  const loadTon = num('loadTon') || 10;
-  const strokeM = num('strokeM') || 1;
+  const loadTon = metricInput('loadTon', 'load', state.extracted.loadTon || 10);
+  const strokeM = metricInput('strokeM', 'stroke', state.extracted.strokeM || 1);
   const timeSec = num('timeSec') || 30;
-  let pressure = num('workPressure') || state.extracted.pressureBar || 250;
+  let pressure = metricInput('workPressure', 'pressure', state.extracted.pressureBar || 250);
   const forceKN = loadTon * 9.81;
   const areaM2 = (forceKN * 1000) / (pressure * 100000);
   const boreMm = Math.sqrt((4 * areaM2) / Math.PI) * 1000;
@@ -756,9 +928,9 @@ function calculatePower() {
   const relief = pressure * 1.12;
   const rodMm = boreMm * 0.63;
   state.calculations = { loadTon, strokeM, timeSec, forceKN, boreMm, rodMm, pressure, flow: designFlow, powerKw, relief };
-  $('workPressure').value = fmt(pressure, 0);
-  $('flowRate').value = fmt(designFlow, 1);
-  $('pumpPower').value = fmt(powerKw, 1);
+  setMetricInput('workPressure', 'pressure', pressure, 0);
+  setMetricInput('flowRate', 'flow', designFlow, 1);
+  setMetricInput('pumpPower', 'power', powerKw, 1);
   renderCalcCards();
   renderLiveSpec();
 }
@@ -766,11 +938,11 @@ function calculatePower() {
 function renderCalcCards() {
   const c = state.calculations;
   $('calcCards').innerHTML = [
-    ['Cylinder force', `${fmt(c.forceKN, 1)} <small>kN</small>`, 'Based on entered load and gravity factor.'],
-    ['Cylinder bore', `${fmt(c.boreMm, 0)} <small>mm</small>`, `Rod estimate ${fmt(c.rodMm, 0)} mm.`],
-    ['Design flow', `${fmt(c.flow, 1)} <small>L/min</small>`, 'Includes 20% design margin over theoretical flow.'],
-    ['Pump power', `${fmt(c.powerKw, 1)} <small>kW</small>`, 'Includes 87% overall efficiency.'],
-    ['Relief setting', `${fmt(c.relief, 0)} <small>bar</small>`, 'Approx. 112% of working pressure.'],
+    ['Cylinder force', fmtUnit(c.forceKN, 'force', unitSystem === 'metric' ? 1 : 0), 'Based on entered load and gravity factor.'],
+    ['Cylinder bore', fmtUnit(c.boreMm, 'diameter', unitSystem === 'metric' ? 0 : 2), `Rod estimate ${txtUnit(c.rodMm, 'diameter', unitSystem === 'metric' ? 0 : 2)}.`],
+    ['Design flow', fmtUnit(c.flow, 'flow', 1), 'Includes 20% design margin over theoretical flow.'],
+    ['Pump power', fmtUnit(c.powerKw, 'power', 1), 'Includes 87% overall efficiency.'],
+    ['Relief setting', fmtUnit(c.relief, 'pressure', 0), 'Approx. 112% of working pressure.'],
     ['Cycle target', `${fmt(c.timeSec, 0)} <small>s</small>`, 'Used for speed and flow calculation.']
   ].map(m => `<div class="calc-card"><div class="card-label">${m[0]}</div><div class="metric">${m[1]}</div><p class="hint">${m[2]}</p></div>`).join('');
 }
@@ -782,9 +954,9 @@ function selectComponents() {
   const motorCircuit = state.extracted.actuator === 'Hydraulic motor';
   state.components = {
     pump: highDuty ? 'Load-sensing variable displacement axial piston pump' : 'Pressure-compensated axial piston pump',
-    actuator: motorCircuit ? 'Hydraulic motor with fail-safe brake' : `Double-acting cylinder, bore ${fmt(c.boreMm,0)} mm, rod ${fmt(c.rodMm,0)} mm`,
-    primeMover: `Electric motor ${fmt(c.powerKw * 1.15, 1)} kW minimum with service factor`,
-    reservoir: `${fmt(Math.max(c.flow * 3, 80), 0)}-${fmt(Math.max(c.flow * 5, 120), 0)} L reservoir`,
+    actuator: motorCircuit ? 'Hydraulic motor with fail-safe brake' : `Double-acting cylinder, bore ${txtUnit(c.boreMm, 'diameter', unitSystem === 'metric' ? 0 : 2)}, rod ${txtUnit(c.rodMm, 'diameter', unitSystem === 'metric' ? 0 : 2)}`,
+    primeMover: `Electric motor ${txtUnit(c.powerKw * 1.15, 'power', 1)} minimum with service factor`,
+    reservoir: `${txtUnit(Math.max(c.flow * 3, 80), 'reservoir', 0)}-${txtUnit(Math.max(c.flow * 5, 120), 'reservoir', 0)} reservoir`,
     cooler: state.extracted.cooling,
     filtration: state.extracted.environment.includes('Marine') ? 'Suction strainer, 10 micron return filter, offline kidney loop, desiccant breather' : 'Suction strainer and 10 micron return filter',
     cleanliness: state.extracted.environment.includes('Marine') ? 'ISO 4406 17/15/12 or better' : 'ISO 4406 18/16/13'
@@ -829,7 +1001,7 @@ function selectValves() {
     },
     {
       component: 'Relief valve',
-      selection: `Main relief valve set approx. ${fmt(c.relief,0)} bar`,
+      selection: `Main relief valve set approx. ${txtUnit(c.relief, 'pressure', 0)}`,
       reason: 'Selected to protect pump, hose, valve block and cylinder from pressure spikes above design pressure.',
       risk: 'Overpressure can rupture hoses, damage seals or overload structure.',
       omitted: 'No final pressure limitation if pump/control valve malfunctions.',
@@ -891,7 +1063,7 @@ function generateReview() {
   const c = state.calculations, x = state.components;
   $('tab-summary').innerHTML = `<div class="grid two">
     ${summaryCard('Application', `${state.extracted.app || val('appType')} / ${state.extracted.environment || val('environment')}`)}
-    ${summaryCard('Design basis', `${fmt(c.pressure,0)} bar, ${fmt(c.flow,1)} L/min, ${fmt(c.powerKw,1)} kW`)}
+    ${summaryCard('Design basis', `${txtUnit(c.pressure,'pressure',0)}, ${txtUnit(c.flow,'flow',1)}, ${txtUnit(c.powerKw,'power',1)}`)}
     ${summaryCard('Actuator', x.actuator)}
     ${summaryCard('Circuit logic', `${x.pump} with ${state.valves[0].selection}`)}
   </div>${renderSelectedModelSummary()}`;
@@ -991,7 +1163,7 @@ function renderHydraulicCircuit() {
     <text x="600" y="74" text-anchor="middle" fill="#111827" font-family="Arial, sans-serif" font-size="16" font-weight="800">HYDRAULIC CIRCUIT</text>
     <text x="600" y="96" text-anchor="middle" fill="#111827" font-family="Arial, sans-serif" font-size="13" font-weight="800">${esc(model.title).toUpperCase()}</text>
     <text x="600" y="118" text-anchor="middle" fill="#111827" font-family="Arial, sans-serif" font-size="11" font-weight="700">${centreNote}</text>
-    <text x="600" y="138" text-anchor="middle" fill="#475569" font-family="Arial, sans-serif" font-size="10">${esc(x.pump)} | ${fmt(c.pressure,0)} bar | ${fmt(c.flow,1)} L/min | Relief ${fmt(c.relief,0)} bar</text>
+    <text x="600" y="138" text-anchor="middle" fill="#475569" font-family="Arial, sans-serif" font-size="10">${esc(x.pump)} | ${esc(txtUnit(c.pressure,'pressure',0))} | ${esc(txtUnit(c.flow,'flow',1))} | Relief ${esc(txtUnit(c.relief,'pressure',0))}</text>
 
     <g stroke="#111827" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" font-family="Arial, sans-serif">
       <rect x="96" y="610" width="140" height="52"/>
@@ -1180,9 +1352,9 @@ function filterCoolerSymbol(x, y) {
 function renderBom() {
   const c = state.calculations, x = state.components;
   const rows = [
-    ['Pump', selectedModel('pump')?.model || x.pump, '1', `${fmt(c.flow,1)} L/min at ${fmt(c.pressure,0)} bar; ${selectedModel('pump')?.kb || 'KB model pending'}`],
+    ['Pump', selectedModel('pump')?.model || x.pump, '1', `${txtUnit(c.flow,'flow',1)} at ${txtUnit(c.pressure,'pressure',0)}; ${selectedModel('pump')?.kb || 'KB model pending'}`],
     ['Prime mover', x.primeMover, '1', 'Verify starting current and duty class'],
-    ['Actuator', selectedModel('actuator')?.model || x.actuator, '1', `Load ${fmt(c.loadTon,1)} ton, stroke ${fmt(c.strokeM,2)} m; ${selectedModel('actuator')?.kb || 'KB model pending'}`],
+    ['Actuator', selectedModel('actuator')?.model || x.actuator, '1', `Load ${txtUnit(c.loadTon,'load',unitSystem === 'metric' ? 1 : 0)}, stroke ${txtUnit(c.strokeM,'stroke',unitSystem === 'metric' ? 2 : 1)}; ${selectedModel('actuator')?.kb || 'KB model pending'}`],
     ['DCV', selectedModel('dcv')?.model || state.valves[0].selection, '1', `Centre condition validated by pump type; ${selectedModel('dcv')?.kb || 'KB model pending'}`],
     ['Relief valve', state.valves[1].selection, '1', 'Main pressure protection'],
     ['Protection valve', selectedModel('protection')?.model || state.valves[2].selection, '1 set', `${state.valves[2].selection}; ${selectedModel('protection')?.kb || 'KB model pending'}`],
@@ -1196,9 +1368,9 @@ function renderLiveSpec() {
   const rows = [
     ['Application', state.extracted.app || val('appType')],
     ['Actuator', state.extracted.actuator || '-'],
-    ['Pressure', c.pressure ? `${fmt(c.pressure,0)} bar` : '-'],
-    ['Flow', c.flow ? `${fmt(c.flow,1)} L/min` : '-'],
-    ['Power', c.powerKw ? `${fmt(c.powerKw,1)} kW` : '-'],
+    ['Pressure', c.pressure ? txtUnit(c.pressure, 'pressure', 0) : '-'],
+    ['Flow', c.flow ? txtUnit(c.flow, 'flow', 1) : '-'],
+    ['Power', c.powerKw ? txtUnit(c.powerKw, 'power', 1) : '-'],
     ['Circuit', state.components.pump ? (state.components.pump.includes('Load') ? 'Load sensing' : 'Pressure compensated') : '-'],
     ['Standard', state.extracted.standard || '-']
   ];
@@ -1206,6 +1378,7 @@ function renderLiveSpec() {
 }
 
 document.querySelectorAll('#loadTon,#strokeM,#timeSec,#workPressure').forEach(el => el.addEventListener('input', calculatePower));
+updateUnitLabels();
 renderSteps();
 renderLiveSpec();
 setStep(1);

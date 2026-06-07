@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Knowledge Base — HydroMind.AI</title>
-<meta name="description" content="86+ indexed OEM hydraulic manuals — Rexroth, Danfoss, Parker, Liebherr, MacGregor, NOV and more.">
+<meta name="description" content="155 indexed OEM hydraulic manuals and engineering references — Rexroth, Danfoss, Parker, Liebherr, MacGregor, NOV, standards and more.">
 <link rel="canonical" href="https://www.hydromindai.com/knowledge_base.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="HydroMind.AI">
 <meta property="og:title" content="Knowledge Base — HydroMind.AI">
-<meta property="og:description" content="86+ indexed OEM hydraulic manuals — Rexroth, Danfoss, Parker, Liebherr, MacGregor, NOV and more.">
+<meta property="og:description" content="155 indexed OEM hydraulic manuals and engineering references — Rexroth, Danfoss, Parker, Liebherr, MacGregor, NOV, standards and more.">
 <meta property="og:url" content="https://www.hydromindai.com/knowledge_base.html">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Knowledge Base — HydroMind.AI">
-<meta name="twitter:description" content="86+ indexed OEM hydraulic manuals — Rexroth, Danfoss, Parker, Liebherr, MacGregor, NOV and more.">
+<meta name="twitter:description" content="155 indexed OEM hydraulic manuals and engineering references — Rexroth, Danfoss, Parker, Liebherr, MacGregor, NOV, standards and more.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="css/hm-design.css">
 <script type="application/ld+json">
@@ -215,8 +215,65 @@
 .htu-tip-row:last-child{margin-bottom:0;}
 .htu-tip-dot{width:5px;height:5px;background:var(--accent);border-radius:50%;flex-shrink:0;margin-top:4px;}
 .htu-tip-text{font-size:11px;color:var(--text2);line-height:1.5;}
+.kb-verified-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  margin: 16px 0 0;
+  padding: 14px 16px;
+  border: 1px solid rgba(45,212,191,.28);
+  border-radius: 10px;
+  background:
+    linear-gradient(135deg, rgba(45,212,191,.08), transparent 42%),
+    var(--card);
+}
+.kb-verified-title {
+  color: var(--text1);
+  font-size: 13px;
+  font-weight: 850;
+}
+.kb-verified-copy {
+  margin-top: 4px;
+  color: var(--text2);
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+.kb-verified-badge {
+  border: 1px solid var(--accent-glow);
+  border-radius: 999px;
+  background: var(--accent-dim);
+  color: var(--accent-bright);
+  padding: 6px 10px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+@media (max-width: 700px) {
+  .kb-verified-panel { grid-template-columns: 1fr; }
+  .kb-verified-badge { width: fit-content; }
+}
+@media (max-width: 600px) {
+  .kb-hero {
+    margin-left: -12px;
+    margin-right: -12px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5756895689951807" crossorigin="anonymous"></script>
+<script>
+function hmPushAdSlot(slot) {
+  requestAnimationFrame(function() {
+    if (!slot) return;
+    var width = slot.getBoundingClientRect().width;
+    if (width < 250 || getComputedStyle(slot).display === 'none') return;
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+  });
+}
+</script>
 </head>
 <body>
 
@@ -299,12 +356,12 @@
          data-ad-slot="auto"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+    <script>hmPushAdSlot(document.currentScript.previousElementSibling);</script>
   </div>
   <div id="hmAd2" class="sb-pro-cta">
     <h4>📚 Full KB Access</h4>
     <ul>
-      <li>All 86+ documents</li>
+      <li>All 155 documents</li>
       <li>Advanced search filters</li>
       <li>Search history saved</li>
       <li>Ask AI about any doc</li>
@@ -320,7 +377,7 @@
          data-ad-slot="auto"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+    <script>hmPushAdSlot(document.currentScript.previousElementSibling);</script>
   </div>
 </aside>
 
@@ -333,13 +390,13 @@
       <div>
         <div class="section-label">Hydraulic Intelligence Library</div>
         <h1>Knowledge Base</h1>
-        <p>86+ indexed OEM manuals, service guides, standards and technical bulletins — covering 12+ manufacturers. Searchable, categorised, AI-queryable.</p>
+        <p>155 indexed OEM manuals, service guides, standards and technical references — covering cranes, pumps, valves, PLC, marine systems and offshore rules. Searchable, categorised, AI-queryable.</p>
       </div>
       <div class="kb-stats">
-        <div class="kb-stat"><div class="sv">86</div><div class="sl">KB Entries</div></div>
-        <div class="kb-stat"><div class="sv">12+</div><div class="sl">Manufacturers</div></div>
-        <div class="kb-stat"><div class="sv">6</div><div class="sl">Categories</div></div>
-        <div class="kb-stat"><div class="sv">2026</div><div class="sl">Up to date</div></div>
+        <div class="kb-stat"><div class="sv" id="stat-docs">155</div><div class="sl">Documents</div></div>
+        <div class="kb-stat"><div class="sv" id="stat-pages">29k</div><div class="sl">Pages</div></div>
+        <div class="kb-stat"><div class="sv" id="stat-chunks">23k</div><div class="sl">Chunks</div></div>
+        <div class="kb-stat"><div class="sv" id="stat-sources">33</div><div class="sl">Sources</div></div>
       </div>
     </div>
 
@@ -355,18 +412,31 @@
       <span onclick="document.getElementById('kb-search').value='Danfoss H1 charge pressure';onSearch('Danfoss H1 charge pressure')">Danfoss H1 charge pressure</span>
       <span onclick="document.getElementById('kb-search').value='DNV-ST-0378 hose inspection';onSearch('DNV-ST-0378 hose inspection')">DNV-ST-0378 hose inspection</span>
       <span onclick="document.getElementById('kb-search').value='Counterbalance valve setting';onSearch('Counterbalance valve setting')">Counterbalance valve setting</span>
+      <span onclick="document.getElementById('kb-search').value='Electrohydraulic proportional servo valve';onSearch('Electrohydraulic proportional servo valve')">Electrohydraulic valve control</span>
     </div>
 
     <!-- Filter chips -->
     <div class="filter-bar">
       <span class="filter-bar-label">Filter:</span>
-      <div class="filter-chip active" data-cat="all"  onclick="setFilter(this,'all')">All <span class="chip-count" id="fc-all">86</span></div>
-      <div class="filter-chip" data-cat="cranes"       onclick="setFilter(this,'cranes')">🏗️ Cranes <span class="chip-count" id="fc-cranes">18</span></div>
-      <div class="filter-chip" data-cat="pumps"        onclick="setFilter(this,'pumps')">⚙️ Pumps <span class="chip-count" id="fc-pumps">16</span></div>
-      <div class="filter-chip" data-cat="motors"       onclick="setFilter(this,'motors')">🔄 Motors <span class="chip-count" id="fc-motors">12</span></div>
-      <div class="filter-chip" data-cat="valves"       onclick="setFilter(this,'valves')">🔧 Valves <span class="chip-count" id="fc-valves">18</span></div>
-      <div class="filter-chip" data-cat="standards"    onclick="setFilter(this,'standards')">📋 Standards <span class="chip-count" id="fc-standards">10</span></div>
-      <div class="filter-chip" data-cat="maintenance"  onclick="setFilter(this,'maintenance')">🔩 Maintenance <span class="chip-count" id="fc-maintenance">12</span></div>
+      <div class="filter-chip active" data-cat="all"  onclick="setFilter(this,'all')">All <span class="chip-count" id="fc-all">155</span></div>
+      <div class="filter-chip" data-cat="cranes"       onclick="setFilter(this,'cranes')">Cranes <span class="chip-count" id="fc-cranes">37</span></div>
+      <div class="filter-chip" data-cat="valves"       onclick="setFilter(this,'valves')">Valves <span class="chip-count" id="fc-valves">40</span></div>
+      <div class="filter-chip" data-cat="pumps"        onclick="setFilter(this,'pumps')">Pumps <span class="chip-count" id="fc-pumps">19</span></div>
+      <div class="filter-chip" data-cat="hydraulics"   onclick="setFilter(this,'hydraulics')">Hydraulics <span class="chip-count" id="fc-hydraulics">20</span></div>
+      <div class="filter-chip" data-cat="marine"       onclick="setFilter(this,'marine')">Marine <span class="chip-count" id="fc-marine">13</span></div>
+      <div class="filter-chip" data-cat="maintenance"  onclick="setFilter(this,'maintenance')">Maintenance <span class="chip-count" id="fc-maintenance">8</span></div>
+      <div class="filter-chip" data-cat="engines"      onclick="setFilter(this,'engines')">Engines <span class="chip-count" id="fc-engines">8</span></div>
+      <div class="filter-chip" data-cat="plc"          onclick="setFilter(this,'plc')">PLC <span class="chip-count" id="fc-plc">5</span></div>
+      <div class="filter-chip" data-cat="standards"    onclick="setFilter(this,'standards')">Standards <span class="chip-count" id="fc-standards">4</span></div>
+      <div class="filter-chip" data-cat="hydromind"    onclick="setFilter(this,'hydromind')">Skill <span class="chip-count" id="fc-hydromind">1</span></div>
+    </div>
+
+    <div class="kb-verified-panel">
+      <div>
+        <div class="kb-verified-title">Verified against HydroMind AI Advisor Skill.md</div>
+        <div class="kb-verified-copy">Skill file confirms the latest knowledge expansion through KB42: electrohydraulic control systems, proportional vs servo valves, sensors, open/closed-loop control, amplifier cards and non-linearity handling.</div>
+      </div>
+      <div class="kb-verified-badge">Skill v2.5 · KB42</div>
     </div>
 
     <!-- How to Use -->
@@ -401,7 +471,7 @@
             <div class="htu-step-num">3</div>
             <div>
               <div class="htu-step-title">Sort and Switch Views</div>
-              <div class="htu-step-desc">Sort the results by KB Number, Title A–Z, Manufacturer, Year, or Page count using the sort dropdown. Toggle between Grid view (cards) and List view (compact rows) using the view buttons on the right of the result bar.</div>
+              <div class="htu-step-desc">Sort the results by KB Number, Title A-Z, Manufacturer, searchable chunks, or page count using the sort dropdown. Toggle between Grid view (cards) and List view (compact rows) using the view buttons on the right of the result bar.</div>
             </div>
           </div>
           <div class="htu-step">
@@ -417,8 +487,8 @@
           <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Search by <strong>component model number</strong> for the most precise results — e.g. "A4VG90", "H1B", "D3FW", "K3VL".</div></div>
           <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Use <strong>KB-XXX</strong> format to jump directly to a specific document if you already know the number from an AI Advisor response.</div></div>
           <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Search <strong>"counterbalance"</strong> or <strong>"CBV"</strong> to find all valve setting guides across manufacturers in one filtered view.</div></div>
-          <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">The <strong>Standards</strong> filter shows all ISO, DNV, API, and EN documents — useful for pre-job class requirement checks.</div></div>
-          <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Click <strong>Load More</strong> at the bottom to reveal all 86 documents beyond the initial 12 shown.</div></div>
+          <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">The <strong>Standards</strong> filter shows ISO, DNV, API, and engineering rule references — useful for pre-job class requirement checks.</div></div>
+          <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Click <strong>Load More</strong> at the bottom to reveal all indexed documents beyond the initial 12 shown.</div></div>
         </div>
       </div>
     </div>
@@ -427,14 +497,14 @@
 
   <!-- Result bar -->
   <div class="kb-result-bar">
-    <div class="result-text">Showing <strong id="result-count">24</strong> of <strong id="result-total">86</strong> documents</div>
+    <div class="result-text">Showing <strong id="result-count">12</strong> of <strong id="result-total">155</strong> documents</div>
     <div class="sort-wrap">
       <span class="sort-label">Sort:</span>
       <select class="sort-select" id="sort-select" onchange="renderCards()">
         <option value="num">KB Number</option>
         <option value="title">Title A–Z</option>
         <option value="mfr">Manufacturer</option>
-        <option value="year">Year</option>
+        <option value="chunks">Chunks</option>
         <option value="pages">Pages</option>
       </select>
     </div>
@@ -479,7 +549,7 @@
 
 <script src="js/auth.js"></script>
 <script>
-/* ══ KB DATA — 24 entries (representative sample of 86) ══ */
+/* ══ KB DATA — fallback sample; real page data loads from data/kb-data.json ══ */
 var KB_DATA = [
   {num:'KB-001',title:'Rexroth A4VG Series — Variable Displacement Pump Service Manual',mfr:'Bosch Rexroth',cat:'pumps',type:'Service Manual',typeCls:'badge-teal',desc:'Complete service and repair manual for the A4VG variable displacement axial piston pump. Covers disassembly, component inspection, reassembly torques, test bench procedures, and case drain flow limits for offshore crane HPU applications.',pages:184,year:2022},
   {num:'KB-002',title:'Danfoss H1 Bent-Axis Motor — Closed Loop Service Guide',mfr:'Danfoss Power Solutions',cat:'motors',type:'Service Guide',typeCls:'badge-teal',desc:'Detailed service guide for the H1 series bent-axis variable displacement motors used in closed-loop winch circuits. Charge pressure requirements, flushing valve settings, case drain analysis, and overhaul procedures.',pages:146,year:2021},
@@ -506,6 +576,122 @@ var KB_DATA = [
   {num:'KB-023',title:'Parker Industrial Cylinder — Sealing & Repair Guide',mfr:'Parker Hannifin',cat:'maintenance',type:'Repair Guide',typeCls:'badge-warning',desc:'Cylinder seal replacement and repair guide for Parker industrial hydraulic cylinders. Seal material compatibility, installation tools, surface finish requirements, and post-repair pressure test.',pages:68,year:2021},
   {num:'KB-024',title:'EN 13852-1 — Offshore Cranes — Design Principles',mfr:'European Standards (EN)',cat:'standards',type:'Standard',typeCls:'badge-green',desc:'European standard for offshore cranes covering design principles, structural analysis, stability calculations, hydraulic system requirements, and overload protection systems.',pages:144,year:2019},
 ];
+var KB_STATS = {
+  totalDocuments: 155,
+  totalPages: 29475,
+  totalChunks: 23963,
+  manufacturers: 33
+};
+var KB_CATEGORY_KEYS = ['cranes','valves','pumps','hydraulics','marine','maintenance','engines','plc','standards','hydromind'];
+
+function inferManufacturer(title) {
+  var t = String(title || '');
+  var rules = [
+    ['Rexroth', 'Bosch Rexroth'],
+    ['Bosch Rexroth', 'Bosch Rexroth'],
+    ['Danfoss', 'Danfoss'],
+    ['Sauer', 'Sauer-Danfoss'],
+    ['Parker', 'Parker Hannifin'],
+    ['Eaton', 'Eaton'],
+    ['Vickers', 'Eaton Vickers'],
+    ['Liebherr', 'Liebherr'],
+    ['MacGregor', 'MacGregor'],
+    ['NOV', 'NOV'],
+    ['SeaTrax', 'SeaTrax'],
+    ['Favelle', 'Favelle Favco'],
+    ['Hydac', 'HYDAC'],
+    ['MP Filtri', 'MP Filtri'],
+    ['Yuken', 'Yuken'],
+    ['Kawasaki', 'Kawasaki'],
+    ['Caterpillar', 'Caterpillar'],
+    ['Cummins', 'Cummins'],
+    ['Detroit', 'Detroit Diesel'],
+    ['Perkins', 'Perkins'],
+    ['ISO', 'ISO'],
+    ['DNV', 'DNV'],
+    ['API', 'API'],
+    ['IEC', 'IEC'],
+    ['ATEX', 'ATEX / Ex'],
+    ['Siemens', 'Siemens']
+  ];
+  for (var i = 0; i < rules.length; i++) {
+    if (t.toLowerCase().indexOf(rules[i][0].toLowerCase()) > -1) return rules[i][1];
+  }
+  return 'HydroMind Library';
+}
+
+function normalizeKbEntry(d) {
+  var rawNum = String(d.num || '').replace(/[^0-9]/g, '');
+  var displayNum = rawNum ? 'KB-' + rawNum.padStart(3, '0') : String(d.num || 'KB');
+  var cat = String(d.cat || d.category || 'hydraulics').toLowerCase();
+  var title = d.title || 'Untitled knowledge entry';
+  var pages = Number(d.pages || 0);
+  var chunks = Number(d.chunks || 0);
+  return {
+    num: displayNum,
+    rawNum: d.num || displayNum,
+    title: title,
+    mfr: d.mfr || d.manufacturer || d.brand || inferManufacturer(title),
+    cat: cat,
+    type: cat === 'hydromind' ? 'Skill File' : cat === 'standards' ? 'Standard' : cat === 'cranes' ? 'Crane Manual' : cat === 'valves' ? 'Valve Reference' : cat === 'pumps' ? 'Pump Manual' : cat === 'maintenance' ? 'Maintenance' : 'Reference',
+    typeCls: cat === 'standards' || cat === 'hydromind' ? 'badge-green' : cat === 'maintenance' ? 'badge-warning' : 'badge-teal',
+    desc: d.desc || ((pages ? pages + ' pages' : 'Indexed document') + (chunks ? ' · ' + chunks + ' searchable chunks' : '')),
+    pages: pages,
+    chunks: chunks,
+    year: d.year || ''
+  };
+}
+
+function compactNumber(n) {
+  n = Number(n || 0);
+  if (n >= 1000) return Math.round(n / 1000) + 'k';
+  return String(n);
+}
+
+function updateKbPageStats(stats) {
+  stats = stats || KB_STATS;
+  KB_STATS = Object.assign({}, KB_STATS, stats);
+  var docs = document.getElementById('stat-docs');
+  var pages = document.getElementById('stat-pages');
+  var chunks = document.getElementById('stat-chunks');
+  var sources = document.getElementById('stat-sources');
+  if (docs) docs.textContent = KB_STATS.totalDocuments || KB_DATA.length;
+  if (pages) pages.textContent = compactNumber(KB_STATS.totalPages);
+  if (chunks) chunks.textContent = compactNumber(KB_STATS.totalChunks);
+  if (sources) sources.textContent = KB_STATS.manufacturers || '33';
+}
+
+function loadKnowledgeBaseData() {
+  return fetch('data/kb-data.json', { cache: 'no-store' })
+    .then(function(res) {
+      if (!res.ok) throw new Error('KB data unavailable');
+      return res.json();
+    })
+    .then(function(raw) {
+      KB_DATA = (raw.entries || []).map(normalizeKbEntry);
+      if ((raw.stats?.categories?.['HydroMind KB'] || 0) > 0 && !KB_DATA.some(function(d) { return d.cat === 'hydromind'; })) {
+        KB_DATA.push(normalizeKbEntry({
+          num: 'KB155',
+          title: 'HydroMind AI Advisor Skill v2.5 Knowledge Expansion',
+          desc: 'Skill.md verified entry covering KB34-KB42: accumulator engineering, DNV offshore crane rules, cylinder and seal engineering, ISO 4413, VFD and motor engineering, ATEX, IEC 60204-1, and electrohydraulic control systems.',
+          cat: 'hydromind',
+          brand: 'HydroMind.AI',
+          pages: 1,
+          chunks: 42
+        }));
+      }
+      updateKbPageStats(raw.stats || {});
+    })
+    .catch(function() {
+      KB_DATA = KB_DATA.map(normalizeKbEntry);
+      updateKbPageStats({
+        totalDocuments: KB_DATA.length,
+        totalPages: KB_DATA.reduce(function(sum, d) { return sum + (d.pages || 0); }, 0),
+        totalChunks: KB_DATA.reduce(function(sum, d) { return sum + (d.chunks || 0); }, 0),
+        manufacturers: new Set(KB_DATA.map(function(d) { return d.mfr; })).size
+      });
+    });
+}
 
 /* ══ HOW TO USE TOGGLE ══ */
 function toggleHtu() {
@@ -568,10 +754,10 @@ function highlight(text) {
 function getSorted(data) {
   var s = document.getElementById('sort-select').value;
   return data.slice().sort(function(a, b) {
-    if (s === 'num')   return a.num.localeCompare(b.num);
+    if (s === 'num')   return (parseInt(a.rawNum.replace(/[^0-9]/g,''), 10) || 0) - (parseInt(b.rawNum.replace(/[^0-9]/g,''), 10) || 0);
     if (s === 'title') return a.title.localeCompare(b.title);
     if (s === 'mfr')   return a.mfr.localeCompare(b.mfr);
-    if (s === 'year')  return b.year - a.year;
+    if (s === 'chunks') return (b.chunks || 0) - (a.chunks || 0);
     if (s === 'pages') return b.pages - a.pages;
     return 0;
   });
@@ -589,7 +775,7 @@ function renderCards() {
   var grid = document.getElementById('kb-grid');
   var filtered = KB_DATA.filter(function(d) {
     var matchCat  = activeFilter === 'all' || d.cat === activeFilter;
-    var matchText = !searchTerm || [d.title,d.mfr,d.num,d.desc,d.type].some(function(f) { return f.toLowerCase().indexOf(searchTerm) > -1; });
+    var matchText = !searchTerm || [d.title,d.mfr,d.num,d.rawNum,d.desc,d.type,d.cat].some(function(f) { return String(f || '').toLowerCase().indexOf(searchTerm) > -1; });
     return matchCat && matchText;
   });
   var sorted = getSorted(filtered);
@@ -628,7 +814,7 @@ function renderCards() {
       '<div class="kb-footer">' +
         '<div class="kb-meta">' +
           '<span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' + d.pages + 'pp</span>' +
-          '<span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>' + d.year + '</span>' +
+          '<span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>' + (d.chunks || 0) + ' chunks</span>' +
         '</div>' +
         '<button class="kb-ask-btn" onclick="event.stopPropagation();askAI(\'' + d.num + '\',\'' + d.title.replace(/'/g,"\\'") + '\')">Ask AI →</button>' +
       '</div>';
@@ -637,31 +823,32 @@ function renderCards() {
   });
 
   /* Update chip counts */
-  var cats = ['cranes','pumps','motors','valves','standards','maintenance'];
-  cats.forEach(function(c) {
+  KB_CATEGORY_KEYS.forEach(function(c) {
     var el = document.getElementById('fc-' + c);
     if (el) el.textContent = KB_DATA.filter(function(d) {
-      var matchText = !searchTerm || [d.title,d.mfr,d.num,d.desc,d.type].some(function(f){return f.toLowerCase().indexOf(searchTerm)>-1;});
+      var matchText = !searchTerm || [d.title,d.mfr,d.num,d.rawNum,d.desc,d.type,d.cat].some(function(f){return String(f || '').toLowerCase().indexOf(searchTerm)>-1;});
       return d.cat === c && matchText;
     }).length;
   });
   var allEl = document.getElementById('fc-all');
   if (allEl) allEl.textContent = KB_DATA.filter(function(d) {
-    return !searchTerm || [d.title,d.mfr,d.num,d.desc,d.type].some(function(f){return f.toLowerCase().indexOf(searchTerm)>-1;});
+    return !searchTerm || [d.title,d.mfr,d.num,d.rawNum,d.desc,d.type,d.cat].some(function(f){return String(f || '').toLowerCase().indexOf(searchTerm)>-1;});
   }).length;
 }
 
 /* ── Check for incoming query from KB cards ── */
 document.addEventListener('DOMContentLoaded', function() {
-  renderCards();
-  if (typeof hmInit === 'function') hmInit();
-  /* Pre-fill search if coming from another page */
-  var q = sessionStorage.getItem('hm_kb_search');
-  if (q) {
-    document.getElementById('kb-search').value = q;
-    onSearch(q);
-    sessionStorage.removeItem('hm_kb_search');
-  }
+  loadKnowledgeBaseData().then(function() {
+    renderCards();
+    if (typeof hmInit === 'function') hmInit();
+    /* Pre-fill search if coming from another page */
+    var q = sessionStorage.getItem('hm_kb_search');
+    if (q) {
+      document.getElementById('kb-search').value = q;
+      onSearch(q);
+      sessionStorage.removeItem('hm_kb_search');
+    }
+  });
 });
 </script>
 </body>
