@@ -15,7 +15,7 @@
 <meta name="twitter:title" content="HydroMind.AI — Hydraulic Intelligence for Marine &amp; Offshore">
 <meta name="twitter:description" content="AI-powered hydraulic fault diagnosis, crane diagnostics, system design and knowledge base for marine and offshore engineers.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="css/hm-design.css?v=20260606-right-align">
+<link rel="stylesheet" href="css/hm-design.css?v=20260607-home-polish">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -34,11 +34,12 @@
   position: relative;
   max-width: 1320px !important;
   min-height: 0 !important;
-  padding: 44px 0 46px 40px;
+  box-sizing: border-box;
+  padding: clamp(36px, 4.2vw, 52px) 0 clamp(38px, 4.5vw, 56px) clamp(24px, 3vw, 40px);
   margin: 0 auto !important;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(340px, 1fr);
+  gap: clamp(18px, 2.2vw, 28px);
   align-items: start;
   overflow: hidden;
   border-bottom: 1px solid var(--border-md);
@@ -94,6 +95,7 @@
   border-radius: 10px;
   background: rgba(13,23,32,.7);
   padding: 12px;
+  min-height: 82px;
 }
 .hero-proof-item strong {
   display: block;
@@ -148,6 +150,9 @@
   }
 }
 @media (max-width: 640px) {
+  .hero-section {
+    padding: 34px 14px 36px;
+  }
   .hero-proof-grid {
     grid-template-columns: 1fr;
   }
@@ -188,6 +193,7 @@
 /* Stats bar */
 .stats-bar {
   max-width: 1320px !important;
+  box-sizing: border-box;
   background:
     linear-gradient(90deg, rgba(45,212,191,.075), rgba(103,213,255,.035), transparent),
     rgba(13,23,32,.78);
@@ -220,10 +226,20 @@
 .hm-home-page {
   width: min(100%, 1320px);
   margin: var(--nav-h) auto 0 !important;
-  padding: 32px 0;
+  padding: 32px 0 0;
 }
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5756895689951807" crossorigin="anonymous"></script>
+<script>
+function hmPushAdSlot(slot) {
+  requestAnimationFrame(function() {
+    if (!slot) return;
+    var width = slot.getBoundingClientRect().width;
+    if (width < 250 || getComputedStyle(slot).display === 'none') return;
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+  });
+}
+</script>
 </head>
 <body>
 <style>
@@ -502,7 +518,7 @@
          data-ad-slot="auto"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+    <script>hmPushAdSlot(document.currentScript.previousElementSibling);</script>
   </div>
 
   <!-- Pro CTA -->
@@ -510,7 +526,7 @@
     <h4>🚀 Go Pro</h4>
     <ul>
       <li>Unlimited AI queries</li>
-      <li>Full KB access (86+ docs)</li>
+      <li>Full KB access (155 docs)</li>
       <li>Crane Diagnostic AI</li>
       <li>Ad-free experience</li>
       <li>Priority support</li>
@@ -526,7 +542,7 @@
          data-ad-slot="auto"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+    <script>hmPushAdSlot(document.currentScript.previousElementSibling);</script>
   </div>
 </aside>
 
@@ -547,7 +563,7 @@
       </div>
       <div class="hero-note">No credit card needed · Free tier available</div>
       <div class="hero-proof-grid" aria-label="HydroMind capabilities">
-        <div class="hero-proof-item"><strong>86+ KB</strong><span>OEM manuals and hydraulic references</span></div>
+        <div class="hero-proof-item"><strong>155 KB</strong><span>OEM manuals and hydraulic references</span></div>
         <div class="hero-proof-item"><strong>Design AI</strong><span>Pressure, flow, components and BOM</span></div>
         <div class="hero-proof-item"><strong>Crane Diag</strong><span>Fault logic for marine hydraulic systems</span></div>
       </div>
@@ -559,7 +575,7 @@
             <div class="hc-icon">HM</div>
             <div>
               <div class="hc-title">HydroMind AI Advisor</div>
-              <div class="hc-sub">86 KB documents · Real-time analysis</div>
+              <div class="hc-sub">155 KB documents · Real-time analysis</div>
             </div>
           </div>
           <div class="hc-live"><span class="d"></span>Online</div>
@@ -594,9 +610,9 @@
 
   <!-- STATS BAR -->
   <div class="stats-bar">
-    <div class="stat-item"><div class="stat-val">86+</div><div class="stat-lbl">KB Documents</div></div>
+    <div class="stat-item"><div class="stat-val">155</div><div class="stat-lbl">KB Documents</div></div>
     <div class="stat-item"><div class="stat-val">177</div><div class="stat-lbl">Countries</div></div>
-    <div class="stat-item"><div class="stat-val">12</div><div class="stat-lbl">OEM Brands</div></div>
+    <div class="stat-item"><div class="stat-val">33</div><div class="stat-lbl">Sources</div></div>
     <div class="stat-item"><div class="stat-val">24/7</div><div class="stat-lbl">AI Availability</div></div>
   </div>
 
@@ -640,7 +656,7 @@
   <section class="features-section">
     <div class="section-label">Platform Capabilities</div>
     <h2 class="section-title">Everything a Hydraulic Engineer Needs</h2>
-    <p class="section-subtitle">From first-principles fault diagnosis to full system design — powered by 86+ OEM manuals from Rexroth, Danfoss, Parker, Liebherr & more.</p>
+    <p class="section-subtitle">From first-principles fault diagnosis to full system design — powered by 155 OEM manuals, standards and engineering references from Rexroth, Danfoss, Parker, Liebherr & more.</p>
     <div class="feat-grid">
 
       <div class="feat-card">
@@ -649,7 +665,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
         </div>
         <h3>AI Hydraulic Advisor</h3>
-        <p>Deep fault diagnosis, pressure analysis, component isolation and corrective action — using structured KB retrieval from 86+ OEM documents across Rexroth, Danfoss, Parker, Eaton, and more.</p>
+        <p>Deep fault diagnosis, pressure analysis, component isolation and corrective action — using structured KB retrieval from 155 OEM documents and engineering references across Rexroth, Danfoss, Parker, Eaton, and more.</p>
         <a href="ai_advisor.html" class="feat-link">Open Advisor <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
 
@@ -679,7 +695,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 006.5 7H20v13H6.5A2.5 2.5 0 014 17.5z"/></svg>
         </div>
         <h3>Knowledge Base</h3>
-        <p>KB1–KB86 covering Rexroth, Danfoss, Parker, Eaton, Liebherr, MacGregor, NOV, SeaTrax, Favelle Favco — vector-searchable, categorised and instantly retrievable via AI.</p>
+        <p>KB1-KB155 covering Rexroth, Danfoss, Parker, Eaton, Liebherr, MacGregor, NOV, SeaTrax, Favelle Favco, standards and HydroMind skill references — vector-searchable, categorised and instantly retrievable via AI.</p>
         <a href="knowledge_base.html" class="feat-link">Browse KB <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
 
@@ -699,7 +715,7 @@
       <div class="step">
         <div class="step-num">2</div>
         <h3>AI Searches the KB</h3>
-        <p>HydroMind searches 86+ OEM manuals, retrieves the most relevant KB documents, and structures a diagnostic response based on circuit paths and component logic.</p>
+        <p>HydroMind searches 155 OEM manuals, standards and engineering references, retrieves the most relevant KB documents, and structures a diagnostic response based on circuit paths and component logic.</p>
       </div>
       <div class="step">
         <div class="step-num">3</div>
