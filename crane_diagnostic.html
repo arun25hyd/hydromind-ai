@@ -69,7 +69,7 @@ body {
    LEFT — FLEET PANEL
 ══════════════════════════════ */
 .fleet-panel {
-  width: 240px;
+  width: clamp(200px, 16vw, 240px);
   flex-shrink: 0;
   background: var(--surface);
   border-right: 1px solid var(--border-md);
@@ -271,7 +271,7 @@ body {
   min-height: 0;
   overflow-y: auto !important;
   overflow-x: hidden;
-  padding: 24px 28px;
+  padding: clamp(14px, 1.8vw, 24px) clamp(14px, 2vw, 28px);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -291,18 +291,18 @@ body {
   align-items: center;
   width: 100%;
   text-align: center;
-  padding: 24px 16px 40px;
-  gap: 16px;
+  padding: clamp(16px, 2vh, 24px) 16px clamp(26px, 4vh, 40px);
+  gap: clamp(10px, 1.6vh, 16px);
 }
 .welcome-icon {
-  width: 72px; height: 72px;
+  width: clamp(52px, 7vh, 72px); height: clamp(52px, 7vh, 72px);
   background: linear-gradient(135deg, var(--accent-dim), rgba(6,182,212,.05));
   border: 1.5px solid var(--accent-glow);
   border-radius: 20px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 34px;
+  font-size: clamp(24px, 3.5vh, 34px);
 }
-.welcome-title { font-family: var(--syne); font-size: 24px; font-weight: 800; color: var(--text1); }
+.welcome-title { font-family: var(--syne); font-size: clamp(20px, 2.8vh, 24px); font-weight: 800; color: var(--text1); }
 .welcome-sub { font-size: 14px; color: var(--text2); line-height: 1.7; max-width: 500px; }
 .quick-actions {
   display: flex; flex-direction: column; gap: 14px;
@@ -317,12 +317,12 @@ body {
   background: var(--card);
   border: 1.5px solid var(--border-md);
   border-radius: 14px;
-  padding: 20px 18px 18px;
+  padding: 16px 14px 14px;
   font-size: 14px; font-weight: 700; color: var(--text1);
   text-align: left; cursor: pointer;
   transition: all .18s; line-height: 1.5;
   font-family: var(--sans);
-  min-height: 110px;
+  min-height: 96px;
   display: flex; flex-direction: column; justify-content: flex-start;
 }
 .qa-btn:hover {
@@ -516,7 +516,7 @@ body {
    RIGHT — DATA PANEL
 ══════════════════════════════ */
 .data-panel {
-  width: 220px;
+  width: clamp(190px, 15vw, 220px);
   flex-shrink: 0;
   background: var(--surface);
   display: flex; flex-direction: column;
@@ -611,6 +611,44 @@ body {
 }
 .export-btn:hover { background: var(--accent); color: #fff; }
 .export-btn svg { width: 13px; height: 13px; }
+@media (max-width: 1450px) {
+  .fleet-panel { width: 205px; }
+  .data-panel { width: 195px; padding: 12px 10px; }
+  .fleet-header { padding: 12px 10px 9px; }
+  .fleet-list { padding: 8px; }
+  .crane-card { padding: 8px 9px; }
+  .gauge-strip { padding: 10px 8px; }
+  .g-num { font-size: 16px; }
+  .plc-bar { padding: 8px 12px; }
+  .plc-node { width: 25px; height: 25px; }
+  .welcome-icon { width: 58px; height: 58px; font-size: 28px; border-radius: 16px; }
+  .welcome-title { font-size: 21px; }
+  .welcome-sub { font-size: 13px; max-width: 620px; }
+  .qa-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+}
+@media (max-width: 1200px) {
+  body { overflow: hidden !important; height: 100vh !important; }
+  .hm-page { height: calc(100vh - var(--nav-h)); min-height: 0; overflow: hidden; }
+  .diag-shell { display: grid; grid-template-columns: minmax(180px, 220px) minmax(0, 1fr); height: 100%; min-height: 0; }
+  .data-panel { display: none; }
+}
+@media (max-height: 760px) {
+  .diag-input-bar { padding: 9px 12px; }
+  .diag-input-wrap { padding: 8px 10px; }
+  .input-hints { gap: 6px; margin-top: 6px; }
+  .hint-chip { padding: 2px 8px; }
+  .quick-actions { gap: 10px; }
+  .qa-label { font-size: 10.5px; }
+  .qa-btn { min-height: 82px; padding: 12px; font-size: 12.5px; }
+  .qa-btn .qa-icon { font-size: 20px; margin-bottom: 6px; }
+  .htu-header { padding: 10px 12px; }
+}
+@media (max-width: 760px) {
+  .hm-page { margin-top: var(--nav-h) !important; }
+  .diag-shell { grid-template-columns: 1fr; }
+  .fleet-panel { display: none; }
+  .qa-grid { grid-template-columns: 1fr; }
+}
 </style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5756895689951807" crossorigin="anonymous"></script>
 </head>
@@ -904,9 +942,9 @@ body {
                   <div class="htu-header-sub">Click to expand — 5-step guide + pro tips</div>
                 </div>
               </div>
-              <div class="htu-arrow" id="htu-arrow">▼</div>
+              <div class="htu-arrow open" id="htu-arrow">▼</div>
             </div>
-            <div class="htu-body" id="htu-body">
+            <div class="htu-body open" id="htu-body">
               <div class="htu-steps">
                 <div class="htu-step">
                   <div class="htu-step-num">1</div>
