@@ -4,14 +4,10 @@
   "framework": null,
   "rewrites": [
     { "source": "/api/chat", "destination": "/api/chat.js" },
-    { "source": "/api/feedback", "destination": "/api/feedback.js" }
+    { "source": "/api/feedback", "destination": "/api/feedback.js" },
+    { "source": "/(.*)", "destination": "/maintenance.html" }
   ],
   "redirects": [
-    {
-      "source": "/((?!maintenance\\.html$|api\\/).*)",
-      "destination": "/maintenance.html",
-      "permanent": false
-    },
     {
       "source": "/(.*)",
       "destination": "https://www.hydromindai.com/$1",
