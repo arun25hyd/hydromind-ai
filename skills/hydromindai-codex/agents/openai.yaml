@@ -1,0 +1,8 @@
+interface:
+  display_name: "HydroMindAI Codex"
+  short_description: "Production workflow for HydroMindAI website work"
+  brand_color: "#06B6D4"
+  default_prompt: "Use $hydromindai-codex to inspect, plan, edit, and verify HydroMindAI website changes."
+
+policy:
+  allow_implicit_invocation: true
