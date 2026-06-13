@@ -1,3 +1,4 @@
+<!-- HydroMind Crane Diagnostic v2.1 — full crane cards, HTU open -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -69,7 +70,7 @@ body {
    LEFT — FLEET PANEL
 ══════════════════════════════ */
 .fleet-panel {
-  width: clamp(200px, 16vw, 240px);
+  width: clamp(225px, 16vw, 245px);
   flex-shrink: 0;
   background: var(--surface);
   border-right: 1px solid var(--border-md);
@@ -612,11 +613,13 @@ body {
 .export-btn:hover { background: var(--accent); color: #fff; }
 .export-btn svg { width: 13px; height: 13px; }
 @media (max-width: 1450px) {
-  .fleet-panel { width: 205px; }
+  .fleet-panel { width: 225px; }
   .data-panel { width: 195px; padding: 12px 10px; }
   .fleet-header { padding: 12px 10px 9px; }
   .fleet-list { padding: 8px; }
-  .crane-card { padding: 8px 9px; }
+  .crane-card { padding: 8px 10px; }
+  .cc-model { font-size: 12px; }
+  .cc-type { font-size: 9.5px; }
   .gauge-strip { padding: 10px 8px; }
   .g-num { font-size: 16px; }
   .plc-bar { padding: 8px 12px; }
