@@ -16,7 +16,7 @@
 <meta name="twitter:title" content="Crane Diagnostic Agent — HydroMind.AI">
 <meta name="twitter:description" content="AI-powered crane hydraulic fault diagnosis for Liebherr, MacGregor, NOV, SeaTrax, Favelle Favco offshore cranes.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="css/hm-design.css?v=20260613-v5">
+<link rel="stylesheet" href="css/hm-design.css?v=20260613-v6">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -55,11 +55,18 @@ body {
 
 /* Three-column shell fills remaining height */
 .diag-shell {
-  display: flex;
+  display: grid;
+  grid-template-columns: clamp(210px, 17vw, 250px) minmax(0, 1fr) clamp(200px, 16vw, 235px);
   flex: 1;
   min-height: 0;
   overflow: hidden;
+  transition: grid-template-columns .25s ease;
 }
+/* When right panel collapsed via toggle */
+.diag-shell.ctx-collapsed {
+  grid-template-columns: clamp(210px, 17vw, 250px) minmax(0, 1fr) 0px;
+}
+.diag-shell.ctx-collapsed .data-panel { opacity: 0; pointer-events: none; }
 
 /* Left sidebar from hm-design.css — hide on this page */
 .hm-sidebar-left, .hm-sidebar-right {
@@ -70,8 +77,8 @@ body {
    LEFT — FLEET PANEL
 ══════════════════════════════ */
 .fleet-panel {
-  width: clamp(225px, 16vw, 245px);
-  flex-shrink: 0;
+  width: 100%;
+  min-width: 0;
   background: var(--surface);
   border-right: 1px solid var(--border-md);
   display: flex; flex-direction: column;
@@ -520,13 +527,14 @@ body {
    RIGHT — DATA PANEL
 ══════════════════════════════ */
 .data-panel {
-  width: clamp(190px, 15vw, 220px);
-  flex-shrink: 0;
+  width: 100%;
+  min-width: 0;
   background: var(--surface);
   display: flex; flex-direction: column;
   overflow-y: auto;
   padding: 14px 12px;
   gap: 14px;
+  transition: opacity .2s ease;
 }
 .data-panel::-webkit-scrollbar { width: 3px; }
 .dp-section { display: flex; flex-direction: column; gap: 8px; }
@@ -615,14 +623,47 @@ body {
 }
 .export-btn:hover { background: var(--accent); color: #fff; }
 .export-btn svg { width: 13px; height: 13px; }
+
+/* ══════════════════════════════
+   CONTEXT TOGGLE BUTTON
+══════════════════════════════ */
+.ctx-toggle {
+  position: fixed;
+  top: calc(var(--nav-h) + 10px);
+  right: 12px;
+  z-index: 40;
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  background: var(--card);
+  border: 1px solid var(--border-md);
+  color: var(--accent-bright);
+  display: none;
+  align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all .15s;
+}
+.ctx-toggle:hover { border-color: var(--accent-glow); background: var(--accent-dim); }
+.ctx-toggle svg { width: 17px; height: 17px; }
+
+/* ══════════════════════════════
+   FLUID RESPONSIVE SYSTEM
+   Scales to ALL screen sizes automatically
+══════════════════════════════ */
+
+/* Large desktops — comfortable 3-column */
+@media (min-width: 1601px) {
+  .diag-shell { grid-template-columns: 260px minmax(0, 1fr) 250px; }
+}
+
+/* Standard laptops incl. HP at 125% scaling (~1093-1450px effective)
+   Tighten columns but KEEP all 3 visible and readable */
 @media (max-width: 1450px) {
-  .fleet-panel { width: 225px; }
-  .data-panel { width: 195px; padding: 12px 10px; }
+  .diag-shell { grid-template-columns: clamp(200px, 18vw, 230px) minmax(0, 1fr) clamp(185px, 15vw, 215px); }
   .fleet-header { padding: 12px 10px 9px; }
   .fleet-list { padding: 8px; }
   .crane-card { padding: 8px 10px; }
-  .cc-model { font-size: 12px; }
-  .cc-type { font-size: 9.5px; }
+  .cc-model { font-size: 12px !important; }
+  .cc-type { font-size: 9.5px !important; }
   .gauge-strip { padding: 10px 8px; }
   .g-num { font-size: 16px; }
   .plc-bar { padding: 8px 12px; }
@@ -630,18 +671,34 @@ body {
   .welcome-icon { width: 58px; height: 58px; font-size: 28px; border-radius: 16px; }
   .welcome-title { font-size: 21px; }
   .welcome-sub { font-size: 13px; max-width: 620px; }
+  .data-panel { padding: 12px 9px; }
   .qa-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 }
+
+/* Small laptops / large tablets — right panel becomes collapsible.
+   Default hidden, toggle button appears to show it as an overlay. */
 @media (max-width: 1200px) {
-  body { overflow: hidden !important; height: 100vh !important; }
-  .hm-page { height: calc(100vh - var(--nav-h)); min-height: 0; overflow: hidden; }
-  .diag-shell { display: grid; grid-template-columns: 230px minmax(0, 1fr); height: 100%; min-height: 0; }
-  .data-panel { display: none; }
-  .fleet-panel { width: 230px; }
-  .cc-model { font-size: 12.5px; display: block; }
-  .cc-type { font-size: 10px; display: block; }
-  .cc-badge { display: inline-flex; }
+  .ctx-toggle { display: flex; }
+  .diag-shell { grid-template-columns: clamp(200px, 22vw, 230px) minmax(0, 1fr) 0px; }
+  .data-panel {
+    position: fixed;
+    top: var(--nav-h);
+    right: 0;
+    width: clamp(240px, 70vw, 300px);
+    height: calc(100vh - var(--nav-h));
+    border-left: 1px solid var(--border-md);
+    box-shadow: -8px 0 24px rgba(0,0,0,.35);
+    transform: translateX(100%);
+    opacity: 1;
+    z-index: 35;
+    transition: transform .25s ease;
+  }
+  .diag-shell.ctx-open .data-panel { transform: translateX(0); }
+  .cc-model { font-size: 12.5px !important; }
+  .cc-type { font-size: 10px !important; }
 }
+
+/* Short screens — tighten vertical spacing */
 @media (max-height: 760px) {
   .diag-input-bar { padding: 9px 12px; }
   .diag-input-wrap { padding: 8px 10px; }
@@ -653,9 +710,11 @@ body {
   .qa-btn .qa-icon { font-size: 20px; margin-bottom: 6px; }
   .htu-header { padding: 10px 12px; }
 }
+
+/* Phones / very narrow — single column, fleet hidden */
 @media (max-width: 760px) {
   .hm-page { margin-top: var(--nav-h) !important; }
-  .diag-shell { grid-template-columns: 1fr; }
+  .diag-shell { grid-template-columns: 1fr !important; }
   .fleet-panel { display: none; }
   .qa-grid { grid-template-columns: 1fr; }
 }
@@ -762,7 +821,10 @@ body {
 <!-- ═══════════ MAIN ═══════════ -->
 <main class="hm-page">
   <h1 class="sr-only">Crane Diagnostic Agent</h1>
-  <div class="diag-shell">
+  <button class="ctx-toggle" id="ctxToggle" onclick="toggleContextPanel()" title="Toggle Active Context panel" aria-label="Toggle context panel">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+  </button>
+  <div class="diag-shell" id="diagShell">
 
     <!-- ══ LEFT: FLEET PANEL ══ -->
     <div class="fleet-panel">
@@ -1145,6 +1207,12 @@ function setPlcStep(step) {
 }
 function advancePlc() {
   if (currentPlcStep < PLC_STEPS.length - 1) { currentPlcStep++; buildPlcBar(); }
+}
+
+/* ══ CONTEXT PANEL TOGGLE (small screens) ══ */
+function toggleContextPanel() {
+  var shell = document.getElementById('diagShell');
+  if (shell) shell.classList.toggle('ctx-open');
 }
 
 /* ══ HOW TO USE TOGGLE ══ */
