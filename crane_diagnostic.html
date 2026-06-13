@@ -16,7 +16,7 @@
 <meta name="twitter:title" content="Crane Diagnostic Agent — HydroMind.AI">
 <meta name="twitter:description" content="AI-powered crane hydraulic fault diagnosis for Liebherr, MacGregor, NOV, SeaTrax, Favelle Favco offshore cranes.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="css/hm-design.css?v=20260613-v2">
+<link rel="stylesheet" href="css/hm-design.css?v=20260613-v3">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -632,8 +632,12 @@ body {
 @media (max-width: 1200px) {
   body { overflow: hidden !important; height: 100vh !important; }
   .hm-page { height: calc(100vh - var(--nav-h)); min-height: 0; overflow: hidden; }
-  .diag-shell { display: grid; grid-template-columns: minmax(180px, 220px) minmax(0, 1fr); height: 100%; min-height: 0; }
+  .diag-shell { display: grid; grid-template-columns: 230px minmax(0, 1fr); height: 100%; min-height: 0; }
   .data-panel { display: none; }
+  .fleet-panel { width: 230px; }
+  .cc-model { font-size: 12.5px; display: block; }
+  .cc-type { font-size: 10px; display: block; }
+  .cc-badge { display: inline-flex; }
 }
 @media (max-height: 760px) {
   .diag-input-bar { padding: 9px 12px; }
