@@ -7,16 +7,6 @@
     { "source": "/api/feedback", "destination": "/api/feedback.js" }
   ],
   "redirects": [
-    { "source": "/", "destination": "/maintenance.html", "permanent": false },
-    { "source": "/index.html", "destination": "/maintenance.html", "permanent": false },
-    { "source": "/ai_advisor.html", "destination": "/maintenance.html", "permanent": false },
-    { "source": "/crane_diagnostic.html", "destination": "/maintenance.html", "permanent": false },
-    { "source": "/knowledge_base.html", "destination": "/maintenance.html", "permanent": false },
-    { "source": "/system_design.html", "destination": "/maintenance.html", "permanent": false },
-    { "source": "/pricing.html", "destination": "/maintenance.html", "permanent": false },
-    { "source": "/feedback.html", "destination": "/maintenance.html", "permanent": false },
-    { "source": "/disclaimer.html", "destination": "/maintenance.html", "permanent": false },
-    { "source": "/pages/:path*", "destination": "/maintenance.html", "permanent": false },
     {
       "source": "/(.*)",
       "destination": "https://www.hydromindai.com/$1",
