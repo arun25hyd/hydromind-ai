@@ -208,32 +208,7 @@
 .fb-success.visible { display: flex; }
 @media (max-width: 700px) { .feedback-grid { grid-template-columns: 1fr; } .feedback-body { padding: 24px 20px; } .feedback-header { padding: 22px 20px; } }
 
-/* ─── HOW TO USE ─── */
-.htu-panel{background:var(--card);border:1.5px solid var(--border-md);border-radius:10px;margin:0 0 32px;overflow:hidden;}
-.htu-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;cursor:pointer;user-select:none;border-bottom:1.5px solid transparent;transition:border-color .2s;}
-.htu-header:hover{border-bottom-color:var(--border-bright);}
-.htu-header-left{display:flex;align-items:center;gap:9px;}
-.htu-header-icon{font-size:.95rem;}
-.htu-header-title{font-size:12.5px;font-weight:700;color:var(--text1);}
-.htu-header-sub{font-size:10.5px;color:var(--text3);margin-top:1px;}
-.htu-arrow{font-size:10px;color:var(--accent);transition:transform .25s ease;}
-.htu-arrow.open{transform:rotate(180deg);}
-.htu-body{display:none;padding:14px 16px 16px;border-top:1px solid var(--border);}
-.htu-body.open{display:block;}
-.htu-steps{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
-.htu-step{display:flex;align-items:flex-start;gap:10px;background:var(--accent-dim);border:1px solid var(--border-md);border-radius:8px;padding:10px 12px;transition:border-color .15s;}
-.htu-step:hover{border-color:var(--accent-glow);}
-.htu-step-num{width:24px;height:24px;background:rgba(6,182,212,.15);border:1.5px solid var(--accent-glow);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--accent);flex-shrink:0;}
-.htu-step-title{font-size:12px;font-weight:700;color:var(--text1);margin-bottom:3px;}
-.htu-step-desc{font-size:11px;color:var(--text2);line-height:1.55;}
-.htu-tips{background:rgba(6,182,212,.04);border:1px solid var(--border);border-radius:8px;padding:10px 12px;}
-.htu-tips-title{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:7px;letter-spacing:.04em;}
-.htu-tip-row{display:flex;align-items:flex-start;gap:7px;margin-bottom:5px;}
-.htu-tip-row:last-child{margin-bottom:0;}
-.htu-tip-dot{width:5px;height:5px;background:var(--accent);border-radius:50%;flex-shrink:0;margin-top:4px;}
-.htu-tip-text{font-size:11px;color:var(--text2);line-height:1.5;}
 </style>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5756895689951807" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -253,8 +228,8 @@
   </div>
   <div class="nav-right" id="hmNavCta">
     <div class="nav-status"><div class="nav-status-dot"></div>AI Online</div>
-    <a href="#" class="btn btn-ghost btn-sm">Log In</a>
-    <a href="pricing.html" class="btn btn-primary btn-sm">Get Started</a>
+    <a href="#" onclick="event.preventDefault(); openAuthModal && openAuthModal('login');" class="btn btn-ghost btn-sm">Log In</a>
+    <a href="#" onclick="event.preventDefault(); openAuthModal && openAuthModal('register');" class="btn btn-primary btn-sm">Get Started</a>
   </div>
 </nav>
 
@@ -292,16 +267,6 @@
     <a href="system_design.html" class="sb-nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>System Design</a>
     <a href="pricing.html" class="sb-nav-link active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Pricing</a>
   </div>
-  <div class="sb-ad mt-auto">
-    <div class="sb-ad-label">Advertisement</div>
-    <ins class="adsbygoogle"
-         style="display:block;width:100%;min-height:100px;"
-         data-ad-client="ca-pub-5756895689951807"
-         data-ad-slot="auto"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
-  </div>
 </aside>
 
 <!-- RIGHT SIDEBAR -->
@@ -310,17 +275,7 @@
     <div style="font-size:11px;font-weight:700;color:var(--success);">✓ Ad-Free</div>
     <div style="font-size:9.5px;color:var(--text2);margin-top:2px;">Pro subscriber benefit</div>
   </div>
-  <div class="sb-pro-cta"><h4>Pro — Most Popular</h4><ul><li>Unlimited queries</li><li>All 6 advisor modes</li><li>Full 155-doc KB</li><li>BOM export</li></ul><a href="#pro" class="btn btn-primary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">Get Pro →</a></div>
-  <div class="sb-ad mt-auto">
-    <div class="sb-ad-label">Advertisement</div>
-    <ins class="adsbygoogle"
-         style="display:block;width:100%;min-height:100px;"
-         data-ad-client="ca-pub-5756895689951807"
-         data-ad-slot="auto"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
-  </div>
+  <div class="sb-pro-cta"><h4>Pro — Most Popular</h4><ul><li>Unlimited queries</li><li>All 6 advisor modes</li><li>Full 155-doc KB</li><li>BOM export</li></ul><a href="#" onclick="event.preventDefault(); openAuthModal && openAuthModal('register');" class="btn btn-primary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">Start Free Trial →</a></div>
 </aside>
 
 <!-- MAIN -->
@@ -331,59 +286,6 @@
     <div class="section-label" style="justify-content:center;display:flex;">Simple, Transparent Pricing</div>
     <h1 style="font-size:32px;font-weight:800;color:var(--text1);margin-bottom:10px;">Choose Your Plan</h1>
     <p style="font-size:15px;color:var(--text2);line-height:1.65;">Start free, upgrade when you need more. All plans include access to the AI Advisor and core hydraulic tools.</p>
-  </div>
-
-  <!-- How to Use -->
-  <div class="htu-panel">
-    <div class="htu-header" onclick="toggleHtu()">
-      <div class="htu-header-left">
-        <div class="htu-header-icon">📋</div>
-        <div>
-          <div class="htu-header-title">How to Use This Page</div>
-          <div class="htu-header-sub">Click to expand — plan guide + feedback instructions</div>
-        </div>
-      </div>
-      <div class="htu-arrow" id="htu-arrow">▼</div>
-    </div>
-    <div class="htu-body" id="htu-body">
-      <div class="htu-steps">
-        <div class="htu-step">
-          <div class="htu-step-num">1</div>
-          <div>
-            <div class="htu-step-title">Choose Monthly or Annual Billing</div>
-            <div class="htu-step-desc">Use the billing toggle at the top to switch between monthly and annual pricing. Annual billing saves 20% — the discounted price is shown automatically on each plan card when you toggle to Annual.</div>
-          </div>
-        </div>
-        <div class="htu-step">
-          <div class="htu-step-num">2</div>
-          <div>
-            <div class="htu-step-title">Compare Plans Side by Side</div>
-            <div class="htu-step-desc">Review the three plan cards — Free, Pro, and Enterprise. Each card lists included features with ✓ (included) and ✗ (not included) indicators. Scroll down to the Full Feature Comparison table for a detailed side-by-side breakdown of every feature across all plans.</div>
-          </div>
-        </div>
-        <div class="htu-step">
-          <div class="htu-step-num">3</div>
-          <div>
-            <div class="htu-step-title">Check the FAQ</div>
-            <div class="htu-step-desc">Common questions about the free trial period, payment methods, cancellation, and Enterprise licensing are answered in the FAQ section below the comparison table. Click any question to expand the answer.</div>
-          </div>
-        </div>
-        <div class="htu-step">
-          <div class="htu-step-num">4</div>
-          <div>
-            <div class="htu-step-title">Send Feedback</div>
-            <div class="htu-step-desc">Use the feedback form at the bottom of this page to send ratings, feature requests, bug reports, or general comments directly to the HydroMind team. Fill in your name, email, role, topic, star rating, and message — then click Send Feedback.</div>
-          </div>
-        </div>
-      </div>
-      <div class="htu-tips">
-        <div class="htu-tips-title">💡 Tips</div>
-        <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">The <strong>Pro plan</strong> includes unlimited AI Advisor queries, full KB access (86+ docs), Crane Diagnostic, System Design, and ad-free experience.</div></div>
-        <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">The <strong>Free plan</strong> includes 5 AI queries per day — enough to test the platform before committing to a paid plan.</div></div>
-        <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">For <strong>company or team licensing</strong>, select Enterprise and use the Contact Team button — pricing is negotiated per seat and vessel count.</div></div>
-        <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">All subscriptions can be managed or cancelled from your <strong>Profile page</strong> at any time — no lock-in.</div></div>
-      </div>
-    </div>
   </div>
 
   <!-- Billing toggle -->
@@ -434,7 +336,7 @@
         <li class="muted"><span class="fi no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>Crane diagnostic</li>
         <li class="muted"><span class="fi no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>BOM export</li>
       </ul>
-      <a href="#" class="btn btn-ghost w-full" style="justify-content:center;">Get Started Free</a>
+      <a href="#" onclick="event.preventDefault(); openAuthModal && openAuthModal('register');" class="btn btn-ghost w-full" style="justify-content:center;">Get Started Free</a>
     </div>
 
     <!-- PRO -->
@@ -457,8 +359,15 @@
         <li><span class="fi yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>PDF downloads & offline KB</li>
         <li><span class="fi yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>Priority email support</li>
       </ul>
-      <a href="#" class="btn btn-primary w-full" style="justify-content:center;font-size:14px;padding:12px;">Get Pro Now →</a>
-      <div style="text-align:center;margin-top:10px;font-size:11.5px;color:var(--text3);">Cancel anytime · No contracts</div>
+      <a href="#" onclick="event.preventDefault(); openAuthModal && openAuthModal('register');" class="btn btn-primary w-full" style="justify-content:center;font-size:14px;padding:12px;">Start 7-Day Free Trial →</a>
+      <div style="background:rgba(6,182,212,0.07);border:1px solid var(--accent-glow);border-radius:8px;padding:9px 12px;text-align:center;margin-top:10px;">
+        <div style="font-size:11px;color:var(--accent);font-weight:700;">Full Pro access · No card required</div>
+        <div style="font-size:10.5px;color:var(--text3);margin-top:2px;">Then $29/mo · Cancel anytime</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;font-size:10.5px;color:var(--text3);">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        SSL Encrypted · Secure Checkout
+      </div>
     </div>
 
     <!-- ENTERPRISE -->
@@ -543,7 +452,7 @@
           How does the annual billing discount work?
           <span class="faq-icon">+</span>
         </div>
-        <div class="faq-a">Switching to annual billing gives you 20% off the monthly rate — Pro goes from $29/mo to $23.20/mo (billed as $278.40/year). The saving is applied automatically at checkout when you toggle to Annual.</div>
+        <div class="faq-a">Switching to annual billing gives you 20% off the monthly rate — Pro goes from $29/mo to $23/mo (billed as $276/year). The saving is applied automatically at checkout when you toggle to Annual.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFAQ(this)">
@@ -679,13 +588,6 @@
 </footer>
 
 <script>
-function toggleHtu() {
-  var body  = document.getElementById('htu-body');
-  var arrow = document.getElementById('htu-arrow');
-  if (!body) return;
-  body.classList.toggle('open');
-  arrow.classList.toggle('open');
-}
 function toggleBilling() {
   const annual = document.getElementById('billing-cb').checked;
   document.getElementById('pro-price').textContent = annual ? '23' : '29';
