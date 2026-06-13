@@ -35,7 +35,7 @@
   max-width: 1320px !important;
   min-height: 0 !important;
   box-sizing: border-box;
-  padding: clamp(36px, 4.2vw, 52px) 0 clamp(38px, 4.5vw, 56px) clamp(24px, 3vw, 40px);
+  padding: clamp(18px, 2.4vw, 34px) 0 clamp(28px, 3.2vw, 44px) clamp(18px, 2.4vw, 34px);
   margin: 0 auto !important;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(340px, 1fr);
@@ -226,20 +226,9 @@
 .hm-home-page {
   width: min(100%, 1320px);
   margin: var(--nav-h) auto 0 !important;
-  padding: 32px 0 0;
+  padding: clamp(10px, 1.4vw, 18px) 0 0;
 }
 </style>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5756895689951807" crossorigin="anonymous"></script>
-<script>
-function hmPushAdSlot(slot) {
-  requestAnimationFrame(function() {
-    if (!slot) return;
-    var width = slot.getBoundingClientRect().width;
-    if (width < 250 || getComputedStyle(slot).display === 'none') return;
-    (window.adsbygoogle = window.adsbygoogle || []).push({});
-  });
-}
-</script>
 </head>
 <body>
 <style>
@@ -400,8 +389,8 @@ function hmPushAdSlot(slot) {
   </div>
   <div class="nav-right" id="hmNavCta">
     <div class="nav-status"><div class="nav-status-dot"></div>AI Online</div>
-    <a href="#" class="btn btn-ghost btn-sm">Log In</a>
-    <a href="pricing.html" class="btn btn-primary btn-sm">Get Started</a>
+    <a href="#" onclick="event.preventDefault(); openAuthModal && openAuthModal('login');" class="btn btn-ghost btn-sm">Log In</a>
+    <a href="#" onclick="event.preventDefault(); openAuthModal && openAuthModal('register');" class="btn btn-primary btn-sm">Get Started</a>
   </div>
 </nav>
 
@@ -498,7 +487,7 @@ function hmPushAdSlot(slot) {
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76a2 2 0 001.91-.19l11.12-6.37-2.93-2.93-10.1 9.49zM20.5 10.36L17.84 8.8l-3.19 3.19 3.19 3.2 2.69-1.56a2 2 0 000-3.27zM1.54.27A2 2 0 001 1.5v21l10.29-10.3L1.54.27zM14.65 12L4.09.24 3.18.24 14.65 12z"/></svg>
       Google Play
     </a>
-    <div style="font-size:9px;color:var(--text3);text-align:center;line-height:1.4;">6 installs · 177 countries<br>Version 1.0.39</div>
+    <div style="font-size:9px;color:var(--text3);text-align:center;line-height:1.4;">Available worldwide on Android</div>
   </div>
 
   <div style="height:1px;background:var(--border);margin:2px 0;"></div>
@@ -507,18 +496,6 @@ function hmPushAdSlot(slot) {
   <div id="hmNoAdBadge" style="display:none;background:var(--success-dim);border:1px solid rgba(16,185,129,.20);border-radius:8px;padding:9px 8px;text-align:center;">
     <div style="font-size:11px;font-weight:700;color:var(--success);">✓ Ad-Free</div>
     <div style="font-size:9.5px;color:var(--text2);margin-top:2px;">Pro subscriber benefit</div>
-  </div>
-
-  <!-- Ad slots (free users) -->
-  <div id="hmAd1" class="sb-ad">
-    <div class="sb-ad-label">Advertisement</div>
-    <ins class="adsbygoogle"
-         style="display:block;width:100%;min-height:100px;"
-         data-ad-client="ca-pub-5756895689951807"
-         data-ad-slot="auto"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>hmPushAdSlot(document.currentScript.previousElementSibling);</script>
   </div>
 
   <!-- Pro CTA -->
@@ -534,16 +511,6 @@ function hmPushAdSlot(slot) {
     <a href="pricing.html" class="upgrade-btn">Upgrade Now →</a>
   </div>
 
-  <div id="hmAd3" class="sb-ad">
-    <div class="sb-ad-label">Sponsor Slot</div>
-    <ins class="adsbygoogle"
-         style="display:block;width:100%;min-height:100px;"
-         data-ad-client="ca-pub-5756895689951807"
-         data-ad-slot="auto"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>hmPushAdSlot(document.currentScript.previousElementSibling);</script>
-  </div>
 </aside>
 
 <!-- ═══════════════════════════════════════
@@ -612,8 +579,27 @@ function hmPushAdSlot(slot) {
   <div class="stats-bar">
     <div class="stat-item"><div class="stat-val">155</div><div class="stat-lbl">KB Documents</div></div>
     <div class="stat-item"><div class="stat-val">177</div><div class="stat-lbl">Countries</div></div>
-    <div class="stat-item"><div class="stat-val">33</div><div class="stat-lbl">Sources</div></div>
+    <div class="stat-item"><div class="stat-val">12</div><div class="stat-lbl">OEM Brands</div></div>
     <div class="stat-item"><div class="stat-val">24/7</div><div class="stat-lbl">AI Availability</div></div>
+  </div>
+
+  <!-- OEM LOGO STRIP -->
+  <div style="padding:16px 0 20px;border-bottom:1px solid var(--border);margin-bottom:4px;">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:center;margin-bottom:14px;">Covering equipment from the world's leading OEMs</div>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 10px;">
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">Liebherr</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">Rexroth</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">Danfoss</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">Parker</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">Eaton</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">NOV</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">MacGregor</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">Sauer-Danfoss</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">SeaTrax</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">Favelle Favco</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">Sun Hydraulics</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">ISO 4413 · DNV</span>
+    </div>
   </div>
 
   <div class="hm-action-strip" aria-label="Choose a HydroMind workflow">
@@ -1004,7 +990,6 @@ function hmPushAdSlot(slot) {
       <div class="footer-col">
         <h4>Download</h4>
         <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" rel="noopener">Google Play →</a>
-        <div style="margin-top:8px;font-size:11px;color:var(--text3);line-height:1.5;">Version 1.0.39<br>6 installs · 177 countries</div>
       </div>
     </div>
     <div class="footer-bottom">
