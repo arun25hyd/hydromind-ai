@@ -637,7 +637,7 @@ async function submitFeedback() {
         rating:    fbRating ? fbRating + '/5 ⭐' : 'Not rated',
         message:   message
       },
-      EJS_PUBLIC_KEY
+      { publicKey: EJS_PUBLIC_KEY }
     );
 
     if (result.status === 200) {
