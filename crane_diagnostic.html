@@ -16,7 +16,7 @@
 <meta name="twitter:title" content="Crane Diagnostic Agent — HydroMind.AI">
 <meta name="twitter:description" content="AI-powered crane hydraulic fault diagnosis for Liebherr, MacGregor, NOV, SeaTrax, Favelle Favco offshore cranes.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="css/hm-design.css?v=20260613-v4">
+<link rel="stylesheet" href="css/hm-design.css?v=20260613-v5">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -161,9 +161,9 @@ body {
 .cc-status-dot.fault  { background: var(--danger);  box-shadow: 0 0 6px rgba(239,68,68,.4); animation: blink-fault .8s ease-in-out infinite; }
 @keyframes blink-fault { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-.cc-model { font-size: 12.5px; font-weight: 700; color: var(--text1); line-height: 1.2; position: relative; z-index: 2; }
-.crane-card.active .cc-model { color: var(--accent-bright); }
-.cc-type  { font-size: 10px; color: var(--text3); margin-top: 2px; position: relative; z-index: 2; }
+.cc-model { font-size: 12.5px; font-weight: 700; color: #f1f5f9 !important; line-height: 1.2; position: relative; z-index: 2; }
+.crane-card.active .cc-model { color: var(--accent-bright) !important; }
+.cc-type  { font-size: 10px; color: #94a3b8 !important; margin-top: 2px; position: relative; z-index: 2; }
 .crane-card.active .cc-type { color: var(--accent); opacity: .8; }
 .cc-meta  { display: flex; align-items: center; gap: 8px; margin-top: 6px; position: relative; z-index: 2; }
 /* Neutralize inherited global card overlay that was covering text */
