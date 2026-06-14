@@ -182,7 +182,6 @@
   .contact-strip { grid-template-columns: 1fr; }
 }
 </style>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5756895689951807" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -239,16 +238,6 @@
     <div style="font-size:11px;font-weight:700;color:var(--success);">✓ Ad-Free</div>
     <div style="font-size:9.5px;color:var(--text2);margin-top:2px;">Pro subscriber benefit</div>
   </div>
-  <div id="hmAd1" class="sb-ad">
-    <div class="sb-ad-label">Advertisement</div>
-    <ins class="adsbygoogle"
-         style="display:block;width:100%;min-height:100px;"
-         data-ad-client="ca-pub-5756895689951807"
-         data-ad-slot="auto"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
-  </div>
   <div id="hmAd2" class="sb-pro-cta" style="margin-top:8px;">
     <h4>🚀 Go Pro</h4>
     <ul>
@@ -258,16 +247,6 @@
       <li>Priority support</li>
     </ul>
     <a href="pricing.html" class="upgrade-btn">Upgrade Now →</a>
-  </div>
-  <div id="hmAd3" class="sb-ad" style="margin-top:8px;">
-    <div class="sb-ad-label">Sponsor Slot</div>
-    <ins class="adsbygoogle"
-         style="display:block;width:100%;min-height:100px;"
-         data-ad-client="ca-pub-5756895689951807"
-         data-ad-slot="auto"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
   </div>
 </aside>
 
@@ -518,7 +497,7 @@ async function submitFeedback() {
         rating:    fbRating ? fbRating + '/5 ⭐' : 'Not rated',
         message:   message
       },
-      EJS_PUBLIC_KEY
+      { publicKey: EJS_PUBLIC_KEY }
     );
 
     if (result.status === 200) {

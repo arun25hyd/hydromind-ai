@@ -475,7 +475,6 @@ body {
 .htu-tip-dot{width:5px;height:5px;background:var(--accent);border-radius:50%;flex-shrink:0;margin-top:4px;}
 .htu-tip-text{font-size:11px;color:var(--text2);line-height:1.5;}
 </style>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5756895689951807" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -769,18 +768,6 @@ body {
       </div>
     </div>
 
-    <!-- Inline Ad Slot 1 — between KB refs and Capabilities (free users only) -->
-    <div id="hmAd1" class="inline-ad-wrap">
-      <div class="inline-ad-label">Advertisement</div>
-      <ins class="adsbygoogle"
-           style="display:block;width:100%;min-height:90px;"
-           data-ad-client="ca-pub-5756895689951807"
-           data-ad-slot="auto"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
-    </div>
-
     <div class="ip-section">
       <h4>Capabilities</h4>
       <div class="cap-list">
@@ -801,18 +788,6 @@ body {
         <div class="std-tag"><strong>API RP 2D</strong> — Crane Operations</div>
         <div class="std-tag"><strong>ISO 4406</strong> — Fluid Cleanliness</div>
       </div>
-    </div>
-
-    <!-- Inline Ad Slot 2 — between Standards and Download App -->
-    <div id="hmAd2" class="inline-ad-wrap">
-      <div class="inline-ad-label">Advertisement</div>
-      <ins class="adsbygoogle"
-           style="display:block;width:100%;min-height:90px;"
-           data-ad-client="ca-pub-5756895689951807"
-           data-ad-slot="auto"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
     </div>
 
     <div class="ip-section">
@@ -874,8 +849,10 @@ var activeBrand = 'ALL';
 /* Update query limit after auth loads */
 function hmUpdateQueryLimit() {
   try {
-    var u = JSON.parse(localStorage.getItem('hm_user') || 'null');
-    if (u && (u.isAdmin || u.plan === 'Pro' || u.plan === 'Enterprise')) {
+    var u = (typeof hmGetSession === 'function')
+      ? hmGetSession()
+      : JSON.parse(localStorage.getItem('hm_session') || 'null');
+    if (u && (u.isAdmin || u.plan === 'Pro' || u.plan === 'Enterprise' || u.plan === 'Admin')) {
       queriesMax = 9999;
       var el = document.getElementById('stat-remain');
       if (el) { el.textContent = '∞'; el.classList.remove('warn'); }
@@ -1261,6 +1238,8 @@ document.addEventListener('DOMContentLoaded', function() {
   if (typeof hmInit === 'function') hmInit();
   hmUpdateQueryLimit();
   setTimeout(hmUpdateQueryLimit, 1000); /* re-check after auth.js finishes */
+  /* Refresh query limit immediately when user logs in without page reload */
+  window.addEventListener('hm:login', hmUpdateQueryLimit);
   var inp = document.getElementById('chat-input');
   if (inp) {
     inp.addEventListener('keydown', function(e) {
