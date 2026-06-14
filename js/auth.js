@@ -6,6 +6,13 @@ const ADMIN_EMAIL = 'arun25hyd@gmail.com';
 const HM_SESSION  = 'hm_session';
 const HM_USERS    = 'hm_users';
 const HM_HISTORY  = 'hm_history';
+const HM_TOKEN    = 'hm_token';
+const HM_AUTH_API = 'https://hydromind-backend.onrender.com/api/auth';
+
+/* ── Token storage (JWT from backend) ── */
+function hmGetToken(){ try{return localStorage.getItem(HM_TOKEN)||null;}catch{return null;} }
+function hmSaveToken(t){ try{localStorage.setItem(HM_TOKEN,t);}catch(e){} }
+function hmClearToken(){ try{localStorage.removeItem(HM_TOKEN);}catch(e){} }
 
 /* ── Storage ── */
 function hmGetSession(){ try{return JSON.parse(localStorage.getItem(HM_SESSION))||null;}catch{return null;} }
@@ -64,68 +71,114 @@ function _authErr(msg){
   if(el){el.textContent=msg;el.style.display='block';}
 }
 
-/* ── Login ── */
-function doLogin(){
+/* ── Login (backend Supabase auth) ── */
+async function doLogin(){
   const email=(document.getElementById('hmLoginEmail')?.value||'').trim().toLowerCase();
   const pass=(document.getElementById('hmLoginPass')?.value||'');
   if(!email||!pass){_authErr('Please fill in both fields.');return;}
-  const users=hmGetUsers();
-  if(!users[email]){_authErr('No account found. Please register first.');return;}
-  const storedPass=users[email].pass;
-  const inputPass=btoa(unescape(encodeURIComponent(pass)));
-  if(storedPass!==inputPass){_authErr('Incorrect password.');return;}
-  const user={...users[email],email};
-  hmSaveSession(user);
-  closeAuthModal();
-  hmOnLogin(user);
+  const btn=document.getElementById('hmLoginBtn');
+  const origTxt=btn?btn.textContent:'';
+  if(btn){btn.disabled=true;btn.textContent='Signing in…';}
+  _authErr('');
+  try{
+    const res=await fetch(HM_AUTH_API+'/login',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email,password:pass})
+    });
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok){
+      _authErr(data.error||'Invalid email or password.');
+      if(btn){btn.disabled=false;btn.textContent=origTxt;}
+      return;
+    }
+    if(data.token)hmSaveToken(data.token);
+    const u=data.user||{};
+    const isAdmin=(u.email===ADMIN_EMAIL);
+    const user={
+      first:(u.name||'').split(' ')[0]||'',
+      last:(u.name||'').split(' ').slice(1).join(' ')||'',
+      email:u.email||email,
+      plan:isAdmin?'Admin':(u.isPremium?'Pro':'Free'),
+      isAdmin,
+      id:u.id
+    };
+    hmSaveSession(user);
+    closeAuthModal();
+    hmOnLogin(user);
+  }catch(err){
+    _authErr('Connection error — the server may be waking up. Please wait 30 seconds and try again.');
+    if(btn){btn.disabled=false;btn.textContent=origTxt;}
+  }
 }
 
-/* ── Register ── */
-function doRegister(){
+/* ── Register (backend Supabase auth) ── */
+async function doRegister(){
   const first=(document.getElementById('hmRegFirst')?.value||'').trim();
   const last=(document.getElementById('hmRegLast')?.value||'').trim();
   const email=(document.getElementById('hmRegEmail')?.value||'').trim().toLowerCase();
   const pass=(document.getElementById('hmRegPass')?.value||'');
   if(!first||!email||!pass){_authErr('Please fill in all required fields.');return;}
   if(pass.length<6){_authErr('Password must be at least 6 characters.');return;}
-  const users=hmGetUsers();
-  if(users[email]){_authErr('Account already exists. Please login.');return;}
-  const isAdmin=(email===ADMIN_EMAIL);
-  // Read selected plan from dropdown (set by selectPlan() on pricing page)
-  const planSel=document.getElementById('hmRegPlan');
-  const selectedPlan=planSel?planSel.value:'Free';
-  const plan=isAdmin?'Admin':selectedPlan;
-  const data={first,last,email,pass:btoa(unescape(encodeURIComponent(pass))),plan,isAdmin,joined:new Date().toLocaleDateString()};
-  hmSaveUser(email,data);
-  const user={...data};
-  hmSaveSession(user);
-  closeAuthModal();
-  hmOnLogin(user);
-  // Show welcome message after registration
-  setTimeout(()=>{
-    const name=first;
-    const welcomeEl=document.createElement('div');
-    welcomeEl.style.cssText='position:fixed;top:80px;right:1.5rem;z-index:9999;background:#fff;border:1px solid var(--accent-glow);border-radius:12px;padding:14px 18px;font-family:Inter,sans-serif;font-size:13px;color:var(--text1);max-width:280px;box-shadow:0 8px 32px rgba(8,145,178,0.15);';
-    welcomeEl.innerHTML='<div style="font-weight:800;font-size:14px;color:var(--accent);margin-bottom:4px;">Welcome, '+name+'! ✓</div><div style="font-size:12px;color:var(--text2);line-height:1.5;">Your '+plan+' account is ready.<br>Start with the AI Advisor.</div>';
-    document.body.appendChild(welcomeEl);
-    setTimeout(()=>welcomeEl.remove(),5000);
-  },300);
+  const btn=document.getElementById('hmRegBtn');
+  const origTxt=btn?btn.textContent:'';
+  if(btn){btn.disabled=true;btn.textContent='Creating account…';}
+  _authErr('');
+  const fullName=(first+(last?' '+last:'')).trim();
+  try{
+    const res=await fetch(HM_AUTH_API+'/register',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name:fullName,email,password:pass})
+    });
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok){
+      _authErr(data.error||'Could not create account. Please try again.');
+      if(btn){btn.disabled=false;btn.textContent=origTxt;}
+      return;
+    }
+    if(data.token)hmSaveToken(data.token);
+    const u=data.user||{};
+    const isAdmin=(u.email===ADMIN_EMAIL);
+    const plan=isAdmin?'Admin':(u.isPremium?'Pro':'Free');
+    const user={first,last,email:u.email||email,plan,isAdmin,id:u.id,joined:new Date().toLocaleDateString()};
+    hmSaveSession(user);
+    closeAuthModal();
+    hmOnLogin(user);
+    setTimeout(()=>{
+      const welcomeEl=document.createElement('div');
+      welcomeEl.style.cssText='position:fixed;top:80px;right:1.5rem;z-index:9999;background:#fff;border:1px solid var(--accent-glow);border-radius:12px;padding:14px 18px;font-family:Inter,sans-serif;font-size:13px;color:var(--text1);max-width:280px;box-shadow:0 8px 32px rgba(8,145,178,0.15);';
+      welcomeEl.innerHTML='<div style="font-weight:800;font-size:14px;color:var(--accent);margin-bottom:4px;">Welcome, '+first+'! ✓</div><div style="font-size:12px;color:var(--text2);line-height:1.5;">Your '+plan+' account is ready.<br>Start with the AI Advisor.</div>';
+      document.body.appendChild(welcomeEl);
+      setTimeout(()=>welcomeEl.remove(),5000);
+    },300);
+  }catch(err){
+    _authErr('Connection error — the server may be waking up. Please wait 30 seconds and try again.');
+    if(btn){btn.disabled=false;btn.textContent=origTxt;}
+  }
 }
 
-/* ── Forgot ── */
-function doForgot(){
+/* ── Forgot (backend) ── */
+async function doForgot(){
   const email=(document.getElementById('hmForgotEmail')?.value||'').trim().toLowerCase();
   if(!email){_authErr('Please enter your email.');return;}
-  const users=hmGetUsers();
   const ok=document.getElementById('hmForgotOk');
   if(!ok)return;
-  if(!users[email]){
-    ok.textContent='⚠️ No account found with this email.';
-    ok.style.cssText='display:block;background:rgba(245,200,66,.07);border:1px solid rgba(245,200,66,.25);border-radius:7px;padding:.7rem 1rem;font-size:.82rem;color:#f5c842;margin-bottom:.85rem;';
-  } else {
-    ok.textContent='✅ Reset link sent — check your inbox.';
+  ok.textContent='Sending…';
+  ok.style.cssText='display:block;background:rgba(6,182,212,.07);border:1px solid rgba(6,182,212,.25);border-radius:7px;padding:.7rem 1rem;font-size:.82rem;color:#22d3ee;margin-bottom:.85rem;';
+  try{
+    const res=await fetch(HM_AUTH_API+'/forgot-password',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email})
+    });
+    const data=await res.json().catch(()=>({}));
+    ok.textContent=(data&&data.message)?('✅ '+data.message):'✅ If this email is registered, a reset link has been sent.';
     ok.style.cssText='display:block;background:rgba(61,214,140,.07);border:1px solid rgba(61,214,140,.2);border-radius:7px;padding:.7rem 1rem;font-size:.82rem;color:#3dd68c;margin-bottom:.85rem;';
-    setTimeout(()=>ok.style.display='none',6000);
+    setTimeout(()=>ok.style.display='none',8000);
+  }catch(err){
+    ok.textContent='⚠️ Connection error — the server may be waking up. Try again in 30 seconds.';
+    ok.style.cssText='display:block;background:rgba(245,200,66,.07);border:1px solid rgba(245,200,66,.25);border-radius:7px;padding:.7rem 1rem;font-size:.82rem;color:#f5c842;margin-bottom:.85rem;';
   }
 }
 
@@ -133,6 +186,7 @@ function doForgot(){
 function doLogout(){
   if(!confirm('Sign out of HydroMind.AI?'))return;
   hmClearSession();
+  hmClearToken();
   window.location.reload();
 }
 
@@ -348,7 +402,7 @@ function _injectAuthModal(){
           <label style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Password</label>
           <input id="hmLoginPass" type="password" placeholder="Enter your password" style="${INP}" onfocus="this.style.borderColor='#06b6d4';this.style.boxShadow='0 0 0 3px rgba(6,182,212,0.12)'" onblur="this.style.borderColor='rgba(6,182,212,0.22)';this.style.boxShadow='none'" onkeydown="if(event.key==='Enter')doLogin()">
         </div>
-        <button onclick="doLogin()" style="width:100%;padding:12px;background:linear-gradient(135deg,#06b6d4,#0e7490);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity 0.15s;box-shadow:0 2px 12px rgba(6,182,212,0.25);" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">Log In →</button>
+        <button id="hmLoginBtn" onclick="doLogin()" style="width:100%;padding:12px;background:linear-gradient(135deg,#06b6d4,#0e7490);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity 0.15s;box-shadow:0 2px 12px rgba(6,182,212,0.25);" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">Log In →</button>
         <div style="text-align:center;margin-top:14px;">
           <button onclick="switchAuthTab('forgot')" style="background:none;border:none;font-size:12px;color:#06b6d4;cursor:pointer;font-family:inherit;">Forgot password?</button>
         </div>
@@ -374,7 +428,7 @@ function _injectAuthModal(){
           <label style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Password * (min 6 chars)</label>
           <input id="hmRegPass" type="password" placeholder="Create a password" style="${INP}" onfocus="this.style.borderColor='#06b6d4';this.style.boxShadow='0 0 0 3px rgba(6,182,212,0.12)'" onblur="this.style.borderColor='rgba(6,182,212,0.22)';this.style.boxShadow='none'" onkeydown="if(event.key==='Enter')doRegister()">
         </div>
-        <button onclick="doRegister()" style="width:100%;padding:12px;background:linear-gradient(135deg,#06b6d4,#0e7490);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity 0.15s;box-shadow:0 2px 12px rgba(6,182,212,0.25);" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">Create Account →</button>
+        <button id="hmRegBtn" onclick="doRegister()" style="width:100%;padding:12px;background:linear-gradient(135deg,#06b6d4,#0e7490);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity 0.15s;box-shadow:0 2px 12px rgba(6,182,212,0.25);" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">Create Account →</button>
         <div style="text-align:center;margin-top:12px;font-size:11.5px;color:#3d6478;">Free tier · No credit card needed</div>
       </div>
 
