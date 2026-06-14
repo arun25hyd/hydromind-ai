@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crane Diagnostic — Design B (Focused Workspace)</title>
+<link rel="stylesheet" href="css/hm-design.css?v=20260614-b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+.cdx,.cdx *,.cdx *::before,.cdx *::after{box-sizing:border-box}
+.hm-sidebar-left,.hm-sidebar-right{display:none!important}
+body{margin:0;padding:0;background:#070e12;overflow:hidden}
+.cdx{
+  --bg:#070e12;--surface:#0b151b;--card:#0e1a21;--card-hi:#122530;
+  --border:#1b2a34;--border-md:#243845;--teal:#06b6d4;--teal-br:#22d3ee;
+  --teal-dim:rgba(6,182,212,.09);--teal-glow:rgba(34,211,238,.25);
+  --t1:#f1f5f9;--t2:#aebcc6;--t3:#74858f;
+  --ok:#10b981;--warn:#f59e0b;--danger:#ef4444;--nav-h:60px;
+  --mono:"Space Mono",monospace;--sans:"Inter",sans-serif;--disp:"Syne",sans-serif;
+  position:fixed;inset:0;top:var(--nav-h);background:var(--bg);color:var(--t1);
+  font-family:var(--sans);display:flex;flex-direction:column;overflow:hidden;
+}
+/* TOP: slim crane selector bar */
+.cb-top{flex-shrink:0;border-bottom:1px solid var(--border);background:var(--surface);padding:11px clamp(14px,4vw,40px)}
+.cb-top-row{display:flex;align-items:center;gap:14px;max-width:1100px;margin:0 auto}
+.cb-top-label{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);white-space:nowrap}
+.cb-cranes{display:flex;gap:8px;overflow-x:auto;flex:1;padding-bottom:2px;scrollbar-width:thin}
+.cb-cranes::-webkit-scrollbar{height:4px}
+.cb-cranes::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:4px}
+.cb-crane{flex-shrink:0;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 13px;cursor:pointer;transition:all .15s}
+.cb-crane:hover{border-color:var(--border-md);background:var(--card-hi)}
+.cb-crane.active{border-color:var(--teal);background:var(--teal-dim)}
+.cb-crane-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.cb-crane-dot.ok{background:var(--ok)}.cb-crane-dot.warn{background:var(--warn)}.cb-crane-dot.fault{background:var(--danger)}
+.cb-crane-name{font-size:12.5px;font-weight:700;color:var(--t1);white-space:nowrap}
+.cb-crane.active .cb-crane-name{color:var(--teal-br)}
+.cb-crane-mfr{font-size:9px;font-family:var(--mono);color:var(--t3)}
+/* CENTER: chat hero */
+.cb-main{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.cb-chat{flex:1;overflow-y:auto;padding:26px clamp(16px,5vw,40px)}
+.cb-chat::-webkit-scrollbar{width:6px}.cb-chat::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:6px}
+.cb-welcome{max-width:760px;margin:0 auto;text-align:center;padding-top:14px}
+.cb-w-icon{width:60px;height:60px;margin:0 auto 16px;border-radius:17px;background:linear-gradient(135deg,var(--teal-dim),transparent),var(--card);border:1px solid var(--teal-glow);display:flex;align-items:center;justify-content:center;font-size:28px}
+.cb-w-title{font-family:var(--disp);font-size:clamp(22px,3vw,30px);font-weight:800;color:var(--t1)}
+.cb-w-sub{font-size:14px;color:var(--t2);line-height:1.6;max-width:560px;margin:11px auto 0}
+.cb-qa{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-top:26px;text-align:left}
+.cb-qa-btn{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:15px;cursor:pointer;color:var(--t1);font-family:var(--sans);transition:all .15s}
+.cb-qa-btn:hover{border-color:var(--teal-glow);background:var(--card-hi);transform:translateY(-2px)}
+.cb-qa-ic{font-size:20px;display:block;margin-bottom:8px}
+.cb-qa-t{font-size:13.5px;font-weight:700}
+.cb-qa-s{font-size:11px;color:var(--t3);margin-top:3px}
+.cb-msg{max-width:760px;margin:0 auto 20px}
+.cb-msg-sender{font-size:10px;font-weight:800;letter-spacing:.1em;color:var(--t3);margin-bottom:6px}
+.cb-msg.user .cb-msg-sender{color:var(--teal-br)}
+.cb-bubble{border-radius:12px;padding:14px 17px;font-size:14px;line-height:1.6}
+.cb-msg.user .cb-bubble{background:var(--teal-dim);border:1px solid var(--teal-glow)}
+.cb-msg.ai .cb-bubble{background:var(--card);border:1px solid var(--border)}
+.cb-kb{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.cb-kb-tag{font-size:10px;font-weight:700;font-family:var(--mono);background:var(--teal-dim);color:var(--teal-br);border:1px solid var(--teal-glow);border-radius:5px;padding:3px 8px}
+.cb-typing{display:inline-flex;gap:4px}
+.cb-typing span{width:7px;height:7px;border-radius:50%;background:var(--teal-br);animation:cbb 1.2s infinite}
+.cb-typing span:nth-child(2){animation-delay:.15s}.cb-typing span:nth-child(3){animation-delay:.3s}
+@keyframes cbb{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+/* INPUT */
+.cb-input-bar{flex-shrink:0;padding:13px clamp(16px,5vw,40px) 15px;border-top:1px solid var(--border)}
+.cb-input-wrap{max-width:760px;margin:0 auto;display:flex;align-items:flex-end;gap:10px;background:var(--card);border:1px solid var(--border-md);border-radius:14px;padding:10px 12px;transition:all .15s}
+.cb-input-wrap:focus-within{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-dim)}
+.cb-input-wrap textarea{flex:1;background:transparent;border:none;outline:none;resize:none;color:var(--t1);font-family:var(--sans);font-size:14px;line-height:1.5;max-height:130px;padding:4px 2px}
+.cb-input-wrap textarea::placeholder{color:var(--t3)}
+.cb-send{width:38px;height:38px;flex-shrink:0;border-radius:10px;border:none;background:linear-gradient(135deg,var(--teal),var(--teal-br));color:#03171c;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .1s}
+.cb-send:hover{transform:scale(1.05)}.cb-send:disabled{opacity:.4}
+.cb-send svg{width:17px;height:17px}
+.cb-hints{max-width:760px;margin:9px auto 0;display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.cb-hints-l{font-size:10px;font-weight:700;color:var(--t3)}
+.cb-hint{font-size:11px;font-weight:600;color:var(--t3);background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 11px;cursor:pointer;transition:all .14s}
+.cb-hint:hover{color:var(--teal-br);border-color:var(--teal-glow)}
+/* BOTTOM DOCK: gauges + context, collapsible */
+.cb-dock{flex-shrink:0;border-top:1px solid var(--border);background:var(--surface);transition:max-height .28s ease;max-height:118px;overflow:hidden}
+.cb-dock.collapsed{max-height:38px}
+.cb-dock-head{display:flex;align-items:center;justify-content:space-between;padding:9px clamp(14px,4vw,40px);cursor:pointer;user-select:none}
+.cb-dock-head h4{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin:0}
+.cb-dock-arrow{font-size:10px;color:var(--teal-br);transition:transform .25s}
+.cb-dock.collapsed .cb-dock-arrow{transform:rotate(180deg)}
+.cb-dock-body{display:flex;gap:10px;padding:0 clamp(14px,4vw,40px) 12px;overflow-x:auto}
+.cb-gauge{flex-shrink:0;min-width:104px;background:var(--card);border:1px solid var(--border);border-radius:9px;padding:9px 12px}
+.cb-gauge.warn{border-color:rgba(245,158,11,.4)}.cb-gauge.fault{border-color:rgba(239,68,68,.4)}
+.cb-g-name{font-size:8.5px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.06em}
+.cb-g-val{display:flex;align-items:baseline;gap:3px;margin-top:4px}
+.cb-g-num{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--teal-br)}
+.cb-gauge.warn .cb-g-num{color:var(--warn)}.cb-gauge.fault .cb-g-num{color:var(--danger)}
+.cb-g-unit{font-size:9px;color:var(--t3)}
+.cb-ctx-pill{flex-shrink:0;display:flex;flex-direction:column;justify-content:center;background:var(--card);border:1px solid var(--border);border-radius:9px;padding:9px 13px}
+.cb-ctx-k{font-size:8.5px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em}
+.cb-ctx-v{font-size:12px;font-weight:700;font-family:var(--mono);color:var(--t1);margin-top:3px}
+.cb-ctx-v.warn{color:var(--warn)}
+.cb-badge-design{position:fixed;top:calc(var(--nav-h) + 8px);right:12px;z-index:45;background:var(--teal);color:#03171c;font-size:11px;font-weight:800;padding:5px 11px;border-radius:20px;font-family:var(--mono)}
+@media(max-width:680px){.cb-qa{grid-template-columns:1fr}}
+.cdx .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+</style>
+</head>
+<body>
+<nav class="hm-nav">
+  <a href="index.html" class="nav-logo"><div class="logo-icon">HM</div><span>HydroMind<span class="logo-ai">.AI</span></span></a>
+  <div class="nav-links">
+    <a href="index.html" class="navbar-link">Home</a>
+    <a href="ai_advisor.html" class="navbar-link">AI Advisor</a>
+    <a href="system_design.html" class="navbar-link">System Design</a>
+    <a href="crane_diagnostic.html" class="navbar-link active">Crane Diagnostic</a>
+    <a href="knowledge_base.html" class="navbar-link">Knowledge Base</a>
+    <a href="pricing.html" class="navbar-link">Pricing</a>
+  </div>
+  <div class="nav-right" id="hmNavCta">
+    <div class="nav-status"><div class="nav-status-dot"></div>AI Online</div>
+    <a href="#" onclick="event.preventDefault();if(window.openAuthModal)openAuthModal('login');" class="btn btn-ghost btn-sm">Log In</a>
+    <a href="#" onclick="event.preventDefault();if(window.openAuthModal)openAuthModal('register');" class="btn btn-primary btn-sm">Get Started</a>
+  </div>
+</nav>
+
+<div class="cdx" id="cdxApp">
+  <span class="cb-badge-design">DESIGN B</span>
+  <h1 class="sr-only">Crane Diagnostic Agent</h1>
+
+  <!-- TOP crane selector -->
+  <div class="cb-top">
+    <div class="cb-top-row">
+      <span class="cb-top-label">Fleet</span>
+      <div class="cb-cranes" id="cdxList">
+        <div class="cb-crane active" data-crane="Liebherr LHBL-D 80" data-type="Offshore Pedestal Crane" data-mfr="LBR" data-status="warn" onclick="cdxSelect(this)">
+          <span class="cb-crane-dot warn"></span><div><div class="cb-crane-name cdx-model">LHBL-D 80</div><div class="cb-crane-mfr">LIEBHERR</div></div>
+        </div>
+        <div class="cb-crane" data-crane="Liebherr BOS 40000" data-type="Offshore Ship Crane" data-mfr="LBR" data-status="ok" onclick="cdxSelect(this)">
+          <span class="cb-crane-dot ok"></span><div><div class="cb-crane-name cdx-model">BOS 40000</div><div class="cb-crane-mfr">LIEBHERR</div></div>
+        </div>
+        <div class="cb-crane" data-crane="MacGregor AHC 250T" data-type="Active Heave Comp. Crane" data-mfr="MCG" data-status="fault" onclick="cdxSelect(this)">
+          <span class="cb-crane-dot fault"></span><div><div class="cb-crane-name cdx-model">AHC 250T</div><div class="cb-crane-mfr">MACGREGOR</div></div>
+        </div>
+        <div class="cb-crane" data-crane="MacGregor TM 100" data-type="Marine Crane" data-mfr="MCG" data-status="ok" onclick="cdxSelect(this)">
+          <span class="cb-crane-dot ok"></span><div><div class="cb-crane-name cdx-model">TM 100</div><div class="cb-crane-mfr">MACGREGOR</div></div>
+        </div>
+        <div class="cb-crane" data-crane="NOV ST-300" data-type="Pedestal Crane" data-mfr="NOV" data-status="ok" onclick="cdxSelect(this)">
+          <span class="cb-crane-dot ok"></span><div><div class="cb-crane-name cdx-model">ST-300</div><div class="cb-crane-mfr">NOV</div></div>
+        </div>
+        <div class="cb-crane" data-crane="SeaTrax S2800" data-type="Folding Boom Crane" data-mfr="STX" data-status="warn" onclick="cdxSelect(this)">
+          <span class="cb-crane-dot warn"></span><div><div class="cb-crane-name cdx-model">S2800</div><div class="cb-crane-mfr">SEATRAX</div></div>
+        </div>
+        <div class="cb-crane" data-crane="Favelle Favco M440D" data-type="Tower Crane Offshore" data-mfr="FAV" data-status="ok" onclick="cdxSelect(this)">
+          <span class="cb-crane-dot ok"></span><div><div class="cb-crane-name cdx-model">M440D</div><div class="cb-crane-mfr">FAVELLE</div></div>
+        </div>
+        <div class="cb-crane" data-crane="Favelle Favco M2000D" data-type="Derrick Crane" data-mfr="FAV" data-status="ok" onclick="cdxSelect(this)">
+          <span class="cb-crane-dot ok"></span><div><div class="cb-crane-name cdx-model">M2000D</div><div class="cb-crane-mfr">FAVELLE</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTER chat -->
+  <div class="cb-main">
+    <div class="cb-chat" id="cdxArea" tabindex="0">
+      <div class="cb-welcome" id="cdxWelcome">
+        <div class="cb-w-icon">🏗️</div>
+        <div class="cb-w-title">Crane Diagnostic Agent</div>
+        <div class="cb-w-sub">Select a crane above, then describe the fault or tap a quick-start below. Calm, focused diagnosis — one conversation at a time.</div>
+        <div class="cb-qa">
+          <button class="cb-qa-btn" onclick="cdxInject('High case drain pressure on main hoist pump — above 3.5 bar at full load. Rexroth A4VG90 piston pump.')"><span class="cb-qa-ic">⚡</span><div class="cb-qa-t">High Case Drain Pressure</div><div class="cb-qa-s">Main hoist pump · A4VG90</div></button>
+          <button class="cb-qa-btn" onclick="cdxInject('Crane luffing is slow and sluggish — reduced speed at full joystick input. Luffing circuit fault.')"><span class="cb-qa-ic">🐢</span><div class="cb-qa-t">Luffing Slow &amp; Sluggish</div><div class="cb-qa-s">Luffing circuit · DCV fault</div></button>
+          <button class="cb-qa-btn" onclick="cdxInject('Main hoist brake not releasing — load held but hook will not lift. Hydraulic brake release circuit fault.')"><span class="cb-qa-ic">🔴</span><div class="cb-qa-t">Hoist Brake Not Releasing</div><div class="cb-qa-s">Brake release · Pilot circuit</div></button>
+          <button class="cb-qa-btn" onclick="cdxInject('Proportional valve not responding — slewing circuit fault. No movement on slew at full joystick input.')"><span class="cb-qa-ic">🔧</span><div class="cb-qa-t">Proportional Valve Fault</div><div class="cb-qa-s">Slewing circuit · PVCM</div></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cb-input-bar">
+      <div class="cb-input-wrap">
+        <textarea id="cdxInput" rows="1" placeholder="Describe fault or symptom for Liebherr LHBL-D 80…" maxlength="2000"></textarea>
+        <button class="cb-send" id="cdxSend" onclick="cdxSendMsg()" aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+      </div>
+      <div class="cb-hints">
+        <span class="cb-hints-l">Quick:</span>
+        <span class="cb-hint" onclick="cdxInject('Run full 10-state diagnostic sequence')">Full Sequence</span>
+        <span class="cb-hint" onclick="cdxInject('Check pressure relief valve settings')">Relief Valve</span>
+        <span class="cb-hint" onclick="cdxInject('Diagnose main hoist pump fault')">HPU Fault</span>
+        <span class="cb-hint" onclick="cdxInject('Slewing circuit diagnosis')">Slew Circuit</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM dock -->
+  <div class="cb-dock" id="cbDock">
+    <div class="cb-dock-head" onclick="document.getElementById('cbDock').classList.toggle('collapsed')">
+      <h4>Live Parameters &amp; Context</h4>
+      <span class="cb-dock-arrow">▼</span>
+    </div>
+    <div class="cb-dock-body">
+      <div class="cb-gauge" id="cdx-g-sys"><div class="cb-g-name">Sys Press</div><div class="cb-g-val"><span class="cb-g-num" id="cdx-sys">248</span><span class="cb-g-unit">bar</span></div></div>
+      <div class="cb-gauge warn" id="cdx-g-drain"><div class="cb-g-name">Case Drain</div><div class="cb-g-val"><span class="cb-g-num" id="cdx-drain">3.8</span><span class="cb-g-unit">bar</span></div></div>
+      <div class="cb-gauge" id="cdx-g-temp"><div class="cb-g-name">Oil Temp</div><div class="cb-g-val"><span class="cb-g-num" id="cdx-temp">62</span><span class="cb-g-unit">°C</span></div></div>
+      <div class="cb-gauge" id="cdx-g-flow"><div class="cb-g-name">Flow</div><div class="cb-g-val"><span class="cb-g-num" id="cdx-flow">174</span><span class="cb-g-unit">L/m</span></div></div>
+      <div class="cb-ctx-pill"><div class="cb-ctx-k">Crane</div><div class="cb-ctx-v" id="cdx-ctx-crane">LHBL-D 80</div></div>
+      <div class="cb-ctx-pill"><div class="cb-ctx-k">Status</div><div class="cb-ctx-v warn" id="cdx-ctx-status">⚠ WARNING</div></div>
+      <div class="cb-ctx-pill"><div class="cb-ctx-k">Mfr</div><div class="cb-ctx-v" id="cdx-ctx-mfr">Liebherr</div></div>
+      <div class="cb-ctx-pill"><div class="cb-ctx-k">Type</div><div class="cb-ctx-v" id="cdx-ctx-type">Offshore Pedestal</div></div>
+    </div>
+  </div>
+</div>
+<script src="js/auth.js"></script>
+<script>
+var BACKEND='https://hydromind-backend.onrender.com/api/chat';
+var activeCrane='Liebherr LHBL-D 80',activeCraneType='Offshore Pedestal Crane',activeMfr='Liebherr';
+var chatHistory=[],isLoading=false;
+function cdxSelect(el){
+  document.querySelectorAll('.cb-crane').forEach(function(c){c.classList.remove('active')});
+  el.classList.add('active');
+  activeCrane=el.dataset.crane;activeCraneType=el.dataset.type;activeMfr=el.dataset.crane.split(' ')[0];
+  document.getElementById('cdx-ctx-crane').textContent=activeCrane.split(' ').slice(-2).join(' ');
+  document.getElementById('cdx-ctx-type').textContent=activeCraneType.substring(0,18);
+  document.getElementById('cdx-ctx-mfr').textContent=activeMfr;
+  document.getElementById('cdxInput').placeholder='Describe fault or symptom for '+activeCrane+'…';
+  var st=el.dataset.status,cs=document.getElementById('cdx-ctx-status');
+  if(st==='fault'){cs.textContent='✕ FAULT';cs.className='cb-ctx-v fault'}
+  else if(st==='warn'){cs.textContent='⚠ WARNING';cs.className='cb-ctx-v warn'}
+  else{cs.textContent='✓ NORMAL';cs.className='cb-ctx-v'}
+}
+function cdxInject(t){var i=document.getElementById('cdxInput');i.value=t;i.focus();cdxResize(i)}
+function cdxResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,130)+'px'}
+function cdxMd(raw){
+  var lines=(raw||'').split('\n'),out='',inUl=false,inOl=false,inCode=false;
+  function cl(){if(inUl){out+='</ul>';inUl=false}if(inOl){out+='</ol>';inOl=false}}
+  function fmt(t){return t.replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/\*([^*]+)\*/g,'<em>$1</em>')}
+  for(var i=0;i<lines.length;i++){var line=lines[i];
+    if(line.indexOf('```')===0){cl();if(inCode){out+='</pre>';inCode=false}else{out+='<pre style="font-family:var(--mono);font-size:12px;background:#0a141a;border:1px solid var(--border);border-radius:8px;padding:11px;overflow-x:auto;margin:8px 0">';inCode=true}continue}
+    if(inCode){out+=line.replace(/</g,'&lt;')+'\n';continue}
+    if(line.indexOf('### ')===0){cl();out+='<div style="font-size:15px;font-weight:700;color:var(--teal-br);margin:11px 0 5px">'+fmt(line.slice(4))+'</div>';continue}
+    if(line.indexOf('## ')===0){cl();out+='<div style="font-family:var(--disp);font-size:17px;font-weight:800;margin:12px 0 7px">'+fmt(line.slice(3))+'</div>';continue}
+    if(line==='---'){cl();out+='<hr style="border:none;border-top:1px solid var(--border);margin:11px 0">';continue}
+    if(/^[-*•]\s/.test(line)){if(!inUl){cl();out+='<ul style="margin:7px 0 7px 19px">';inUl=true}out+='<li style="margin:4px 0">'+fmt(line.replace(/^[-*•]\s+/,''))+'</li>';continue}
+    if(/^\d+[.)]\s/.test(line)){if(!inOl){cl();out+='<ol style="margin:7px 0 7px 19px">';inOl=true}out+='<li style="margin:4px 0">'+fmt(line.replace(/^\d+[.)]\s+/,''))+'</li>';continue}
+    if(line===''){cl();out+='<div style="height:5px"></div>';continue}
+    cl();out+='<p style="margin:7px 0">'+fmt(line)+'</p>'}
+  cl();if(inCode)out+='</pre>';return out;
+}
+function cdxAddMsg(role,content,kb){
+  var w=document.getElementById('cdxWelcome');if(w)w.remove();
+  var area=document.getElementById('cdxArea');
+  var row=document.createElement('div');row.className='cb-msg '+role;
+  var s=document.createElement('div');s.className='cb-msg-sender';s.textContent=role==='user'?'YOU':'HYDROMIND AI';
+  var b=document.createElement('div');b.className='cb-bubble';
+  if(role==='ai')b.innerHTML=cdxMd(content);else b.textContent=content;
+  row.appendChild(s);row.appendChild(b);
+  if(role==='ai'&&kb&&kb.length){var r=document.createElement('div');r.className='cb-kb';kb.forEach(function(x){var t=document.createElement('span');t.className='cb-kb-tag';t.textContent=x;r.appendChild(t)});row.appendChild(r)}
+  area.appendChild(row);
+  setTimeout(function(){if(role==='ai'){var top=row.getBoundingClientRect().top-area.getBoundingClientRect().top+area.scrollTop;area.scrollTop=Math.max(0,top-8)}else{area.scrollTop=area.scrollHeight}},60);
+}
+function cdxTyping(){var area=document.getElementById('cdxArea');var row=document.createElement('div');row.className='cb-msg ai';row.id='cdxTyping';row.innerHTML='<div class="cb-msg-sender">HYDROMIND AI</div><div class="cb-bubble"><div class="cb-typing"><span></span><span></span><span></span></div></div>';area.appendChild(row);setTimeout(function(){area.scrollTop=area.scrollHeight},0)}
+function cdxHideTyping(){var t=document.getElementById('cdxTyping');if(t)t.remove()}
+function cdxBusy(b){isLoading=b;var btn=document.getElementById('cdxSend'),i=document.getElementById('cdxInput');if(btn)btn.disabled=b;if(i)i.disabled=b}
+function cdxSendMsg(){
+  if(isLoading)return;var inp=document.getElementById('cdxInput');var text=inp.value.trim();if(!text)return;
+  inp.value='';inp.style.height='auto';cdxBusy(true);var rt=null;
+  try{
+    cdxAddMsg('user',text);chatHistory.push({role:'user',content:text});cdxTyping();
+    function gv(id){var e=document.getElementById(id);return e?e.textContent:'?'}
+    var g='System: '+gv('cdx-sys')+' BAR | Case Drain: '+gv('cdx-drain')+' BAR | Temp: '+gv('cdx-temp')+'C | Flow: '+gv('cdx-flow')+' L/min';
+    var sys='You are HydroMind AI Crane Diagnostic Agent — an expert offshore crane hydraulic engineer. Active crane: '+activeCrane+' ('+activeCraneType+'). Manufacturer: '+activeMfr+'. Live gauges: '+g+'. Apply ISO 4413, DNV-ST-0378, EN 13852-1. Provide structured diagnosis: root cause, test points, corrective actions, KB references (KB-01 to KB-86).';
+    var msgs=[{role:'user',content:sys},{role:'assistant',content:'Ready. Monitoring '+activeCrane+'. Describe the fault.'}].concat(chatHistory.slice(-10)).concat([{role:'user',content:text}]);
+    var xhr=new XMLHttpRequest();xhr.open('POST',BACKEND,true);xhr.setRequestHeader('Content-Type','application/json');xhr.timeout=90000;
+    rt=setTimeout(function(){try{xhr.abort()}catch(e){}},90000);
+    xhr.onload=function(){if(rt)clearTimeout(rt);cdxHideTyping();
+      if(xhr.status>=200&&xhr.status<300){try{var d=JSON.parse(xhr.responseText);var a=(d.content&&d.content[0]&&d.content[0].text)||d.answer||d.response||'No response received.';var kb=[],m=a.match(/KB-\d+/g);if(m){var sn={};m.forEach(function(r){if(!sn[r]){sn[r]=1;kb.push(r)}})}chatHistory.push({role:'assistant',content:a});if(chatHistory.length>20)chatHistory=chatHistory.slice(-20);cdxAddMsg('ai',a,kb)}catch(e){cdxAddMsg('ai','Error parsing response. Please retry.',[])}}
+      else cdxAddMsg('ai','Server error '+xhr.status+'. Backend may be waking up — try again shortly.',[]);
+      cdxBusy(false)};
+    xhr.onerror=function(){if(rt)clearTimeout(rt);cdxHideTyping();cdxAddMsg('ai','Connection error. Check network and retry.',[]);cdxBusy(false)};
+    xhr.ontimeout=function(){cdxHideTyping();cdxAddMsg('ai','Request timed out (90s). Server cold-starting — wait 60s and retry.',[]);cdxBusy(false)};
+    xhr.send(JSON.stringify({messages:msgs}));
+  }catch(err){if(rt)clearTimeout(rt);cdxHideTyping();cdxAddMsg('ai','Unexpected error.',[]);cdxBusy(false)}
+}
+document.addEventListener('DOMContentLoaded',function(){
+  if(typeof hmInit==='function')hmInit();
+  setInterval(function(){var p=new XMLHttpRequest();p.open('GET','https://hydromind-backend.onrender.com/',true);p.timeout=10000;p.send()},480000);
+  var inp=document.getElementById('cdxInput');
+  if(inp){inp.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();cdxSendMsg()}});inp.addEventListener('input',function(){cdxResize(inp)})}
+  setInterval(function(){var d=document.getElementById('cdx-drain');if(d){var v=(3.5+Math.random()*0.6).toFixed(1);d.textContent=v;var g=document.getElementById('cdx-g-drain');g.className=parseFloat(v)>=4.0?'cb-gauge fault':'cb-gauge warn'}var t=document.getElementById('cdx-temp');if(t)t.textContent=(60+Math.floor(Math.random()*5));var f=document.getElementById('cdx-flow');if(f)f.textContent=(170+Math.floor(Math.random()*10))},4000);
+});
+</script>
+</body>
+</html>
