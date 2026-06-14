@@ -88,7 +88,16 @@ async function doLogin(){
     });
     const data=await res.json().catch(()=>({}));
     if(!res.ok){
-      _authErr(data.error||'Invalid email or password.');
+      const msg = data.error || 'Invalid email or password.';
+      _authErr(msg);
+      /* Show "Register instead" hint when credentials are wrong */
+      const errEl = document.getElementById('hmAuthError');
+      if(errEl){
+        errEl.innerHTML = msg +
+          '<br><span style="font-size:11.5px;color:#94a3b8;display:block;margin-top:6px;">' +
+          'New to HydroMind? <a href="#" onclick="event.preventDefault();openAuthModal(\'register\');" ' +
+          'style="color:#22d3ee;text-decoration:none;font-weight:700;">Create a free account →</a></span>';
+      }
       if(btn){btn.disabled=false;btn.textContent=origTxt;}
       return;
     }
