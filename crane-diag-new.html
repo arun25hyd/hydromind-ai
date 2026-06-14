@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crane Diagnostic Agent — HydroMind.AI</title>
+<!-- redesign v2 live 20260613 -->
+<meta name="description" content="AI-powered crane hydraulic fault diagnosis for Liebherr, MacGregor, NOV, SeaTrax, Favelle Favco offshore cranes.">
+<link rel="canonical" href="https://www.hydromindai.com/crane_diagnostic.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="HydroMind.AI">
+<meta property="og:title" content="Crane Diagnostic Agent — HydroMind.AI">
+<meta property="og:description" content="AI-powered crane hydraulic fault diagnosis for offshore cranes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/hm-design.css?v=20260613-cdx">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   CRANE DIAGNOSTIC v2 — fully self-contained, scoped under .cdx
+   No dependency on hm-design.css for layout/components.
+   All tokens local. Fluid responsive. Works on every screen.
+═══════════════════════════════════════════════════════════ */
+.cdx, .cdx *, .cdx *::before, .cdx *::after { box-sizing: border-box; }
+/* Neutralize any global chrome from hm-design.css that doesn't apply here */
+.hm-sidebar-left, .hm-sidebar-right { display: none !important; }
+body { margin: 0; padding: 0; background: #060d11; overflow: hidden; }
+.cdx {
+  /* Palette — dark teal, modernized */
+  --bg:        #060d11;
+  --bg-2:      #0a141a;
+  --surface:   #0c171e;
+  --surface-2: #102029;
+  --card:      #0e1a22;
+  --card-hi:   #13242e;
+  --border:    #1c2d38;
+  --border-md: #253a47;
+  --border-hi: #2f4754;
+  --teal:      #06b6d4;
+  --teal-br:   #22d3ee;
+  --teal-dim:  rgba(6,182,212,.10);
+  --teal-glow: rgba(34,211,238,.28);
+  --text-1:    #f1f5f9;
+  --text-2:    #b4c2cc;
+  --text-3:    #7d909c;
+  --ok:        #10b981;
+  --warn:      #f59e0b;
+  --danger:    #ef4444;
+  --ok-dim:    rgba(16,185,129,.12);
+  --warn-dim:  rgba(245,158,11,.12);
+  --danger-dim:rgba(239,68,68,.12);
+  --nav-h:     60px;
+  --r:         12px;
+  --r-sm:      8px;
+  --mono: "Space Mono", ui-monospace, monospace;
+  --sans: "Inter", system-ui, sans-serif;
+  --display: "Syne", "Inter", sans-serif;
+
+  position: fixed;
+  inset: 0;
+  top: var(--nav-h);
+  background:
+    radial-gradient(1200px 600px at 70% -10%, rgba(6,182,212,.06), transparent 60%),
+    var(--bg);
+  color: var(--text-1);
+  font-family: var(--sans);
+  display: grid;
+  grid-template-columns: clamp(216px, 18vw, 260px) minmax(0, 1fr) clamp(212px, 17vw, 250px);
+  overflow: hidden;
+  transition: grid-template-columns .28s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── Collapsible states (driven by JS toggles) ── */
+.cdx.fleet-hidden { grid-template-columns: 0px minmax(0, 1fr) clamp(212px, 17vw, 250px); }
+.cdx.ctx-hidden   { grid-template-columns: clamp(216px, 18vw, 260px) minmax(0, 1fr) 0px; }
+.cdx.fleet-hidden.ctx-hidden { grid-template-columns: 0px minmax(0, 1fr) 0px; }
+.cdx.fleet-hidden .cdx-fleet { transform: translateX(-100%); opacity: 0; pointer-events: none; }
+.cdx.ctx-hidden   .cdx-ctx   { transform: translateX(100%);  opacity: 0; pointer-events: none; }
+
+/* ══ COLUMN PANELS ══ */
+.cdx-fleet, .cdx-ctx {
+  min-width: 0;
+  background: linear-gradient(180deg, rgba(6,182,212,.03), transparent 240px), var(--surface);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  transition: transform .28s cubic-bezier(.4,0,.2,1), opacity .2s;
+}
+.cdx-fleet { border-right: 1px solid var(--border); }
+.cdx-ctx   { border-left: 1px solid var(--border); overflow-y: auto; padding: 16px 13px; gap: 16px; }
+.cdx-ctx::-webkit-scrollbar { width: 4px; }
+.cdx-ctx::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 4px; }
+
+/* ══ FLEET HEADER ══ */
+.cdx-fleet-head { padding: 16px 14px 12px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.cdx-fleet-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.cdx-fleet-top h2 {
+  font-family: var(--display); font-size: 14px; font-weight: 800;
+  letter-spacing: .04em; color: var(--text-1); margin: 0;
+}
+.cdx-count {
+  font-size: 10px; font-weight: 700; font-family: var(--mono);
+  background: var(--teal-dim); color: var(--teal-br);
+  border: 1px solid var(--teal-glow); border-radius: 7px; padding: 3px 8px;
+}
+.cdx-search {
+  width: 100%; background: var(--bg-2); border: 1px solid var(--border-md);
+  border-radius: var(--r-sm); padding: 9px 12px;
+  font-size: 12.5px; color: var(--text-1); font-family: var(--sans);
+  outline: none; transition: border-color .15s, box-shadow .15s;
+}
+.cdx-search::placeholder { color: var(--text-3); }
+.cdx-search:focus { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-dim); }
+
+/* ══ FLEET LIST ══ */
+.cdx-list { flex: 1; overflow-y: auto; padding: 12px 10px; display: flex; flex-direction: column; gap: 7px; }
+.cdx-list::-webkit-scrollbar { width: 4px; }
+.cdx-list::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 4px; }
+.cdx-group {
+  font-size: 9px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--text-3); padding: 8px 4px 3px; margin-top: 2px;
+}
+.cdx-group:first-child { margin-top: 0; }
+
+/* ══ CRANE CARD — self-tinted, text always high-contrast ══ */
+.cdx-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 11px 13px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .16s, background .16s, transform .16s;
+}
+.cdx-card::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: transparent; transition: background .16s;
+}
+.cdx-card:hover { border-color: var(--border-hi); background: var(--card-hi); transform: translateX(2px); }
+.cdx-card:hover::before { background: var(--teal-glow); }
+.cdx-card.active { border-color: var(--teal); background: var(--teal-dim); }
+.cdx-card.active::before { background: var(--teal-br); }
+.cdx-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.cdx-badge {
+  font-size: 8.5px; font-weight: 800; letter-spacing: .06em; font-family: var(--mono);
+  background: var(--surface-2); border: 1px solid var(--border-md);
+  color: var(--text-2); border-radius: 5px; padding: 3px 6px;
+}
+.cdx-card.active .cdx-badge { background: rgba(6,182,212,.18); color: var(--teal-br); border-color: var(--teal-glow); }
+.cdx-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.cdx-dot.ok    { background: var(--ok);     box-shadow: 0 0 7px rgba(16,185,129,.5); }
+.cdx-dot.warn  { background: var(--warn);   box-shadow: 0 0 7px rgba(245,158,11,.5); }
+.cdx-dot.fault { background: var(--danger); box-shadow: 0 0 7px rgba(239,68,68,.5); animation: cdx-blink .9s ease-in-out infinite; }
+@keyframes cdx-blink { 0%,100%{opacity:1} 50%{opacity:.35} }
+/* The text that kept disappearing — now locked, scoped, high-contrast */
+.cdx-model { font-size: 13px; font-weight: 700; color: var(--text-1); line-height: 1.25; }
+.cdx-card.active .cdx-model { color: var(--teal-br); }
+.cdx-type  { font-size: 10.5px; color: var(--text-3); margin-top: 3px; line-height: 1.3; }
+.cdx-card.active .cdx-type { color: var(--teal); }
+.cdx-meta  { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 8px; }
+.cdx-chip  {
+  font-size: 9px; font-weight: 600; font-family: var(--mono);
+  color: var(--text-3); background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: 5px; padding: 2px 7px;
+}
+.cdx-card.active .cdx-chip { color: var(--teal); background: rgba(6,182,212,.08); border-color: var(--teal-glow); }
+
+/* ══ LIVE GAUGES ══ */
+.cdx-gauges { flex-shrink: 0; padding: 13px 10px; border-top: 1px solid var(--border); }
+.cdx-gauges-lbl { font-size: 9px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); margin-bottom: 9px; }
+.cdx-gauge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+.cdx-gauge { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 9px 10px; transition: border-color .15s; }
+.cdx-gauge.warn  { border-color: rgba(245,158,11,.4);  background: var(--warn-dim); }
+.cdx-gauge.fault { border-color: rgba(239,68,68,.4);   background: var(--danger-dim); }
+.cdx-g-name { font-size: 8.5px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .08em; }
+.cdx-gauge.warn  .cdx-g-name { color: var(--warn); }
+.cdx-gauge.fault .cdx-g-name { color: var(--danger); }
+.cdx-g-val { display: flex; align-items: baseline; gap: 3px; margin-top: 4px; }
+.cdx-g-num { font-family: var(--mono); font-size: 19px; font-weight: 700; color: var(--teal-br); line-height: 1; }
+.cdx-gauge.warn  .cdx-g-num { color: var(--warn); }
+.cdx-gauge.fault .cdx-g-num { color: var(--danger); }
+.cdx-g-unit { font-size: 9px; color: var(--text-3); font-weight: 600; }
+.cdx-g-bar { height: 3px; background: var(--border); border-radius: 2px; margin-top: 6px; overflow: hidden; }
+.cdx-g-fill { height: 100%; border-radius: 2px; transition: width .4s ease; }
+
+/* ══ CENTRE: CHAT COLUMN ══ */
+.cdx-chat { min-width: 0; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+
+/* Panel toggle buttons (always available, top of chat) */
+.cdx-chat-bar { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.cdx-pin {
+  width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
+  background: var(--card); border: 1px solid var(--border-md); color: var(--teal-br);
+  display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all .15s;
+}
+.cdx-pin:hover { border-color: var(--teal-glow); background: var(--teal-dim); }
+.cdx-pin svg { width: 16px; height: 16px; }
+.cdx-seq-label { font-size: 9px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); white-space: nowrap; }
+
+/* PLC sequence */
+.cdx-plc { display: flex; align-items: center; gap: 2px; overflow-x: auto; flex: 1; padding-bottom: 2px; }
+.cdx-plc::-webkit-scrollbar { height: 0; }
+.cdx-plc-step { display: flex; align-items: center; gap: 2px; }
+.cdx-node {
+  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+  border: 1.5px solid var(--border-hi); background: var(--card);
+  color: var(--text-3); font-family: var(--mono); font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  position: relative; transition: all .18s;
+}
+.cdx-node:hover { border-color: var(--teal); color: var(--teal-br); }
+.cdx-node.active { border-color: var(--teal); background: var(--teal-dim); color: var(--teal-br); box-shadow: 0 0 0 3px var(--teal-dim); }
+.cdx-node.done { border-color: rgba(16,185,129,.5); background: var(--ok-dim); color: var(--ok); }
+.cdx-node-tip {
+  position: absolute; bottom: calc(100% + 7px); left: 50%; transform: translateX(-50%);
+  background: var(--surface-2); border: 1px solid var(--border-md); color: var(--text-1);
+  font-family: var(--sans); font-size: 10px; font-weight: 600; white-space: nowrap;
+  padding: 4px 8px; border-radius: 6px; opacity: 0; pointer-events: none; transition: opacity .15s; z-index: 5;
+}
+.cdx-node:hover .cdx-node-tip { opacity: 1; }
+.cdx-arrow { color: var(--border-hi); font-size: 12px; flex-shrink: 0; }
+.cdx-arrow.done { color: var(--ok); }
+.cdx-arrow.active { color: var(--teal); }
+
+/* Chat area */
+.cdx-area { flex: 1; overflow-y: auto; padding: 22px clamp(16px, 4vw, 48px); outline: none; scroll-behavior: smooth; }
+.cdx-area::-webkit-scrollbar { width: 6px; }
+.cdx-area::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 6px; }
+
+/* Welcome state */
+.cdx-welcome { max-width: 920px; margin: 0 auto; text-align: center; padding-top: 8px; }
+.cdx-welcome-icon {
+  width: 64px; height: 64px; margin: 0 auto 18px; border-radius: 18px;
+  background: linear-gradient(135deg, var(--teal-dim), transparent), var(--card);
+  border: 1px solid var(--teal-glow); display: flex; align-items: center; justify-content: center;
+  font-size: 30px; box-shadow: 0 8px 32px rgba(6,182,212,.12);
+}
+.cdx-welcome-title { font-family: var(--display); font-size: clamp(24px, 3vw, 34px); font-weight: 800; letter-spacing: -.01em; color: var(--text-1); }
+.cdx-welcome-sub { font-size: 14px; color: var(--text-2); line-height: 1.6; max-width: 640px; margin: 12px auto 0; }
+
+/* Quick-start faults */
+.cdx-qa-wrap { margin-top: 28px; }
+.cdx-qa-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--teal-br); margin-bottom: 14px; }
+.cdx-qa-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.cdx-qa {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--r);
+  padding: 16px 15px; text-align: left; cursor: pointer; color: var(--text-1);
+  font-family: var(--sans); font-size: 14px; font-weight: 700; line-height: 1.3;
+  transition: border-color .16s, background .16s, transform .16s;
+}
+.cdx-qa:hover { border-color: var(--teal-glow); background: var(--card-hi); transform: translateY(-2px); }
+.cdx-qa-icon { font-size: 22px; display: block; margin-bottom: 10px; }
+.cdx-qa-sub { font-size: 11px; color: var(--text-3); font-weight: 500; display: block; margin-top: 4px; }
+
+/* How-to-use */
+.cdx-htu { max-width: 920px; margin: 26px auto 0; background: var(--card); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; text-align: left; }
+.cdx-htu-head { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; cursor: pointer; user-select: none; }
+.cdx-htu-head:hover { background: var(--card-hi); }
+.cdx-htu-hleft { display: flex; align-items: center; gap: 11px; }
+.cdx-htu-ttl { font-size: 13px; font-weight: 700; color: var(--text-1); }
+.cdx-htu-sub { font-size: 10.5px; color: var(--text-3); margin-top: 2px; }
+.cdx-htu-arrow { font-size: 11px; color: var(--teal-br); transition: transform .25s; }
+.cdx-htu-arrow.open { transform: rotate(180deg); }
+.cdx-htu-body { display: none; padding: 4px 16px 16px; border-top: 1px solid var(--border); }
+.cdx-htu-body.open { display: block; }
+.cdx-step { display: flex; gap: 12px; align-items: flex-start; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 12px 13px; margin-top: 9px; }
+.cdx-step-n { width: 25px; height: 25px; flex-shrink: 0; border-radius: 50%; background: var(--teal-dim); border: 1.5px solid var(--teal-glow); color: var(--teal-br); font-family: var(--mono); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.cdx-step-t { font-size: 12.5px; font-weight: 700; color: var(--text-1); margin-bottom: 3px; }
+.cdx-step-d { font-size: 11.5px; color: var(--text-2); line-height: 1.55; }
+.cdx-tips { background: rgba(6,182,212,.04); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 12px 13px; margin-top: 12px; }
+.cdx-tips-t { font-size: 11px; font-weight: 700; color: var(--teal-br); margin-bottom: 8px; letter-spacing: .04em; }
+.cdx-tip { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 6px; }
+.cdx-tip:last-child { margin-bottom: 0; }
+.cdx-tip-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--teal-br); flex-shrink: 0; margin-top: 6px; }
+.cdx-tip-x { font-size: 11.5px; color: var(--text-2); line-height: 1.5; }
+.cdx-tip-x strong { color: var(--text-1); }
+
+/* Messages */
+.cdx-msg { max-width: 920px; margin: 0 auto 22px; }
+.cdx-msg-sender { font-size: 10px; font-weight: 800; letter-spacing: .1em; color: var(--text-3); margin-bottom: 6px; }
+.cdx-msg.user .cdx-msg-sender { color: var(--teal-br); }
+.cdx-bubble { border-radius: var(--r); padding: 14px 17px; font-size: 14px; line-height: 1.6; }
+.cdx-msg.user .cdx-bubble { background: var(--teal-dim); border: 1px solid var(--teal-glow); color: var(--text-1); }
+.cdx-msg.ai .cdx-bubble { background: var(--card); border: 1px solid var(--border); color: var(--text-1); }
+.cdx-msg-time { font-size: 9.5px; color: var(--text-3); margin-top: 6px; }
+.cdx-kb-refs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+.cdx-kb-tag { font-size: 10px; font-weight: 700; font-family: var(--mono); background: var(--teal-dim); color: var(--teal-br); border: 1px solid var(--teal-glow); border-radius: 5px; padding: 3px 8px; }
+
+/* Markdown inside AI bubbles */
+.cdx-bubble .msg-h2 { font-family: var(--display); font-size: 18px; font-weight: 800; margin: 14px 0 8px; color: var(--text-1); }
+.cdx-bubble .msg-h3 { font-size: 15px; font-weight: 700; margin: 12px 0 6px; color: var(--teal-br); }
+.cdx-bubble .msg-h4 { font-size: 13px; font-weight: 700; margin: 10px 0 5px; color: var(--text-1); }
+.cdx-bubble .msg-p { margin: 7px 0; }
+.cdx-bubble .msg-ul, .cdx-bubble .msg-ol { margin: 7px 0 7px 20px; }
+.cdx-bubble .msg-ul li, .cdx-bubble .msg-ol li { margin: 4px 0; }
+.cdx-bubble .msg-strong { font-weight: 700; color: var(--text-1); }
+.cdx-bubble .msg-em { font-style: italic; }
+.cdx-bubble .msg-code { font-family: var(--mono); font-size: 12.5px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; color: var(--teal-br); }
+.cdx-bubble .msg-pre { font-family: var(--mono); font-size: 12px; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 12px; overflow-x: auto; margin: 9px 0; white-space: pre; color: var(--text-2); }
+.cdx-bubble .msg-table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 12.5px; }
+.cdx-bubble .msg-table th, .cdx-bubble .msg-table td { border: 1px solid var(--border-md); padding: 6px 9px; text-align: left; }
+.cdx-bubble .msg-table th { background: var(--surface-2); color: var(--teal-br); font-weight: 700; }
+.cdx-bubble .msg-hr { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+.cdx-bubble .msg-gap { height: 5px; }
+
+/* Typing dots */
+.cdx-typing { display: inline-flex; gap: 4px; }
+.cdx-typing span { width: 7px; height: 7px; border-radius: 50%; background: var(--teal-br); animation: cdx-bounce 1.2s infinite ease-in-out; }
+.cdx-typing span:nth-child(2) { animation-delay: .15s; }
+.cdx-typing span:nth-child(3) { animation-delay: .3s; }
+@keyframes cdx-bounce { 0%,60%,100%{transform:translateY(0);opacity:.4} 30%{transform:translateY(-5px);opacity:1} }
+
+/* Input bar */
+.cdx-input-bar { flex-shrink: 0; padding: 14px clamp(16px, 4vw, 48px) 16px; border-top: 1px solid var(--border); background: linear-gradient(0deg, var(--bg), transparent); }
+.cdx-input-wrap { max-width: 920px; margin: 0 auto; display: flex; align-items: flex-end; gap: 10px; background: var(--card); border: 1px solid var(--border-md); border-radius: 14px; padding: 10px 12px; transition: border-color .15s, box-shadow .15s; }
+.cdx-input-wrap:focus-within { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-dim); }
+.cdx-input-wrap textarea { flex: 1; background: transparent; border: none; outline: none; resize: none; color: var(--text-1); font-family: var(--sans); font-size: 14px; line-height: 1.5; max-height: 140px; padding: 4px 2px; }
+.cdx-input-wrap textarea::placeholder { color: var(--text-3); }
+.cdx-send { width: 38px; height: 38px; flex-shrink: 0; border-radius: 10px; border: none; background: linear-gradient(135deg, var(--teal), var(--teal-br)); color: #03171c; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: opacity .15s, transform .1s; }
+.cdx-send:hover { transform: scale(1.05); }
+.cdx-send:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+.cdx-send svg { width: 17px; height: 17px; }
+.cdx-hints { max-width: 920px; margin: 9px auto 0; display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
+.cdx-hints-lbl { font-size: 10px; font-weight: 700; color: var(--text-3); }
+.cdx-hint { font-size: 11px; font-weight: 600; color: var(--text-3); background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 4px 11px; cursor: pointer; white-space: nowrap; transition: all .14s; }
+.cdx-hint:hover { color: var(--teal-br); border-color: var(--teal-glow); background: var(--teal-dim); }
+
+/* ══ RIGHT: CONTEXT PANEL ══ */
+.cdx-sec { display: flex; flex-direction: column; gap: 9px; }
+.cdx-sec h3 { font-size: 9.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--text-3); padding-bottom: 7px; border-bottom: 1px solid var(--border); margin: 0; }
+.cdx-ctx-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 11px 12px; display: flex; flex-direction: column; gap: 8px; }
+.cdx-ctx-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.cdx-ctx-key { font-size: 10px; font-weight: 600; color: var(--text-3); }
+.cdx-ctx-val { font-size: 11px; font-weight: 700; font-family: var(--mono); color: var(--text-1); text-align: right; }
+.cdx-ctx-val.ok { color: var(--ok); } .cdx-ctx-val.warn { color: var(--warn); } .cdx-ctx-val.fault { color: var(--danger); }
+
+/* Sparkline */
+.cdx-spark-wrap { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 11px 12px; }
+.cdx-spark-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; }
+.cdx-spark-ttl { font-size: 11px; font-weight: 700; color: var(--text-1); }
+.cdx-spark-val { font-size: 13px; font-weight: 700; font-family: var(--mono); color: var(--warn); }
+#cdx-spark { display: flex; align-items: flex-end; gap: 4px; height: 48px; }
+.cdx-spark-bar { flex: 1; border-radius: 2px 2px 0 0; min-height: 4px; transition: height .4s ease; }
+
+/* Fault log */
+.cdx-flog { display: flex; flex-direction: column; gap: 8px; }
+.cdx-fentry { display: flex; gap: 9px; align-items: flex-start; background: var(--card); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 9px 11px; }
+.cdx-fentry .cdx-fdot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.cdx-fentry.warn  .cdx-fdot { background: var(--warn); }
+.cdx-fentry.fault .cdx-fdot { background: var(--danger); }
+.cdx-fentry.ok    .cdx-fdot { background: var(--ok); }
+.cdx-ftext { font-size: 11px; color: var(--text-2); line-height: 1.4; }
+.cdx-ftime { font-size: 9.5px; color: var(--text-3); margin-top: 3px; font-family: var(--mono); }
+
+/* KB refs */
+.cdx-kb { display: flex; flex-direction: column; gap: 7px; }
+.cdx-kb-row { display: flex; gap: 9px; align-items: center; background: var(--card); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 8px 10px; }
+.cdx-kb-num { font-size: 9.5px; font-weight: 700; font-family: var(--mono); color: var(--teal-br); background: var(--teal-dim); border: 1px solid var(--teal-glow); border-radius: 5px; padding: 3px 6px; flex-shrink: 0; }
+.cdx-kb-desc { font-size: 10.5px; color: var(--text-2); line-height: 1.35; }
+
+/* Standards */
+.cdx-iso { display: flex; flex-direction: column; gap: 6px; }
+.cdx-iso-tag { font-size: 10.5px; color: var(--text-2); background: var(--card); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 7px 10px; }
+.cdx-iso-tag strong { color: var(--teal-br); font-family: var(--mono); font-size: 10px; }
+
+/* Export */
+.cdx-export { width: 100%; padding: 11px; border-radius: var(--r-sm); background: var(--teal-dim); border: 1px solid var(--teal-glow); color: var(--teal-br); font-family: var(--sans); font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: all .15s; }
+.cdx-export:hover { background: var(--teal); color: #03171c; }
+.cdx-export svg { width: 14px; height: 14px; }
+
+/* Scrim for overlay panels on small screens */
+.cdx-scrim { display: none; position: fixed; inset: var(--nav-h) 0 0 0; background: rgba(0,0,0,.5); z-index: 30; opacity: 0; transition: opacity .25s; }
+.cdx-scrim.show { display: block; opacity: 1; }
+
+/* ══════════════════════════════════════════════
+   FLUID RESPONSIVE SYSTEM — works on EVERY screen
+   Columns scale via clamp(); panels become overlays
+   on small screens with toggle buttons + scrim.
+══════════════════════════════════════════════ */
+
+/* Standard laptops incl. HP @ 125% scaling (1093–1450px effective) */
+@media (max-width: 1450px) {
+  .cdx { grid-template-columns: clamp(200px, 19vw, 232px) minmax(0, 1fr) clamp(196px, 16vw, 224px); }
+  .cdx-qa-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Small laptops / tablets — right context panel becomes a slide-in overlay */
+@media (max-width: 1180px) {
+  .cdx { grid-template-columns: clamp(200px, 24vw, 232px) minmax(0, 1fr) 0px; }
+  .cdx-ctx {
+    position: fixed; top: var(--nav-h); right: 0; bottom: 0;
+    width: clamp(250px, 70vw, 310px); z-index: 31;
+    transform: translateX(100%); opacity: 1;
+    box-shadow: -10px 0 30px rgba(0,0,0,.4);
+  }
+  .cdx.ctx-open .cdx-ctx { transform: translateX(0); }
+  .cdx.ctx-open .cdx-scrim { display: block; opacity: 1; }
+  .cdx-pin-ctx { display: flex !important; }
+}
+
+/* Tablets — left fleet panel also becomes a slide-in overlay */
+@media (max-width: 900px) {
+  .cdx { grid-template-columns: 0px minmax(0, 1fr) 0px; }
+  .cdx-fleet {
+    position: fixed; top: var(--nav-h); left: 0; bottom: 0;
+    width: clamp(250px, 75vw, 300px); z-index: 31;
+    transform: translateX(-100%); opacity: 1;
+    box-shadow: 10px 0 30px rgba(0,0,0,.4);
+  }
+  .cdx.fleet-open .cdx-fleet { transform: translateX(0); }
+  .cdx.fleet-open .cdx-scrim { display: block; opacity: 1; }
+  .cdx-pin-fleet { display: flex !important; }
+}
+
+/* Phones */
+@media (max-width: 560px) {
+  .cdx-qa-grid { grid-template-columns: 1fr; }
+  .cdx-area { padding: 18px 14px; }
+  .cdx-input-bar { padding: 12px 14px 14px; }
+}
+
+/* Short screens */
+@media (max-height: 720px) {
+  .cdx-welcome-icon { width: 52px; height: 52px; font-size: 26px; margin-bottom: 12px; }
+  .cdx-qa { padding: 13px; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .cdx, .cdx * { transition: none !important; animation: none !important; }
+}
+
+/* The two pin buttons default hidden; shown by breakpoints above */
+.cdx-pin-fleet, .cdx-pin-ctx { display: none; }
+
+.cdx .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+</style>
+</head>
+<body>
+<!-- Shared nav — identical to all other pages -->
+<nav class="hm-nav">
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon">HM</div>
+    <span>HydroMind<span class="logo-ai">.AI</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="navbar-link">Home</a>
+    <a href="ai_advisor.html" class="navbar-link">AI Advisor</a>
+    <a href="system_design.html" class="navbar-link">System Design</a>
+    <a href="crane_diagnostic.html" class="navbar-link active">Crane Diagnostic</a>
+    <a href="knowledge_base.html" class="navbar-link">Knowledge Base</a>
+    <a href="pricing.html" class="navbar-link">Pricing</a>
+  </div>
+  <div class="nav-right" id="hmNavCta">
+    <div class="nav-status"><div class="nav-status-dot"></div>AI Online</div>
+    <a href="#" onclick="event.preventDefault(); if(window.openAuthModal) openAuthModal('login');" class="btn btn-ghost btn-sm">Log In</a>
+    <a href="#" onclick="event.preventDefault(); if(window.openAuthModal) openAuthModal('register');" class="btn btn-primary btn-sm">Get Started</a>
+  </div>
+</nav>
+
+<div class="cdx" id="cdxApp">
+  <h1 class="sr-only">Crane Diagnostic Agent</h1>
+  <div class="cdx-scrim" id="cdxScrim" onclick="cdxCloseOverlays()"></div>
+
+  <!-- ══ LEFT: FLEET ══ -->
+  <aside class="cdx-fleet">
+    <div class="cdx-fleet-head">
+      <div class="cdx-fleet-top">
+        <h2>Fleet</h2>
+        <span class="cdx-count">8 Cranes</span>
+      </div>
+      <input type="text" class="cdx-search" placeholder="Search crane model…" oninput="cdxFilter(this.value)">
+    </div>
+    <div class="cdx-list" id="cdxList">
+      <div class="cdx-group">Liebherr</div>
+      <div class="cdx-card active" data-crane="Liebherr LHBL-D 80" data-type="Offshore Pedestal Crane" data-mfr="LBR" data-status="warn" onclick="cdxSelect(this)">
+        <div class="cdx-card-top"><span class="cdx-badge">LBR</span><span class="cdx-dot warn"></span></div>
+        <div class="cdx-model">LHBL-D 80</div>
+        <div class="cdx-type">Offshore Pedestal Crane</div>
+        <div class="cdx-meta"><span class="cdx-chip">80T SWL</span><span class="cdx-chip">Deck A</span></div>
+      </div>
+      <div class="cdx-card" data-crane="Liebherr BOS 40000" data-type="Offshore Ship Crane" data-mfr="LBR" data-status="ok" onclick="cdxSelect(this)">
+        <div class="cdx-card-top"><span class="cdx-badge">LBR</span><span class="cdx-dot ok"></span></div>
+        <div class="cdx-model">BOS 40000</div>
+        <div class="cdx-type">Offshore Ship Crane</div>
+        <div class="cdx-meta"><span class="cdx-chip">40T SWL</span><span class="cdx-chip">Stbd</span></div>
+      </div>
+      <div class="cdx-group">MacGregor</div>
+      <div class="cdx-card" data-crane="MacGregor AHC 250T" data-type="Active Heave Comp. Crane" data-mfr="MCG" data-status="fault" onclick="cdxSelect(this)">
+        <div class="cdx-card-top"><span class="cdx-badge">MCG</span><span class="cdx-dot fault"></span></div>
+        <div class="cdx-model">AHC 250T</div>
+        <div class="cdx-type">Active Heave Comp. Crane</div>
+        <div class="cdx-meta"><span class="cdx-chip">250T SWL</span><span class="cdx-chip">Port</span></div>
+      </div>
+      <div class="cdx-card" data-crane="MacGregor TM 100" data-type="Marine Crane" data-mfr="MCG" data-status="ok" onclick="cdxSelect(this)">
+        <div class="cdx-card-top"><span class="cdx-badge">MCG</span><span class="cdx-dot ok"></span></div>
+        <div class="cdx-model">TM 100</div>
+        <div class="cdx-type">Marine Crane</div>
+        <div class="cdx-meta"><span class="cdx-chip">100T SWL</span><span class="cdx-chip">Aft</span></div>
+      </div>
+      <div class="cdx-group">NOV / SeaTrax</div>
+      <div class="cdx-card" data-crane="NOV ST-300" data-type="Pedestal Crane" data-mfr="NOV" data-status="ok" onclick="cdxSelect(this)">
+        <div class="cdx-card-top"><span class="cdx-badge">NOV</span><span class="cdx-dot ok"></span></div>
+        <div class="cdx-model">ST-300</div>
+        <div class="cdx-type">Pedestal Crane</div>
+        <div class="cdx-meta"><span class="cdx-chip">300T SWL</span><span class="cdx-chip">Bow</span></div>
+      </div>
+      <div class="cdx-card" data-crane="SeaTrax S2800" data-type="Folding Boom Crane" data-mfr="STX" data-status="warn" onclick="cdxSelect(this)">
+        <div class="cdx-card-top"><span class="cdx-badge">STX</span><span class="cdx-dot warn"></span></div>
+        <div class="cdx-model">S2800</div>
+        <div class="cdx-type">Folding Boom Crane</div>
+        <div class="cdx-meta"><span class="cdx-chip">28T SWL</span><span class="cdx-chip">Deck B</span></div>
+      </div>
+      <div class="cdx-group">Favelle Favco</div>
+      <div class="cdx-card" data-crane="Favelle Favco M440D" data-type="Tower Crane Offshore" data-mfr="FAV" data-status="ok" onclick="cdxSelect(this)">
+        <div class="cdx-card-top"><span class="cdx-badge">FAV</span><span class="cdx-dot ok"></span></div>
+        <div class="cdx-model">M440D</div>
+        <div class="cdx-type">Tower Crane Offshore</div>
+        <div class="cdx-meta"><span class="cdx-chip">440T SWL</span><span class="cdx-chip">Centre</span></div>
+      </div>
+      <div class="cdx-card" data-crane="Favelle Favco M2000D" data-type="Derrick Crane" data-mfr="FAV" data-status="ok" onclick="cdxSelect(this)">
+        <div class="cdx-card-top"><span class="cdx-badge">FAV</span><span class="cdx-dot ok"></span></div>
+        <div class="cdx-model">M2000D</div>
+        <div class="cdx-type">Derrick Crane</div>
+        <div class="cdx-meta"><span class="cdx-chip">2000T SWL</span><span class="cdx-chip">Main</span></div>
+      </div>
+    </div>
+    <div class="cdx-gauges">
+      <div class="cdx-gauges-lbl">Live Parameters</div>
+      <div class="cdx-gauge-grid">
+        <div class="cdx-gauge ok" id="cdx-g-sys">
+          <div class="cdx-g-name">Sys Press.</div>
+          <div class="cdx-g-val"><span class="cdx-g-num" id="cdx-sys">248</span><span class="cdx-g-unit">bar</span></div>
+          <div class="cdx-g-bar"><div class="cdx-g-fill" style="width:82%;background:#10b981;"></div></div>
+        </div>
+        <div class="cdx-gauge warn" id="cdx-g-drain">
+          <div class="cdx-g-name">Case Drain</div>
+          <div class="cdx-g-val"><span class="cdx-g-num" id="cdx-drain">3.8</span><span class="cdx-g-unit">bar</span></div>
+          <div class="cdx-g-bar"><div class="cdx-g-fill" style="width:76%;background:#f59e0b;"></div></div>
+        </div>
+        <div class="cdx-gauge ok" id="cdx-g-temp">
+          <div class="cdx-g-name">Oil Temp</div>
+          <div class="cdx-g-val"><span class="cdx-g-num" id="cdx-temp">62</span><span class="cdx-g-unit">°C</span></div>
+          <div class="cdx-g-bar"><div class="cdx-g-fill" style="width:62%;background:#06b6d4;"></div></div>
+        </div>
+        <div class="cdx-gauge ok" id="cdx-g-flow">
+          <div class="cdx-g-name">Flow</div>
+          <div class="cdx-g-val"><span class="cdx-g-num" id="cdx-flow">174</span><span class="cdx-g-unit">L/m</span></div>
+          <div class="cdx-g-bar"><div class="cdx-g-fill" style="width:87%;background:#10b981;"></div></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══ CENTRE: CHAT ══ -->
+  <section class="cdx-chat">
+    <div class="cdx-chat-bar">
+      <button class="cdx-pin cdx-pin-fleet" onclick="cdxToggleFleet()" title="Show fleet" aria-label="Toggle fleet panel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <span class="cdx-seq-label">Diag Sequence</span>
+      <div class="cdx-plc" id="cdxPlc"></div>
+      <button class="cdx-pin cdx-pin-ctx" onclick="cdxToggleCtx()" title="Show context" aria-label="Toggle context panel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+      </button>
+    </div>
+
+    <div class="cdx-area" id="cdxArea" tabindex="0">
+      <div class="cdx-welcome" id="cdxWelcome">
+        <div class="cdx-welcome-icon">🏗️</div>
+        <div class="cdx-welcome-title">Crane Diagnostic Agent</div>
+        <div class="cdx-welcome-sub">AI-powered hydraulic fault diagnosis for offshore cranes. Select a crane from the fleet panel, then tap a quick-start fault or describe your own symptom.</div>
+
+        <div class="cdx-qa-wrap">
+          <div class="cdx-qa-label">⚡ Quick-Start Faults — Select to Begin Diagnosis</div>
+          <div class="cdx-qa-grid">
+            <button class="cdx-qa" onclick="cdxInject('High case drain pressure on main hoist pump — above 3.5 bar at full load. Rexroth A4VG90 piston pump.')">
+              <span class="cdx-qa-icon">⚡</span>High Case Drain Pressure<span class="cdx-qa-sub">Main hoist pump · A4VG90</span>
+            </button>
+            <button class="cdx-qa" onclick="cdxInject('Crane luffing is slow and sluggish — reduced speed at full joystick input. Suspected hydraulic fault in luffing circuit.')">
+              <span class="cdx-qa-icon">🐢</span>Luffing Slow &amp; Sluggish<span class="cdx-qa-sub">Luffing circuit · DCV fault</span>
+            </button>
+            <button class="cdx-qa" onclick="cdxInject('Main hoist brake not releasing — crane load held but hook will not lift. Hydraulic brake release circuit suspected fault.')">
+              <span class="cdx-qa-icon">🔴</span>Hoist Brake Not Releasing<span class="cdx-qa-sub">Brake release · Pilot circuit</span>
+            </button>
+            <button class="cdx-qa" onclick="cdxInject('Proportional valve not responding — slewing circuit fault. No movement on slew despite full joystick input.')">
+              <span class="cdx-qa-icon">🔧</span>Proportional Valve Fault<span class="cdx-qa-sub">Slewing circuit · PVCM</span>
+            </button>
+            <button class="cdx-qa" onclick="cdxInject('Hydraulic oil overheating — oil temperature above 80°C under normal load. Suspected cooler or relief valve bypass fault.')">
+              <span class="cdx-qa-icon">🌡️</span>Oil Overheating Fault<span class="cdx-qa-sub">Cooler · Relief valve bypass</span>
+            </button>
+            <button class="cdx-qa" onclick="cdxInject('Anti-two-block system triggered — crane stopped, alarm active. Diagnose hydraulic or sensor fault in ATB circuit.')">
+              <span class="cdx-qa-icon">🚨</span>Anti-Two-Block Triggered<span class="cdx-qa-sub">ATB circuit · Safety interlock</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="cdx-htu">
+          <div class="cdx-htu-head" onclick="cdxToggleHtu(this)">
+            <div class="cdx-htu-hleft">
+              <span style="font-size:15px;">📋</span>
+              <div><div class="cdx-htu-ttl">How to Use Crane Diagnostic Agent</div><div class="cdx-htu-sub">5-step guide + pro tips</div></div>
+            </div>
+            <span class="cdx-htu-arrow open">▼</span>
+          </div>
+          <div class="cdx-htu-body open">
+            <div class="cdx-step"><div class="cdx-step-n">1</div><div><div class="cdx-step-t">Select Your Crane from the Fleet Panel</div><div class="cdx-step-d">Click the correct crane model in the left panel. This loads the manufacturer-specific KB documents (Liebherr, MacGregor, NOV, SeaTrax, Favelle Favco) and sets the diagnostic context automatically.</div></div></div>
+            <div class="cdx-step"><div class="cdx-step-n">2</div><div><div class="cdx-step-t">Describe the Fault Symptom Clearly</div><div class="cdx-step-d">Type the exact symptom — include the affected circuit (hoist, luff, slew), component model, observed pressure readings, and whether it is intermittent or constant. More detail means a better diagnosis.</div></div></div>
+            <div class="cdx-step"><div class="cdx-step-n">3</div><div><div class="cdx-step-t">Follow the 10-State Diagnostic Sequence</div><div class="cdx-step-d">The bar at the top tracks 10 diagnostic states — from Safety Isolation to Final Check. The AI advances through each state as you answer. Click any node to jump directly.</div></div></div>
+            <div class="cdx-step"><div class="cdx-step-n">4</div><div><div class="cdx-step-t">Monitor Live Gauges While Diagnosing</div><div class="cdx-step-d">The fleet panel shows live system pressure, case drain, oil temperature and flow. These values are sent with every AI query, so the diagnosis always reflects current operating conditions.</div></div></div>
+            <div class="cdx-step"><div class="cdx-step-n">5</div><div><div class="cdx-step-t">Export Diagnostic Report for Your DPR</div><div class="cdx-step-d">When diagnosis is complete, tap "Export Diagnostic Report" in the context panel. This downloads a full report — crane model, live parameters, and the complete conversation — ready for your Daily Progress Report.</div></div></div>
+            <div class="cdx-tips">
+              <div class="cdx-tips-t">💡 Pro Tips</div>
+              <div class="cdx-tip"><span class="cdx-tip-dot"></span><span class="cdx-tip-x">Press <strong>Enter</strong> to send — <strong>Shift+Enter</strong> for a new line.</span></div>
+              <div class="cdx-tip"><span class="cdx-tip-dot"></span><span class="cdx-tip-x">Use the <strong>Quick chips</strong> under the input box for one-tap fault starters.</span></div>
+              <div class="cdx-tip"><span class="cdx-tip-dot"></span><span class="cdx-tip-x">KB references like <strong>KB-12</strong> appear as teal tags below AI replies.</span></div>
+              <div class="cdx-tip"><span class="cdx-tip-dot"></span><span class="cdx-tip-x">Ask to <strong>"Run full 10-state diagnostic sequence"</strong> for a complete structured analysis.</span></div>
+              <div class="cdx-tip"><span class="cdx-tip-dot"></span><span class="cdx-tip-x">Always quote actual <strong>pressure readings</strong> — the AI uses them for precise diagnosis.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cdx-input-bar">
+      <div class="cdx-input-wrap">
+        <textarea id="cdxInput" rows="1" placeholder="Describe fault or symptom for Liebherr LHBL-D 80…" maxlength="2000"></textarea>
+        <button class="cdx-send" id="cdxSend" onclick="cdxSendMsg()" aria-label="Send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="cdx-hints">
+        <span class="cdx-hints-lbl">Quick:</span>
+        <span class="cdx-hint" onclick="cdxInject('Run full 10-state diagnostic sequence')">Full Sequence</span>
+        <span class="cdx-hint" onclick="cdxInject('Check pressure relief valve settings')">Relief Valve</span>
+        <span class="cdx-hint" onclick="cdxInject('Diagnose main hoist pump fault')">HPU Fault</span>
+        <span class="cdx-hint" onclick="cdxInject('Slewing circuit diagnosis')">Slew Circuit</span>
+        <span class="cdx-hint" onclick="cdxInject('Counterbalance valve fault')">CBV Fault</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ RIGHT: CONTEXT ══ -->
+  <aside class="cdx-ctx">
+    <div class="cdx-sec">
+      <h3>Active Context</h3>
+      <div class="cdx-ctx-card">
+        <div class="cdx-ctx-row"><span class="cdx-ctx-key">Crane</span><span class="cdx-ctx-val" id="cdx-ctx-crane">LHBL-D 80</span></div>
+        <div class="cdx-ctx-row"><span class="cdx-ctx-key">Type</span><span class="cdx-ctx-val" id="cdx-ctx-type">Offshore Pedestal</span></div>
+        <div class="cdx-ctx-row"><span class="cdx-ctx-key">Manufacturer</span><span class="cdx-ctx-val" id="cdx-ctx-mfr">Liebherr</span></div>
+        <div class="cdx-ctx-row"><span class="cdx-ctx-key">System Status</span><span class="cdx-ctx-val warn" id="cdx-ctx-status">⚠ WARNING</span></div>
+        <div class="cdx-ctx-row"><span class="cdx-ctx-key">KB Loaded</span><span class="cdx-ctx-val ok">KB-01–86</span></div>
+        <div class="cdx-ctx-row"><span class="cdx-ctx-key">Standard</span><span class="cdx-ctx-val" style="font-size:9px;">ISO 4413 · DNV</span></div>
+      </div>
+    </div>
+
+    <div class="cdx-sec">
+      <h3>Case Drain Trend</h3>
+      <div class="cdx-spark-wrap">
+        <div class="cdx-spark-head"><span class="cdx-spark-ttl">Main Hoist Pump</span><span class="cdx-spark-val" id="cdx-spark-val">3.8 bar</span></div>
+        <div id="cdx-spark"></div>
+        <div style="font-size:9px;color:#f59e0b;margin-top:7px;font-weight:600;">⚠ Approaching 4 bar threshold — monitor closely</div>
+      </div>
+    </div>
+
+    <div class="cdx-sec">
+      <h3>Fault Log</h3>
+      <div class="cdx-flog">
+        <div class="cdx-fentry warn"><span class="cdx-fdot"></span><div><div class="cdx-ftext">Case drain press. elevated (3.8 bar) — Main hoist pump A4VG90</div><div class="cdx-ftime">10:42 · Today</div></div></div>
+        <div class="cdx-fentry fault"><span class="cdx-fdot"></span><div><div class="cdx-ftext">Luffing cylinder CBV chattering on deceleration</div><div class="cdx-ftime">09:15 · Today</div></div></div>
+        <div class="cdx-fentry ok"><span class="cdx-fdot"></span><div><div class="cdx-ftext">Slewing circuit — proportional valve recalibrated OK</div><div class="cdx-ftime">Yesterday</div></div></div>
+      </div>
+    </div>
+
+    <div class="cdx-sec">
+      <h3>KB References</h3>
+      <div class="cdx-kb">
+        <div class="cdx-kb-row"><span class="cdx-kb-num">KB-12</span><span class="cdx-kb-desc">Rexroth A4VG90 — Service &amp; Maintenance</span></div>
+        <div class="cdx-kb-row"><span class="cdx-kb-num">KB-01</span><span class="cdx-kb-desc">Liebherr LHBL-D — Hydraulic System Manual</span></div>
+        <div class="cdx-kb-row"><span class="cdx-kb-num">KB-34</span><span class="cdx-kb-desc">Case Drain Flow — Diagnostic Procedures</span></div>
+        <div class="cdx-kb-row"><span class="cdx-kb-num">KB-22</span><span class="cdx-kb-desc">Rexroth A6VM — Motor Fault Analysis</span></div>
+      </div>
+    </div>
+
+    <div class="cdx-sec">
+      <h3>Applied Standards</h3>
+      <div class="cdx-iso">
+        <div class="cdx-iso-tag"><strong>ISO 4413</strong> — Hydraulic Fluid Power</div>
+        <div class="cdx-iso-tag"><strong>DNV-ST-0378</strong> — Offshore Cranes</div>
+        <div class="cdx-iso-tag"><strong>EN 13852-1</strong> — Offshore Crane Design</div>
+        <div class="cdx-iso-tag"><strong>API RP 2D</strong> — Operation of Cranes</div>
+      </div>
+    </div>
+
+    <div class="cdx-sec">
+      <button class="cdx-export" onclick="cdxExport()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export Diagnostic Report
+      </button>
+    </div>
+  </aside>
+</div><!-- /.cdx -->
+
+<script src="js/auth.js"></script>
+<script>
+/* ══ CONSTANTS ══ */
+var BACKEND = 'https://hydromind-backend.onrender.com/api/chat';
+var activeCrane = 'Liebherr LHBL-D 80';
+var activeCraneType = 'Offshore Pedestal Crane';
+var activeMfr = 'Liebherr';
+var chatHistory = [];
+var isLoading = false;
+var currentPlcStep = 0;
+var PLC_STEPS = ['Safety Isolation','HPU Pressure','Pump Flow','Relief Valve','Pilot Pressure','DCV Function','Motor Drain','Cylinder Test','Brake Release','Final Check'];
+
+/* ══ PLC SEQUENCE ══ */
+function cdxBuildPlc() {
+  var c = document.getElementById('cdxPlc');
+  c.innerHTML = '';
+  PLC_STEPS.forEach(function(label, i) {
+    var step = document.createElement('div'); step.className = 'cdx-plc-step';
+    var node = document.createElement('div');
+    node.className = 'cdx-node' + (i < currentPlcStep ? ' done' : i === currentPlcStep ? ' active' : '');
+    node.textContent = i + 1;
+    var tip = document.createElement('span'); tip.className = 'cdx-node-tip'; tip.textContent = label;
+    node.appendChild(tip);
+    node.onclick = (function(idx){ return function(){ currentPlcStep = idx; cdxBuildPlc(); }; })(i);
+    step.appendChild(node);
+    if (i < PLC_STEPS.length - 1) {
+      var ar = document.createElement('span');
+      ar.className = 'cdx-arrow' + (i < currentPlcStep ? ' done' : i === currentPlcStep ? ' active' : '');
+      ar.textContent = '›'; step.appendChild(ar);
+    }
+    c.appendChild(step);
+  });
+}
+function cdxAdvancePlc() { if (currentPlcStep < PLC_STEPS.length - 1) { currentPlcStep++; cdxBuildPlc(); } }
+
+/* ══ PANEL TOGGLES (responsive) ══ */
+function cdxToggleFleet() {
+  var app = document.getElementById('cdxApp');
+  app.classList.toggle('fleet-open');
+  app.classList.remove('ctx-open');
+  cdxScrim();
+}
+function cdxToggleCtx() {
+  var app = document.getElementById('cdxApp');
+  app.classList.toggle('ctx-open');
+  app.classList.remove('fleet-open');
+  cdxScrim();
+}
+function cdxCloseOverlays() {
+  var app = document.getElementById('cdxApp');
+  app.classList.remove('fleet-open','ctx-open');
+  cdxScrim();
+}
+function cdxScrim() {
+  var app = document.getElementById('cdxApp');
+  var scrim = document.getElementById('cdxScrim');
+  if (app.classList.contains('fleet-open') || app.classList.contains('ctx-open')) scrim.classList.add('show');
+  else scrim.classList.remove('show');
+}
+
+/* ══ HOW TO USE ══ */
+function cdxToggleHtu(head) {
+  var body = head.parentElement.querySelector('.cdx-htu-body');
+  var arrow = head.querySelector('.cdx-htu-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+/* ══ FILTER ══ */
+function cdxFilter(q) {
+  q = (q || '').toLowerCase();
+  document.querySelectorAll('.cdx-card').forEach(function(c) {
+    var m = (c.dataset.crane || '').toLowerCase(), t = (c.dataset.type || '').toLowerCase();
+    c.style.display = (!q || m.indexOf(q) > -1 || t.indexOf(q) > -1) ? '' : 'none';
+  });
+  document.querySelectorAll('.cdx-group').forEach(function(g){ g.style.display = q ? 'none' : ''; });
+}
+
+/* ══ SELECT CRANE ══ */
+function cdxSelect(el) {
+  document.querySelectorAll('.cdx-card').forEach(function(c){ c.classList.remove('active'); });
+  el.classList.add('active');
+  activeCrane = el.dataset.crane;
+  activeCraneType = el.dataset.type;
+  activeMfr = el.dataset.crane.split(' ')[0];
+  document.getElementById('cdx-ctx-crane').textContent = activeCrane.split(' ').slice(-2).join(' ');
+  document.getElementById('cdx-ctx-type').textContent = activeCraneType.substring(0, 20);
+  document.getElementById('cdx-ctx-mfr').textContent = activeMfr;
+  document.getElementById('cdxInput').placeholder = 'Describe fault or symptom for ' + activeCrane + '…';
+  currentPlcStep = 0; cdxBuildPlc();
+  var st = el.dataset.status, cs = document.getElementById('cdx-ctx-status');
+  if (st === 'fault') { cs.textContent = '✕ FAULT'; cs.className = 'cdx-ctx-val fault'; }
+  else if (st === 'warn') { cs.textContent = '⚠ WARNING'; cs.className = 'cdx-ctx-val warn'; }
+  else { cs.textContent = '✓ NORMAL'; cs.className = 'cdx-ctx-val ok'; }
+  /* close fleet overlay on small screens after pick */
+  document.getElementById('cdxApp').classList.remove('fleet-open'); cdxScrim();
+}
+
+/* ══ INJECT + RESIZE ══ */
+function cdxInject(text) {
+  var inp = document.getElementById('cdxInput');
+  inp.value = text; inp.focus(); cdxResize(inp);
+}
+function cdxResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 140) + 'px'; }
+
+/* ══ SPARKLINE ══ */
+function cdxSpark() {
+  var data = [1.8,2.1,2.0,2.4,2.8,3.1,3.5,3.8], max = 5;
+  var sl = document.getElementById('cdx-spark'); sl.innerHTML = '';
+  data.forEach(function(v){
+    var b = document.createElement('div'); b.className = 'cdx-spark-bar';
+    b.style.height = (v/max*100) + '%';
+    b.style.background = v >= 3.5 ? '#ef4444' : v >= 2.8 ? '#f59e0b' : '#06b6d4';
+    b.title = v + ' bar'; sl.appendChild(b);
+  });
+}
+
+/* ══ MARKDOWN (preserved from original) ══ */
+function cdxMd(raw) {
+  var lines = (raw || '').split('\n'), out = '', inUl = false, inOl = false, inCode = false, inTable = false;
+  function closeLists(){ if(inUl){out+='</ul>';inUl=false;} if(inOl){out+='</ol>';inOl=false;} }
+  function fmt(t){ return t.replace(/`([^`]+)`/g,'<code class="msg-code">$1</code>').replace(/\*\*([^*]+)\*\*/g,'<strong class="msg-strong">$1</strong>').replace(/\*([^*]+)\*/g,'<em class="msg-em">$1</em>').replace(/__(.*?)__/g,'<strong class="msg-strong">$1</strong>'); }
+  for (var i=0;i<lines.length;i++){
+    var line=lines[i];
+    if(line.indexOf('```')===0){ closeLists(); if(inCode){out+='</pre>';inCode=false;}else{out+='<pre class="msg-pre">';inCode=true;} continue; }
+    if(inCode){ out+=line.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'\n'; continue; }
+    if(line.indexOf('|')===0 && line.indexOf('|-')<0){
+      if(!inTable){out+='<table class="msg-table"><thead><tr>';inTable=true;var isHead=true;}else{out+='<tr>';isHead=false;}
+      var cells=line.split('|').filter(function(c,idx,arr){return idx>0&&idx<arr.length-1;});
+      cells.forEach(function(c){out+=(isHead?'<th>':'<td>')+fmt(c.trim())+(isHead?'</th>':'</td>');});
+      out+=isHead?'</tr></thead><tbody>':'</tr>'; continue;
+    }
+    if(line.match(/^\|[-| :]+\|$/))continue;
+    if(inTable){out+='</tbody></table>';inTable=false;}
+    if(line.indexOf('#### ')===0){closeLists();out+='<h4 class="msg-h4">'+fmt(line.slice(5))+'</h4>';continue;}
+    if(line.indexOf('### ')===0){closeLists();out+='<h3 class="msg-h3">'+fmt(line.slice(4))+'</h3>';continue;}
+    if(line.indexOf('## ')===0){closeLists();out+='<h2 class="msg-h2">'+fmt(line.slice(3))+'</h2>';continue;}
+    if(line.indexOf('# ')===0){closeLists();out+='<h2 class="msg-h2">'+fmt(line.slice(2))+'</h2>';continue;}
+    if(line==='---'||line==='***'){closeLists();out+='<hr class="msg-hr">';continue;}
+    if(/^[-*•]\s/.test(line)){ if(!inUl){if(inOl){out+='</ol>';inOl=false;}out+='<ul class="msg-ul">';inUl=true;} out+='<li>'+fmt(line.replace(/^[-*•]\s+/,''))+'</li>'; continue; }
+    if(/^\d+[.)]\s/.test(line)){ if(!inOl){if(inUl){out+='</ul>';inUl=false;}out+='<ol class="msg-ol">';inOl=true;} out+='<li>'+fmt(line.replace(/^\d+[.)]\s+/,''))+'</li>'; continue; }
+    if(line===''){closeLists();out+='<div class="msg-gap"></div>';continue;}
+    closeLists(); out+='<p class="msg-p">'+fmt(line)+'</p>';
+  }
+  closeLists(); if(inTable)out+='</tbody></table>'; if(inCode)out+='</pre>';
+  return out;
+}
+
+/* ══ ADD MESSAGE ══ */
+function cdxAddMsg(role, content, kbRefs) {
+  var w = document.getElementById('cdxWelcome'); if (w) w.remove();
+  var area = document.getElementById('cdxArea');
+  var row = document.createElement('div'); row.className = 'cdx-msg ' + role;
+  var sender = document.createElement('div'); sender.className = 'cdx-msg-sender';
+  sender.textContent = role === 'user' ? 'YOU' : 'HYDROMIND AI';
+  var bubble = document.createElement('div'); bubble.className = 'cdx-bubble';
+  if (role === 'ai') bubble.innerHTML = cdxMd(content); else bubble.textContent = content;
+  var time = document.createElement('div'); time.className = 'cdx-msg-time';
+  time.textContent = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  row.appendChild(sender); row.appendChild(bubble);
+  if (role === 'ai' && kbRefs && kbRefs.length) {
+    var refs = document.createElement('div'); refs.className = 'cdx-kb-refs';
+    kbRefs.forEach(function(r){ var t=document.createElement('span'); t.className='cdx-kb-tag'; t.textContent=r; refs.appendChild(t); });
+    row.appendChild(refs);
+  }
+  row.appendChild(time); area.appendChild(row);
+  setTimeout(function(){
+    if (role === 'ai') { var top = row.getBoundingClientRect().top - area.getBoundingClientRect().top + area.scrollTop; area.scrollTop = Math.max(0, top - 8); }
+    else { area.scrollTop = area.scrollHeight; }
+  }, 60);
+  if (role === 'ai') cdxAdvancePlc();
+}
+function cdxTyping() {
+  var area = document.getElementById('cdxArea');
+  var row = document.createElement('div'); row.className = 'cdx-msg ai'; row.id = 'cdxTyping';
+  row.innerHTML = '<div class="cdx-msg-sender">HYDROMIND AI</div><div class="cdx-bubble"><div class="cdx-typing"><span></span><span></span><span></span></div></div>';
+  area.appendChild(row); setTimeout(function(){ area.scrollTop = area.scrollHeight; }, 0);
+}
+function cdxHideTyping() { var t = document.getElementById('cdxTyping'); if (t) t.remove(); }
+function cdxBusy(b) {
+  isLoading = b;
+  var btn = document.getElementById('cdxSend'), inp = document.getElementById('cdxInput');
+  if (btn) btn.disabled = b; if (inp) inp.disabled = b;
+}
+
+/* ══ SEND (backend: messages array, data.content[0].text) ══ */
+function cdxSendMsg() {
+  if (isLoading) return;
+  var inp = document.getElementById('cdxInput');
+  var text = inp.value.trim(); if (!text) return;
+  inp.value = ''; inp.style.height = 'auto';
+  cdxBusy(true);
+  var reqTimer = null;
+  try {
+    cdxAddMsg('user', text);
+    chatHistory.push({ role:'user', content:text });
+    cdxTyping();
+    function gv(id){ var e=document.getElementById(id); return e?e.textContent:'?'; }
+    var gauges = 'System: '+gv('cdx-sys')+' BAR | Case Drain: '+gv('cdx-drain')+' BAR | Temp: '+gv('cdx-temp')+'C | Flow: '+gv('cdx-flow')+' L/min';
+    var sysCtx = 'You are HydroMind AI Crane Diagnostic Agent — an expert hydraulic engineer specializing in offshore crane fault diagnosis. Active crane: '+activeCrane+' ('+activeCraneType+'). Manufacturer: '+activeMfr+'. Live gauges: '+gauges+'. PLC diagnostic step: '+(currentPlcStep+1)+' of 10 ('+PLC_STEPS[currentPlcStep]+'). Apply ISO 4413, DNV-ST-0378, EN 13852-1 standards. Provide structured diagnosis: root cause, test points, corrective actions, KB references (KB-01 to KB-86).';
+    var msgs = [
+      { role:'user', content:sysCtx },
+      { role:'assistant', content:'HydroMind Crane Diagnostic Agent ready. Monitoring '+activeCrane+'. Please describe the fault.' }
+    ].concat(chatHistory.slice(-10)).concat([{ role:'user', content:text }]);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', BACKEND, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.timeout = 90000;
+    reqTimer = setTimeout(function(){ try{ xhr.abort(); }catch(e){} }, 90000);
+    xhr.onload = function() {
+      if (reqTimer) clearTimeout(reqTimer);
+      cdxHideTyping();
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          var data = JSON.parse(xhr.responseText);
+          var ans = (data.content && data.content[0] && data.content[0].text) || data.answer || data.response || data.text || 'No response received.';
+          var kb = [], m = ans.match(/KB-\d+/g);
+          if (m) { var seen={}; m.forEach(function(r){ if(!seen[r]){seen[r]=1;kb.push(r);} }); }
+          chatHistory.push({ role:'assistant', content:ans });
+          if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
+          cdxAddMsg('ai', ans, kb);
+        } catch(e) { cdxAddMsg('ai','Error parsing response. Please retry.',[]); }
+      } else {
+        cdxAddMsg('ai','Server error '+xhr.status+'. The backend may be waking up — please try again in a moment.',[]);
+      }
+      cdxBusy(false);
+    };
+    xhr.onerror = function(){ if(reqTimer)clearTimeout(reqTimer); cdxHideTyping(); cdxAddMsg('ai','Connection error. Check network and retry.',[]); cdxBusy(false); };
+    xhr.ontimeout = function(){ cdxHideTyping(); cdxAddMsg('ai','Request timed out (90s). The server may be cold-starting — please wait 60 seconds and try again.',[]); cdxBusy(false); };
+    xhr.send(JSON.stringify({ messages: msgs }));
+  } catch(err) {
+    if (reqTimer) clearTimeout(reqTimer);
+    cdxHideTyping(); cdxAddMsg('ai','Unexpected error: '+(err?err.message:'unknown'),[]); cdxBusy(false);
+  }
+}
+
+/* ══ EXPORT REPORT ══ */
+function cdxExport() {
+  var lines = [
+    'HYDROMIND.AI — CRANE DIAGNOSTIC REPORT',
+    '========================================',
+    'Date: ' + new Date().toLocaleString(),
+    'Crane: ' + activeCrane,
+    'Type: ' + activeCraneType,
+    'Manufacturer: ' + activeMfr,
+    '',
+    'LIVE PARAMETERS AT TIME OF EXPORT',
+    '----------------------------------',
+    'SYS PRESSURE: ' + document.getElementById('cdx-sys').textContent + ' bar',
+    'CASE DRAIN: ' + document.getElementById('cdx-drain').textContent + ' bar',
+    'OIL TEMP: ' + document.getElementById('cdx-temp').textContent + ' C',
+    'FLOW: ' + document.getElementById('cdx-flow').textContent + ' L/min',
+    '',
+    'DIAGNOSTIC CONVERSATION',
+    '------------------------'
+  ];
+  chatHistory.forEach(function(m){ lines.push('[' + m.role.toUpperCase() + '] ' + m.content); lines.push(''); });
+  lines.push(''); lines.push('Generated by HydroMind.AI — hydromindai.com');
+  var blob = new Blob([lines.join('\n')], { type:'text/plain' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'HydroMind_Crane_Diag_' + activeCrane.replace(/\s+/g,'-') + '_' + new Date().toISOString().slice(0,10) + '.txt';
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+
+/* ══ INIT ══ */
+document.addEventListener('DOMContentLoaded', function() {
+  cdxBuildPlc();
+  cdxSpark();
+  if (typeof hmInit === 'function') hmInit();
+
+  /* Keep-alive ping every 8 min — prevents Render cold start */
+  setInterval(function(){
+    var p = new XMLHttpRequest();
+    p.open('GET','https://hydromind-backend.onrender.com/',true);
+    p.timeout = 10000; p.send();
+  }, 8 * 60 * 1000);
+
+  var inp = document.getElementById('cdxInput');
+  if (inp) {
+    inp.addEventListener('keydown', function(e){ if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); cdxSendMsg(); } });
+    inp.addEventListener('input', function(){ cdxResize(inp); });
+  }
+
+  /* Live gauge flicker every 4s */
+  setInterval(function(){
+    var d = document.getElementById('cdx-drain');
+    if (d) {
+      var v = (3.5 + Math.random()*0.6).toFixed(1);
+      d.textContent = v;
+      document.getElementById('cdx-spark-val').textContent = v + ' bar';
+      var g = document.getElementById('cdx-g-drain');
+      g.className = parseFloat(v) >= 4.0 ? 'cdx-gauge fault' : 'cdx-gauge warn';
+    }
+    var t = document.getElementById('cdx-temp'); if (t) t.textContent = (60 + Math.floor(Math.random()*5));
+    var f = document.getElementById('cdx-flow'); if (f) f.textContent = (170 + Math.floor(Math.random()*10));
+  }, 4000);
+
+  /* Close overlays on Escape */
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') cdxCloseOverlays(); });
+});
+</script>
+</body>
+</html>
