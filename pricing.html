@@ -604,10 +604,8 @@ function setRating(val) {
     b.classList.toggle('active', parseInt(b.dataset.val) <= val);
   });
 }
-/* ── EmailJS credentials — update these when ready ── */
-const EJS_PUBLIC_KEY  = 'rU58VWQaobdBVthru';
-const EJS_SERVICE_ID  = 'service_0bvul2t';
-const EJS_TEMPLATE_ID = 'template_ae3zzvv';
+
+const CONTACT_API = 'https://hydromind-backend.onrender.com/api/contact';
 
 async function submitFeedback() {
   const name    = document.getElementById('fb-name').value.trim();
@@ -626,21 +624,22 @@ async function submitFeedback() {
   btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Sending…';
 
   try {
-    const result = await emailjs.send(
-      EJS_SERVICE_ID,
-      EJS_TEMPLATE_ID,
-      {
-        from_name: name,
-        reply_to:  email,
-        role:      role    || 'Not specified',
-        topic:     topic   || 'General',
-        rating:    fbRating ? fbRating + '/5 ⭐' : 'Not rated',
-        message:   message
-      },
-      { publicKey: EJS_PUBLIC_KEY }
-    );
+    const res = await fetch(CONTACT_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        email,
+        role:    role    || 'Not specified',
+        topic:   topic   || 'General',
+        rating:  fbRating ? fbRating + '/5 ⭐' : 'Not rated',
+        message
+      })
+    });
 
-    if (result.status === 200) {
+    const data = await res.json().catch(() => ({}));
+
+    if (res.ok && data.success) {
       document.getElementById('fb-success').classList.add('visible');
       btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Sent!';
       btn.style.background = 'var(--success)';
@@ -652,11 +651,11 @@ async function submitFeedback() {
       fbRating = 0;
       document.querySelectorAll('.star-btn').forEach(b => b.classList.remove('active'));
     } else {
-      throw new Error('EmailJS returned status ' + result.status);
+      throw new Error(data.error || 'Server error ' + res.status);
     }
 
   } catch (err) {
-    console.error('EmailJS error:', err);
+    console.error('Feedback error:', err);
     btn.disabled = false;
     btn.style.background = '';
     btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send Feedback';
@@ -670,7 +669,6 @@ function toggleFAQ(el) {
   if (!isOpen) { el.classList.add('open'); el.nextElementSibling.classList.add('open'); }
 }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="js/auth.js?v=20260614-auth"></script>
 </body>
 </html>
