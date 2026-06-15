@@ -76,8 +76,6 @@ async function doLogin(){
   const email=(document.getElementById('hmLoginEmail')?.value||'').trim().toLowerCase();
   const pass=(document.getElementById('hmLoginPass')?.value||'');
   if(!email||!pass){_authErr('Please fill in both fields.');return;}
-  /* debug: log what is actually being sent */
-  console.log('[LOGIN DEBUG] email:', email, '| pass length:', pass.length, '| first char code:', pass.charCodeAt(0));
   const btn=document.getElementById('hmLoginBtn');
   const origTxt=btn?btn.textContent:'';
   if(btn){btn.disabled=true;btn.textContent='Signing in…';}
@@ -411,7 +409,10 @@ function _injectAuthModal(){
         </div>
         <div style="margin-bottom:20px;">
           <label style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Password</label>
-          <input id="hmLoginPass" type="password" placeholder="Enter your password" style="${INP}" onfocus="this.style.borderColor='#06b6d4';this.style.boxShadow='0 0 0 3px rgba(6,182,212,0.12)'" onblur="this.style.borderColor='rgba(6,182,212,0.22)';this.style.boxShadow='none'" onkeydown="if(event.key==='Enter')doLogin()">
+          <div style="position:relative;">
+            <input id="hmLoginPass" type="password" placeholder="Enter your password" style="${INP};padding-right:42px;" onfocus="this.style.borderColor='#06b6d4';this.style.boxShadow='0 0 0 3px rgba(6,182,212,0.12)'" onblur="this.style.borderColor='rgba(6,182,212,0.22)';this.style.boxShadow='none'" onkeydown="if(event.key==='Enter')doLogin()">
+            <span onclick="(function(b){var i=document.getElementById('hmLoginPass');i.type=i.type==='password'?'text':'password';b.textContent=i.type==='password'?'👁':'🙈'})(this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:16px;user-select:none;line-height:1;" title="Show/hide password">👁</span>
+          </div>
         </div>
         <button id="hmLoginBtn" onclick="doLogin()" style="width:100%;padding:12px;background:linear-gradient(135deg,#06b6d4,#0e7490);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity 0.15s;box-shadow:0 2px 12px rgba(6,182,212,0.25);" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">Log In →</button>
         <div style="text-align:center;margin-top:14px;">
@@ -437,7 +438,10 @@ function _injectAuthModal(){
         </div>
         <div style="margin-bottom:20px;">
           <label style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Password * (min 6 chars)</label>
-          <input id="hmRegPass" type="password" placeholder="Create a password" style="${INP}" onfocus="this.style.borderColor='#06b6d4';this.style.boxShadow='0 0 0 3px rgba(6,182,212,0.12)'" onblur="this.style.borderColor='rgba(6,182,212,0.22)';this.style.boxShadow='none'" onkeydown="if(event.key==='Enter')doRegister()">
+          <div style="position:relative;">
+            <input id="hmRegPass" type="password" placeholder="Create a password" style="${INP};padding-right:42px;" onfocus="this.style.borderColor='#06b6d4';this.style.boxShadow='0 0 0 3px rgba(6,182,212,0.12)'" onblur="this.style.borderColor='rgba(6,182,212,0.22)';this.style.boxShadow='none'" onkeydown="if(event.key==='Enter')doRegister()">
+            <span onclick="(function(b){var i=document.getElementById('hmRegPass');i.type=i.type==='password'?'text':'password';b.textContent=i.type==='password'?'👁':'🙈'})(this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:16px;user-select:none;line-height:1;" title="Show/hide password">👁</span>
+          </div>
         </div>
         <button id="hmRegBtn" onclick="doRegister()" style="width:100%;padding:12px;background:linear-gradient(135deg,#06b6d4,#0e7490);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity 0.15s;box-shadow:0 2px 12px rgba(6,182,212,0.25);" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">Create Account →</button>
         <div style="text-align:center;margin-top:12px;font-size:11.5px;color:#3d6478;">Free tier · No credit card needed</div>
