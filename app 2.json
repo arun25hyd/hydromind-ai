@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "e3e24857-d4cc-4dc0-9f37-4a194e513039"
+      }
+    },
+    "android": {
+      "package": "com.arun25hyd.hydromindaifrontend"
+    }
+  }
+}
