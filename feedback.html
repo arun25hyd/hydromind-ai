@@ -444,7 +444,6 @@
   <div class="footer-bottom"><span>© 2026 HydroMind.AI</span><span>Built for marine &amp; offshore engineers worldwide</span></div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="js/auth.js?v=20260614-auth"></script>
 <script>
 /* ── HOW TO USE ── */
@@ -466,9 +465,7 @@ function setRating(val) {
 }
 
 /* ── SUBMIT ── */
-var EJS_SERVICE_ID  = 'service_0bvul2t';
-var EJS_TEMPLATE_ID = 'template_ae3zzvv';
-var EJS_PUBLIC_KEY  = 'rU58VWQaobdBVthru';
+var CONTACT_API = 'https://hydromind-backend.onrender.com/api/contact';
 
 async function submitFeedback() {
   var name    = document.getElementById('fb-name').value.trim();
@@ -476,56 +473,32 @@ async function submitFeedback() {
   var role    = document.getElementById('fb-role').value;
   var topic   = document.getElementById('fb-topic').value;
   var message = document.getElementById('fb-message').value.trim();
-
-  if (!name || !email || !message) {
-    alert('Please fill in your name, email, and message before submitting.');
-    return;
-  }
-
+  if (!name || !email || !message) { alert('Please fill in your name, email, and message.'); return; }
   var btn = document.getElementById('fb-btn');
   btn.disabled = true;
   btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Sending…';
-
   try {
-    var result = await emailjs.send(
-      EJS_SERVICE_ID,
-      EJS_TEMPLATE_ID,
-      {
-        from_name: name,
-        reply_to:  email,
-        role:      role    || 'Not specified',
-        topic:     topic   || 'General',
-        rating:    fbRating ? fbRating + '/5 ⭐' : 'Not rated',
-        message:   message
-      },
-      { publicKey: EJS_PUBLIC_KEY }
-    );
-
-    if (result.status === 200) {
+    var res = await fetch(CONTACT_API, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, role: role||'Not specified', topic: topic||'General', rating: fbRating ? fbRating+'/5 ⭐' : 'Not rated', message })
+    });
+    var data = await res.json().catch(function(){ return {}; });
+    if (res.ok && data.success) {
       document.getElementById('fb-success').classList.add('visible');
       btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Sent!';
       btn.style.background = 'var(--success)';
-      document.getElementById('fb-name').value = '';
-      document.getElementById('fb-email').value = '';
-      document.getElementById('fb-message').value = '';
+      ['fb-name','fb-email','fb-message'].forEach(function(id){ document.getElementById(id).value=''; });
       document.getElementById('fb-role').selectedIndex = 0;
       document.getElementById('fb-topic').selectedIndex = 0;
       fbRating = 0;
-      document.querySelectorAll('.star-btn').forEach(function(b) { b.classList.remove('active'); });
-    } else {
-      throw new Error('Status ' + result.status);
-    }
+      document.querySelectorAll('.star-btn').forEach(function(b){ b.classList.remove('active'); });
+    } else { throw new Error(data.error || 'Server error'); }
   } catch (err) {
-    console.error('EmailJS error:', err);
-    btn.disabled = false;
-    btn.style.background = '';
+    console.error('Feedback error:', err);
+    btn.disabled = false; btn.style.background = '';
     btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send Feedback';
     var errEl = document.getElementById('fb-error');
-    if (errEl) {
-      errEl.textContent = 'Could not send. Please email us: support@hydromindai.com';
-      errEl.style.display = 'block';
-      setTimeout(function(){ errEl.style.display = 'none'; }, 8000);
-    }
+    if (errEl) { errEl.textContent = 'Could not send. Please email us: support@hydromindai.com'; errEl.style.display = 'block'; setTimeout(function(){ errEl.style.display='none'; }, 8000); }
   }
 }
 </script>
