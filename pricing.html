@@ -554,7 +554,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             Your feedback is private and sent directly to support@hydromindai.com
           </div>
-          <button class="btn btn-primary" onclick="submitFeedback()" id="fb-btn">
+          <button type="button" class="btn btn-primary" onclick="submitFeedback()" id="fb-btn">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             Send Feedback
           </button>
@@ -607,7 +607,7 @@ function setRating(val) {
 
 const CONTACT_API = 'https://hydromind-backend.onrender.com/api/contact';
 
-async function submitFeedback() {
+function submitFeedback() {
   const name    = document.getElementById('fb-name').value.trim();
   const email   = document.getElementById('fb-email').value.trim();
   const role    = document.getElementById('fb-role').value;
@@ -615,42 +615,53 @@ async function submitFeedback() {
   const message = document.getElementById('fb-message').value.trim();
 
   if (!name || !email || !message) {
-    alert('Please fill in your name, email, and message before submitting.');
+    alert('Please fill in your name, email, and message.');
     return;
   }
 
-  const btn = document.getElementById('fb-btn');
+  const btn   = document.getElementById('fb-btn');
+  const errEl = document.getElementById('fb-error');
   btn.disabled = true;
   btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Sending…';
+  if (errEl) errEl.style.display = 'none';
 
-  try {
-    const res = await fetch(CONTACT_API, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, role: role||'Not specified', topic: topic||'General', rating: fbRating ? fbRating+'/5 ⭐' : 'Not rated', message })
-    });
-    const data = await res.json().catch(() => ({}));
+  const warmTimer = setTimeout(() => {
+    if (btn.disabled) btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Server warming up…';
+  }, 5000);
 
-    if (res.ok && data.success) {
+  const controller = new AbortController();
+  const timeoutId  = setTimeout(() => controller.abort(), 60000);
+
+  fetch(CONTACT_API, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, role: role||'Not specified', topic: topic||'General', rating: fbRating ? fbRating+'/5 ⭐' : 'Not rated', message }),
+    signal: controller.signal
+  })
+  .then(res => res.json().then(data => ({ ok: res.ok, data })))
+  .then(result => {
+    clearTimeout(timeoutId); clearTimeout(warmTimer);
+    if (result.ok && result.data.success) {
       document.getElementById('fb-success').classList.add('visible');
       btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Sent!';
-      btn.style.background = 'var(--success)';
-      document.getElementById('fb-name').value = '';
-      document.getElementById('fb-email').value = '';
-      document.getElementById('fb-message').value = '';
+      btn.style.background = '#10b981';
+      ['fb-name','fb-email','fb-message'].forEach(id => { document.getElementById(id).value = ''; });
       document.getElementById('fb-role').selectedIndex = 0;
       document.getElementById('fb-topic').selectedIndex = 0;
       fbRating = 0;
       document.querySelectorAll('.star-btn').forEach(b => b.classList.remove('active'));
-    } else {
-    } else { throw new Error(data.error || 'Server error'); }
-
-  } catch (err) {
+    } else { throw new Error(result.data.error || 'Server error'); }
+  })
+  .catch(err => {
+    clearTimeout(timeoutId); clearTimeout(warmTimer);
     console.error('Feedback error:', err);
-    btn.disabled = false;
-    btn.style.background = '';
+    btn.disabled = false; btn.style.background = '';
     btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send Feedback';
-    alert('Could not send feedback. Please email us directly: support@hydromindai.com');
-  }
+    const msg = err.name === 'AbortError'
+      ? 'Request timed out. Please try again in 30 seconds.'
+      : 'Could not send. Please email us: support@hydromindai.com';
+    if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; setTimeout(() => { errEl.style.display = 'none'; }, 8000); }
+    else { alert(msg); }
+  });
 }
 
 function toggleFAQ(el) {
