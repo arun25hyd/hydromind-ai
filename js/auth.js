@@ -76,6 +76,8 @@ async function doLogin(){
   const email=(document.getElementById('hmLoginEmail')?.value||'').trim().toLowerCase();
   const pass=(document.getElementById('hmLoginPass')?.value||'');
   if(!email||!pass){_authErr('Please fill in both fields.');return;}
+  /* debug: log what is actually being sent */
+  console.log('[LOGIN DEBUG] email:', email, '| pass length:', pass.length, '| first char code:', pass.charCodeAt(0));
   const btn=document.getElementById('hmLoginBtn');
   const origTxt=btn?btn.textContent:'';
   if(btn){btn.disabled=true;btn.textContent='Signing in…';}
