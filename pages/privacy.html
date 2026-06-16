@@ -71,8 +71,8 @@
   </div>
   <div class="nav-right" id="hmNavCta">
     <div class="nav-status"><div class="nav-status-dot"></div>AI Online</div>
-    <a href="#" class="btn btn-ghost btn-sm">Log In</a>
-    <a href="../pricing.html" class="btn btn-primary btn-sm">Get Started</a>
+    <a href="#" onclick="event.preventDefault();if(window.openAuthModal)openAuthModal('login');" class="btn btn-ghost btn-sm">Log In</a>
+    <a href="#" onclick="event.preventDefault();if(window.openAuthModal)openAuthModal('register');" class="btn btn-primary btn-sm">Get Started</a>
   </div>
 </nav>
 
@@ -267,6 +267,6 @@
   </div>
 </footer>
 
-<script src="../js/auth.js"></script>
+<script src="../js/auth-v2.js"></script>
 </body>
 </html>
