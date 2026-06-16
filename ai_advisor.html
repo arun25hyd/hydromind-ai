@@ -1178,7 +1178,7 @@ function sendMessage() {
         var refs = []; var seen = {};
         var kbMatch = answer.match(/KB-\d+/g);
         if (kbMatch) kbMatch.forEach(function(r){if(!seen[r]){seen[r]=1;refs.push(r);}});
-        chatHistory.push({role:'assistant', content:answer});
+        chatHistory.push({role:'assistant', content: answer.substring(0, 3500)});
         if (chatHistory.length > 24) chatHistory = chatHistory.slice(-24);
         addMsg('ai', answer, refs);
       } catch(e) { addMsg('ai','Error parsing response. Please retry.',[]);}
