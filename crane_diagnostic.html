@@ -135,7 +135,7 @@ body{margin:0;padding:0;background:#06101a;overflow:hidden}
 @media(max-width:1240px){.cdx{grid-template-columns:clamp(270px,30vw,360px) minmax(0,1fr)}.cc-rail{display:none}}
 /* Tablet/phone: single column */
 @media(max-width:880px){.cdx{grid-template-columns:1fr}.cc-board{display:none}.cc-qa{grid-template-columns:1fr}}
-.cdx .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+.cc-how{margin:22px auto 0;max-width:860px;text-align:left;border:1px solid var(--border-md);border-radius:13px;background:var(--card);overflow:hidden}.cc-how-toggle{width:100%;display:flex;align-items:center;gap:10px;padding:14px 18px;background:transparent;border:none;cursor:pointer;color:var(--t1);font-family:var(--sans);font-size:13px;font-weight:700;transition:background .15s}.cc-how-toggle:hover{background:var(--card-hi)}.cc-how-ic{font-size:17px}.cc-how-label{flex:1}.cc-how-arr{font-size:11px;color:var(--t3);transition:transform .2s}.cc-how.open .cc-how-arr{transform:rotate(180deg)}.cc-how-body{display:none;padding:4px 18px 18px;border-top:1px solid var(--border)}.cc-how.open .cc-how-body{display:block}.cc-how-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}.cc-how-step{display:flex;gap:13px;align-items:flex-start;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:13px 14px}.cc-how-num{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--teal-br);background:var(--teal-dim);border:1px solid var(--teal-glow);border-radius:6px;padding:3px 7px;flex-shrink:0;line-height:1.6}.cc-how-tt{font-size:12.5px;font-weight:700;color:var(--t1);margin-bottom:4px}.cc-how-dd{font-size:11.5px;color:var(--t2);line-height:1.55}.cc-how-note{margin-top:14px;font-size:11px;color:var(--warn);background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:10px 13px;line-height:1.5}.cdx .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
 </style>
 </head>
 <body>
@@ -208,6 +208,26 @@ body{margin:0;padding:0;background:#06101a;overflow:hidden}
         <div class="cc-w-ic">🏗️</div>
         <div class="cc-w-t">Crane Diagnostic Agent</div>
         <div class="cc-w-s">Equipment status is on the left. Pick a crane, watch the live parameters and diagnostic sequence, and run your fault analysis here.</div>
+        <!-- HOW TO USE collapsible panel -->
+        <div class="cc-how" id="ccHow">
+          <button class="cc-how-toggle" onclick="document.getElementById('ccHow').classList.toggle('open')">
+            <span class="cc-how-ic">ℹ️</span>
+            <span class="cc-how-label">How to Use Crane Diagnostic Agent</span>
+            <span class="cc-how-arr">▼</span>
+          </button>
+          <div class="cc-how-body">
+            <div class="cc-how-grid">
+              <div class="cc-how-step"><span class="cc-how-num">01</span><div><div class="cc-how-tt">Select Your Crane</div><div class="cc-how-dd">Pick the crane make and model from the Equipment panel on the left. Status indicators show current operational state.</div></div></div>
+              <div class="cc-how-step"><span class="cc-how-num">02</span><div><div class="cc-how-tt">Describe the Symptom</div><div class="cc-how-dd">Type the fault symptom in the input box — e.g. "high case drain pressure on main hoist pump at full load".</div></div></div>
+              <div class="cc-how-step"><span class="cc-how-num">03</span><div><div class="cc-how-tt">Review Live Parameters</div><div class="cc-how-dd">Check system pressure, case drain, oil temperature, and flow rate in the left panel before and during diagnosis.</div></div></div>
+              <div class="cc-how-step"><span class="cc-how-num">04</span><div><div class="cc-how-tt">Follow the Diagnostic Sequence</div><div class="cc-how-dd">The agent walks through a 10-step ladder — Safety Isolation → HPU Pressure → Pump Flow → Relief Valve → … → Final Check.</div></div></div>
+              <div class="cc-how-step"><span class="cc-how-num">05</span><div><div class="cc-how-tt">Use Quick-Start Prompts</div><div class="cc-how-dd">Click any fault card below or the quick-hint chips to start a focused diagnostic session instantly.</div></div></div>
+              <div class="cc-how-step"><span class="cc-how-num">06</span><div><div class="cc-how-tt">Export Diagnostic Report</div><div class="cc-how-dd">At session end, click Export Diagnostic Report to download a DPR-style summary for your maintenance records.</div></div></div>
+            </div>
+            <div class="cc-how-note">AI guidance is for reference only. All findings must be verified against OEM documentation and reviewed by a qualified engineer before implementation. See <a href="disclaimer.html" style="color:inherit;text-decoration:underline">Disclaimer</a>.</div>
+          </div>
+        </div>
+
         <div class="cc-qa">
           <button class="cc-qa-btn" onclick="cdxInject('High case drain pressure on main hoist pump — above 3.5 bar at full load. Rexroth A4VG90 piston pump.')"><span class="cc-qa-ic">⚡</span><div class="cc-qa-tt">High Case Drain Pressure</div><div class="cc-qa-ss">Main hoist pump · A4VG90</div></button>
           <button class="cc-qa-btn" onclick="cdxInject('Crane luffing is slow and sluggish — reduced speed at full joystick input. Luffing circuit fault.')"><span class="cc-qa-ic">🐢</span><div class="cc-qa-tt">Luffing Slow &amp; Sluggish</div><div class="cc-qa-ss">Luffing circuit · DCV fault</div></button>
