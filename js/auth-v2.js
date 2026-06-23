@@ -404,11 +404,11 @@ function _injectAuthModal(){
       <!-- LOGIN -->
       <div id="hmPanel_login">
         <div style="margin-bottom:14px;">
-          <label style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Email Address</label>
+          <label for="hmLoginEmail" style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Email Address</label>
           <input id="hmLoginEmail" type="email" placeholder="engineer@company.com" style="${INP}" onfocus="this.style.borderColor='#06b6d4';this.style.boxShadow='0 0 0 3px rgba(6,182,212,0.12)'" onblur="this.style.borderColor='rgba(6,182,212,0.22)';this.style.boxShadow='none'">
         </div>
         <div style="margin-bottom:20px;">
-          <label style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Password</label>
+          <label for="hmLoginPass" style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Password</label>
           <div style="position:relative;">
             <input id="hmLoginPass" type="password" placeholder="Enter your password" style="${INP};padding-right:42px;" onfocus="this.style.borderColor='#06b6d4';this.style.boxShadow='0 0 0 3px rgba(6,182,212,0.12)'" onblur="this.style.borderColor='rgba(6,182,212,0.22)';this.style.boxShadow='none'" onkeydown="if(event.key==='Enter')doLogin()">
             <span onclick="(function(b){var i=document.getElementById('hmLoginPass');i.type=i.type==='password'?'text':'password';b.textContent=i.type==='password'?'👁':'🙈'})(this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:16px;user-select:none;line-height:1;" title="Show/hide password">👁</span>
@@ -424,20 +424,20 @@ function _injectAuthModal(){
       <div id="hmPanel_register" style="display:none;">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
           <div>
-            <label style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">First Name *</label>
+            <label for="hmRegFirst" style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">First Name *</label>
             <input id="hmRegFirst" type="text" placeholder="James" style="${INP}" onfocus="this.style.borderColor='#06b6d4';this.style.boxShadow='0 0 0 3px rgba(6,182,212,0.12)'" onblur="this.style.borderColor='rgba(6,182,212,0.22)';this.style.boxShadow='none'">
           </div>
           <div>
-            <label style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Last Name</label>
+            <label for="hmRegLast" style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Last Name</label>
             <input id="hmRegLast" type="text" placeholder="McAllister" style="${INP}" onfocus="this.style.borderColor='#06b6d4';this.style.boxShadow='0 0 0 3px rgba(6,182,212,0.12)'" onblur="this.style.borderColor='rgba(6,182,212,0.22)';this.style.boxShadow='none'">
           </div>
         </div>
         <div style="margin-bottom:14px;">
-          <label style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Email Address *</label>
+          <label for="hmRegEmail" style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Email Address *</label>
           <input id="hmRegEmail" type="email" placeholder="engineer@company.com" style="${INP}" onfocus="this.style.borderColor='#06b6d4';this.style.boxShadow='0 0 0 3px rgba(6,182,212,0.12)'" onblur="this.style.borderColor='rgba(6,182,212,0.22)';this.style.boxShadow='none'">
         </div>
         <div style="margin-bottom:20px;">
-          <label style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Password * (min 6 chars)</label>
+          <label for="hmRegPass" style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Password * (min 6 chars)</label>
           <div style="position:relative;">
             <input id="hmRegPass" type="password" placeholder="Create a password" style="${INP};padding-right:42px;" onfocus="this.style.borderColor='#06b6d4';this.style.boxShadow='0 0 0 3px rgba(6,182,212,0.12)'" onblur="this.style.borderColor='rgba(6,182,212,0.22)';this.style.boxShadow='none'" onkeydown="if(event.key==='Enter')doRegister()">
             <span onclick="(function(b){var i=document.getElementById('hmRegPass');i.type=i.type==='password'?'text':'password';b.textContent=i.type==='password'?'👁':'🙈'})(this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:16px;user-select:none;line-height:1;" title="Show/hide password">👁</span>
@@ -452,7 +452,7 @@ function _injectAuthModal(){
         <p style="font-size:13px;color:#7fb3c8;margin-bottom:16px;line-height:1.65;">Enter your registered email and we'll send you a reset link.</p>
         <div id="hmForgotOk" style="display:none;margin-bottom:14px;"></div>
         <div style="margin-bottom:18px;">
-          <label style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Email Address</label>
+          <label for="hmForgotEmail" style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#7fb3c8;display:block;margin-bottom:6px;">Email Address</label>
           <input id="hmForgotEmail" type="email" placeholder="engineer@company.com" style="${INP}" onfocus="this.style.borderColor='#06b6d4';this.style.boxShadow='0 0 0 3px rgba(6,182,212,0.12)'" onblur="this.style.borderColor='rgba(6,182,212,0.22)';this.style.boxShadow='none'">
         </div>
         <button onclick="doForgot()" style="width:100%;padding:12px;background:linear-gradient(135deg,#06b6d4,#0e7490);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity 0.15s;" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">Send Reset Link</button>

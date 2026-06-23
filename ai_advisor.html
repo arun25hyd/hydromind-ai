@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Hydraulic Advisor — HydroMind.AI</title>
-<meta name="description" content="Expert AI hydraulic fault diagnosis, system analysis and KB search. Powered by 86+ OEM manuals.">
+<meta name="description" content="Expert AI hydraulic fault diagnosis, system analysis and KB search. Powered by 161+ OEM manuals.">
 <link rel="canonical" href="https://www.hydromindai.com/ai_advisor.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="HydroMind.AI">
 <meta property="og:title" content="AI Hydraulic Advisor — HydroMind.AI">
-<meta property="og:description" content="Expert AI hydraulic fault diagnosis, system analysis and KB search. Powered by 86+ OEM manuals.">
+<meta property="og:description" content="Expert AI hydraulic fault diagnosis, system analysis and KB search. Powered by 161+ OEM manuals.">
 <meta property="og:url" content="https://www.hydromindai.com/ai_advisor.html">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="AI Hydraulic Advisor — HydroMind.AI">
-<meta name="twitter:description" content="Expert AI hydraulic fault diagnosis, system analysis and KB search. Powered by 86+ OEM manuals.">
+<meta name="twitter:description" content="Expert AI hydraulic fault diagnosis, system analysis and KB search. Powered by 161+ OEM manuals.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="css/hm-design.css?v=20260613-v2">
 <script type="application/ld+json">
@@ -474,6 +474,140 @@ body {
 .htu-tip-row:last-child{margin-bottom:0;}
 .htu-tip-dot{width:5px;height:5px;background:var(--accent);border-radius:50%;flex-shrink:0;margin-top:4px;}
 .htu-tip-text{font-size:11px;color:var(--text2);line-height:1.5;}
+
+/* ══════════════════════════════
+   MOBILE FIELD-USE REDESIGN — ADVISOR PAGE
+   Rebuilt 2026-06-23 — one-handed, gloved-thumb, job-site use
+══════════════════════════════ */
+@media (max-width: 768px) {
+  .advisor-shell {
+    flex-direction: column;
+    position: relative;
+  }
+  .ctx-panel, .info-panel {
+    display: none !important;
+  }
+  .chat-col {
+    width: 100%;
+    border-right: none;
+  }
+
+  /* Mode tabs — bigger tap targets for gloved thumbs */
+  .mode-bar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 10px;
+  }
+  .mode-tab {
+    flex-shrink: 0;
+    padding: 11px 16px;
+    font-size: 13px;
+    min-height: 40px;
+  }
+  .model-badge { display: none; }
+
+  /* Mobile info button replaces the hidden side panels — fixed, always visible regardless of mode-bar scroll */
+  .mobile-info-btn {
+    display: flex !important;
+    align-items: center;
+    gap: 5px;
+    padding: 9px 13px;
+    position: fixed;
+    top: calc(var(--nav-h) + 8px);
+    right: 10px;
+    z-index: 50;
+    background: var(--accent-dim);
+    border: 1.5px solid var(--accent-glow);
+    border-radius: 8px;
+    color: var(--accent-bright);
+    font-size: 12px;
+    font-weight: 700;
+    min-height: 40px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.35);
+  }
+
+  .sugg-grid { grid-template-columns: 1fr; }
+  .chat-area { padding: 16px 14px; overflow-x: hidden; }
+  .msg-row.user, .msg-row.ai { max-width: 96%; }
+
+  /* Brand filter moved above input — quick access mid-diagnosis */
+  .mobile-brand-row {
+    display: flex !important;
+    gap: 6px;
+    padding: 8px 12px 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-shrink: 0;
+  }
+  .mobile-brand-row .brand-chip {
+    flex-shrink: 0;
+    padding: 7px 13px;
+    font-size: 11.5px;
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Bigger input + send button — primary one-handed touch target */
+  .input-bar { padding: 10px 12px 14px; }
+  .input-wrap { padding: 13px 14px; border-radius: 16px; }
+  #chat-input { font-size: 15px; min-height: 28px; }
+  .send-btn { width: 46px; height: 46px; border-radius: 12px; }
+  .send-btn svg { width: 20px; height: 20px; }
+  .input-meta .hint-chips { display: none; }
+  .input-meta .kbd-hint { display: none; }
+
+  .htu-wrap { padding: 6px 10px; }
+  .htu-header { padding: 12px 14px; min-height: 44px; }
+  .htu-header-sub { display: none; }
+
+  .adv-welcome-badge {
+    white-space: normal;
+    text-align: center;
+    max-width: 92%;
+    font-size: 10px;
+    line-height: 1.5;
+    padding: 6px 12px;
+  }
+  .adv-welcome { padding: 24px 10px 32px; overflow-x: hidden; }
+
+  /* Full-screen info overlay — replaces side panels on mobile */
+  .mobile-info-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 500;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 0 0 24px;
+  }
+  .mobile-info-overlay.open { display: flex; }
+  .mio-header {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border-md);
+    z-index: 1;
+  }
+  .mio-title { font-size: 16px; font-weight: 800; color: var(--text1); }
+  .mio-close {
+    width: 38px; height: 38px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--card); border: 1px solid var(--border-md);
+    border-radius: 10px; font-size: 18px; color: var(--text2);
+  }
+  .mio-body { padding: 16px 18px; display: flex; flex-direction: column; gap: 20px; }
+}
+
+@media (max-width: 480px) {
+  .adv-welcome h2 { font-size: 21px; }
+  .adv-welcome p { font-size: 13px; }
+}
 </style>
 </head>
 <body>
@@ -514,7 +648,7 @@ body {
       </button>
       <button class="mode-btn" onclick="window.location.href='knowledge_base.html'" id="mode-kb">
         <div class="mode-icon">📚</div>
-        <div><div class="mode-name">KB Search</div><div class="mode-sub">Search 86+ OEM docs</div></div>
+        <div><div class="mode-name">KB Search</div><div class="mode-sub">Search 161+ OEM docs</div></div>
       </button>
       <button class="mode-btn" onclick="setMode('calculator',this)" id="mode-calculator">
         <div class="mode-icon">🔢</div>
@@ -527,7 +661,8 @@ body {
     </div>
 
     <div class="ctx-section-label" style="margin-top:6px;">Filter by Brand</div>
-    <input type="text" class="kb-filter" placeholder="🔍 Filter KB brand…" oninput="filterBrand(this.value)">
+    <label for="kb-brand-filter" class="sr-only">Filter knowledge base by brand</label>
+    <input type="text" id="kb-brand-filter" name="kb-brand-filter" class="kb-filter" placeholder="🔍 Filter KB brand…" oninput="filterBrand(this.value)">
     <div class="brand-chips" id="brand-chips">
       <span class="brand-chip on" onclick="toggleBrand(this,'ALL')">ALL</span>
       <span class="brand-chip" onclick="toggleBrand(this,'RXR')">Rexroth</span>
@@ -543,7 +678,7 @@ body {
     <div class="session-stats">
       <div class="ss-row"><span class="ss-key">Queries</span><span class="ss-val" id="stat-queries">0</span></div>
       <div class="ss-row"><span class="ss-key">KB Hits</span><span class="ss-val" id="stat-kb">0</span></div>
-      <div class="ss-row"><span class="ss-key">Remaining</span><span class="ss-val warn" id="stat-remain">5</span></div>
+      <div class="ss-row"><span class="ss-key">Remaining</span><span class="ss-val warn" id="stat-remain">10</span></div>
       <div class="ss-row"><span class="ss-key">Model</span><span class="ss-val" style="font-size:9.5px;">sonnet-4-6</span></div>
     </div>
 
@@ -606,6 +741,19 @@ body {
         <div class="model-badge">claude-sonnet-4-6</div>
         <div class="online-dot"><span></span>Online</div>
       </div>
+      <button class="mobile-info-btn" style="display:none;" onclick="openMobileInfo()">ⓘ Info</button>
+    </div>
+
+    <!-- Mobile brand filter — quick access above input, hidden on desktop -->
+    <div class="mobile-brand-row" id="mobile-brand-row" style="display:none;">
+      <span class="brand-chip on" onclick="toggleBrandMobile(this,'ALL')">ALL</span>
+      <span class="brand-chip" onclick="toggleBrandMobile(this,'RXR')">Rexroth</span>
+      <span class="brand-chip" onclick="toggleBrandMobile(this,'DAN')">Danfoss</span>
+      <span class="brand-chip" onclick="toggleBrandMobile(this,'PRK')">Parker</span>
+      <span class="brand-chip" onclick="toggleBrandMobile(this,'EAT')">Eaton</span>
+      <span class="brand-chip" onclick="toggleBrandMobile(this,'LBR')">Liebherr</span>
+      <span class="brand-chip" onclick="toggleBrandMobile(this,'MCG')">MacGregor</span>
+      <span class="brand-chip" onclick="toggleBrandMobile(this,'NOV')">NOV</span>
     </div>
 
     <!-- HOW TO USE DROPDOWN — outside chat-area so it never gets scrolled with messages -->
@@ -677,9 +825,10 @@ body {
 
       <!-- WELCOME STATE -->
       <div class="adv-welcome" id="adv-welcome">
-        <div class="adv-welcome-badge"><span class="w-dot"></span>86+ OEM Manuals · Real-time AI · ISO 4413</div>
+        <div class="adv-welcome-badge"><span class="w-dot"></span>161+ OEM Manuals · Real-time AI · ISO 4413</div>
         <h2>AI Hydraulic Advisor</h2>
         <p>Expert-level hydraulic fault diagnosis, component analysis, system sizing and KB search — powered by Rexroth, Danfoss, Parker, Liebherr, MacGregor and more.</p>
+        <p id="free-tier-note" style="font-size:12px;color:var(--text3);margin-top:-8px;">10 free queries per day · <a href="pricing.html" style="color:var(--accent);font-weight:600;">Upgrade to Pro</a> for unlimited access</p>
 
         <div class="sugg-section">
           <div class="sugg-label">Suggested Questions</div>
@@ -773,7 +922,7 @@ body {
       <div class="cap-list">
         <div class="cap-row"><span class="cap-icon">⚡</span><div class="cap-text"><strong>Fault Diagnosis</strong>Root cause, test points, corrective action</div></div>
         <div class="cap-row"><span class="cap-icon">📐</span><div class="cap-text"><strong>Component Sizing</strong>Pump, motor, valve, pipe sizing</div></div>
-        <div class="cap-row"><span class="cap-icon">📚</span><div class="cap-text"><strong>KB Search</strong>86+ OEM manuals — Rexroth to Liebherr</div></div>
+        <div class="cap-row"><span class="cap-icon">📚</span><div class="cap-text"><strong>KB Search</strong>161+ OEM manuals — Rexroth to Liebherr</div></div>
         <div class="cap-row"><span class="cap-icon">⚖️</span><div class="cap-text"><strong>Pressure Settings</strong>Relief, CBV, pilot pressure calc</div></div>
         <div class="cap-row"><span class="cap-icon">📋</span><div class="cap-text"><strong>Standards</strong>ISO 4413, DNV-ST-0378, API RP 2D</div></div>
       </div>
@@ -811,7 +960,7 @@ body {
         <h4>🚀 Upgrade to Pro</h4>
         <ul>
           <li>Unlimited AI queries</li>
-          <li>Full KB access (86+ docs)</li>
+          <li>Full KB access (161+ docs)</li>
           <li>Crane Diagnostic AI</li>
           <li>System Design tool</li>
           <li>Ad-free experience</li>
@@ -823,6 +972,61 @@ body {
   </div><!-- end info-panel -->
 
 </div><!-- end advisor-shell -->
+
+<!-- ══ MOBILE INFO OVERLAY — full-screen, replaces left/right panels on phones ══ -->
+<div class="mobile-info-overlay" id="mobile-info-overlay">
+  <div class="mio-header">
+    <div class="mio-title">Advisor Info</div>
+    <button class="mio-close" onclick="closeMobileInfo()">✕</button>
+  </div>
+  <div class="mio-body">
+
+    <div class="ip-section">
+      <h4>Session Stats</h4>
+      <div class="session-stats">
+        <div class="ss-row"><span class="ss-key">Queries</span><span class="ss-val" id="stat-queries-m">0</span></div>
+        <div class="ss-row"><span class="ss-key">KB Hits</span><span class="ss-val" id="stat-kb-m">0</span></div>
+        <div class="ss-row"><span class="ss-key">Remaining</span><span class="ss-val warn" id="stat-remain-m">10</span></div>
+      </div>
+    </div>
+
+    <div class="ip-section">
+      <h4>KB References</h4>
+      <div id="kb-hit-list-m">
+        <div style="font-size:11px;color:var(--text3);text-align:center;padding:10px 0;">Refs appear here after query</div>
+      </div>
+    </div>
+
+    <div class="ip-section">
+      <h4>Capabilities</h4>
+      <div class="cap-list">
+        <div class="cap-row"><span class="cap-icon">⚡</span><div class="cap-text"><strong>Fault Diagnosis</strong>Root cause, test points, corrective action</div></div>
+        <div class="cap-row"><span class="cap-icon">📐</span><div class="cap-text"><strong>Component Sizing</strong>Pump, motor, valve, pipe sizing</div></div>
+        <div class="cap-row"><span class="cap-icon">📚</span><div class="cap-text"><strong>KB Search</strong>161+ OEM manuals — Rexroth to Liebherr</div></div>
+        <div class="cap-row"><span class="cap-icon">⚖️</span><div class="cap-text"><strong>Pressure Settings</strong>Relief, CBV, pilot pressure calc</div></div>
+        <div class="cap-row"><span class="cap-icon">📋</span><div class="cap-text"><strong>Standards</strong>ISO 4413, DNV-ST-0378, API RP 2D</div></div>
+      </div>
+    </div>
+
+    <div class="ip-section">
+      <h4>Applied Standards</h4>
+      <div class="std-list">
+        <div class="std-tag"><strong>ISO 4413</strong> — Hydraulic Fluid Power</div>
+        <div class="std-tag"><strong>DNV-ST-0378</strong> — Offshore Cranes</div>
+        <div class="std-tag"><strong>EN 13852-1</strong> — Crane Design</div>
+        <div class="std-tag"><strong>API RP 2D</strong> — Crane Operations</div>
+        <div class="std-tag"><strong>ISO 4406</strong> — Fluid Cleanliness</div>
+      </div>
+    </div>
+
+    <div class="ip-section">
+      <button class="clear-btn" onclick="clearChat();closeMobileInfo();" style="margin-bottom:8px;">Clear Chat History</button>
+      <a href="pricing.html" style="display:block;width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),var(--accent-deep));border-radius:9px;font-size:13.5px;font-weight:700;color:#fff;text-align:center;">🚀 Upgrade to Pro →</a>
+    </div>
+
+  </div>
+</div>
+
 </main>
 
 <script src="js/auth-v2.js"></script>
@@ -836,15 +1040,76 @@ function toggleHtu() {
   arrow.classList.toggle('open');
 }
 
+/* ══ MOBILE INFO OVERLAY ══ */
+function openMobileInfo() {
+  var o = document.getElementById('mobile-info-overlay');
+  if (o) { o.classList.add('open'); document.body.style.overflow = 'hidden'; }
+}
+function closeMobileInfo() {
+  var o = document.getElementById('mobile-info-overlay');
+  if (o) { o.classList.remove('open'); document.body.style.overflow = ''; }
+}
+function toggleBrandMobile(el, brand) {
+  // Mirror selection into the desktop brand-chip row too, so state stays consistent
+  document.querySelectorAll('#mobile-brand-row .brand-chip, #brand-chips .brand-chip').forEach(function(c) {
+    if (c.textContent.trim() === el.textContent.trim()) { c.classList.add('on'); }
+    else { c.classList.remove('on'); }
+  });
+  activeBrand = brand;
+}
+function _showMobileControls() {
+  var isMobile = window.innerWidth <= 768;
+  document.querySelectorAll('.mobile-info-btn').forEach(function(b){ b.style.display = isMobile ? 'flex' : 'none'; });
+  var br = document.getElementById('mobile-brand-row');
+  if (br) br.style.display = isMobile ? 'flex' : 'none';
+}
+window.addEventListener('resize', _showMobileControls);
+document.addEventListener('DOMContentLoaded', _showMobileControls);
+
+/* Write a stat to both the desktop sidebar element and its mobile-overlay twin (id + '-m') */
+function _setStat(id, value) {
+  var d = document.getElementById(id); if (d) d.textContent = value;
+  var m = document.getElementById(id + '-m'); if (m) m.textContent = value;
+}
+
 /* ══ CONSTANTS ══ */
-var BACKEND = 'https://hydromind-backend.onrender.com/api/chat';
+var BACKEND = 'https://hydromind-backend.onrender.com/api/kb/chat';
 var chatHistory = [];   /* renamed from 'history' — window.history is a reserved browser global */
 var isLoading = false;
 var queriesUsed = 0;
-var queriesMax = 5;
+var queriesMax = 10;
+var dailyQueriesRemaining = null; /* unknown until first server response; null = not-yet-known OR unlimited (Pro) */
+var isProUnlimited = false;
 var kbHits = 0;
 var activeMode = 'hydraulic';
 var activeBrand = 'ALL';
+
+/* Lightweight, non-cryptographic device fingerprint for anonymous daily
+   rate-limiting. Cached in localStorage so it's stable across reloads.
+   Known limitation: private/incognito windows reset localStorage, so this
+   is a best-effort device signal, not a hard identity guarantee. */
+function getClientFingerprint() {
+  try {
+    var cached = localStorage.getItem('hm_fp');
+    if (cached) return cached;
+    var sig = [
+      navigator.userAgent, navigator.language, navigator.platform,
+      screen.width + 'x' + screen.height + 'x' + screen.colorDepth,
+      (Intl.DateTimeFormat().resolvedOptions().timeZone || ''),
+      (navigator.hardwareConcurrency || '')
+    ].join('||');
+    var h = 2166136261;
+    for (var i = 0; i < sig.length; i++) {
+      h ^= sig.charCodeAt(i);
+      h = (h * 16777619) >>> 0;
+    }
+    var fp = 'fp' + h.toString(16) + (sig.length % 97).toString(16);
+    localStorage.setItem('hm_fp', fp);
+    return fp;
+  } catch(e) {
+    return 'fpfallback' + Math.random().toString(36).slice(2, 10);
+  }
+}
 
 /* Update query limit after auth loads */
 function hmUpdateQueryLimit() {
@@ -853,16 +1118,20 @@ function hmUpdateQueryLimit() {
       ? hmGetSession()
       : JSON.parse(localStorage.getItem('hm_session') || 'null');
     if (u && (u.isAdmin || u.plan === 'Pro' || u.plan === 'Enterprise' || u.plan === 'Admin')) {
+      isProUnlimited = true;
       queriesMax = 9999;
+      _setStat('stat-remain', '∞');
       var el = document.getElementById('stat-remain');
-      if (el) { el.textContent = '∞'; el.classList.remove('warn'); }
+      if (el) { el.classList.remove('warn'); }
+      var note = document.getElementById('free-tier-note');
+      if (note) { note.style.display = 'none'; }
     }
   } catch(e) {}
 }
 
 var MODE_PROMPTS = {
-  hydraulic: 'You are HydroMind AI Hydraulic Advisor — expert marine and offshore hydraulic engineer. Provide structured fault diagnosis, component analysis, pressure settings and system design guidance. Reference KB documents (KB-01 to KB-86) covering Rexroth, Danfoss, Parker, Eaton, Liebherr, MacGregor, NOV, SeaTrax, Favelle Favco. Apply ISO 4413, DNV-ST-0378, EN 13852-1, API RP 2D. Structure answers: Root Cause → Test Points → Corrective Action → KB References.',
-  kb: 'You are HydroMind KB Search Assistant. The user wants to search the knowledge base of 86+ OEM hydraulic manuals. Identify which KB document(s) (KB-01 to KB-86) are most relevant to their query and summarize the key technical content. Always cite the KB number.',
+  hydraulic: 'You are HydroMind AI Hydraulic Advisor — expert marine and offshore hydraulic engineer. Provide structured fault diagnosis, component analysis, pressure settings and system design guidance. Reference KB documents (KB100 to KB322) covering Rexroth, Danfoss, Parker, Eaton, Liebherr, MacGregor, NOV, SeaTrax, Favelle Favco. Apply ISO 4413, DNV-ST-0378, EN 13852-1, API RP 2D. Structure answers: Root Cause → Test Points → Corrective Action → KB References.',
+  kb: 'You are HydroMind KB Search Assistant. The user wants to search the knowledge base of 161+ OEM hydraulic manuals. Identify which KB document(s) (KB100 to KB322) are most relevant to their query and summarize the key technical content. Always cite the KB number.',
   calculator: 'You are HydroMind Hydraulic Calculator. Perform hydraulic calculations step by step: pump flow (Q=DN/1000), drive power (P=pQ/600η), cylinder force (F=pA), pipe velocity (v=Q/A), motor torque (T=pD/20π), relief valve settings. Show formula, substitution and result with correct units. Support both metric and imperial.',
   design: 'You are HydroMind System Design Advisor. Guide the user through a 12-step hydraulic system design: (1) Requirements, (2) Circuit type, (3) Pump selection & sizing, (4) Motor/actuator sizing, (5) DCV selection, (6) Relief valve sizing, (7) Filter sizing, (8) Tank sizing, (9) Pipe sizing, (10) Cooler sizing, (11) BOM generation, (12) System validation. Ask clarifying questions at each step.'
 };
@@ -1026,7 +1295,7 @@ function renderMd(raw) {
 }
 
 /* ══ ADD MESSAGE ══ */
-function addMsg(role, content, kbRefs) {
+function addMsg(role, content, kbInfo) {
   var welcome = document.getElementById('adv-welcome');
   if (welcome) welcome.remove();
   var area = document.getElementById('chat-area');
@@ -1044,18 +1313,26 @@ function addMsg(role, content, kbRefs) {
   time.textContent = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
   row.appendChild(sender);
   row.appendChild(bubble);
-  if (role === 'ai' && kbRefs && kbRefs.length) {
+  if (role === 'ai' && kbInfo && typeof kbInfo === 'object' && !Array.isArray(kbInfo)) {
     var refs = document.createElement('div');
     refs.className = 'kb-refs';
-    kbRefs.forEach(function(r) {
-      var tag = document.createElement('span');
-      tag.className = 'kb-tag';
-      tag.textContent = r;
-      tag.onclick = function() { injectQ('Tell me more about ' + r); };
-      refs.appendChild(tag);
-    });
+    var tag = document.createElement('span');
+    tag.className = 'kb-tag';
+    if (kbInfo.used && kbInfo.count > 0) {
+      tag.textContent = '📚 Grounded in ' + kbInfo.count + ' KB doc' + (kbInfo.count > 1 ? 's' : '');
+      tag.style.cursor = 'default';
+    } else if (kbInfo.weak) {
+      tag.textContent = '⚠ Weak KB match — engineering fallback used';
+      tag.style.cursor = 'default';
+      tag.style.color = 'var(--warning)';
+    } else {
+      tag.textContent = 'ℹ No KB match — general engineering answer';
+      tag.style.cursor = 'default';
+      tag.style.color = 'var(--text3)';
+    }
+    refs.appendChild(tag);
     row.appendChild(refs);
-    updateKBPanel(kbRefs);
+    if (kbInfo.used) updateKBPanel(kbInfo.count);
   }
   row.appendChild(time);
   area.appendChild(row);
@@ -1083,17 +1360,14 @@ function addToHistory(text) {
 }
 
 /* ══ KB PANEL ══ */
-function updateKBPanel(refs) {
-  kbHits += refs.length;
-  document.getElementById('stat-kb').textContent = kbHits;
-  var list = document.getElementById('kb-hit-list');
-  if (list.querySelector('[style]')) list.innerHTML = '';
-  refs.slice(0, 6).forEach(function(ref) {
-    var item = document.createElement('div');
-    item.className = 'kb-hit-item';
-    item.innerHTML = '<div class="kb-hit-num">' + ref + '</div><div class="kb-hit-title">OEM Reference Document</div><div class="kb-hit-brand">Click to query</div>';
-    item.onclick = function() { injectQ('Tell me more about document ' + ref); };
-    list.insertBefore(item, list.firstChild);
+function updateKBPanel(chunkCount) {
+  kbHits += chunkCount;
+  _setStat('stat-kb', kbHits);
+  var html = '<div class="kb-hit-item" style="cursor:default;"><div class="kb-hit-num">✓ ' + chunkCount + ' doc' + (chunkCount > 1 ? 's' : '') + '</div><div class="kb-hit-title">Referenced for this answer</div><div class="kb-hit-brand">From HydroMind KB</div></div>';
+  [document.getElementById('kb-hit-list'), document.getElementById('kb-hit-list-m')].forEach(function(list) {
+    if (!list) return;
+    if (list.querySelector('[style]')) list.innerHTML = '';
+    list.insertAdjacentHTML('afterbegin', html);
     while (list.children.length > 6) list.removeChild(list.lastChild);
   });
 }
@@ -1117,13 +1391,32 @@ function setUIBusy(busy) {
 }
 
 /* ══ SEND ══ */
+function restoreFailedInput(text) {
+  // Put the user's text back so they don't have to retype it,
+  // refund the query count (the attempt failed, it shouldn't cost them a free query),
+  // and remove the failed turn from chatHistory so it doesn't pollute the next real request.
+  var inp = document.getElementById('chat-input');
+  if (inp) {
+    inp.value = text;
+    autoResize(inp);
+  }
+  if (chatHistory.length && chatHistory[chatHistory.length - 1].role === 'user' && chatHistory[chatHistory.length - 1].content === text) {
+    chatHistory.pop();
+  }
+  queriesUsed = Math.max(0, queriesUsed - 1);
+  _setStat('stat-queries', queriesUsed);
+  /* dailyQueriesRemaining is left untouched here — a failed request never
+     actually consumed a server-side daily query (increment only happens on
+     success), so there's nothing to refund on the remaining-count display. */
+}
+
 function sendMessage() {
   if (isLoading) return;
   var inp = document.getElementById('chat-input');
   var text = inp.value.trim();
   if (!text) return;
-  if (queriesUsed >= queriesMax) {
-    addMsg('ai', '## Query Limit Reached\n\nYou have used all ' + queriesMax + ' free queries. **Upgrade to Pro** for unlimited access to the full AI Hydraulic Advisor.\n\n[View Pricing →](pricing.html)', []);
+  if (!isProUnlimited && dailyQueriesRemaining !== null && dailyQueriesRemaining <= 0) {
+    addMsg('ai', '## Daily Free Limit Reached\n\nYou have used all ' + queriesMax + ' free queries for today. Limit resets at **midnight UTC**. **Upgrade to Pro** for unlimited access to the full AI Hydraulic Advisor.\n\n[View Pricing →](pricing.html)', []);
     return;
   }
   inp.value = ''; inp.style.height = 'auto';
@@ -1131,19 +1424,14 @@ function sendMessage() {
   addMsg('user', text);
   showTyping();
   queriesUsed++;
-  document.getElementById('stat-queries').textContent = queriesUsed;
-  var remain = Math.max(0, queriesMax - queriesUsed);
-  document.getElementById('stat-remain').textContent = remain;
+  _setStat('stat-queries', queriesUsed);
+  /* Remaining-count display stays at its last server-confirmed value until
+     this response comes back and gives us the real authoritative number. */
 
-  var brandCtx = activeBrand !== 'ALL' ? ' Focus on ' + activeBrand + ' brand documents.' : '';
-  var sysPrompt = MODE_PROMPTS[activeMode] + brandCtx;
-
-  // Build messages: system seed + conversation history + current message
-  // NOTE: push current message to chatHistory AFTER building msgs to avoid duplication
-  var msgs = [
-    {role:'user', content: sysPrompt},
-    {role:'assistant', content: 'HydroMind AI Advisor ready. How can I help?'}
-  ].concat(chatHistory.slice(-10)).concat([{role:'user', content: text}]);
+  // ── Request grounded KB-backed answer from /api/kb/chat ──
+  // (Client-side MODE_PROMPTS are no longer sent — the backend's
+  // HYDROMIND_ADVISOR_SYSTEM + KB routing fully supersedes them.)
+  var brandFilter = activeBrand !== 'ALL' ? activeBrand : undefined;
 
   // Now push to chatHistory for future turns
   chatHistory.push({role:'user', content: text});
@@ -1166,6 +1454,11 @@ function sendMessage() {
   var xhr = new XMLHttpRequest();
   xhr.open('POST', BACKEND, true);
   xhr.setRequestHeader('Content-Type','application/json');
+  /* Identify the caller for daily-limit tracking: logged-in users by JWT,
+     anonymous visitors by a stable device fingerprint. */
+  var hmTok = (typeof hmGetToken === 'function') ? hmGetToken() : null;
+  if (hmTok) xhr.setRequestHeader('Authorization', 'Bearer ' + hmTok);
+  xhr.setRequestHeader('X-Client-Fingerprint', getClientFingerprint());
   xhr.timeout = 90000; // 90s to handle Render cold starts
   xhr.onload = function() {
     clearTimeout(warmupTimer);
@@ -1175,33 +1468,66 @@ function sendMessage() {
         var data = JSON.parse(xhr.responseText);
         var answer = (data.content && data.content[0] && data.content[0].text)
           || data.answer || data.response || data.text || 'No response received.';
-        var refs = []; var seen = {};
-        var kbMatch = answer.match(/KB-\d+/g);
-        if (kbMatch) kbMatch.forEach(function(r){if(!seen[r]){seen[r]=1;refs.push(r);}});
+        // Real KB-grounding signal from the backend (replaces old KB-\d+ regex guess)
+        var kbInfo = {
+          used: !!data.kbUsed,
+          count: data.kbChunkCount || 0,
+          weak: !!data.kbWeakMatch
+        };
+        // Server-authoritative daily remaining count (null = unlimited/Pro)
+        if (data.queriesRemainingToday === null) {
+          isProUnlimited = true;
+          dailyQueriesRemaining = null;
+          _setStat('stat-remain', '∞');
+        } else if (typeof data.queriesRemainingToday === 'number') {
+          dailyQueriesRemaining = data.queriesRemainingToday;
+          _setStat('stat-remain', Math.max(0, dailyQueriesRemaining));
+        }
         chatHistory.push({role:'assistant', content: answer.substring(0, 3500)});
         if (chatHistory.length > 24) chatHistory = chatHistory.slice(-24);
-        addMsg('ai', answer, refs);
+        addMsg('ai', answer, kbInfo);
       } catch(e) { addMsg('ai','Error parsing response. Please retry.',[]);}
     } else if (xhr.status === 429) {
-      addMsg('ai','⚠️ Rate limit reached. Please wait a moment before sending another query.',[]);
+      restoreFailedInput(text);
+      var isDailyLimit = false;
+      try {
+        var errData = JSON.parse(xhr.responseText);
+        if (errData && errData.error === 'Daily free query limit reached') {
+          isDailyLimit = true;
+          dailyQueriesRemaining = 0;
+          _setStat('stat-remain', '0');
+        }
+      } catch(e) {}
+      if (isDailyLimit) {
+        addMsg('ai', '## Daily Free Limit Reached\n\nYou have used all ' + queriesMax + ' free queries for today. Limit resets at **midnight UTC**. **Upgrade to Pro** for unlimited access.\n\n[View Pricing →](pricing.html)', []);
+      } else {
+        addMsg('ai','⚠️ Rate limit reached. Please wait a moment before sending another query — your message has been restored to the input box.',[]);
+      }
     } else {
-      addMsg('ai','Server error ' + xhr.status + '. Please try again in a moment.',[]);
+      restoreFailedInput(text);
+      addMsg('ai','Server error ' + xhr.status + '. Your message has been restored to the input box — please try again in a moment.',[]);
     }
     setUIBusy(false);
   };
   xhr.onerror = function() {
     clearTimeout(warmupTimer);
     hideTyping();
-    addMsg('ai','Connection error — check network and retry.',[]);
+    restoreFailedInput(text);
+    addMsg('ai','Connection error — check network and retry. Your message has been restored to the input box.',[]);
     setUIBusy(false);
   };
   xhr.ontimeout = function() {
     clearTimeout(warmupTimer);
     hideTyping();
-    addMsg('ai','⏱ Request timed out (90s). The server may be restarting — please try again.',[]);
+    restoreFailedInput(text);
+    addMsg('ai','⏱ Request timed out (90s). The server may be restarting — your message has been restored, please try again.',[]);
     setUIBusy(false);
   };
-  xhr.send(JSON.stringify({messages: msgs}));
+  xhr.send(JSON.stringify({
+    question: text,
+    history: chatHistory.slice(0, -1).slice(-10).map(function(m){ return {role: m.role, content: m.content}; }),
+    answerPolicy: { strictRelevance: true, allowEngineeringFallback: true, domain: 'marine_offshore_hydraulics' }
+  }));
 }
 
 /* ══ CLEAR CHAT ══ */
@@ -1209,10 +1535,20 @@ function clearChat() {
   chatHistory = [];
   queriesUsed = 0;
   kbHits = 0;
-  document.getElementById('stat-queries').textContent = '0';
-  document.getElementById('stat-kb').textContent = '0';
-  document.getElementById('stat-remain').textContent = queriesMax;
+  _setStat('stat-queries', '0');
+  _setStat('stat-kb', '0');
+  /* Clearing the chat view does NOT refill the daily query allowance —
+     that's tracked server-side per day, not per chat session. Preserve
+     whatever the last known real value was. */
+  if (isProUnlimited) {
+    _setStat('stat-remain', '∞');
+  } else if (dailyQueriesRemaining !== null) {
+    _setStat('stat-remain', Math.max(0, dailyQueriesRemaining));
+  } else {
+    _setStat('stat-remain', queriesMax); // not yet known — show the policy max as a placeholder
+  }
   document.getElementById('kb-hit-list').innerHTML = '<div style="font-size:10px;color:var(--text3);text-align:center;padding:8px 0;">Refs appear here after query</div>';
+  document.getElementById('kb-hit-list-m').innerHTML = '<div style="font-size:11px;color:var(--text3);text-align:center;padding:10px 0;">Refs appear here after query</div>';
   document.getElementById('hist-list').innerHTML = '<div style="font-size:10px;color:var(--text3);text-align:center;padding:8px 0;">No history yet</div>';
   var area = document.getElementById('chat-area');
   area.innerHTML = '';
