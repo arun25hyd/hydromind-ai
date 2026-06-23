@@ -2718,7 +2718,8 @@ Standard proportional valve amplifier requires 24V DC stabilized supply. Seven k
 | v2.3 | Jun 2026 | Added KB37 (ISO 4413:1998), KB38 (Seals & Sealing Handbook — Flitney 5th Ed) |
 | v2.4 | Jun 2026 | Added KB39 (VFD & AC Motor Engineering — Barnes, Newnes 2003), KB40 (ATEX — Trainor AS 2007), KB41 (IEC 60204-1:2021) |
 | v2.5 | Jun 2026 | Added KB42 — Electrohydraulic Control Systems Practical Engineering (Walters, 2nd Ed, Springer 2000). Sections: proportional vs servo valve comparison, single/two-stage valve types, four flow circuit configurations (meter-in/out/both/bleed-off), sensor types (LVDT/RVDT/tacho/load cell/flow transducers), open vs closed loop decision rules, amplifier card functions (gain/ramp/deadband/current feedback/dither/PWM/summing junction), power source efficiency comparison (5 circuit types), non-linearity management (hysteresis/deadband/backlash/seal friction). Mathematical control theory content excluded per scope. Zero duplication with KB1–KB41 confirmed. |
+| v2.6 | Jun 16 2026 | Platform update (no new KB): HTU "How to Use" collapsible panel inserted in crane_diagnostic.html (6-step guide). pages/privacy.html — nav openAuthModal calls + auth-v2.js. Root privacy.html dead — vercel.json redirects to /pages/privacy.html. Pending tasks updated: 9 items tracked (see session-skill RULE 11). |
 
-**Skill maintained by:** Arun Tiwari — Crane Supervisor / Hydraulic Systems Specialist, EnerMech / ADNOC Drilling
+**Skill maintained by:** Arun — Crane Supervisor / Hydraulic Systems Specialist, EnerMech, Abu Dhabi
 **Platform:** HydroMind AI — hydromindai.com
 **Review cycle:** Update after every significant field case, new KB entry, or new design module
