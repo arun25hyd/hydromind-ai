@@ -727,6 +727,7 @@ h1 { margin: 0; font-family: Syne, sans-serif; font-size: clamp(28px, 4vw, 42px)
   <span class="sd-chip" id="footerStep">STEP 1 / 5</span>
 </div>
 
+<script src="js/auth-v2.js"></script>
 <script>
 const steps = [
   ['Application Brief', 'System type, context, duty'],
@@ -961,7 +962,139 @@ function loadExample(type) {
   }
 }
 
-function analyzeBrief() {
+const BACKEND_KB_CHAT = 'https://hydromind-backend.onrender.com/api/kb/chat';
+let aiAnalyzing = false;
+
+/* Lightweight, non-cryptographic device fingerprint for anonymous daily
+   rate-limiting — shares the 'hm_fp' localStorage key with ai_advisor.html
+   so a visitor gets one consistent identity across pages. */
+function getClientFingerprint() {
+  try {
+    const cached = localStorage.getItem('hm_fp');
+    if (cached) return cached;
+    const sig = [
+      navigator.userAgent, navigator.language, navigator.platform,
+      screen.width + 'x' + screen.height + 'x' + screen.colorDepth,
+      (Intl.DateTimeFormat().resolvedOptions().timeZone || ''),
+      (navigator.hardwareConcurrency || '')
+    ].join('||');
+    let h = 2166136261;
+    for (let i = 0; i < sig.length; i++) { h ^= sig.charCodeAt(i); h = (h * 16777619) >>> 0; }
+    const fp = 'fp' + h.toString(16) + (sig.length % 97).toString(16);
+    localStorage.setItem('hm_fp', fp);
+    return fp;
+  } catch (e) {
+    return 'fpfallback' + Math.random().toString(36).slice(2, 10);
+  }
+}
+
+function extractJsonFromText(text) {
+  const cleaned = String(text || '').trim().replace(/^```json\s*/i, '').replace(/^```\s*/, '').replace(/```\s*$/, '');
+  return JSON.parse(cleaned);
+}
+
+function showSdNotice(title, msg, kind) {
+  let el = document.getElementById('sdAiNotice');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'sdAiNotice';
+    el.className = 'warning';
+    el.style.marginBottom = '14px';
+    const panel = document.getElementById('step1');
+    panel.parentNode.insertBefore(el, panel);
+  }
+  el.innerHTML = `<strong>${esc(title)}:</strong> ${esc(msg)}`;
+  el.style.display = 'block';
+  clearTimeout(el._hideTimer);
+  el._hideTimer = setTimeout(() => { el.style.display = 'none'; }, 14000);
+}
+
+async function analyzeBrief() {
+  if (aiAnalyzing) return;
+  const text = val('brief');
+  if (!text) return;
+  aiAnalyzing = true;
+  const btns = Array.from(document.querySelectorAll('[onclick="analyzeBrief()"]'));
+  btns.forEach(b => { b.disabled = true; b.dataset.origText = b.textContent; b.textContent = 'Analyzing with AI…'; });
+
+  const sysPrompt = `You are HydroMind's System Design Brief Parser. The user provides an engineering brief describing a hydraulic system requirement, plus selected Application/Environment/Duty dropdown values. Extract structured engineering parameters and generate 2-4 genuinely useful clarifying questions about anything ambiguous, missing, or worth an engineer confirming before sizing proceeds (real engineering judgment calls, not simple presence checks).
+
+Respond with ONLY a single valid JSON object — no markdown fences, no preamble, no explanation — matching exactly this schema:
+{"app": string, "environment": string, "duty": string, "actuator": "Hydraulic cylinder" or "Hydraulic motor", "loadHolding": boolean, "standard": string, "control": string, "cooling": string, "loadTon": number, "strokeM": number, "timeSec": number, "pressureBar": number, "questions": [[label, question, assumptionNote], ...]}
+
+If a numeric value is not stated or inferable, use a reasonable marine/offshore hydraulic engineering default and surface that assumption as one of the clarifying questions.`;
+
+  const question = `Application brief: "${text}"\nApplication dropdown: ${val('appType')}\nEnvironment dropdown: ${val('environment')}\nDuty dropdown: ${val('duty')}\n\nExtract the structured parameters and clarifying questions as specified.`;
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 90000);
+
+  try {
+    const hmTok = (typeof hmGetToken === 'function') ? hmGetToken() : null;
+    const headers = { 'Content-Type': 'application/json', 'X-Client-Fingerprint': getClientFingerprint() };
+    if (hmTok) headers['Authorization'] = 'Bearer ' + hmTok;
+
+    const resp = await fetch(BACKEND_KB_CHAT, {
+      method: 'POST',
+      headers,
+      signal: controller.signal,
+      body: JSON.stringify({ question, history: [], system: sysPrompt, answerPolicy: { strictRelevance: false, allowEngineeringFallback: true, domain: 'marine_offshore_hydraulics' } })
+    });
+
+    if (resp.status === 429) {
+      const errData = await resp.json().catch(() => ({}));
+      if (errData && errData.error === 'Daily free query limit reached') {
+        showSdNotice('Daily Free Limit Reached', 'You have used all 10 free queries for today. Limit resets at midnight UTC — upgrade to Pro for unlimited access. Using quick local parsing for now.', 'warn');
+      } else {
+        showSdNotice('Rate Limit', 'Please wait a moment before trying again. Using quick local parsing for now.', 'warn');
+      }
+      analyzeBriefFallback();
+      return;
+    }
+    if (!resp.ok) throw new Error('Server error ' + resp.status);
+
+    const data = await resp.json();
+    const answerText = (data.content && data.content[0] && data.content[0].text) || '';
+    const parsed = extractJsonFromText(answerText);
+
+    state.extracted = {
+      app: parsed.app || val('appType'),
+      environment: parsed.environment || val('environment'),
+      duty: parsed.duty || val('duty'),
+      actuator: (parsed.actuator === 'Hydraulic motor') ? 'Hydraulic motor' : 'Hydraulic cylinder',
+      loadHolding: !!parsed.loadHolding,
+      standard: parsed.standard || 'ISO 4413',
+      control: parsed.control || 'Manual lever',
+      cooling: parsed.cooling || 'Fresh water / air-blast cooler to confirm',
+      loadTon: Number.isFinite(parsed.loadTon) && parsed.loadTon > 0 ? parsed.loadTon : 10,
+      strokeM: Number.isFinite(parsed.strokeM) && parsed.strokeM > 0 ? parsed.strokeM : 1,
+      timeSec: Number.isFinite(parsed.timeSec) && parsed.timeSec > 0 ? parsed.timeSec : 30,
+      pressureBar: Number.isFinite(parsed.pressureBar) && parsed.pressureBar > 0 ? parsed.pressureBar : 250
+    };
+    state.questions = (Array.isArray(parsed.questions) && parsed.questions.length)
+      ? parsed.questions.filter(q => Array.isArray(q) && q.length >= 2)
+      : buildQuestions();
+
+    setMetricInput('loadTon', 'load', state.extracted.loadTon, unitSystem === 'metric' ? 1 : 0);
+    setMetricInput('strokeM', 'stroke', state.extracted.strokeM, unitSystem === 'metric' ? 2 : 1);
+    $('timeSec').value = state.extracted.timeSec;
+    setMetricInput('workPressure', 'pressure', state.extracted.pressureBar, 0);
+    renderQuestions();
+    calculatePower();
+    setStep(2);
+  } catch (err) {
+    console.error('AI brief parsing failed, falling back to local parsing:', err);
+    const reason = err.name === 'AbortError' ? 'request timed out' : err.message;
+    showSdNotice('AI Parsing Unavailable', `Could not reach the AI parser (${esc(reason)}). Using quick local keyword parsing instead — review the extracted values carefully.`, 'warn');
+    analyzeBriefFallback();
+  } finally {
+    clearTimeout(timeoutId);
+    aiAnalyzing = false;
+    btns.forEach(b => { b.disabled = false; if (b.dataset.origText) b.textContent = b.dataset.origText; });
+  }
+}
+
+function analyzeBriefFallback() {
   const text = val('brief');
   const lower = text.toLowerCase();
   const ton = matchNumber(text, /(load|lift|weight)[^\d]*(\d+(\.\d+)?)/i) || matchNumber(text, /(\d+(\.\d+)?)\s*(ton|t\b)/i);
