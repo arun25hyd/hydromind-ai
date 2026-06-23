@@ -479,6 +479,10 @@ body {
    MOBILE FIELD-USE REDESIGN — ADVISOR PAGE
    Rebuilt 2026-06-23 — one-handed, gloved-thumb, job-site use
 ══════════════════════════════ */
+/* Global baseline — must exist OUTSIDE the mobile media query below, or this
+   has no display rule at all on screens wider than 768px and renders as a
+   plain block element in normal page flow instead of staying hidden. */
+.mobile-info-overlay { display: none; }
 @media (max-width: 768px) {
   .advisor-shell {
     flex-direction: column;
