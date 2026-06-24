@@ -1182,9 +1182,16 @@ function renderCalcCards() {
 
 let aiSelectingComponents = false;
 
-async function selectComponents() {
+let componentsInFlight = null;
+
+function selectComponents() {
+  if (componentsInFlight) return componentsInFlight;
+  componentsInFlight = selectComponentsImpl().finally(() => { componentsInFlight = null; });
+  return componentsInFlight;
+}
+
+async function selectComponentsImpl() {
   calculatePower();
-  if (aiSelectingComponents) return;
   aiSelectingComponents = true;
   const btns = Array.from(document.querySelectorAll('[onclick="nextStep()"], [onclick="selectComponents()"]'));
   btns.forEach(b => { b.disabled = true; b.dataset.origText = b.dataset.origText || b.textContent; b.textContent = 'Selecting with AI…'; });
@@ -1318,9 +1325,16 @@ function renderComponents() {
 
 let aiSelectingValves = false;
 
-async function selectValves() {
+let valvesInFlight = null;
+
+function selectValves() {
+  if (valvesInFlight) return valvesInFlight;
+  valvesInFlight = selectValvesImpl().finally(() => { valvesInFlight = null; });
+  return valvesInFlight;
+}
+
+async function selectValvesImpl() {
   if (!state.components.pump) await selectComponents();
-  if (aiSelectingValves) return;
   aiSelectingValves = true;
   const btns = Array.from(document.querySelectorAll('[onclick="nextStep()"], [onclick="selectValves()"]'));
   btns.forEach(b => { b.disabled = true; b.dataset.origText = b.dataset.origText || b.textContent; b.textContent = 'Selecting with AI…'; });
