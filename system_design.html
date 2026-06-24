@@ -936,8 +936,8 @@ function setStep(n) {
 function nextStep() {
   if (currentStep === 1) analyzeBrief();
   if (currentStep === 2) calculatePower();
-  if (currentStep === 3) selectComponents();
-  if (currentStep === 4) selectValves();
+  if (currentStep === 3) { $('componentCards').innerHTML = '<div class="hint">Selecting components with AI…</div>'; selectComponents(); }
+  if (currentStep === 4) { $('valveCards').innerHTML = '<div class="hint">Selecting valves and safety case with AI…</div>'; selectValves(); }
   setStep(currentStep + 1);
 }
 
@@ -1180,7 +1180,108 @@ function renderCalcCards() {
   ].map(m => `<div class="calc-card"><div class="card-label">${m[0]}</div><div class="metric">${m[1]}</div><p class="hint">${m[2]}</p></div>`).join('');
 }
 
-function selectComponents() {
+let aiSelectingComponents = false;
+
+async function selectComponents() {
+  calculatePower();
+  if (aiSelectingComponents) return;
+  aiSelectingComponents = true;
+  const btns = Array.from(document.querySelectorAll('[onclick="nextStep()"], [onclick="selectComponents()"]'));
+  btns.forEach(b => { b.disabled = true; b.dataset.origText = b.dataset.origText || b.textContent; b.textContent = 'Selecting with AI…'; });
+
+  const c = state.calculations;
+  const motorCircuit = state.extracted.actuator === 'Hydraulic motor';
+  const catalog = {
+    pumpClosed: KB_COMPONENT_MODELS.pumpClosed.map(i => ({ id: i.id, model: i.model, type: i.type })),
+    actuator: KB_COMPONENT_MODELS[motorCircuit ? 'motor' : 'cylinder'].map(i => ({ id: i.id, model: i.model, type: i.type })),
+    filtration: KB_COMPONENT_MODELS.filtration.map(i => ({ id: i.id, model: i.model, type: i.type }))
+  };
+
+  const sysPrompt = `You are HydroMind's System Design Component Selector. Given the engineering brief parameters and a catalog of candidate KB components per slot, pick the single best-fit model id for each slot and write a concise (1-2 sentence) engineering justification tied to the specific brief — not a generic statement. You may ONLY select ids that appear in the supplied catalog for that slot; never invent a model, id, or KB number.
+
+Respond with ONLY a single valid JSON object — no markdown fences, no preamble — matching exactly this schema:
+{"pump":{"id":string,"reason":string},"actuator":{"id":string,"reason":string},"filtration":{"id":string,"reason":string},"primeMoverNote":string,"reservoirNote":string,"coolerNote":string}
+
+primeMoverNote/reservoirNote/coolerNote are short engineering notes (these slots have no KB catalog, just your reasoning) about prime mover sizing margin, reservoir sizing basis, and cooling basis, specific to this brief.`;
+
+  const question = `Brief parameters: application=${state.extracted.app}, environment=${state.extracted.environment}, duty=${state.extracted.duty}, actuator type=${state.extracted.actuator}, standard=${state.extracted.standard}, control=${state.extracted.control}, cooling preference=${state.extracted.cooling}.
+Calculated: pressure=${txtUnit(c.pressure,'pressure',0)}, flow=${txtUnit(c.flow,'flow',1)}, power=${txtUnit(c.powerKw,'power',1)}, bore=${txtUnit(c.boreMm,'diameter',0)}, rod=${txtUnit(c.rodMm,'diameter',0)}.
+Catalog (pick id only from these lists per slot):
+Pump options: ${JSON.stringify(catalog.pumpClosed)}
+Actuator options: ${JSON.stringify(catalog.actuator)}
+Filtration options: ${JSON.stringify(catalog.filtration)}
+
+Select the best id per slot and justify against this specific brief.`;
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 90000);
+
+  try {
+    const hmTok = (typeof hmGetToken === 'function') ? hmGetToken() : null;
+    const headers = { 'Content-Type': 'application/json', 'X-Client-Fingerprint': getClientFingerprint() };
+    if (hmTok) headers['Authorization'] = 'Bearer ' + hmTok;
+
+    const resp = await fetch(BACKEND_KB_CHAT, {
+      method: 'POST',
+      headers,
+      signal: controller.signal,
+      body: JSON.stringify({ question, history: [], system: sysPrompt, answerPolicy: { strictRelevance: false, allowEngineeringFallback: true, domain: 'marine_offshore_hydraulics' } })
+    });
+
+    if (resp.status === 429) {
+      const errData = await resp.json().catch(() => ({}));
+      if (errData && errData.error === 'Daily free query limit reached') {
+        showSdNotice('Daily Free Limit Reached', 'You have used all 10 free queries for today. Limit resets at midnight UTC — upgrade to Pro for unlimited access. Using rule-based component selection for now.', 'warn');
+      } else {
+        showSdNotice('Rate Limit', 'Please wait a moment before trying again. Using rule-based component selection for now.', 'warn');
+      }
+      selectComponentsFallback();
+      return;
+    }
+    if (!resp.ok) throw new Error('Server error ' + resp.status);
+
+    const data = await resp.json();
+    const answerText = (data.content && data.content[0] && data.content[0].text) || '';
+    const parsed = extractJsonFromText(answerText);
+
+    const pumpPick = catalog.pumpClosed.find(i => i.id === parsed.pump?.id) || catalog.pumpClosed[0];
+    const actuatorPick = catalog.actuator.find(i => i.id === parsed.actuator?.id) || catalog.actuator[0];
+    const filtrationPick = catalog.filtration.find(i => i.id === parsed.filtration?.id) || catalog.filtration[0];
+
+    state.components = {
+      pump: pumpPick.model,
+      pumpReason: (parsed.pump && parsed.pump.reason) || 'Selected from duty and control requirement.',
+      actuator: motorCircuit ? actuatorPick.model : `${actuatorPick.model}, bore ${txtUnit(c.boreMm, 'diameter', unitSystem === 'metric' ? 0 : 2)}, rod ${txtUnit(c.rodMm, 'diameter', unitSystem === 'metric' ? 0 : 2)}`,
+      actuatorReason: (parsed.actuator && parsed.actuator.reason) || 'Sized from user load, stroke and cycle time.',
+      primeMover: `Electric motor ${txtUnit(c.powerKw * 1.15, 'power', 1)} minimum with service factor`,
+      primeMoverReason: parsed.primeMoverNote || 'Calculated from pressure x flow with efficiency and service margin.',
+      reservoir: `${txtUnit(Math.max(c.flow * 3, 80), 'reservoir', 0)}-${txtUnit(Math.max(c.flow * 5, 120), 'reservoir', 0)} reservoir`,
+      reservoirReason: parsed.reservoirNote || 'Sized from pump flow to support heat rejection, deaeration and contamination settling.',
+      cooler: state.extracted.cooling,
+      coolerReason: parsed.coolerNote || 'Selected from environment and likely thermal duty.',
+      filtration: filtrationPick.model,
+      filtrationReason: (parsed.filtration && parsed.filtration.reason) || 'Protects proportional valves, pump and actuator seals.',
+      cleanliness: state.extracted.environment.includes('Marine') ? 'ISO 4406 17/15/12 or better' : 'ISO 4406 18/16/13'
+    };
+    state.selectedModels.pump = pumpPick.id;
+    state.selectedModels.actuator = actuatorPick.id;
+    state.selectedModels.filtration = filtrationPick.id;
+    renderComponents();
+    renderLiveSpec();
+  } catch (err) {
+    console.error('AI component selection failed, falling back to rule-based selection:', err);
+    const reason = err.name === 'AbortError' ? 'request timed out' : err.message;
+    showSdNotice('AI Selection Unavailable', `Could not reach the AI component selector (${esc(reason)}). Using rule-based selection instead — review choices carefully.`, 'warn');
+    selectComponentsFallback();
+  } finally {
+    clearTimeout(timeoutId);
+    aiSelectingComponents = false;
+    btns.forEach(b => { b.disabled = false; if (b.dataset.origText) b.textContent = b.dataset.origText; });
+    if (currentStep === 3) setStep(4);
+  }
+}
+
+function selectComponentsFallback() {
   calculatePower();
   const c = state.calculations;
   const highDuty = state.extracted.duty === 'Continuous';
@@ -1206,17 +1307,150 @@ function selectComponents() {
 function renderComponents() {
   const x = state.components;
   $('componentCards').innerHTML = [
-    ['Pump', x.pump, 'Selected from duty and control requirement. Pressure-compensated/LS pumps reduce heating by delivering only demanded flow.', 'pump', 'pumpClosed'],
-    ['Actuator', x.actuator, 'Sized from user load, stroke and cycle time. Final bore/rod must be checked against buckling and mounting geometry.', 'actuator', state.extracted.actuator === 'Hydraulic motor' ? 'motor' : 'cylinder'],
-    ['Prime mover', x.primeMover, 'Calculated from pressure x flow with efficiency and service margin.', '', ''],
-    ['Reservoir', x.reservoir, 'Sized from pump flow to support heat rejection, deaeration and contamination settling.', '', ''],
-    ['Cooling', x.cooler, 'Selected from environment and likely thermal duty. Confirm heat rejection during detailed design.', '', ''],
-    ['Filtration', x.filtration, `Target cleanliness: ${x.cleanliness}. Protects proportional valves, pump and actuator seals.`, 'filtration', 'filtration']
+    ['Pump', x.pump, x.pumpReason || 'Selected from duty and control requirement. Pressure-compensated/LS pumps reduce heating by delivering only demanded flow.', 'pump', 'pumpClosed'],
+    ['Actuator', x.actuator, x.actuatorReason || 'Sized from user load, stroke and cycle time. Final bore/rod must be checked against buckling and mounting geometry.', 'actuator', state.extracted.actuator === 'Hydraulic motor' ? 'motor' : 'cylinder'],
+    ['Prime mover', x.primeMover, x.primeMoverReason || 'Calculated from pressure x flow with efficiency and service margin.', '', ''],
+    ['Reservoir', x.reservoir, x.reservoirReason || 'Sized from pump flow to support heat rejection, deaeration and contamination settling.', '', ''],
+    ['Cooling', x.cooler, x.coolerReason || 'Selected from environment and likely thermal duty. Confirm heat rejection during detailed design.', '', ''],
+    ['Filtration', x.filtration, (x.filtrationReason ? x.filtrationReason + ' ' : '') + `Target cleanliness: ${x.cleanliness}.`, 'filtration', 'filtration']
   ].map(m => `<div class="component-card"><div class="card-label">${m[0]}</div><h3>${esc(m[1])}</h3><p>${esc(m[2])}</p>${renderModelOptions(m[3], m[4])}</div>`).join('');
 }
 
-function selectValves() {
-  if (!state.components.pump) selectComponents();
+let aiSelectingValves = false;
+
+async function selectValves() {
+  if (!state.components.pump) await selectComponents();
+  if (aiSelectingValves) return;
+  aiSelectingValves = true;
+  const btns = Array.from(document.querySelectorAll('[onclick="nextStep()"], [onclick="selectValves()"]'));
+  btns.forEach(b => { b.disabled = true; b.dataset.origText = b.dataset.origText || b.textContent; b.textContent = 'Selecting with AI…'; });
+
+  const c = state.calculations;
+  const loadHolding = state.extracted.loadHolding;
+  const motorCircuit = state.extracted.actuator === 'Hydraulic motor';
+  const pump = state.components.pump;
+  const closedCentre = pump.includes('Pressure') || pump.includes('Load-sensing') || pump.includes('A10VO') || pump.includes('A4VG') || pump.includes('Series 90');
+  const catalog = {
+    dcvClosed: KB_COMPONENT_MODELS.dcvClosed.map(i => ({ id: i.id, model: i.model, type: i.type })),
+    protection: motorCircuit ? KB_COMPONENT_MODELS.motor.map(i => ({ id: i.id, model: i.model, type: i.type })) : (loadHolding ? KB_COMPONENT_MODELS.loadHolding.map(i => ({ id: i.id, model: i.model, type: i.type })) : [])
+  };
+
+  const sysPrompt = `You are HydroMind's System Design Valve & Safety Selector for marine/offshore hydraulics. Given the engineering brief, pump type, and a catalog of candidate KB valve components, select the best-fit directional control valve and (if applicable) load-holding/brake protection valve, and write the full safety case for the 5 standard valve stations every design needs: directional control valve, relief valve, load-holding/brake protection, emergency unload/dump valve, and test points/gauges. You may ONLY select catalog ids supplied; never invent a model, id or KB number. For stations with no catalog (relief valve, dump valve, test points), reason from engineering principles only.
+
+Respond with ONLY a single valid JSON object — no markdown fences, no preamble — matching exactly this schema:
+{"dcv":{"id":string,"selection":string,"reason":string,"risk":string,"omitted":string,"standard":string},"relief":{"selection":string,"reason":string,"risk":string,"omitted":string,"standard":string},"protection":{"id":string|null,"component":string,"selection":string,"reason":string,"risk":string,"omitted":string,"standard":string},"dump":{"selection":string,"reason":string,"risk":string,"omitted":string,"standard":string},"testPoints":{"selection":string,"reason":string,"risk":string,"omitted":string,"standard":string},"correctionWarning":string|null}
+
+correctionWarning: if the user's brief explicitly mentioned an open-centre DCV but the pump type requires closed-centre (pressure-compensated or load-sensing pumps must not dump flow to tank), explain the correction here; otherwise null.`;
+
+  const question = `Brief: standard=${state.extracted.standard}, environment=${state.extracted.environment}, actuator type=${state.extracted.actuator}, load holding required=${loadHolding}, motor circuit=${motorCircuit}.
+Selected pump: ${pump} (closed-centre requirement: ${closedCentre}).
+Relief pressure target: ${txtUnit(c.relief, 'pressure', 0)}.
+Original brief text: "${val('brief')}"
+DCV catalog: ${JSON.stringify(catalog.dcvClosed)}
+Protection/load-holding catalog (empty if not applicable): ${JSON.stringify(catalog.protection)}
+
+Select ids and write the full 5-station valve safety case for this specific brief.`;
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 90000);
+
+  try {
+    const hmTok = (typeof hmGetToken === 'function') ? hmGetToken() : null;
+    const headers = { 'Content-Type': 'application/json', 'X-Client-Fingerprint': getClientFingerprint() };
+    if (hmTok) headers['Authorization'] = 'Bearer ' + hmTok;
+
+    const resp = await fetch(BACKEND_KB_CHAT, {
+      method: 'POST',
+      headers,
+      signal: controller.signal,
+      body: JSON.stringify({ question, history: [], system: sysPrompt, answerPolicy: { strictRelevance: false, allowEngineeringFallback: true, domain: 'marine_offshore_hydraulics' } })
+    });
+
+    if (resp.status === 429) {
+      const errData = await resp.json().catch(() => ({}));
+      if (errData && errData.error === 'Daily free query limit reached') {
+        showSdNotice('Daily Free Limit Reached', 'You have used all 10 free queries for today. Limit resets at midnight UTC — upgrade to Pro for unlimited access. Using rule-based valve selection for now.', 'warn');
+      } else {
+        showSdNotice('Rate Limit', 'Please wait a moment before trying again. Using rule-based valve selection for now.', 'warn');
+      }
+      selectValvesFallback();
+      return;
+    }
+    if (!resp.ok) throw new Error('Server error ' + resp.status);
+
+    const data = await resp.json();
+    const answerText = (data.content && data.content[0] && data.content[0].text) || '';
+    const parsed = extractJsonFromText(answerText);
+
+    const dcvPick = catalog.dcvClosed.find(i => i.id === parsed.dcv?.id) || catalog.dcvClosed[0];
+    const protectionPick = catalog.protection.length ? (catalog.protection.find(i => i.id === parsed.protection?.id) || catalog.protection[0]) : null;
+
+    state.warnings = parsed.correctionWarning ? [parsed.correctionWarning] : [];
+    state.valves = [
+      {
+        component: 'Directional control valve',
+        isDcvSlot: true,
+        selection: (parsed.dcv && parsed.dcv.selection) || dcvPick.model,
+        reason: (parsed.dcv && parsed.dcv.reason) || 'Selected because the pump must maintain standby pressure and should not dump flow directly to tank.',
+        risk: (parsed.dcv && parsed.dcv.risk) || 'Wrong centre condition causes heat, unstable control, pump unloading, or unintended actuator motion.',
+        omitted: (parsed.dcv && parsed.dcv.omitted) || 'No controlled actuator direction or neutral hold strategy.',
+        standard: (parsed.dcv && parsed.dcv.standard) || 'ISO 4413 valve control and fail-safe neutral position review.'
+      },
+      {
+        component: 'Relief valve',
+        selection: (parsed.relief && parsed.relief.selection) || `Main relief valve set approx. ${txtUnit(c.relief, 'pressure', 0)}`,
+        reason: (parsed.relief && parsed.relief.reason) || 'Selected to protect pump, hose, valve block and cylinder from pressure spikes above design pressure.',
+        risk: (parsed.relief && parsed.relief.risk) || 'Overpressure can rupture hoses, damage seals or overload structure.',
+        omitted: (parsed.relief && parsed.relief.omitted) || 'No final pressure limitation if pump/control valve malfunctions.',
+        standard: (parsed.relief && parsed.relief.standard) || 'ISO 4413 pressure limitation requirement.'
+      },
+      {
+        component: (parsed.protection && parsed.protection.component) || (motorCircuit ? 'Motor brake / cross-port protection' : loadHolding ? 'Counterbalance / over-centre valve' : 'Pilot-operated check valve if holding is later required'),
+        isProtectionSlot: !!protectionPick,
+        selection: (parsed.protection && parsed.protection.selection) || (protectionPick ? protectionPick.model : 'Not mandatory for non-overrunning load; keep as optional lock valve'),
+        reason: (parsed.protection && parsed.protection.reason) || 'No load holding requirement was identified.',
+        risk: (parsed.protection && parsed.protection.risk) || 'If future load holding is needed, omission can allow drift.',
+        omitted: (parsed.protection && parsed.protection.omitted) || 'Acceptable only for non-critical positioning.',
+        standard: (parsed.protection && parsed.protection.standard) || state.extracted.standard
+      },
+      {
+        component: 'Emergency unload / dump valve',
+        selection: (parsed.dump && parsed.dump.selection) || 'Normally closed dump valve or unload path to tank with safe energy release',
+        reason: (parsed.dump && parsed.dump.reason) || 'Selected for marine/offshore maintenance and emergency stop stored-energy control.',
+        risk: (parsed.dump && parsed.dump.risk) || 'Trapped hydraulic energy during emergency or maintenance.',
+        omitted: (parsed.dump && parsed.dump.omitted) || 'Technicians may face unsafe stored pressure and difficult recovery after E-stop.',
+        standard: (parsed.dump && parsed.dump.standard) || 'ISO 4413 stored energy and maintenance safety.'
+      },
+      {
+        component: 'Test points and gauges',
+        selection: (parsed.testPoints && parsed.testPoints.selection) || 'Gauge/test points at pump outlet, A/B actuator ports, pilot line and return back-pressure',
+        reason: (parsed.testPoints && parsed.testPoints.reason) || 'Selected so commissioning and troubleshooting can verify actual pressure against calculated design values.',
+        risk: (parsed.testPoints && parsed.testPoints.risk) || 'No practical way to confirm relief, CBV, standby, pilot or return restrictions.',
+        omitted: (parsed.testPoints && parsed.testPoints.omitted) || 'Fault finding becomes guesswork and commissioning evidence is weak.',
+        standard: (parsed.testPoints && parsed.testPoints.standard) || 'Good marine maintenance practice and class survey support.'
+      }
+    ];
+    state.selectedModels.dcv = dcvPick.id;
+    if (protectionPick) state.selectedModels.protection = protectionPick.id;
+    else delete state.selectedModels.protection;
+    if (!state.selectedModels.filtration) ensureDefaultModels({ filtration: 'filtration' });
+    renderValves();
+    renderLiveSpec();
+  } catch (err) {
+    console.error('AI valve selection failed, falling back to rule-based selection:', err);
+    const reason = err.name === 'AbortError' ? 'request timed out' : err.message;
+    showSdNotice('AI Selection Unavailable', `Could not reach the AI valve selector (${esc(reason)}). Using rule-based selection instead — review choices carefully.`, 'warn');
+    selectValvesFallback();
+  } finally {
+    clearTimeout(timeoutId);
+    aiSelectingValves = false;
+    btns.forEach(b => { b.disabled = false; if (b.dataset.origText) b.textContent = b.dataset.origText; });
+    if (currentStep === 4) setStep(5);
+  }
+}
+
+function selectValvesFallback() {
+  if (!state.components.pump) selectComponentsFallback();
   const c = state.calculations;
   const loadHolding = state.extracted.loadHolding;
   const motorCircuit = state.extracted.actuator === 'Hydraulic motor';
@@ -1226,6 +1460,7 @@ function selectValves() {
   state.valves = [
     {
       component: 'Directional control valve',
+      isDcvSlot: true,
       selection: closedCentre ? '4/3 closed-centre DCV or proportional closed-centre valve section' : '4/3 open-centre DCV',
       reason: closedCentre ? 'Selected because the pump must maintain standby pressure and should not dump flow directly to tank.' : 'Selected only for simple fixed-displacement open-loop systems where unloading to tank is acceptable.',
       risk: 'Wrong centre condition causes heat, unstable control, pump unloading, or unintended actuator motion.',
@@ -1242,6 +1477,7 @@ function selectValves() {
     },
     {
       component: motorCircuit ? 'Motor brake / cross-port protection' : loadHolding ? 'Counterbalance / over-centre valve' : 'Pilot-operated check valve if holding is later required',
+      isProtectionSlot: motorCircuit || loadHolding,
       selection: motorCircuit ? 'Fail-safe brake release valve with cross-port relief / anti-cavitation protection' : loadHolding ? 'Counterbalance valve on load-holding actuator port, pilot ratio selected after load pressure check' : 'Not mandatory for non-overrunning load; keep as optional lock valve',
       reason: motorCircuit ? 'Selected because winch/motor drives need brake release sequencing and protection from overrun or shock load.' : loadHolding ? 'Selected because the load can overrun or drift. It meters lowering flow and prevents uncontrolled descent.' : 'No load holding requirement was identified.',
       risk: motorCircuit ? 'Motor overspeed, shock pressure, rope/load run-away, or brake release without hydraulic torque.' : loadHolding ? 'Uncontrolled lowering, load runaway or cylinder drift.' : 'If future load holding is needed, omission can allow drift.',
@@ -1289,10 +1525,12 @@ function renderValves() {
   $('validationBox').innerHTML = state.warnings.length ? state.warnings.map(esc).join('<br>') : 'No blocking errors. Valve package is consistent with selected pump/circuit logic.';
 }
 
-function generateReview() {
+async function generateReview() {
   if (!state.calculations.flow) calculatePower();
-  if (!state.components.pump) selectComponents();
-  if (!state.valves.length) selectValves();
+  if (!state.components.pump) await selectComponents();
+  if (!state.valves.length) await selectValves();
+  if (!state.components.pump) selectComponentsFallback();
+  if (!state.valves.length) selectValvesFallback();
   const c = state.calculations, x = state.components;
   $('tab-summary').innerHTML = `<div class="grid two">
     ${summaryCard('Application', `${state.extracted.app || val('appType')} / ${state.extracted.environment || val('environment')}`)}
@@ -1330,9 +1568,8 @@ function renderModelOptions(slot, group) {
 }
 
 function renderValveModelOptions(v) {
-  const component = v.component.toLowerCase();
-  if (component.includes('directional')) return renderModelOptions('dcv', 'dcvClosed');
-  if (component.includes('counterbalance') || component.includes('brake') || component.includes('cross-port')) {
+  if (v.isDcvSlot) return renderModelOptions('dcv', 'dcvClosed');
+  if (v.isProtectionSlot) {
     return renderModelOptions('protection', state.extracted.actuator === 'Hydraulic motor' ? 'motor' : 'loadHolding');
   }
   return '';
