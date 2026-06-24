@@ -1349,12 +1349,15 @@ async function selectValvesImpl() {
     protection: motorCircuit ? KB_COMPONENT_MODELS.motor.map(i => ({ id: i.id, model: i.model, type: i.type })) : (loadHolding ? KB_COMPONENT_MODELS.loadHolding.map(i => ({ id: i.id, model: i.model, type: i.type })) : [])
   };
 
-  const sysPrompt = `You are HydroMind's System Design Valve & Safety Selector for marine/offshore hydraulics. Given the engineering brief, pump type, and a catalog of candidate KB valve components, select the best-fit directional control valve and (if applicable) load-holding/brake protection valve, and write the full safety case for the 5 standard valve stations every design needs: directional control valve, relief valve, load-holding/brake protection, emergency unload/dump valve, and test points/gauges. You may ONLY select catalog ids supplied; never invent a model, id or KB number. For stations with no catalog (relief valve, dump valve, test points), reason from engineering principles only.
+  const sysPrompt = `You are HydroMind's System Design Valve & Safety Selector for marine/offshore hydraulics. Given the engineering brief, pump type, and a catalog of candidate KB valve components, select the best-fit directional control valve and (if applicable) load-holding/brake protection valve, and write a compact safety case for the 5 standard valve stations every design needs: directional control valve, relief valve, load-holding/brake protection, emergency unload/dump valve, and test points/gauges. You may ONLY select catalog ids supplied; never invent a model, id or KB number. For stations with no catalog (relief valve, dump valve, test points), reason from engineering principles only.
 
-Respond with ONLY a single valid JSON object — no markdown fences, no preamble — matching exactly this schema:
-{"dcv":{"id":string,"selection":string,"reason":string,"risk":string,"omitted":string,"standard":string},"relief":{"selection":string,"reason":string,"risk":string,"omitted":string,"standard":string},"protection":{"id":string|null,"component":string,"selection":string,"reason":string,"risk":string,"omitted":string,"standard":string},"dump":{"selection":string,"reason":string,"risk":string,"omitted":string,"standard":string},"testPoints":{"selection":string,"reason":string,"risk":string,"omitted":string,"standard":string},"correctionWarning":string|null}
+CRITICAL LENGTH LIMIT: every text field below must be ONE short sentence, 12 words maximum. This is a hard limit — the response must fit a small token budget. Do not write multiple sentences or qualifying clauses per field.
 
-correctionWarning: if the user's brief explicitly mentioned an open-centre DCV but the pump type requires closed-centre (pressure-compensated or load-sensing pumps must not dump flow to tank), explain the correction here; otherwise null.`;
+Respond with ONLY a single valid JSON object — no markdown fences, no preamble — matching exactly this schema (every string value max 12 words):
+{"dcv":{"id":string,"selection":string,"reason":string,"riskIfWrong":string,"standard":string},"relief":{"selection":string,"reason":string,"riskIfWrong":string,"standard":string},"protection":{"id":string|null,"component":string,"selection":string,"reason":string,"riskIfWrong":string,"standard":string},"dump":{"selection":string,"reason":string,"riskIfWrong":string,"standard":string},"testPoints":{"selection":string,"reason":string,"riskIfWrong":string,"standard":string},"correctionWarning":string|null}
+
+riskIfWrong combines both the safety risk AND what happens if the station is omitted into a single 12-word sentence.
+correctionWarning: if the user's brief explicitly mentioned an open-centre DCV but the pump type requires closed-centre (pressure-compensated or load-sensing pumps must not dump flow to tank), explain in 12 words or fewer; otherwise null.`;
 
   const question = `Brief: standard=${state.extracted.standard}, environment=${state.extracted.environment}, actuator type=${state.extracted.actuator}, load holding required=${loadHolding}, motor circuit=${motorCircuit}.
 Selected pump: ${pump} (closed-centre requirement: ${closedCentre}).
@@ -1406,16 +1409,16 @@ Select ids and write the full 5-station valve safety case for this specific brie
         isDcvSlot: true,
         selection: (parsed.dcv && parsed.dcv.selection) || dcvPick.model,
         reason: (parsed.dcv && parsed.dcv.reason) || 'Selected because the pump must maintain standby pressure and should not dump flow directly to tank.',
-        risk: (parsed.dcv && parsed.dcv.risk) || 'Wrong centre condition causes heat, unstable control, pump unloading, or unintended actuator motion.',
-        omitted: (parsed.dcv && parsed.dcv.omitted) || 'No controlled actuator direction or neutral hold strategy.',
+        risk: (parsed.dcv && parsed.dcv.riskIfWrong) || 'Wrong centre condition causes heat, unstable control, or unintended actuator motion if omitted.',
+        omitted: 'No controlled actuator direction or neutral hold strategy.',
         standard: (parsed.dcv && parsed.dcv.standard) || 'ISO 4413 valve control and fail-safe neutral position review.'
       },
       {
         component: 'Relief valve',
         selection: (parsed.relief && parsed.relief.selection) || `Main relief valve set approx. ${txtUnit(c.relief, 'pressure', 0)}`,
         reason: (parsed.relief && parsed.relief.reason) || 'Selected to protect pump, hose, valve block and cylinder from pressure spikes above design pressure.',
-        risk: (parsed.relief && parsed.relief.risk) || 'Overpressure can rupture hoses, damage seals or overload structure.',
-        omitted: (parsed.relief && parsed.relief.omitted) || 'No final pressure limitation if pump/control valve malfunctions.',
+        risk: (parsed.relief && parsed.relief.riskIfWrong) || 'Overpressure can rupture hoses or damage seals if omitted.',
+        omitted: 'No final pressure limitation if pump/control valve malfunctions.',
         standard: (parsed.relief && parsed.relief.standard) || 'ISO 4413 pressure limitation requirement.'
       },
       {
@@ -1423,24 +1426,24 @@ Select ids and write the full 5-station valve safety case for this specific brie
         isProtectionSlot: !!protectionPick,
         selection: (parsed.protection && parsed.protection.selection) || (protectionPick ? protectionPick.model : 'Not mandatory for non-overrunning load; keep as optional lock valve'),
         reason: (parsed.protection && parsed.protection.reason) || 'No load holding requirement was identified.',
-        risk: (parsed.protection && parsed.protection.risk) || 'If future load holding is needed, omission can allow drift.',
-        omitted: (parsed.protection && parsed.protection.omitted) || 'Acceptable only for non-critical positioning.',
+        risk: (parsed.protection && parsed.protection.riskIfWrong) || 'If future load holding is needed, omission can allow drift.',
+        omitted: 'Acceptable only for non-critical positioning.',
         standard: (parsed.protection && parsed.protection.standard) || state.extracted.standard
       },
       {
         component: 'Emergency unload / dump valve',
         selection: (parsed.dump && parsed.dump.selection) || 'Normally closed dump valve or unload path to tank with safe energy release',
         reason: (parsed.dump && parsed.dump.reason) || 'Selected for marine/offshore maintenance and emergency stop stored-energy control.',
-        risk: (parsed.dump && parsed.dump.risk) || 'Trapped hydraulic energy during emergency or maintenance.',
-        omitted: (parsed.dump && parsed.dump.omitted) || 'Technicians may face unsafe stored pressure and difficult recovery after E-stop.',
+        risk: (parsed.dump && parsed.dump.riskIfWrong) || 'Trapped hydraulic energy can injure technicians during maintenance if omitted.',
+        omitted: 'Technicians may face unsafe stored pressure and difficult recovery after E-stop.',
         standard: (parsed.dump && parsed.dump.standard) || 'ISO 4413 stored energy and maintenance safety.'
       },
       {
         component: 'Test points and gauges',
         selection: (parsed.testPoints && parsed.testPoints.selection) || 'Gauge/test points at pump outlet, A/B actuator ports, pilot line and return back-pressure',
         reason: (parsed.testPoints && parsed.testPoints.reason) || 'Selected so commissioning and troubleshooting can verify actual pressure against calculated design values.',
-        risk: (parsed.testPoints && parsed.testPoints.risk) || 'No practical way to confirm relief, CBV, standby, pilot or return restrictions.',
-        omitted: (parsed.testPoints && parsed.testPoints.omitted) || 'Fault finding becomes guesswork and commissioning evidence is weak.',
+        risk: (parsed.testPoints && parsed.testPoints.riskIfWrong) || 'No practical way to confirm pressures if test points are omitted.',
+        omitted: 'Fault finding becomes guesswork and commissioning evidence is weak.',
         standard: (parsed.testPoints && parsed.testPoints.standard) || 'Good marine maintenance practice and class survey support.'
       }
     ];
