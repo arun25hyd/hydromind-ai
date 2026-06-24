@@ -1349,24 +1349,41 @@ async function selectValvesImpl() {
     protection: motorCircuit ? KB_COMPONENT_MODELS.motor.map(i => ({ id: i.id, model: i.model, type: i.type })) : (loadHolding ? KB_COMPONENT_MODELS.loadHolding.map(i => ({ id: i.id, model: i.model, type: i.type })) : [])
   };
 
-  const sysPrompt = `You are HydroMind's System Design Valve & Safety Selector for marine/offshore hydraulics. Given the engineering brief, pump type, and a catalog of candidate KB valve components, select the best-fit directional control valve and (if applicable) load-holding/brake protection valve, and write a compact safety case for the 5 standard valve stations every design needs: directional control valve, relief valve, load-holding/brake protection, emergency unload/dump valve, and test points/gauges. You may ONLY select catalog ids supplied; never invent a model, id or KB number. For stations with no catalog (relief valve, dump valve, test points), reason from engineering principles only.
-
-CRITICAL LENGTH LIMIT: every text field below must be ONE short sentence, 12 words maximum. This is a hard limit — the response must fit a small token budget. Do not write multiple sentences or qualifying clauses per field.
-
-Respond with ONLY a single valid JSON object — no markdown fences, no preamble — matching exactly this schema (every string value max 12 words):
-{"dcv":{"id":string,"selection":string,"reason":string,"riskIfWrong":string,"standard":string},"relief":{"selection":string,"reason":string,"riskIfWrong":string,"standard":string},"protection":{"id":string|null,"component":string,"selection":string,"reason":string,"riskIfWrong":string,"standard":string},"dump":{"selection":string,"reason":string,"riskIfWrong":string,"standard":string},"testPoints":{"selection":string,"reason":string,"riskIfWrong":string,"standard":string},"correctionWarning":string|null}
-
-riskIfWrong combines both the safety risk AND what happens if the station is omitted into a single 12-word sentence.
-correctionWarning: if the user's brief explicitly mentioned an open-centre DCV but the pump type requires closed-centre (pressure-compensated or load-sensing pumps must not dump flow to tank), explain in 12 words or fewer; otherwise null.`;
-
-  const question = `Brief: standard=${state.extracted.standard}, environment=${state.extracted.environment}, actuator type=${state.extracted.actuator}, load holding required=${loadHolding}, motor circuit=${motorCircuit}.
+  const briefCtx = `Brief: standard=${state.extracted.standard}, environment=${state.extracted.environment}, actuator type=${state.extracted.actuator}, load holding required=${loadHolding}, motor circuit=${motorCircuit}.
 Selected pump: ${pump} (closed-centre requirement: ${closedCentre}).
 Relief pressure target: ${txtUnit(c.relief, 'pressure', 0)}.
-Original brief text: "${val('brief')}"
+Original brief text: "${val('brief')}"`;
+
+  const lenRule = `CRITICAL LENGTH LIMIT: every text field must be ONE short sentence, 12 words maximum. Hard limit — do not write multiple sentences per field.`;
+
+  const sysPromptA = `You are HydroMind's System Design Valve Selector for marine/offshore hydraulics. Given the brief and a catalog of candidate KB components, select the best-fit directional control valve and (if applicable) load-holding/brake protection valve, with a compact justification. You may ONLY select catalog ids supplied; never invent a model, id or KB number.
+
+${lenRule}
+
+Respond with ONLY a single valid JSON object — no markdown fences, no preamble — matching exactly this schema (every string value max 12 words):
+{"dcv":{"id":string,"selection":string,"reason":string,"riskIfWrong":string,"standard":string},"protection":{"id":string|null,"component":string,"selection":string,"reason":string,"riskIfWrong":string,"standard":string},"correctionWarning":string|null}
+
+riskIfWrong combines the safety risk AND what happens if omitted into one 12-word sentence.
+correctionWarning: if the brief mentioned open-centre DCV but the pump requires closed-centre, explain in 12 words or fewer; otherwise null.`;
+
+  const questionA = `${briefCtx}
 DCV catalog: ${JSON.stringify(catalog.dcvClosed)}
 Protection/load-holding catalog (empty if not applicable): ${JSON.stringify(catalog.protection)}
 
-Select ids and write the full 5-station valve safety case for this specific brief.`;
+Select ids and justify for this specific brief.`;
+
+  const sysPromptB = `You are HydroMind's System Design Safety Case Writer for marine/offshore hydraulics. Given the brief, write a compact safety case for 3 standard valve stations: relief valve, emergency unload/dump valve, and test points/gauges. Reason from engineering principles only — there is no parts catalog for these stations.
+
+${lenRule}
+
+Respond with ONLY a single valid JSON object — no markdown fences, no preamble — matching exactly this schema (every string value max 12 words):
+{"relief":{"selection":string,"reason":string,"riskIfWrong":string,"standard":string},"dump":{"selection":string,"reason":string,"riskIfWrong":string,"standard":string},"testPoints":{"selection":string,"reason":string,"riskIfWrong":string,"standard":string}}
+
+riskIfWrong combines the safety risk AND what happens if omitted into one 12-word sentence.`;
+
+  const questionB = `${briefCtx}
+
+Write the relief, dump and test-point safety case for this specific brief.`;
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 90000);
@@ -1376,28 +1393,38 @@ Select ids and write the full 5-station valve safety case for this specific brie
     const headers = { 'Content-Type': 'application/json', 'X-Client-Fingerprint': getClientFingerprint() };
     if (hmTok) headers['Authorization'] = 'Bearer ' + hmTok;
 
-    const resp = await fetch(BACKEND_KB_CHAT, {
+    const callKbChat = (question, system) => fetch(BACKEND_KB_CHAT, {
       method: 'POST',
       headers,
       signal: controller.signal,
-      body: JSON.stringify({ question, history: [], system: sysPrompt, answerPolicy: { strictRelevance: false, allowEngineeringFallback: true, domain: 'marine_offshore_hydraulics' } })
+      body: JSON.stringify({ question, history: [], system, answerPolicy: { strictRelevance: false, allowEngineeringFallback: true, domain: 'marine_offshore_hydraulics' } })
     });
 
-    if (resp.status === 429) {
-      const errData = await resp.json().catch(() => ({}));
-      if (errData && errData.error === 'Daily free query limit reached') {
-        showSdNotice('Daily Free Limit Reached', 'You have used all 10 free queries for today. Limit resets at midnight UTC — upgrade to Pro for unlimited access. Using rule-based valve selection for now.', 'warn');
-      } else {
-        showSdNotice('Rate Limit', 'Please wait a moment before trying again. Using rule-based valve selection for now.', 'warn');
-      }
-      selectValvesFallback();
-      return;
-    }
-    if (!resp.ok) throw new Error('Server error ' + resp.status);
+    const [respA, respB] = await Promise.all([callKbChat(questionA, sysPromptA), callKbChat(questionB, sysPromptB)]);
 
-    const data = await resp.json();
-    const answerText = (data.content && data.content[0] && data.content[0].text) || '';
-    const parsed = extractJsonFromText(answerText);
+    for (const resp of [respA, respB]) {
+      if (resp.status === 429) {
+        const errData = await resp.json().catch(() => ({}));
+        if (errData && errData.error === 'Daily free query limit reached') {
+          showSdNotice('Daily Free Limit Reached', 'You have used all 10 free queries for today. Limit resets at midnight UTC — upgrade to Pro for unlimited access. Using rule-based valve selection for now.', 'warn');
+        } else {
+          showSdNotice('Rate Limit', 'Please wait a moment before trying again. Using rule-based valve selection for now.', 'warn');
+        }
+        selectValvesFallback();
+        return;
+      }
+      if (!resp.ok) throw new Error('Server error ' + resp.status);
+    }
+
+    const dataA = await respA.json();
+    const dataB = await respB.json();
+    const answerTextA = (dataA.content && dataA.content[0] && dataA.content[0].text) || '';
+    const answerTextB = (dataB.content && dataB.content[0] && dataB.content[0].text) || '';
+    const parsed = extractJsonFromText(answerTextA);
+    const parsedB = extractJsonFromText(answerTextB);
+    parsed.relief = parsedB.relief;
+    parsed.dump = parsedB.dump;
+    parsed.testPoints = parsedB.testPoints;
 
     const dcvPick = catalog.dcvClosed.find(i => i.id === parsed.dcv?.id) || catalog.dcvClosed[0];
     const protectionPick = catalog.protection.length ? (catalog.protection.find(i => i.id === parsed.protection?.id) || catalog.protection[0]) : null;
