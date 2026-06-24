@@ -206,6 +206,12 @@
   align-items: center; gap: 10px;
 }
 .fb-success.visible { display: flex; }
+.fb-error {
+  display: none; background: var(--danger-dim); border: 1px solid var(--danger);
+  border-radius: var(--radius); padding: 14px 18px; margin-top: 16px;
+  font-size: 14px; font-weight: 600; color: var(--danger);
+  align-items: center; gap: 10px;
+}
 @media (max-width: 700px) { .feedback-grid { grid-template-columns: 1fr; } .feedback-body { padding: 24px 20px; } .feedback-header { padding: 22px 20px; } }
 
 </style>
@@ -275,7 +281,7 @@
     <div style="font-size:11px;font-weight:700;color:var(--success);">✓ Ad-Free</div>
     <div style="font-size:9.5px;color:var(--text2);margin-top:2px;">Pro subscriber benefit</div>
   </div>
-  <div class="sb-pro-cta"><h4>Pro — Most Popular</h4><ul><li>Unlimited queries</li><li>All 6 advisor modes</li><li>Full 155-doc KB</li><li>BOM export</li></ul><a href="#" onclick="event.preventDefault(); openAuthModal && openAuthModal('register');" class="btn btn-primary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">Start Free Trial →</a></div>
+  <div class="sb-pro-cta"><h4>Pro — Most Popular</h4><ul><li>Unlimited queries</li><li>All 6 advisor modes</li><li>Full 161-doc KB</li><li>BOM export</li></ul><a href="#" onclick="event.preventDefault(); openAuthModal && openAuthModal('register');" class="btn btn-primary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">Start Free Trial →</a></div>
 </aside>
 
 <!-- MAIN -->
@@ -353,7 +359,7 @@
       <ul class="plan-features">
         <li><span class="fi yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span><strong>Unlimited</strong> AI queries</li>
         <li><span class="fi yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>All 6 advisor modes</li>
-        <li><span class="fi yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>Full 155-document KB access</li>
+        <li><span class="fi yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>Full 161-document KB access</li>
         <li><span class="fi yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>System design tool + BOM export</li>
         <li><span class="fi yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>Crane fault diagnostic — all models</li>
         <li><span class="fi yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>PDF downloads & offline KB</li>
@@ -413,7 +419,7 @@
         <tr><td>Advisor modes</td><td class="plan-col"><span class="partial">General only</span></td><td class="plan-col featured-col"><strong>All 6 modes</strong></td><td class="plan-col">All 6 modes</td></tr>
         <tr><td>Conversation history</td><td class="plan-col">10 turns</td><td class="plan-col featured-col">Unlimited</td><td class="plan-col">Unlimited</td></tr>
         <tr><td class="section-row" colspan="4">Knowledge Base</td></tr>
-        <tr><td>KB document access</td><td class="plan-col"><span class="partial">5 documents</span></td><td class="plan-col featured-col"><strong>All 155 docs</strong></td><td class="plan-col">All + Custom</td></tr>
+        <tr><td>KB document access</td><td class="plan-col"><span class="partial">5 documents</span></td><td class="plan-col featured-col"><strong>All 161 docs</strong></td><td class="plan-col">All + Custom</td></tr>
         <tr><td>PDF download</td><td class="plan-col"><span class="cross">✕</span></td><td class="plan-col featured-col"><span class="check">✓</span></td><td class="plan-col"><span class="check">✓</span></td></tr>
         <tr><td>Custom KB upload</td><td class="plan-col"><span class="cross">✕</span></td><td class="plan-col featured-col"><span class="cross">✕</span></td><td class="plan-col"><span class="check">✓</span></td></tr>
         <tr><td class="section-row" colspan="4">System Design & Diagnostics</td></tr>
@@ -459,7 +465,7 @@
           What hydraulic systems and cranes does HydroMind.AI cover?
           <span class="faq-icon">+</span>
         </div>
-        <div class="faq-a">The AI is trained on 155 KB documents covering Liebherr, NOV, MacGregor, SeaTrax, Favelle Favco, Rexroth, Eaton, Danfoss, Sauer, Parker, Sun Hydraulics, and more. It covers offshore cranes, marine deck equipment, industrial hydraulic systems, HPUs, and mobile plant across ISO 4413 and DNV-ST-0378 standards.</div>
+        <div class="faq-a">The AI is trained on 161 KB documents covering Liebherr, NOV, MacGregor, SeaTrax, Favelle Favco, Rexroth, Eaton, Danfoss, Sauer, Parker, Sun Hydraulics, and more. It covers offshore cranes, marine deck equipment, industrial hydraulic systems, HPUs, and mobile plant across ISO 4413 and DNV-ST-0378 standards.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFAQ(this)">
@@ -564,6 +570,7 @@
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
           Thank you! Your feedback has been sent to the HydroMind team. We'll review it and respond if needed.
         </div>
+        <div class="fb-error" id="fb-error"></div>
       </div>
     </div>
   </div>
