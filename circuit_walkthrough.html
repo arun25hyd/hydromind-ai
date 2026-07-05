@@ -245,9 +245,9 @@ canvas.cw-schematic-preview{width:100%;height:auto}
         </div>
 
         <div class="cw-field">
-          <label class="cw-label">Pump System *</label>
+          <label class="cw-label">Pump System <span style="font-weight:400;color:var(--text-dim,#8a919e);">(leave blank if unsure — AI will identify it from the schematic)</span></label>
           <select class="cw-select" id="f-pump">
-            <option value="">-- Select --</option>
+            <option value="">-- Don't know / let AI identify from schematic --</option>
             <option value="Variable displacement piston pump — Load-sensing (LS)">Variable displacement piston pump — Load-sensing (LS)</option>
             <option value="Variable displacement piston pump — Pressure compensated">Variable displacement piston pump — Pressure compensated</option>
             <option value="Fixed displacement piston pump">Fixed displacement piston pump</option>
@@ -261,15 +261,15 @@ canvas.cw-schematic-preview{width:100%;height:auto}
         </div>
 
         <div class="cw-field">
-          <label class="cw-label">Pilot Circuit Configuration *</label>
+          <label class="cw-label">Pilot Circuit Configuration <span style="font-weight:400;color:var(--text-dim,#8a919e);">(leave blank if unsure — AI will identify it from the schematic)</span></label>
           <select class="cw-select" id="f-pilot">
-            <option value="">-- Select --</option>
+            <option value="">-- Don't know / let AI identify from schematic --</option>
             <option value="Load-sensing derived from main pump LS port">Load-sensing derived from main pump LS port</option>
             <option value="Separate charge pump">Separate charge pump</option>
             <option value="Swashplate-mounted charge pump">Swashplate-mounted charge pump</option>
             <option value="External gear pump pilot supply">External gear pump pilot supply</option>
             <option value="No separate pilot — main pressure reduced via PRV">No separate pilot — main pressure reduced via PRV</option>
-            <option value="Other / Unknown">Other / Unknown</option>
+            <option value="Other">Other</option>
           </select>
         </div>
 
@@ -339,6 +339,8 @@ const BACKEND = 'https://hydromind-backend.onrender.com';
 
 // ── STATE ──────────────────────────────────────────────────────────────────
 let uploadedFile = null;
+let lastAnalysisResult = null;
+let lastCircuitContext = null;
 
 // ── STEP NAVIGATION ────────────────────────────────────────────────────────
 function showPanel(id) {
@@ -440,8 +442,12 @@ async function runAnalysis() {
   const pump      = document.getElementById('f-pump').value.trim();
   const pilot     = document.getElementById('f-pilot').value.trim();
 
-  if (!equipment || !pump || !pilot) {
-    alert('Please fill in Equipment Type, Pump System, and Pilot Configuration — these are required for the AI to understand your circuit.');
+  if (!equipment) {
+    alert('Please select an Equipment Type — this is required for the AI to understand your circuit.');
+    return;
+  }
+  if (!uploadedFile && (!pump || !pilot)) {
+    alert('Without a schematic image, Pump System and Pilot Configuration are required so the AI has something to work from. Either upload a schematic, or fill these in.');
     return;
   }
 
@@ -467,6 +473,7 @@ async function runAnalysis() {
     formData.append('pumpType', pump);
     formData.append('pilotConfig', pilot);
     formData.append('issue', document.getElementById('f-issue').value.trim());
+    lastCircuitContext = { equipment, oem: document.getElementById('f-oem').value.trim(), pumpType: pump, pilotConfig: pilot };
     if (document.getElementById('f-notes').value.trim()) {
       formData.append('issue', (document.getElementById('f-issue').value.trim() + ' ' + document.getElementById('f-notes').value.trim()).trim());
     }
@@ -527,6 +534,39 @@ function renderResults(d) {
       <div class="cw-explanation">${esc(d.explanation)}</div>
     </div>
   `;
+
+  // Pump analysis — identified from schematic symbols
+  if (d.pumpAnalysis && d.pumpAnalysis.length) {
+    html += `<div class="cw-section"><div class="cw-section-title">Pump Configuration — Identified from Schematic</div>
+      <table class="cw-table">
+        <thead><tr><th>Pump</th><th>Displacement Type</th><th>Control Type</th><th>Source</th></tr></thead>
+        <tbody>`;
+    d.pumpAnalysis.forEach(p => {
+      html += `<tr>
+        <td><span class="point">${esc(p.pumpLabel)}</span></td>
+        <td>${esc(p.displacementType)}</td>
+        <td>${esc(p.controlType)}</td>
+        <td style="font-size:12px;color:var(--text-dim,#8a919e)">${esc(p.identifiedFrom || '')}</td>
+      </tr>`;
+    });
+    html += `</tbody></table></div>`;
+  }
+
+  // Line identification — pressure/return/pilot classification
+  if (d.lineIdentification && d.lineIdentification.length) {
+    html += `<div class="cw-section"><div class="cw-section-title">Line Identification — Pressure, Return &amp; Pilot Paths</div>
+      <table class="cw-table">
+        <thead><tr><th>Line Type</th><th>Path</th><th>Notes</th></tr></thead>
+        <tbody>`;
+    d.lineIdentification.forEach(l => {
+      html += `<tr>
+        <td><span class="point">${esc(l.lineType)}</span></td>
+        <td>${esc(l.path)}</td>
+        <td>${esc(l.notes || '')}</td>
+      </tr>`;
+    });
+    html += `</tbody></table></div>`;
+  }
 
   // Pressure path
   if (d.pressurePath && d.pressurePath.length) {
@@ -589,7 +629,79 @@ function renderResults(d) {
     html += `</div></div>`;
   }
 
+  // Follow-up question box
+  html += `
+    <div class="cw-section" id="cw-followup-section">
+      <div class="cw-section-title">Ask a Question About This Circuit</div>
+      <p style="color:var(--text-dim,#8a919e);font-size:14px;margin-bottom:12px;">
+        e.g. "How does the main hoist circuit work?" or "How does the auxiliary winch behave when switching from normal to man-lift operation?"
+      </p>
+      <div style="display:flex;gap:8px;">
+        <input class="cw-input" id="cw-followup-input" type="text" placeholder="Ask about this specific circuit..." style="flex:1;">
+        <button class="cw-upload-btn" id="cw-followup-btn" onclick="askFollowup()">Ask</button>
+      </div>
+      <div id="cw-followup-thread" style="margin-top:16px;"></div>
+    </div>
+  `;
+
+  lastAnalysisResult = d;
+
   wrap.innerHTML = html;
+}
+
+// ── FOLLOW-UP QUESTIONS ─────────────────────────────────────────────────────
+async function askFollowup() {
+  const input = document.getElementById('cw-followup-input');
+  const question = input.value.trim();
+  if (!question) return;
+
+  const thread = document.getElementById('cw-followup-thread');
+  const btn = document.getElementById('cw-followup-btn');
+
+  const qEl = document.createElement('div');
+  qEl.style.cssText = 'margin-bottom:8px;font-weight:600;';
+  qEl.textContent = '❓ ' + question;
+  thread.appendChild(qEl);
+
+  const aEl = document.createElement('div');
+  aEl.style.cssText = 'margin-bottom:20px;padding:12px 14px;background:rgba(255,255,255,0.03);border-radius:8px;white-space:pre-wrap;';
+  aEl.textContent = 'Thinking...';
+  thread.appendChild(aEl);
+
+  input.value = '';
+  input.disabled = true;
+  btn.disabled = true;
+
+  try {
+    const formData = new FormData();
+    if (uploadedFile) formData.append('schematic', uploadedFile, uploadedFile.name);
+    if (lastAnalysisResult) formData.append('previousAnalysis', JSON.stringify(lastAnalysisResult));
+    if (lastCircuitContext) formData.append('circuitContext', JSON.stringify(lastCircuitContext));
+    formData.append('question', question);
+
+    const headers = {};
+    const tok = typeof hmGetToken === 'function' ? hmGetToken() : null;
+    if (tok) headers['Authorization'] = 'Bearer ' + tok;
+
+    const resp = await fetch(BACKEND + '/api/kb/circuit-followup', {
+      method: 'POST',
+      headers,
+      body: formData
+    });
+    const data = await resp.json();
+
+    if (!resp.ok || !data.ok) {
+      aEl.textContent = '⚠ ' + (data.error || 'Something went wrong — please retry.');
+    } else {
+      aEl.textContent = data.answer;
+    }
+  } catch (err) {
+    aEl.textContent = '⚠ Connection error: ' + err.message;
+  } finally {
+    input.disabled = false;
+    btn.disabled = false;
+    input.focus();
+  }
 }
 
 // ── UTILITIES ──────────────────────────────────────────────────────────────
