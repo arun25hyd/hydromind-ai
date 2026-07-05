@@ -628,21 +628,33 @@ function humanizeCategory(cat) {
     .replace(/\b\w/g, function(c) { return c.toUpperCase(); });
 }
 
+var OTHER_CATS = new Set();
+
 function renderFilterChips() {
   var counts = {};
   KB_DATA.forEach(function(d) { counts[d.cat] = (counts[d.cat] || 0) + 1; });
-  var cats = Object.keys(counts).sort(function(a, b) { return counts[b] - counts[a]; });
+  var allCats = Object.keys(counts).sort(function(a, b) { return counts[b] - counts[a]; });
+
+  var MIN_COUNT = 3;
+  var major = allCats.filter(function(c) { return counts[c] >= MIN_COUNT; });
+  var minor = allCats.filter(function(c) { return counts[c] < MIN_COUNT; });
+  OTHER_CATS = new Set(minor);
+  var otherTotal = minor.reduce(function(sum, c) { return sum + counts[c]; }, 0);
 
   var allCount = document.getElementById('fc-all');
   if (allCount) allCount.textContent = KB_DATA.length;
 
   var container = document.getElementById('dynamic-filter-chips');
   if (!container) return;
-  container.innerHTML = cats.map(function(cat) {
-    var safeId = cat.replace(/[^a-z0-9]/g, '-');
+  var html = major.map(function(cat) {
+    var safeId = cat.replace(/[^a-z0-9]/gi, '-');
     return '<div class="filter-chip" data-cat="' + cat + '" onclick="setFilter(this,\'' + cat.replace(/'/g, "\\'") + '\')">' +
       humanizeCategory(cat) + ' <span class="chip-count" id="fc-' + safeId + '">' + counts[cat] + '</span></div>';
   }).join('');
+  if (otherTotal > 0) {
+    html += '<div class="filter-chip" data-cat="__other__" onclick="setFilter(this,\'__other__\')">Other <span class="chip-count" id="fc-other">' + otherTotal + '</span></div>';
+  }
+  container.innerHTML = html;
 }
 
 function loadKnowledgeBaseData() {
@@ -757,7 +769,7 @@ function askAI(kbNum, title) {
 function renderCards() {
   var grid = document.getElementById('kb-grid');
   var filtered = KB_DATA.filter(function(d) {
-    var matchCat  = activeFilter === 'all' || d.cat === activeFilter;
+    var matchCat  = activeFilter === 'all' || (activeFilter === '__other__' ? OTHER_CATS.has(d.cat) : d.cat === activeFilter);
     var matchText = !searchTerm || [d.title,d.mfr,d.num,d.rawNum,d.desc,d.type,d.cat].some(function(f) { return String(f || '').toLowerCase().indexOf(searchTerm) > -1; });
     return matchCat && matchText;
   });
