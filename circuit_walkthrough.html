@@ -535,18 +535,19 @@ function renderResults(d) {
     </div>
   `;
 
-  // Pump analysis — identified from schematic symbols
-  if (d.pumpAnalysis && d.pumpAnalysis.length) {
-    html += `<div class="cw-section"><div class="cw-section-title">Pump Configuration — Identified from Schematic</div>
+  // Component identification — ALL components (pumps, valves, cylinders, motors,
+  // accumulators, filters, etc.), identified from schematic symbols, not just pumps
+  if (d.componentIdentification && d.componentIdentification.length) {
+    html += `<div class="cw-section"><div class="cw-section-title">Component Identification — Read from Schematic</div>
       <table class="cw-table">
-        <thead><tr><th>Pump</th><th>Displacement Type</th><th>Control Type</th><th>Source</th></tr></thead>
+        <thead><tr><th>Component</th><th>Type</th><th>Details</th><th>Source</th></tr></thead>
         <tbody>`;
-    d.pumpAnalysis.forEach(p => {
+    d.componentIdentification.forEach(c => {
       html += `<tr>
-        <td><span class="point">${esc(p.pumpLabel)}</span></td>
-        <td>${esc(p.displacementType)}</td>
-        <td>${esc(p.controlType)}</td>
-        <td style="font-size:12px;color:var(--text-dim,#8a919e)">${esc(p.identifiedFrom || '')}</td>
+        <td><span class="point">${esc(c.label)}</span></td>
+        <td>${esc(c.componentType)}</td>
+        <td>${esc(c.details || '')}</td>
+        <td style="font-size:12px;color:var(--text-dim,#8a919e)">${esc(c.identifiedFrom || '')}</td>
       </tr>`;
     });
     html += `</tbody></table></div>`;
