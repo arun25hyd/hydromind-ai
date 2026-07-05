@@ -276,6 +276,7 @@
     <a href="index.html" class="navbar-link">Home</a>
     <a href="ai_advisor.html" class="navbar-link">AI Advisor</a>
     <a href="system_design.html" class="navbar-link">System Design</a>
+    <a href="circuit_walkthrough.html" class="navbar-link">Circuit Walkthrough</a>
     <a href="crane_diagnostic.html" class="navbar-link">Crane Diagnostic</a>
     <a href="knowledge_base.html" class="navbar-link active">Knowledge Base</a>
     <a href="pricing.html" class="navbar-link">Pricing</a>
@@ -359,7 +360,7 @@
       <div>
         <div class="section-label">Hydraulic Intelligence Library</div>
         <h1>Knowledge Base</h1>
-        <p>155 indexed OEM manuals, service guides, standards and technical references — covering cranes, pumps, valves, PLC, marine systems and offshore rules. Searchable, categorised, AI-queryable.</p>
+        <p>Growing library of indexed OEM manuals, service guides, standards and technical references — covering cranes, pumps, valves, PLC, marine systems and offshore rules. Searchable, categorised, AI-queryable.</p>
       </div>
       <div class="kb-stats">
         <div class="kb-stat"><div class="sv" id="stat-docs">155</div><div class="sl">Documents</div></div>
@@ -387,17 +388,8 @@
     <!-- Filter chips -->
     <div class="filter-bar">
       <span class="filter-bar-label">Filter:</span>
-      <div class="filter-chip active" data-cat="all"  onclick="setFilter(this,'all')">All <span class="chip-count" id="fc-all">155</span></div>
-      <div class="filter-chip" data-cat="cranes"       onclick="setFilter(this,'cranes')">Cranes <span class="chip-count" id="fc-cranes">37</span></div>
-      <div class="filter-chip" data-cat="valves"       onclick="setFilter(this,'valves')">Valves <span class="chip-count" id="fc-valves">40</span></div>
-      <div class="filter-chip" data-cat="pumps"        onclick="setFilter(this,'pumps')">Pumps <span class="chip-count" id="fc-pumps">19</span></div>
-      <div class="filter-chip" data-cat="hydraulics"   onclick="setFilter(this,'hydraulics')">Hydraulics <span class="chip-count" id="fc-hydraulics">20</span></div>
-      <div class="filter-chip" data-cat="marine"       onclick="setFilter(this,'marine')">Marine <span class="chip-count" id="fc-marine">13</span></div>
-      <div class="filter-chip" data-cat="maintenance"  onclick="setFilter(this,'maintenance')">Maintenance <span class="chip-count" id="fc-maintenance">8</span></div>
-      <div class="filter-chip" data-cat="engines"      onclick="setFilter(this,'engines')">Engines <span class="chip-count" id="fc-engines">8</span></div>
-      <div class="filter-chip" data-cat="plc"          onclick="setFilter(this,'plc')">PLC <span class="chip-count" id="fc-plc">5</span></div>
-      <div class="filter-chip" data-cat="standards"    onclick="setFilter(this,'standards')">Standards <span class="chip-count" id="fc-standards">4</span></div>
-      <div class="filter-chip" data-cat="hydromind"    onclick="setFilter(this,'hydromind')">Skill <span class="chip-count" id="fc-hydromind">1</span></div>
+      <div class="filter-chip active" data-cat="all"  onclick="setFilter(this,'all')">All <span class="chip-count" id="fc-all">—</span></div>
+      <div id="dynamic-filter-chips"></div>
     </div>
 
     <div class="kb-verified-panel">
@@ -627,38 +619,60 @@ function updateKbPageStats(stats) {
   if (docs) docs.textContent = KB_STATS.totalDocuments || KB_DATA.length;
   if (pages) pages.textContent = compactNumber(KB_STATS.totalPages);
   if (chunks) chunks.textContent = compactNumber(KB_STATS.totalChunks);
-  if (sources) sources.textContent = KB_STATS.manufacturers || '33';
+  if (sources) sources.textContent = KB_STATS.manufacturers || '—';
+}
+
+function humanizeCategory(cat) {
+  return String(cat || 'uncategorized')
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+}
+
+function renderFilterChips() {
+  var counts = {};
+  KB_DATA.forEach(function(d) { counts[d.cat] = (counts[d.cat] || 0) + 1; });
+  var cats = Object.keys(counts).sort(function(a, b) { return counts[b] - counts[a]; });
+
+  var allCount = document.getElementById('fc-all');
+  if (allCount) allCount.textContent = KB_DATA.length;
+
+  var container = document.getElementById('dynamic-filter-chips');
+  if (!container) return;
+  container.innerHTML = cats.map(function(cat) {
+    var safeId = cat.replace(/[^a-z0-9]/g, '-');
+    return '<div class="filter-chip" data-cat="' + cat + '" onclick="setFilter(this,\'' + cat.replace(/'/g, "\\'") + '\')">' +
+      humanizeCategory(cat) + ' <span class="chip-count" id="fc-' + safeId + '">' + counts[cat] + '</span></div>';
+  }).join('');
 }
 
 function loadKnowledgeBaseData() {
-  return fetch('data/kb-data.json', { cache: 'no-store' })
+  return fetch('https://hydromind-backend.onrender.com/api/kb/public-stats', { cache: 'no-store' })
     .then(function(res) {
       if (!res.ok) throw new Error('KB data unavailable');
       return res.json();
     })
     .then(function(raw) {
-      KB_DATA = (raw.entries || []).map(normalizeKbEntry);
-      if ((raw.stats?.categories?.['HydroMind KB'] || 0) > 0 && !KB_DATA.some(function(d) { return d.cat === 'hydromind'; })) {
-        KB_DATA.push(normalizeKbEntry({
-          num: 'KB155',
-          title: 'HydroMind AI Advisor Skill v2.5 Knowledge Expansion',
-          desc: 'Skill.md verified entry covering KB34-KB42: accumulator engineering, DNV offshore crane rules, cylinder and seal engineering, ISO 4413, VFD and motor engineering, ATEX, IEC 60204-1, and electrohydraulic control systems.',
-          cat: 'hydromind',
-          brand: 'HydroMind.AI',
-          pages: 1,
-          chunks: 42
-        }));
-      }
-      updateKbPageStats(raw.stats || {});
-    })
-    .catch(function() {
-      KB_DATA = KB_DATA.map(normalizeKbEntry);
-      updateKbPageStats({
-        totalDocuments: KB_DATA.length,
-        totalPages: KB_DATA.reduce(function(sum, d) { return sum + (d.pages || 0); }, 0),
-        totalChunks: KB_DATA.reduce(function(sum, d) { return sum + (d.chunks || 0); }, 0),
-        manufacturers: new Set(KB_DATA.map(function(d) { return d.mfr; })).size
+      KB_DATA = (raw.entries || []).map(function(e) {
+        return normalizeKbEntry({
+          num: e.num,
+          title: e.title,
+          cat: e.cat,
+          brand: e.brand,
+          mfr: e.brand,
+          chunks: e.chunkCount,
+          pages: e.schematicCount,
+          year: e.addedDate ? e.addedDate.slice(0, 4) : ''
+        });
       });
+      updateKbPageStats(raw.stats || {});
+      renderFilterChips();
+    })
+    .catch(function(err) {
+      console.error('Failed to load live KB data:', err);
+      var docs = document.getElementById('stat-docs');
+      if (docs) docs.textContent = '—';
+      var desc = document.querySelector('.kb-hero-desc');
+      if (desc) desc.textContent = 'Knowledge base is temporarily unavailable. Please try again shortly.';
     });
 }
 
