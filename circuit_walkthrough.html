@@ -569,51 +569,61 @@ function renderResults(d) {
     html += `</tbody></table></div>`;
   }
 
-  // Pressure path
-  if (d.pressurePath && d.pressurePath.length) {
-    html += `<div class="cw-section"><div class="cw-section-title">Pressure Path — How Oil Flows Through This Circuit</div><div class="cw-path">`;
-    d.pressurePath.forEach(s => {
-      html += `
-        <div class="cw-path-step">
-          <div class="cw-path-num">${s.step}</div>
-          <div class="cw-path-body">
-            <div class="cw-path-component">${esc(s.component)}</div>
-            <div class="cw-path-desc">${esc(s.description)}</div>
-            ${s.typicalPressure ? `<div class="cw-path-pressure">${esc(s.typicalPressure)}</div>` : ''}
-          </div>
-        </div>`;
-    });
-    html += `</div></div>`;
-  }
+  // Per-function walkthrough — one block per distinct machine function
+  // (Main Hoist, Aux Hoist, Luffing/Boom, Slewing, etc.) actually found on the schematic
+  if (d.circuitFunctions && d.circuitFunctions.length) {
+    d.circuitFunctions.forEach(fn => {
+      html += `<div class="cw-section" style="border-left:3px solid var(--teal-br,#06b6d4);padding-left:16px;">
+        <div class="cw-section-title" style="font-size:20px;">${esc(fn.functionName)}</div>`;
+      if (fn.summary) {
+        html += `<p style="color:var(--text-dim,#8a919e);margin-bottom:16px;">${esc(fn.summary)}</p>`;
+      }
 
-  // Normal values
-  if (d.normalValues && d.normalValues.length) {
-    html += `<div class="cw-section"><div class="cw-section-title">Normal Operating Values — What to Expect at Each Test Point</div>
-      <table class="cw-table">
-        <thead><tr><th>Test Point</th><th>Normal Range</th><th>What It Indicates</th></tr></thead>
-        <tbody>`;
-    d.normalValues.forEach(v => {
-      html += `<tr>
-        <td><span class="point">${esc(v.point)}</span></td>
-        <td style="font-family:var(--mono);color:var(--teal-br)">${esc(v.range)}</td>
-        <td>${esc(v.meaning)}</td>
-      </tr>`;
-    });
-    html += `</tbody></table></div>`;
-  }
+      if (fn.pressurePath && fn.pressurePath.length) {
+        html += `<div class="cw-section-title" style="font-size:15px;margin-top:12px;">Pressure Path</div><div class="cw-path">`;
+        fn.pressurePath.forEach(s => {
+          html += `
+            <div class="cw-path-step">
+              <div class="cw-path-num">${s.step}</div>
+              <div class="cw-path-body">
+                <div class="cw-path-component">${esc(s.component)}</div>
+                <div class="cw-path-desc">${esc(s.description)}</div>
+                ${s.typicalPressure ? `<div class="cw-path-pressure">${esc(s.typicalPressure)}</div>` : ''}
+              </div>
+            </div>`;
+        });
+        html += `</div>`;
+      }
 
-  // Failure modes
-  if (d.failureModes && d.failureModes.length) {
-    html += `<div class="cw-section"><div class="cw-section-title">Failure Modes — How This Circuit Fails and How to Find the Cause</div>`;
-    d.failureModes.forEach(f => {
-      html += `
-        <div class="cw-failure">
-          <div class="cw-failure-symptom">🔴 ${esc(f.symptom)}</div>
-          <div class="cw-failure-cause"><strong>Root cause:</strong> ${esc(f.cause)}</div>
-          <div class="cw-failure-test"><strong>Field test:</strong> ${esc(f.diagnosticTest)}</div>
-        </div>`;
+      if (fn.normalValues && fn.normalValues.length) {
+        html += `<div class="cw-section-title" style="font-size:15px;margin-top:16px;">Normal Operating Values</div>
+          <table class="cw-table">
+            <thead><tr><th>Test Point</th><th>Normal Range</th><th>What It Indicates</th></tr></thead>
+            <tbody>`;
+        fn.normalValues.forEach(v => {
+          html += `<tr>
+            <td><span class="point">${esc(v.point)}</span></td>
+            <td style="font-family:var(--mono);color:var(--teal-br)">${esc(v.range)}</td>
+            <td>${esc(v.meaning)}</td>
+          </tr>`;
+        });
+        html += `</tbody></table>`;
+      }
+
+      if (fn.failureModes && fn.failureModes.length) {
+        html += `<div class="cw-section-title" style="font-size:15px;margin-top:16px;">Failure Modes</div>`;
+        fn.failureModes.forEach(f => {
+          html += `
+            <div class="cw-failure">
+              <div class="cw-failure-symptom">🔴 ${esc(f.symptom)}</div>
+              <div class="cw-failure-cause"><strong>Root cause:</strong> ${esc(f.cause)}</div>
+              <div class="cw-failure-test"><strong>Field test:</strong> ${esc(f.diagnosticTest)}</div>
+            </div>`;
+        });
+      }
+
+      html += `</div>`;
     });
-    html += `</div>`;
   }
 
   // Safety notes
