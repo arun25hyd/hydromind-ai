@@ -15,7 +15,7 @@ Every task is mission-critical. Screenshot = only proof of done. Never claim fix
 ## ▶ SESSION START — MANDATORY CHECKLIST (every session, no skip)
 
 1. Read this entire file
-2. Confirm CWD = /Users/Apple/Documents/HydroMind-Platform/web-frontend
+2. Confirm CWD = /Users/Apple/Documents/HydroMind-Website/Web
 3. Check git status — know current branch and last commit
 4. Inspect target file BEFORE any edit (read/grep — never assume structure)
 5. Take browser screenshot AFTER any push to verify
@@ -53,12 +53,18 @@ Every task is mission-critical. Screenshot = only proof of done. Never claim fix
 
 | Component       | Canonical Path                                               |
 |-----------------|--------------------------------------------------------------|
-| Web Frontend    | /Users/Apple/Documents/HydroMind-Platform/web-frontend       |
-| Backend         | /Users/Apple/Documents/HydroMind-Platform/backend            |
-| Android App     | /Users/Apple/Documents/HydroMind-Platform/android-app        |
-| CLAUDE.md       | /Users/Apple/Documents/HydroMind-Platform/CLAUDE.md          |
-| SKILL.md        | /Users/Apple/Documents/HydroMind-Platform/SKILL.md           |
-| web CLAUDE.md   | /Users/Apple/Documents/HydroMind-Platform/web-frontend/CLAUDE.md |
+| Web Frontend    | /Users/Apple/Documents/HydroMind-Website/Web                 |
+| Backend         | /Users/Apple/Documents/HydroMind-Website/Backend              |
+| Android App     | /Users/Apple/Documents/AndroidStudioProjects/HydroMind        |
+| Web CLAUDE.md   | /Users/Apple/Documents/HydroMind-Website/Web/CLAUDE.md        |
+| Backend CLAUDE.md | /Users/Apple/Documents/HydroMind-Website/Backend/CLAUDE.md  |
+| Backend SKILL.md | /Users/Apple/Documents/HydroMind-Website/Backend/SKILL.md   |
+
+### NOTE — no single root CLAUDE.md/SKILL.md
+There is no shared root above Web/Backend with its own CLAUDE.md or
+SKILL.md — Web and Backend are separate git repos, each with their own
+CLAUDE.md (and Backend also has its own SKILL.md). Do not assume a parent
+HydroMind-Website/CLAUDE.md exists — it does not.
 
 ### DEAD PATHS — NEVER USE
 # /Users/admin/  ← OLD MACBOOK — DOES NOT EXIST ON NEW MACHINE
@@ -218,20 +224,20 @@ Files: index.html, knowledge_base.html, pricing.html, privacy.html, disclaimer.h
 
 ### Frontend
 ```bash
-cd /Users/Apple/Documents/HydroMind-Platform/web-frontend
+cd /Users/Apple/Documents/HydroMind-Website/Web
 git add -A && git commit -m "fix: description" && git push origin main
 ```
 
 ### Backend (ALWAYS node --check first)
 ```bash
-cd /Users/Apple/Documents/HydroMind-Platform/backend
+cd /Users/Apple/Documents/HydroMind-Website/Backend
 node --check server.js
 git add -A && git commit -m "fix: description" && git push origin main
 ```
 
 ### Emergency rollback
 ```bash
-cd /Users/Apple/Documents/HydroMind-Platform/web-frontend
+cd /Users/Apple/Documents/HydroMind-Website/Web
 git reset --hard <last-good-commit>
 git push origin main --force
 git commit --allow-empty -m "chore: force redeploy" && git push origin main
@@ -404,3 +410,67 @@ Legend bar: bottom 82px of canvas
 - AI Advisor sidebar: NO
 - Other pages: NO
 - All sidebars: "YOUR AD HERE" placeholder boxes only (3 per side)
+
+---
+
+## ▶ SECTION 12 — TECHNICAL MANAGER ORCHESTRATION LAYER
+
+This section governs HOW work is scoped and assigned. It does NOT replace
+Sections 1–11 above — paths, design system, git workflow, verification
+protocol, and circuit diagram standards still apply exactly as written.
+This section adds a decision layer on top: who works the job.
+
+### ROLE
+
+Claude acts as Technical Manager (TM) for every incoming task. TM does not
+skip straight to coding — TM scopes the job first, decides which specialist
+agent roles are actually needed (NOT a fixed pipeline), assigns scoped
+sub-tasks, reconciles results, and gives final sign-off per Section 8's
+verification protocol.
+
+### AVAILABLE AGENTS (`.claude/agents/`)
+
+| Agent | Pulled in when... | Skipped when... |
+|---|---|---|
+| Coding Agent | Any code is touched | Never skipped if there's a diff |
+| Hydraulic Specialist | Formulas, sizing math, valve/pump/motor/BOM logic, KB engineering content, circuit topology (Section 11) | Pure CSS/layout, pure deploy, no engineering math involved |
+| UI/UX Reviewer | Layout, sidebar, design tokens (Section 2/3) | No visual/layout change |
+| QA/Verification Agent | ALWAYS — final gate, never skipped | Never skipped |
+| Deploy/Ops Agent | Git push, branch merge, production build (Section 7) | Local-only change, not yet ready to ship |
+
+### TM WORKFLOW
+
+```
+1. SCOPE    → classify the job: code / formulas / layout / deploy
+2. ROSTER   → pick ONLY the agents this job needs — state assigned AND skipped, with reason
+3. ASSIGN   → scoped brief per agent, not "look at everything"
+4. RECONCILE → resolve conflicts between agent findings before sign-off
+5. SIGN-OFF → only after QA/Verification passes AND Section 8 screenshot
+              verification is done. Screenshot is still the only proof —
+              this section does not relax that rule.
+```
+
+### RULES
+
+- Never run a fixed 2-agent pipeline by default — scope first, assign by relevance.
+- Always state which agents were assigned and which were skipped, with the reason.
+- Hydraulic Specialist uses a lean code-audit report format (formula → status
+  → reference → issue → fix → severity) — not field-troubleshooting style.
+- QA/Verification is never skipped — it is the gate before Section 8's
+  browser-screenshot verification, not a replacement for it.
+- Circuit diagram work (Section 11) always pulls in Hydraulic Specialist —
+  the 32-point pre-push checklist and ISO 1219-1 rules are engineering
+  correctness checks, squarely in that agent's lane.
+- One TM question max if a critical scoping detail is missing.
+
+### PATHS — CORRECTED 2026-06-25
+
+Section 1 and Section 7 previously referenced the stale
+`/Users/Apple/Documents/HydroMind-Platform/...` paths. These have been
+corrected to the real on-disk locations: Web frontend at
+`/Users/Apple/Documents/HydroMind-Website/Web`, Backend at
+`/Users/Apple/Documents/HydroMind-Website/Backend`, Android app at
+`/Users/Apple/Documents/AndroidStudioProjects/HydroMind`. There is no
+shared root CLAUDE.md/SKILL.md above Web/Backend — each repo has its own
+(Backend also has its own SKILL.md). Do not reintroduce the
+`HydroMind-Platform` path anywhere in this file.

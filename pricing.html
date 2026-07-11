@@ -218,28 +218,58 @@
 
       <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
       <script>
-        Paddle.Environment.set('sandbox');
-        Paddle.Initialize({
-          token: 'test_2da0d696e31ba4d1e60ad45cdab'
-        });
-        // Auto-open checkout when arriving from a trial-conversion email link
-        // (?checkout=<paddle_price_id>&uid=<hm_user_id>&email=...), generated
-        // server-side by the trial-conversion cron job in server.js.
-        (function(){
-          var params = new URLSearchParams(window.location.search);
-          var priceId = params.get('checkout');
-          if (!priceId) return;
-          var email = params.get('email') || undefined;
-          var uid = params.get('uid') || '';
+        // Client-side token is fetched from the backend (never hardcoded here)
+        // so sandbox/live can be swapped by changing PADDLE_CLIENT_TOKEN/PADDLE_ENV
+        // server-side only. See GET /api/paddle/client-token in server.js.
+        (async function(){
+          const PADDLE_CONFIG_API = 'https://hydromind-backend.onrender.com/api/paddle/client-token';
+          const PADDLE_SUBSCRIPTION_API = 'https://hydromind-backend.onrender.com/api/subscription/status';
           try {
-            Paddle.Checkout.open({
-              items: [{ priceId: priceId, quantity: 1 }],
-              customer: email ? { email: email } : undefined,
-              customData: { hm_user_id: uid },
-              settings: { displayMode: 'overlay' }
-            });
+            var cfgRes = await fetch(PADDLE_CONFIG_API);
+            if (!cfgRes.ok) throw new Error('client-token fetch failed: ' + cfgRes.status);
+            var cfg = await cfgRes.json();
+            if (cfg.environment === 'sandbox') Paddle.Environment.set('sandbox');
+
+            var initOpts = { token: cfg.token };
+
+            // pwCustomer (Paddle Retain) — only for a signed-in user who already
+            // has a Paddle customer ID on file. Fetched fresh from the backend
+            // (source of truth), never read from the local session object.
+            var jwt = window.hmGetToken ? hmGetToken() : null;
+            if (jwt) {
+              try {
+                var subRes = await fetch(PADDLE_SUBSCRIPTION_API, { headers: { Authorization: 'Bearer ' + jwt } });
+                if (subRes.ok) {
+                  var sub = await subRes.json();
+                  if (sub.paddleCustomerId) initOpts.pwCustomer = { id: sub.paddleCustomerId };
+                }
+              } catch (e) {
+                console.error('[Paddle] subscription status fetch failed:', e);
+              }
+            }
+
+            Paddle.Initialize(initOpts);
+
+            // Auto-open checkout when arriving from a trial-conversion email link
+            // (?checkout=<paddle_price_id>&uid=<hm_user_id>&email=...), generated
+            // server-side by the trial-conversion cron job in server.js.
+            var params = new URLSearchParams(window.location.search);
+            var priceId = params.get('checkout');
+            if (!priceId) return;
+            var email = params.get('email') || undefined;
+            var uid = params.get('uid') || '';
+            try {
+              Paddle.Checkout.open({
+                items: [{ priceId: priceId, quantity: 1 }],
+                customer: email ? { email: email } : undefined,
+                customData: { hm_user_id: uid },
+                settings: { displayMode: 'overlay' }
+              });
+            } catch (e) {
+              console.error('[Paddle] Checkout auto-open failed:', e);
+            }
           } catch (e) {
-            console.error('[Paddle] Checkout auto-open failed:', e);
+            console.error('[Paddle] init failed:', e);
           }
         })();
       </script>
