@@ -215,6 +215,34 @@
 @media (max-width: 700px) { .feedback-grid { grid-template-columns: 1fr; } .feedback-body { padding: 24px 20px; } .feedback-header { padding: 22px 20px; } }
 
 </style>
+
+      <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+      <script>
+        Paddle.Environment.set('sandbox');
+        Paddle.Initialize({
+          token: 'test_2da0d696e31ba4d1e60ad45cdab'
+        });
+        // Auto-open checkout when arriving from a trial-conversion email link
+        // (?checkout=<paddle_price_id>&uid=<hm_user_id>&email=...), generated
+        // server-side by the trial-conversion cron job in server.js.
+        (function(){
+          var params = new URLSearchParams(window.location.search);
+          var priceId = params.get('checkout');
+          if (!priceId) return;
+          var email = params.get('email') || undefined;
+          var uid = params.get('uid') || '';
+          try {
+            Paddle.Checkout.open({
+              items: [{ priceId: priceId, quantity: 1 }],
+              customer: email ? { email: email } : undefined,
+              customData: { hm_user_id: uid },
+              settings: { displayMode: 'overlay' }
+            });
+          } catch (e) {
+            console.error('[Paddle] Checkout auto-open failed:', e);
+          }
+        })();
+      </script>
 </head>
 <body>
 

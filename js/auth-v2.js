@@ -8,6 +8,7 @@ const HM_USERS    = 'hm_users';
 const HM_HISTORY  = 'hm_history';
 const HM_TOKEN    = 'hm_token';
 const HM_AUTH_API = 'https://hydromind-backend.onrender.com/api/auth';
+const HM_API_BASE = 'https://hydromind-backend.onrender.com';
 
 /* ── Token storage (JWT from backend) ── */
 function hmGetToken(){ try{return localStorage.getItem(HM_TOKEN)||null;}catch{return null;} }
@@ -41,11 +42,99 @@ function openAuthModal(tab){
   if(!o)return;
   o.style.display='flex';
   document.body.style.overflow='hidden';
+  const tabLogin=document.getElementById('hmTab_login');if(tabLogin)tabLogin.style.display='';
+  const tabReg=document.getElementById('hmTab_register');if(tabReg)tabReg.style.display='';
+  const sub=document.getElementById('hmPanel_subscription');if(sub)sub.style.display='none';
   switchAuthTab(tab||'login');
   ['hmLoginEmail','hmLoginPass','hmRegFirst','hmRegLast','hmRegEmail','hmRegPass','hmForgotEmail']
     .forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   const e=document.getElementById('hmAuthError');if(e){e.style.display='none';e.textContent='';}
   const ok=document.getElementById('hmForgotOk');if(ok)ok.style.display='none';
+}
+
+/* ── Subscription management panel (logged-in users, active paid plan) ── */
+function openSubscriptionModal(){
+  const o=document.getElementById('hmAuthOverlay');
+  if(!o)return;
+  o.style.display='flex';
+  document.body.style.overflow='hidden';
+  ['login','register','forgot'].forEach(t=>{const p=document.getElementById('hmPanel_'+t);if(p)p.style.display='none';});
+  const tabLogin=document.getElementById('hmTab_login');if(tabLogin)tabLogin.style.display='none';
+  const tabReg=document.getElementById('hmTab_register');if(tabReg)tabReg.style.display='none';
+  const sub=document.getElementById('hmPanel_subscription');if(sub)sub.style.display='block';
+  loadSubscriptionStatus();
+}
+
+async function loadSubscriptionStatus(){
+  const token=hmGetToken();
+  const loading=document.getElementById('hmSubLoading');
+  const content=document.getElementById('hmSubContent');
+  const errBox=document.getElementById('hmSubError');
+  if(loading)loading.style.display='block';
+  if(content)content.style.display='none';
+  if(errBox)errBox.style.display='none';
+  const msg=document.getElementById('hmSubMsg');if(msg)msg.style.display='none';
+  if(!token){
+    if(loading)loading.style.display='none';
+    if(errBox){errBox.textContent='Please sign in to manage your plan.';errBox.style.display='block';}
+    return;
+  }
+  try{
+    const res=await fetch(HM_API_BASE+'/api/subscription/status',{headers:{'Authorization':'Bearer '+token}});
+    const data=await res.json().catch(()=>({}));
+    if(loading)loading.style.display='none';
+    if(!res.ok){
+      if(errBox){errBox.textContent=data.error||'Could not load subscription details.';errBox.style.display='block';}
+      return;
+    }
+    if(content)content.style.display='block';
+    const planName=document.getElementById('hmSubPlanName');
+    const renewDate=document.getElementById('hmSubRenewDate');
+    const canceledNotice=document.getElementById('hmSubCanceledNotice');
+    const cancelBtn=document.getElementById('hmSubCancelBtn');
+    const fmt=(iso)=>iso?new Date(iso).toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}):'—';
+    if(planName)planName.textContent=data.plan||'Free';
+    if(renewDate)renewDate.textContent=fmt(data.renewsAt);
+    if(data.status==='canceled'){
+      if(canceledNotice){canceledNotice.textContent='Your subscription is canceled and will not renew. You keep full access until '+fmt(data.renewsAt)+'.';canceledNotice.style.display='block';}
+      if(cancelBtn)cancelBtn.style.display='none';
+    }else{
+      if(canceledNotice)canceledNotice.style.display='none';
+      if(cancelBtn)cancelBtn.style.display=data.canCancel?'block':'none';
+    }
+  }catch(err){
+    if(loading)loading.style.display='none';
+    if(errBox){errBox.textContent='Connection error — please try again.';errBox.style.display='block';}
+  }
+}
+
+function _subMsg(text,ok){
+  const msg=document.getElementById('hmSubMsg');
+  if(!msg)return;
+  msg.textContent=text;
+  msg.style.cssText='display:block;margin-top:12px;font-size:12.5px;padding:10px 14px;border-radius:8px;line-height:1.5;'+
+    (ok?'background:rgba(61,214,140,0.08);border:1px solid rgba(61,214,140,0.25);color:#3dd68c;':'background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);color:#ef4444;');
+}
+
+async function cancelSubscription(){
+  if(!confirm('Cancel your subscription? You will keep full access until the end of your current billing period.'))return;
+  const token=hmGetToken();
+  const btn=document.getElementById('hmSubCancelBtn');
+  if(btn){btn.disabled=true;btn.textContent='Canceling…';}
+  try{
+    const res=await fetch(HM_API_BASE+'/api/subscription/cancel',{method:'POST',headers:{'Authorization':'Bearer '+token}});
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok){
+      _subMsg(data.error||'Could not cancel subscription.',false);
+      if(btn){btn.disabled=false;btn.textContent='Cancel Subscription';}
+      return;
+    }
+    _subMsg(data.message||'Your subscription has been canceled.',true);
+    if(btn)btn.style.display='none';
+  }catch(err){
+    _subMsg('Connection error — please try again.',false);
+    if(btn){btn.disabled=false;btn.textContent='Cancel Subscription';}
+  }
 }
 function closeAuthModal(){
   const o=document.getElementById('hmAuthOverlay');
@@ -460,6 +549,31 @@ function _injectAuthModal(){
           <button onclick="switchAuthTab('login')" style="background:none;border:none;font-size:12px;color:#7fb3c8;cursor:pointer;font-family:inherit;">← Back to login</button>
         </div>
       </div>
+
+      <!-- SUBSCRIPTION MANAGEMENT -->
+      <div id="hmPanel_subscription" style="display:none;">
+        <div style="font-size:15px;font-weight:800;color:#e2f0f5;margin-bottom:14px;">Manage Your Plan</div>
+        <div id="hmSubLoading" style="font-size:13px;color:#7fb3c8;padding:20px 0;text-align:center;">Loading your subscription…</div>
+        <div id="hmSubContent" style="display:none;">
+          <div style="background:rgba(6,182,212,0.06);border:1px solid rgba(6,182,212,0.18);border-radius:10px;padding:16px;margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <span style="font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:#7fb3c8;">Current Plan</span>
+              <span id="hmSubPlanName" style="font-size:15px;font-weight:800;color:#22d3ee;">—</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:#7fb3c8;">Renews</span>
+              <span id="hmSubRenewDate" style="font-size:13px;font-weight:600;color:#e2f0f5;">—</span>
+            </div>
+          </div>
+          <div id="hmSubCanceledNotice" style="display:none;font-size:12.5px;color:#f5c842;background:rgba(245,200,66,0.08);border:1px solid rgba(245,200,66,0.25);border-radius:8px;padding:10px 14px;margin-bottom:14px;line-height:1.5;"></div>
+          <button id="hmSubCancelBtn" onclick="cancelSubscription()" style="width:100%;padding:12px;background:rgba(239,68,68,0.10);border:1px solid rgba(239,68,68,0.30);color:#ef4444;border-radius:9px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit;">Cancel Subscription</button>
+          <div id="hmSubMsg" style="display:none;"></div>
+        </div>
+        <div id="hmSubError" style="display:none;font-size:13px;color:#ef4444;padding:16px 0;text-align:center;"></div>
+        <div style="text-align:center;margin-top:16px;">
+          <button onclick="closeAuthModal()" style="background:none;border:none;font-size:12px;color:#7fb3c8;cursor:pointer;font-family:inherit;">Close</button>
+        </div>
+      </div>
     </div>
   </div>`;
   document.body.appendChild(el);
@@ -497,6 +611,19 @@ function _injectNavUserChip(user){
   navRight.querySelectorAll('a.btn-ghost, a.btn-primary').forEach(b=>{
     if((b.textContent||'').includes('Log In')||(b.textContent||'').includes('Get Pro'))b.remove();
   });
+  // "Manage Plan" — reachable on every page that has the nav (site-wide),
+  // not just pricing.html. Only shown for logged-in users on a paid plan.
+  const existingPlanBtn=document.getElementById('hmNavManagePlan');
+  if(existingPlanBtn)existingPlanBtn.remove();
+  if(user.plan==='Pro'||user.plan==='Enterprise'){
+    const planBtn=document.createElement('button');
+    planBtn.id='hmNavManagePlan';
+    planBtn.textContent='Manage Plan';
+    planBtn.title='View or cancel your subscription';
+    planBtn.style.cssText='background:none;border:1px solid var(--border-md,rgba(255,255,255,.12));border-radius:14px;padding:5px 12px;font-size:11.5px;font-weight:600;color:var(--text2,#8891a4);cursor:pointer;font-family:inherit;margin-right:2px;';
+    planBtn.onclick=function(e){e.stopPropagation();openSubscriptionModal();};
+    navRight.appendChild(planBtn);
+  }
   if(document.getElementById('hmNavUser'))return;
   const chip=document.createElement('div');
   chip.id='hmNavUser';
