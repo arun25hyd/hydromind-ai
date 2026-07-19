@@ -13,6 +13,7 @@ const pageMap = new Map([
   ['https://www.hydromindai.com/feedback.html', 'feedback.html'],
   ['https://www.hydromindai.com/privacy.html', 'pages/privacy.html'],
   ['https://www.hydromindai.com/disclaimer.html', 'disclaimer.html'],
+  ['https://www.hydromindai.com/circuit_walkthrough.html', 'circuit_walkthrough.html'],
 ]);
 
 const htmlFiles = fs.readdirSync(root).filter((file) => file.endsWith('.html')).sort();

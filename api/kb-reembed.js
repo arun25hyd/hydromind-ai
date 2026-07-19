@@ -2,35 +2,17 @@
 // NOTE: Vercel kills background tasks. This runs fully synchronous.
 // For 75 chunks it takes ~20 seconds — within Vercel's 60s limit.
 
-import { createClient } from '@supabase/supabase-js';
-
-function getSupabase() {
-  return createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-}
-function setCORS(res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-}
-async function verifyUser(req) {
-  const auth = req.headers.authorization || '';
-  let email = auth.startsWith('Email ') ? auth.replace('Email ', '').trim() : req.body?.userEmail;
-  if (!email) return null;
-  const { data } = await getSupabase()
-    .from('users').select('id, is_premium')
-    .eq('email', email.toLowerCase()).maybeSingle();
-  return data?.is_premium ? data : null;
-}
+import { requireAdmin, setCors } from './_admin-auth.js';
 
 export default async function handler(req, res) {
-  setCORS(res);
+  setCors(res, 'POST, OPTIONS');
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const user = await verifyUser(req);
-  if (!user) return res.status(401).json({ error: 'Premium account required' });
+  const auth = await requireAdmin(req);
+  if (!auth) return res.status(403).json({ error: 'Administrator access required' });
 
-  const supabase = getSupabase();
+  const { supabase } = auth;
 
   // Fetch all chunks with no embedding
   const { data: chunks, error } = await supabase

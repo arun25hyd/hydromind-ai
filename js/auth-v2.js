@@ -182,10 +182,18 @@ async function doLogin(){
       /* Show "Register instead" hint when credentials are wrong */
       const errEl = document.getElementById('hmAuthError');
       if(errEl){
-        errEl.innerHTML = msg +
-          '<br><span style="font-size:11.5px;color:#94a3b8;display:block;margin-top:6px;">' +
-          'New to HydroMind? <a href="#" onclick="event.preventDefault();openAuthModal(\'register\');" ' +
-          'style="color:#22d3ee;text-decoration:none;font-weight:700;">Create a free account →</a></span>';
+        errEl.replaceChildren();
+        errEl.append(document.createTextNode(msg), document.createElement('br'));
+        const hint=document.createElement('span');
+        hint.style.cssText='font-size:11.5px;color:#94a3b8;display:block;margin-top:6px;';
+        hint.append('New to HydroMind? ');
+        const registerLink=document.createElement('a');
+        registerLink.href='#';
+        registerLink.textContent='Create a free account →';
+        registerLink.style.cssText='color:#22d3ee;text-decoration:none;font-weight:700;';
+        registerLink.onclick=function(event){event.preventDefault();openAuthModal('register');};
+        hint.appendChild(registerLink);
+        errEl.appendChild(hint);
       }
       if(btn){btn.disabled=false;btn.textContent=origTxt;}
       return;
@@ -628,7 +636,22 @@ function _injectNavUserChip(user){
   const chip=document.createElement('div');
   chip.id='hmNavUser';
   chip.style.cssText='display:flex;align-items:center;gap:8px;background:var(--accent-dim);border:1px solid var(--accent-glow);border-radius:20px;padding:4px 12px 4px 4px;cursor:pointer;';
-  chip.innerHTML=`<div id="hmNavAvatar" style="width:26px;height:26px;background:linear-gradient(135deg,#0e7490,#06b6d4);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;">${(user.first||user.email).slice(0,2).toUpperCase()}</div><span id="hmNavName" style="font-size:13px;font-weight:600;color:var(--text1);">${user.first||user.email.split('@')[0]}</span>${user.isAdmin?`<span id="hmNavPlan" style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(6,182,212,.15);color:#06b6d4;">Admin</span>`:`<span id="hmNavPlan" style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--success-dim);color:var(--success);">${user.plan}</span>`}`;
+  const displayName=user.first||user.email.split('@')[0];
+  const avatar=document.createElement('div');
+  avatar.id='hmNavAvatar';
+  avatar.style.cssText='width:26px;height:26px;background:linear-gradient(135deg,#0e7490,#06b6d4);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;';
+  avatar.textContent=displayName.slice(0,2).toUpperCase();
+  const name=document.createElement('span');
+  name.id='hmNavName';
+  name.style.cssText='font-size:13px;font-weight:600;color:var(--text1);';
+  name.textContent=displayName;
+  const plan=document.createElement('span');
+  plan.id='hmNavPlan';
+  plan.style.cssText=user.isAdmin
+    ? 'font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(6,182,212,.15);color:#06b6d4;'
+    : 'font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--success-dim);color:var(--success);';
+  plan.textContent=user.isAdmin?'Admin':user.plan;
+  chip.append(avatar,name,plan);
   chip.title='Click to log out';
   chip.onclick=doLogout;
   navRight.appendChild(chip);

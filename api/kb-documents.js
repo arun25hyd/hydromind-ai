@@ -1,30 +1,14 @@
 // /api/kb-documents.js — List and delete KB documents
-import { createClient } from '@supabase/supabase-js';
-
-function getSupabase() {
-  return createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-}
-function setCORS(res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, DELETE, OPTIONS');
-}
-async function verifyUser(req) {
-  const auth = req.headers.authorization || '';
-  let email = auth.startsWith('Email ') ? auth.replace('Email ', '').trim() : null;
-  if (!email) return null;
-  const { data } = await getSupabase().from('users').select('id, is_premium').eq('email', email.toLowerCase()).maybeSingle();
-  return data?.is_premium ? data : null;
-}
+import { requireAdmin, setCors } from './_admin-auth.js';
 
 export default async function handler(req, res) {
-  setCORS(res);
+  setCors(res, 'GET, DELETE, OPTIONS');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const user = await verifyUser(req);
-  if (!user) return res.status(401).json({ error: 'Premium account required' });
+  const auth = await requireAdmin(req);
+  if (!auth) return res.status(403).json({ error: 'Administrator access required' });
 
-  const supabase = getSupabase();
+  const { supabase } = auth;
 
   if (req.method === 'GET') {
     const { data, error } = await supabase
