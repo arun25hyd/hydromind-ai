@@ -1171,14 +1171,18 @@ function calculatePower() {
 
 function renderCalcCards() {
   const c = state.calculations;
-  $('calcCards').innerHTML = [
+  const motorCircuit = state.extracted.actuator === 'Hydraulic motor';
+  const cards = motorCircuit ? [] : [
     ['Cylinder force', fmtUnit(c.forceKN, 'force', unitSystem === 'metric' ? 1 : 0), 'Based on entered load and gravity factor.'],
-    ['Cylinder bore', fmtUnit(c.boreMm, 'diameter', unitSystem === 'metric' ? 0 : 2), `Rod estimate ${txtUnit(c.rodMm, 'diameter', unitSystem === 'metric' ? 0 : 2)}.`],
+    ['Cylinder bore', fmtUnit(c.boreMm, 'diameter', unitSystem === 'metric' ? 0 : 2), `Rod estimate ${txtUnit(c.rodMm, 'diameter', unitSystem === 'metric' ? 0 : 2)}.`]
+  ];
+  cards.push(
     ['Design flow', fmtUnit(c.flow, 'flow', 1), 'Includes 20% design margin over theoretical flow.'],
     ['Pump power', fmtUnit(c.powerKw, 'power', 1), 'Includes 87% overall efficiency.'],
     ['Relief setting', fmtUnit(c.relief, 'pressure', 0), 'Approx. 112% of working pressure.'],
     ['Cycle target', `${fmt(c.timeSec, 0)} <small>s</small>`, 'Used for speed and flow calculation.']
-  ].map(m => `<div class="calc-card"><div class="card-label">${m[0]}</div><div class="metric">${m[1]}</div><p class="hint">${m[2]}</p></div>`).join('');
+  );
+  $('calcCards').innerHTML = cards.map(m => `<div class="calc-card"><div class="card-label">${m[0]}</div><div class="metric">${m[1]}</div><p class="hint">${m[2]}</p></div>`).join('');
 }
 
 let aiSelectingComponents = false;
