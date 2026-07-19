@@ -1117,7 +1117,8 @@ function analyzeBriefFallback() {
     strokeM: stroke || 1,
     timeSec: sec || 30,
     pressureBar: pressure || 250,
-    flowLpm: flow || 0
+    flowLpm: flow || 0,
+    circuitPref: (lower.includes('load-sensing') || lower.includes('load sensing') || lower.includes('load-sense')) ? 'Load-sensing' : (lower.includes('pressure-compensated') || lower.includes('pressure compensated')) ? 'Pressure-compensated' : ''
   };
 
   setMetricInput('loadTon', 'load', state.extracted.loadTon, unitSystem === 'metric' ? 1 : 0);
@@ -1222,13 +1223,16 @@ async function selectComponentsImpl() {
 
   const sysPrompt = `You are HydroMind's System Design Component Selector. Given the engineering brief parameters and a catalog of candidate KB components per slot, pick the single best-fit model id for each slot and write a concise (1-2 sentence) engineering justification tied to the specific brief — not a generic statement. You may ONLY select ids that appear in the supplied catalog for that slot; never invent a model, id, or KB number.
 
+If the user's original brief text states a specific pump/circuit type preference (e.g. "load-sensing", "pressure-compensated"), you MUST select the catalog item whose type most closely matches that stated preference, even if another item would otherwise be your default pick. Only deviate if no catalog item is a reasonable match, and if so say why in the reason field.
+
 Respond with ONLY a single valid JSON object — no markdown fences, no preamble — matching exactly this schema:
 {"pump":{"id":string,"reason":string},"actuator":{"id":string,"reason":string},"filtration":{"id":string,"reason":string},"primeMoverNote":string,"reservoirNote":string,"coolerNote":string}
 
 primeMoverNote/reservoirNote/coolerNote are short engineering notes (these slots have no KB catalog, just your reasoning) about prime mover sizing margin, reservoir sizing basis, and cooling basis, specific to this brief.`;
 
-  const question = `Brief parameters: application=${state.extracted.app}, environment=${state.extracted.environment}, duty=${state.extracted.duty}, actuator type=${state.extracted.actuator}, standard=${state.extracted.standard}, control=${state.extracted.control}, cooling preference=${state.extracted.cooling}.
+  const question = `Brief parameters: application=${state.extracted.app}, environment=${state.extracted.environment}, duty=${state.extracted.duty}, actuator type=${state.extracted.actuator}, standard=${state.extracted.standard}, control=${state.extracted.control}, cooling preference=${state.extracted.cooling}, stated circuit/pump type preference=${state.extracted.circuitPref || 'none explicitly stated — infer from original brief text below'}.
 Calculated: pressure=${txtUnit(c.pressure,'pressure',0)}, flow=${txtUnit(c.flow,'flow',1)}, power=${txtUnit(c.powerKw,'power',1)}, bore=${txtUnit(c.boreMm,'diameter',0)}, rod=${txtUnit(c.rodMm,'diameter',0)}.
+Original brief text: "${val('brief')}"
 Catalog (pick id only from these lists per slot):
 Pump options: ${JSON.stringify(catalog.pumpClosed)}
 Actuator options: ${JSON.stringify(catalog.actuator)}
@@ -1365,7 +1369,7 @@ async function selectValvesImpl() {
     protection: motorCircuit ? KB_COMPONENT_MODELS.motor.map(i => ({ id: i.id, model: i.model, type: i.type })) : (loadHolding ? KB_COMPONENT_MODELS.loadHolding.map(i => ({ id: i.id, model: i.model, type: i.type })) : [])
   };
 
-  const briefCtx = `Brief: standard=${state.extracted.standard}, environment=${state.extracted.environment}, actuator type=${state.extracted.actuator}, load holding required=${loadHolding}, motor circuit=${motorCircuit}.
+  const briefCtx = `Brief: standard=${state.extracted.standard}, environment=${state.extracted.environment}, actuator type=${state.extracted.actuator}, load holding required=${loadHolding}, motor circuit=${motorCircuit}, stated control method preference=${state.extracted.control}.
 Selected pump: ${pump} (closed-centre requirement: ${closedCentre}).
 Relief pressure target: ${txtUnit(c.relief, 'pressure', 0)}.
 Original brief text: "${val('brief')}"`;
@@ -1374,13 +1378,15 @@ Original brief text: "${val('brief')}"`;
 
   const sysPromptA = `You are HydroMind's System Design Valve Selector for marine/offshore hydraulics. Given the brief and a catalog of candidate KB components, select the best-fit directional control valve and (if applicable) load-holding/brake protection valve, with a compact justification. You may ONLY select catalog ids supplied; never invent a model, id or KB number.
 
+The stated control method preference (e.g. Manual lever, Hydraulic pilot joystick, Electrohydraulic proportional) takes priority over any other selection heuristic. Do not pick a proportional/electrohydraulic valve when the brief asked for manual or pilot control, or vice versa, unless the closed-centre pump requirement makes the requested type physically unworkable — if so, explain the conflict in correctionWarning instead of silently substituting.
+
 ${lenRule}
 
 Respond with ONLY a single valid JSON object — no markdown fences, no preamble — matching exactly this schema (every string value max 12 words):
 {"dcv":{"id":string,"selection":string,"reason":string,"riskIfWrong":string,"standard":string},"protection":{"id":string|null,"component":string,"selection":string,"reason":string,"riskIfWrong":string,"standard":string},"correctionWarning":string|null}
 
 riskIfWrong combines the safety risk AND what happens if omitted into one 12-word sentence.
-correctionWarning: if the brief mentioned open-centre DCV but the pump requires closed-centre, explain in 12 words or fewer; otherwise null.`;
+correctionWarning: if the brief's stated control method or centre condition conflicts with what was selected, explain in 12 words or fewer; otherwise null.`;
 
   const questionA = `${briefCtx}
 DCV catalog: ${JSON.stringify(catalog.dcvClosed)}
