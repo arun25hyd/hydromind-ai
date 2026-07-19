@@ -1870,10 +1870,14 @@ function filterCoolerSymbol(x, y) {
 
 function renderBom() {
   const c = state.calculations, x = state.components;
+  const motorCircuit = state.extracted.actuator === 'Hydraulic motor';
+  const actuatorNote = motorCircuit
+    ? `Rated flow ${txtUnit(c.flow,'flow',1)} at ${txtUnit(c.pressure,'pressure',0)}; ${selectedModel('actuator')?.kb || 'KB model pending'}`
+    : `Load ${txtUnit(c.loadTon,'load',unitSystem === 'metric' ? 1 : 0)}, stroke ${txtUnit(c.strokeM,'stroke',unitSystem === 'metric' ? 2 : 1)}; ${selectedModel('actuator')?.kb || 'KB model pending'}`;
   const rows = [
     ['Pump', selectedModel('pump')?.model || x.pump, '1', `${txtUnit(c.flow,'flow',1)} at ${txtUnit(c.pressure,'pressure',0)}; ${selectedModel('pump')?.kb || 'KB model pending'}`],
     ['Prime mover', x.primeMover, '1', 'Verify starting current and duty class'],
-    ['Actuator', selectedModel('actuator')?.model || x.actuator, '1', `Load ${txtUnit(c.loadTon,'load',unitSystem === 'metric' ? 1 : 0)}, stroke ${txtUnit(c.strokeM,'stroke',unitSystem === 'metric' ? 2 : 1)}; ${selectedModel('actuator')?.kb || 'KB model pending'}`],
+    ['Actuator', selectedModel('actuator')?.model || x.actuator, '1', actuatorNote],
     ['DCV', selectedModel('dcv')?.model || state.valves[0].selection, '1', `Centre condition validated by pump type; ${selectedModel('dcv')?.kb || 'KB model pending'}`],
     ['Relief valve', state.valves[1].selection, '1', 'Main pressure protection'],
     ['Protection valve', selectedModel('protection')?.model || state.valves[2].selection, '1 set', `${state.valves[2].selection}; ${selectedModel('protection')?.kb || 'KB model pending'}`],
