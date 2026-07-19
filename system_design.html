@@ -1102,6 +1102,7 @@ function analyzeBriefFallback() {
   const stroke = matchNumber(text, /(\d+(\.\d+)?)\s*(m|meter|metre)\s*(stroke|travel)?/i);
   const sec = matchNumber(text, /(\d+(\.\d+)?)\s*(s|sec|second)/i);
   const pressure = matchNumber(text, /(\d+(\.\d+)?)\s*bar/i);
+  const flow = matchNumber(text, /(\d+(\.\d+)?)\s*(lpm|l\/min|liters?|litres?)/i);
 
   state.extracted = {
     app: val('appType'),
@@ -1115,13 +1116,15 @@ function analyzeBriefFallback() {
     loadTon: ton || 10,
     strokeM: stroke || 1,
     timeSec: sec || 30,
-    pressureBar: pressure || 250
+    pressureBar: pressure || 250,
+    flowLpm: flow || 0
   };
 
   setMetricInput('loadTon', 'load', state.extracted.loadTon, unitSystem === 'metric' ? 1 : 0);
   setMetricInput('strokeM', 'stroke', state.extracted.strokeM, unitSystem === 'metric' ? 2 : 1);
   $('timeSec').value = state.extracted.timeSec;
   setMetricInput('workPressure', 'pressure', state.extracted.pressureBar, 0);
+  if (state.extracted.flowLpm) setMetricInput('flowRate', 'flow', state.extracted.flowLpm, 1);
   state.questions = buildQuestions();
   renderQuestions();
   calculatePower();
@@ -1156,8 +1159,16 @@ function calculatePower() {
   const forceKN = loadTon * 9.81;
   const areaM2 = (forceKN * 1000) / (pressure * 100000);
   const boreMm = Math.sqrt((4 * areaM2) / Math.PI) * 1000;
-  const flowLpm = areaM2 * (strokeM / timeSec) * 60000;
-  const designFlow = Math.max(15, flowLpm * 1.2);
+  const motorCircuit = state.extracted.actuator === 'Hydraulic motor';
+  let designFlow;
+  if (motorCircuit || state.extracted.flowLpm) {
+    // User stated a flow requirement, or this is a motor/HPU job with no stroke geometry to derive flow from —
+    // use the flow field value directly (pre-filled from the brief, editable by the user) instead of overwriting it.
+    designFlow = metricInput('flowRate', 'flow', state.extracted.flowLpm || 15);
+  } else {
+    const flowLpm = areaM2 * (strokeM / timeSec) * 60000;
+    designFlow = Math.max(15, flowLpm * 1.2);
+  }
   const powerKw = (pressure * designFlow) / (600 * 0.87);
   const relief = pressure * 1.12;
   const rodMm = boreMm * 0.63;
