@@ -365,6 +365,10 @@ h1 { margin: 0; font-family: Syne, sans-serif; font-size: clamp(28px, 4vw, 42px)
   border-radius: 9px; padding: 9px;
 }
 .model-option.selected { border-color: rgba(45,212,191,.6); background: rgba(45,212,191,.12); box-shadow: inset 3px 0 0 var(--sd-accent); }
+.model-web-tag {
+  display: inline-block; font-size: 9px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase;
+  color: #0b1720; background: var(--sd-accent); border-radius: 5px; padding: 2px 6px; margin-left: 6px; vertical-align: middle;
+}
 .model-name { color: var(--sd-text); font-size: 12px; font-weight: 800; line-height: 1.35; }
 .model-meta { color: var(--sd-faint); font-size: 10px; line-height: 1.4; margin-top: 3px; }
 .model-select {
@@ -784,6 +788,8 @@ const state = {
   calculations: {},
   components: {},
   selectedModels: {},
+  aiOptions: {},
+  webModels: {},
   valves: [],
   warnings: []
 };
@@ -966,6 +972,17 @@ function loadExample(type) {
 const BACKEND_KB_CHAT = 'https://hydromind-backend.onrender.com/api/kb/chat';
 let aiAnalyzing = false;
 
+/* When enableWebSearch is used server-side, Anthropic may return the web
+   search tool-use/tool-result blocks BEFORE the final text block, so the
+   final answer is not always content[0]. Always take the LAST text block. */
+function extractResponseText(data) {
+  const blocks = (data && data.content) || [];
+  for (let i = blocks.length - 1; i >= 0; i--) {
+    if (blocks[i] && blocks[i].type === 'text' && blocks[i].text) return blocks[i].text;
+  }
+  return '';
+}
+
 /* Lightweight, non-cryptographic device fingerprint for anonymous daily
    rate-limiting — shares the 'hm_fp' localStorage key with ai_advisor.html
    so a visitor gets one consistent identity across pages. */
@@ -1055,7 +1072,7 @@ If a numeric value is not stated or inferable, use a reasonable marine/offshore 
     if (!resp.ok) throw new Error('Server error ' + resp.status);
 
     const data = await resp.json();
-    const answerText = (data.content && data.content[0] && data.content[0].text) || '';
+    const answerText = extractResponseText(data);
     const parsed = extractJsonFromText(answerText);
 
     state.extracted = {
@@ -1221,24 +1238,27 @@ async function selectComponentsImpl() {
     filtration: KB_COMPONENT_MODELS.filtration.map(i => ({ id: i.id, model: i.model, type: i.type }))
   };
 
-  const sysPrompt = `You are HydroMind's System Design Component Selector. Given the engineering brief parameters and a catalog of candidate KB components per slot, pick the single best-fit model id for each slot and write a concise (1-2 sentence) engineering justification tied to the specific brief — not a generic statement. You may ONLY select ids that appear in the supplied catalog for that slot; never invent a model, id, or KB number.
+  const sysPrompt = `You are HydroMind's System Design Component Selector. Given the engineering brief parameters and a catalog of candidate KB components per slot, propose 2-3 ranked candidate options for EACH slot (pump, actuator, filtration), not just one. You may select ids from the supplied catalog freely. If — and only if — the catalog genuinely lacks enough good candidates to reach 2-3 meaningful options for a slot (or none of the catalog items are a strong fit), use the web_search tool to find a real, specific commercial component (name a real manufacturer and model) and include it as an option with "id":null and "source":"web" — never invent a fake catalog id, and never fabricate a web-sourced part; only include it if you actually found it via web_search.
 
-If the user's original brief text states a specific pump/circuit type preference (e.g. "load-sensing", "pressure-compensated"), you MUST select the catalog item whose type most closely matches that stated preference, even if another item would otherwise be your default pick. Only deviate if no catalog item is a reasonable match, and if so say why in the reason field.
+Each option must carry a short "tradeoff" label distinguishing it from the others in the same slot, e.g. "Best overall fit", "Most affordable", "Lowest heat generation", "Highest duty/performance". Do not give two options the same tradeoff label in one slot.
+
+If the user's original brief text states a specific pump/circuit type preference (e.g. "load-sensing", "pressure-compensated"), at least one option MUST match that stated preference and should normally be ranked first, unless no catalog or web option can satisfy it.
 
 Respond with ONLY a single valid JSON object — no markdown fences, no preamble — matching exactly this schema:
-{"pump":{"id":string,"reason":string},"actuator":{"id":string,"reason":string},"filtration":{"id":string,"reason":string},"primeMoverNote":string,"reservoirNote":string,"coolerNote":string}
+{"pump":[{"id":string|null,"source":"kb"|"web","model":string|null,"reason":string,"tradeoff":string}],"actuator":[...same shape...],"filtration":[...same shape...],"primeMoverNote":string,"reservoirNote":string,"coolerNote":string}
 
+Each array holds 2-3 options, ordered best-first. "model" is required and must be a real product name when source is "web"; it may be omitted (null) for "kb" options since the id already identifies the catalog model.
 primeMoverNote/reservoirNote/coolerNote are short engineering notes (these slots have no KB catalog, just your reasoning) about prime mover sizing margin, reservoir sizing basis, and cooling basis, specific to this brief.`;
 
   const question = `Brief parameters: application=${state.extracted.app}, environment=${state.extracted.environment}, duty=${state.extracted.duty}, actuator type=${state.extracted.actuator}, standard=${state.extracted.standard}, control=${state.extracted.control}, cooling preference=${state.extracted.cooling}, stated circuit/pump type preference=${state.extracted.circuitPref || 'none explicitly stated — infer from original brief text below'}.
 Calculated: pressure=${txtUnit(c.pressure,'pressure',0)}, flow=${txtUnit(c.flow,'flow',1)}, power=${txtUnit(c.powerKw,'power',1)}, bore=${txtUnit(c.boreMm,'diameter',0)}, rod=${txtUnit(c.rodMm,'diameter',0)}.
 Original brief text: "${val('brief')}"
-Catalog (pick id only from these lists per slot):
+Catalog (pick id only from these lists per slot; supplement with a web-sourced option only if a slot's catalog list is thin or weak):
 Pump options: ${JSON.stringify(catalog.pumpClosed)}
 Actuator options: ${JSON.stringify(catalog.actuator)}
 Filtration options: ${JSON.stringify(catalog.filtration)}
 
-Select the best id per slot and justify against this specific brief.`;
+Propose 2-3 ranked, differentiated options per slot and justify against this specific brief.`;
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 90000);
@@ -1252,7 +1272,7 @@ Select the best id per slot and justify against this specific brief.`;
       method: 'POST',
       headers,
       signal: controller.signal,
-      body: JSON.stringify({ question, history: [], system: sysPrompt, answerPolicy: { strictRelevance: false, allowEngineeringFallback: true, domain: 'marine_offshore_hydraulics' } })
+      body: JSON.stringify({ question, history: [], system: sysPrompt, max_tokens: 3500, enableWebSearch: true, answerPolicy: { strictRelevance: false, allowEngineeringFallback: true, domain: 'marine_offshore_hydraulics' } })
     });
 
     if (resp.status === 429) {
@@ -1268,18 +1288,21 @@ Select the best id per slot and justify against this specific brief.`;
     if (!resp.ok) throw new Error('Server error ' + resp.status);
 
     const data = await resp.json();
-    const answerText = (data.content && data.content[0] && data.content[0].text) || '';
+    const answerText = extractResponseText(data);
     const parsed = extractJsonFromText(answerText);
 
-    const pumpPick = catalog.pumpClosed.find(i => i.id === parsed.pump?.id) || catalog.pumpClosed[0];
-    const actuatorPick = catalog.actuator.find(i => i.id === parsed.actuator?.id) || catalog.actuator[0];
-    const filtrationPick = catalog.filtration.find(i => i.id === parsed.filtration?.id) || catalog.filtration[0];
+    state.aiOptions.pump = normalizeOptions(parsed.pump, catalog.pumpClosed, 'pump');
+    state.aiOptions.actuator = normalizeOptions(parsed.actuator, catalog.actuator, 'actuator');
+    state.aiOptions.filtration = normalizeOptions(parsed.filtration, catalog.filtration, 'filtration');
+    const pumpPick = state.aiOptions.pump[0];
+    const actuatorPick = state.aiOptions.actuator[0];
+    const filtrationPick = state.aiOptions.filtration[0];
 
     state.components = {
       pump: pumpPick.model,
-      pumpReason: (parsed.pump && parsed.pump.reason) || 'Selected from duty and control requirement.',
+      pumpReason: pumpPick.reason || 'Selected from duty and control requirement.',
       actuator: motorCircuit ? actuatorPick.model : `${actuatorPick.model}, bore ${txtUnit(c.boreMm, 'diameter', unitSystem === 'metric' ? 0 : 2)}, rod ${txtUnit(c.rodMm, 'diameter', unitSystem === 'metric' ? 0 : 2)}`,
-      actuatorReason: (parsed.actuator && parsed.actuator.reason) || 'Sized from user load, stroke and cycle time.',
+      actuatorReason: actuatorPick.reason || 'Sized from user load, stroke and cycle time.',
       primeMover: `Electric motor ${txtUnit(c.powerKw * 1.15, 'power', 1)} minimum with service factor`,
       primeMoverReason: parsed.primeMoverNote || 'Calculated from pressure x flow with efficiency and service margin.',
       reservoir: `${txtUnit(Math.max(c.flow * 3, 80), 'reservoir', 0)}-${txtUnit(Math.max(c.flow * 5, 120), 'reservoir', 0)} reservoir`,
@@ -1287,7 +1310,7 @@ Select the best id per slot and justify against this specific brief.`;
       cooler: state.extracted.cooling,
       coolerReason: parsed.coolerNote || 'Selected from environment and likely thermal duty.',
       filtration: filtrationPick.model,
-      filtrationReason: (parsed.filtration && parsed.filtration.reason) || 'Protects proportional valves, pump and actuator seals.',
+      filtrationReason: filtrationPick.reason || 'Protects proportional valves, pump and actuator seals.',
       cleanliness: state.extracted.environment.includes('Marine') ? 'ISO 4406 17/15/12 or better' : 'ISO 4406 18/16/13'
     };
     state.selectedModels.pump = pumpPick.id;
@@ -1376,23 +1399,25 @@ Original brief text: "${val('brief')}"`;
 
   const lenRule = `CRITICAL LENGTH LIMIT: every text field must be ONE short sentence, 12 words maximum. Hard limit — do not write multiple sentences per field.`;
 
-  const sysPromptA = `You are HydroMind's System Design Valve Selector for marine/offshore hydraulics. Given the brief and a catalog of candidate KB components, select the best-fit directional control valve and (if applicable) load-holding/brake protection valve, with a compact justification. You may ONLY select catalog ids supplied; never invent a model, id or KB number.
+  const sysPromptA = `You are HydroMind's System Design Valve Selector for marine/offshore hydraulics. Given the brief and a catalog of candidate KB components, propose 2-3 ranked directional control valve options and (if applicable) 2-3 ranked load-holding/brake protection valve options, each with a compact justification. You may select catalog ids freely. If — and only if — the catalog genuinely lacks enough good candidates for a slot, use the web_search tool to find a real, specific commercial valve (real manufacturer and model) and include it as an option with "id":null and "source":"web" — never invent a fake catalog id, and never fabricate a web-sourced part; only include it if you actually found it via web_search.
 
-The stated control method preference (e.g. Manual lever, Hydraulic pilot joystick, Electrohydraulic proportional) takes priority over any other selection heuristic. Do not pick a proportional/electrohydraulic valve when the brief asked for manual or pilot control, or vice versa, unless the closed-centre pump requirement makes the requested type physically unworkable — if so, explain the conflict in correctionWarning instead of silently substituting.
+Each option must carry a short "tradeoff" label distinguishing it from the others in the same slot (e.g. "Best overall fit", "Most affordable", "Lowest pressure loss", "Highest duty/performance"). Do not give two options in the same slot the same tradeoff label.
+
+The stated control method preference (e.g. Manual lever, Hydraulic pilot joystick, Electrohydraulic proportional) takes priority over any other selection heuristic for the top-ranked DCV option. Do not rank a proportional/electrohydraulic valve first when the brief asked for manual or pilot control, or vice versa, unless the closed-centre pump requirement makes the requested type physically unworkable — if so, explain the conflict in correctionWarning instead of silently substituting.
 
 ${lenRule}
 
 Respond with ONLY a single valid JSON object — no markdown fences, no preamble — matching exactly this schema (every string value max 12 words):
-{"dcv":{"id":string,"selection":string,"reason":string,"riskIfWrong":string,"standard":string},"protection":{"id":string|null,"component":string,"selection":string,"reason":string,"riskIfWrong":string,"standard":string},"correctionWarning":string|null}
+{"dcv":[{"id":string|null,"source":"kb"|"web","model":string|null,"selection":string,"reason":string,"tradeoff":string,"riskIfWrong":string,"standard":string}],"protection":[{"id":string|null,"source":"kb"|"web","model":string|null,"component":string,"selection":string,"reason":string,"tradeoff":string,"riskIfWrong":string,"standard":string}],"correctionWarning":string|null}
 
-riskIfWrong combines the safety risk AND what happens if omitted into one 12-word sentence.
-correctionWarning: if the brief's stated control method or centre condition conflicts with what was selected, explain in 12 words or fewer; otherwise null.`;
+Each array holds 2-3 options ordered best-first ("protection" may be an empty array if not applicable). riskIfWrong combines the safety risk AND what happens if omitted into one 12-word sentence.
+correctionWarning: if the brief's stated control method or centre condition conflicts with the top-ranked option, explain in 12 words or fewer; otherwise null.`;
 
   const questionA = `${briefCtx}
 DCV catalog: ${JSON.stringify(catalog.dcvClosed)}
 Protection/load-holding catalog (empty if not applicable): ${JSON.stringify(catalog.protection)}
 
-Select ids and justify for this specific brief.`;
+Propose 2-3 ranked, differentiated options per applicable slot and justify against this specific brief.`;
 
   const sysPromptB = `You are HydroMind's System Design Safety Case Writer for marine/offshore hydraulics. Given the brief, write a compact safety case for 3 standard valve stations: relief valve, emergency unload/dump valve, and test points/gauges. Reason from engineering principles only — there is no parts catalog for these stations.
 
@@ -1415,14 +1440,17 @@ Write the relief, dump and test-point safety case for this specific brief.`;
     const headers = { 'Content-Type': 'application/json', 'X-Client-Fingerprint': getClientFingerprint() };
     if (hmTok) headers['Authorization'] = 'Bearer ' + hmTok;
 
-    const callKbChat = (question, system) => fetch(BACKEND_KB_CHAT, {
+    const callKbChat = (question, system, extra = {}) => fetch(BACKEND_KB_CHAT, {
       method: 'POST',
       headers,
       signal: controller.signal,
-      body: JSON.stringify({ question, history: [], system, answerPolicy: { strictRelevance: false, allowEngineeringFallback: true, domain: 'marine_offshore_hydraulics' } })
+      body: JSON.stringify({ question, history: [], system, ...extra, answerPolicy: { strictRelevance: false, allowEngineeringFallback: true, domain: 'marine_offshore_hydraulics' } })
     });
 
-    const [respA, respB] = await Promise.all([callKbChat(questionA, sysPromptA), callKbChat(questionB, sysPromptB)]);
+    const [respA, respB] = await Promise.all([
+      callKbChat(questionA, sysPromptA, { max_tokens: 3500, enableWebSearch: true }),
+      callKbChat(questionB, sysPromptB)
+    ]);
 
     for (const resp of [respA, respB]) {
       if (resp.status === 429) {
@@ -1440,27 +1468,29 @@ Write the relief, dump and test-point safety case for this specific brief.`;
 
     const dataA = await respA.json();
     const dataB = await respB.json();
-    const answerTextA = (dataA.content && dataA.content[0] && dataA.content[0].text) || '';
-    const answerTextB = (dataB.content && dataB.content[0] && dataB.content[0].text) || '';
+    const answerTextA = extractResponseText(dataA);
+    const answerTextB = extractResponseText(dataB);
     const parsed = extractJsonFromText(answerTextA);
     const parsedB = extractJsonFromText(answerTextB);
     parsed.relief = parsedB.relief;
     parsed.dump = parsedB.dump;
     parsed.testPoints = parsedB.testPoints;
 
-    const dcvPick = catalog.dcvClosed.find(i => i.id === parsed.dcv?.id) || catalog.dcvClosed[0];
-    const protectionPick = catalog.protection.length ? (catalog.protection.find(i => i.id === parsed.protection?.id) || catalog.protection[0]) : null;
+    state.aiOptions.dcv = normalizeOptions(parsed.dcv, catalog.dcvClosed, 'dcv');
+    state.aiOptions.protection = catalog.protection.length ? normalizeOptions(parsed.protection, catalog.protection, 'protection') : [];
+    const dcvPick = state.aiOptions.dcv[0];
+    const protectionPick = state.aiOptions.protection[0] || null;
 
     state.warnings = parsed.correctionWarning ? [parsed.correctionWarning] : [];
     state.valves = [
       {
         component: 'Directional control valve',
         isDcvSlot: true,
-        selection: (parsed.dcv && parsed.dcv.selection) || dcvPick.model,
-        reason: (parsed.dcv && parsed.dcv.reason) || 'Selected because the pump must maintain standby pressure and should not dump flow directly to tank.',
-        risk: (parsed.dcv && parsed.dcv.riskIfWrong) || 'Wrong centre condition causes heat, unstable control, or unintended actuator motion if omitted.',
+        selection: dcvPick.selection || dcvPick.model,
+        reason: dcvPick.reason || 'Selected because the pump must maintain standby pressure and should not dump flow directly to tank.',
+        risk: dcvPick.riskIfWrong || 'Wrong centre condition causes heat, unstable control, or unintended actuator motion if omitted.',
         omitted: 'No controlled actuator direction or neutral hold strategy.',
-        standard: (parsed.dcv && parsed.dcv.standard) || 'ISO 4413 valve control and fail-safe neutral position review.'
+        standard: dcvPick.standard || 'ISO 4413 valve control and fail-safe neutral position review.'
       },
       {
         component: 'Relief valve',
@@ -1471,13 +1501,13 @@ Write the relief, dump and test-point safety case for this specific brief.`;
         standard: (parsed.relief && parsed.relief.standard) || 'ISO 4413 pressure limitation requirement.'
       },
       {
-        component: (parsed.protection && parsed.protection.component) || (motorCircuit ? 'Motor brake / cross-port protection' : loadHolding ? 'Counterbalance / over-centre valve' : 'Pilot-operated check valve if holding is later required'),
+        component: (protectionPick && protectionPick.component) || (motorCircuit ? 'Motor brake / cross-port protection' : loadHolding ? 'Counterbalance / over-centre valve' : 'Pilot-operated check valve if holding is later required'),
         isProtectionSlot: !!protectionPick,
-        selection: (parsed.protection && parsed.protection.selection) || (protectionPick ? protectionPick.model : 'Not mandatory for non-overrunning load; keep as optional lock valve'),
-        reason: (parsed.protection && parsed.protection.reason) || 'No load holding requirement was identified.',
-        risk: (parsed.protection && parsed.protection.riskIfWrong) || 'If future load holding is needed, omission can allow drift.',
+        selection: (protectionPick && (protectionPick.selection || protectionPick.model)) || 'Not mandatory for non-overrunning load; keep as optional lock valve',
+        reason: (protectionPick && protectionPick.reason) || 'No load holding requirement was identified.',
+        risk: (protectionPick && protectionPick.riskIfWrong) || 'If future load holding is needed, omission can allow drift.',
         omitted: 'Acceptable only for non-critical positioning.',
-        standard: (parsed.protection && parsed.protection.standard) || state.extracted.standard
+        standard: (protectionPick && protectionPick.standard) || state.extracted.standard
       },
       {
         component: 'Emergency unload / dump valve',
@@ -1617,20 +1647,17 @@ function ensureDefaultModels(map) {
       delete state.selectedModels[slot];
       return;
     }
+    // Current selection may be a catalog id, an already-registered web-sourced
+    // id (state.webModels), or the AI's top-ranked pick for this slot — any of
+    // those are valid and must not be clobbered back to catalog[0].
     if (KB_COMPONENT_MODELS[group].some(item => item.id === state.selectedModels[slot])) return;
+    if (state.webModels[state.selectedModels[slot]]) return;
+    if (state.aiOptions[slot] && state.aiOptions[slot].length) {
+      state.selectedModels[slot] = state.aiOptions[slot][0].id;
+      return;
+    }
     state.selectedModels[slot] = KB_COMPONENT_MODELS[group][0].id;
   });
-}
-
-function renderModelOptions(slot, group) {
-  if (!slot || !group || !KB_COMPONENT_MODELS[group]) return '';
-  return `<div class="kb-suggest"><div class="kb-suggest-title">Suggested type / model from KB</div>${KB_COMPONENT_MODELS[group].map(item => {
-    const selected = state.selectedModels[slot] === item.id;
-    return `<div class="model-option ${selected ? 'selected' : ''}">
-      <div><div class="model-name">${esc(item.model)}</div><div class="model-meta">${esc(item.type)} | ${esc(item.kb)} - ${esc(item.ref)}</div></div>
-      <button class="model-select ${selected ? 'active' : ''}" onclick="selectModel('${slot}','${item.id}')">${selected ? 'Selected' : 'Select'}</button>
-    </div>`;
-  }).join('')}</div>`;
 }
 
 function renderValveModelOptions(v) {
@@ -1650,7 +1677,71 @@ function selectModel(slot, id) {
 
 function selectedModel(slot) {
   const id = state.selectedModels[slot];
-  return Object.values(KB_COMPONENT_MODELS).flat().find(item => item.id === id) || null;
+  return Object.values(KB_COMPONENT_MODELS).flat().find(item => item.id === id) || state.webModels[id] || null;
+}
+
+/* Normalizes an AI-ranked options array (2-3 items) for one slot into a
+   uniform list of resolvable catalog-like items. Items with a valid catalog
+   id are merged with their full catalog record; items with no valid catalog
+   id (source:'web', or an id the AI invented) get a synthetic id and are
+   registered into state.webModels so selectedModel()/renderModelOptions()/
+   the BOM can treat them exactly like a KB item, per design decision to
+   surface web-sourced parts as first-class options rather than flagged
+   exceptions. Falls back to the first catalog entry if the AI returned
+   nothing usable. */
+function normalizeOptions(rawArr, catalogArr, slot) {
+  // catalogArr entries only carry {id, model, type} — look up the FULL
+  // KB_COMPONENT_MODELS record (with kb/ref) the same way selectedModel() does,
+  // so ranked option cards and the BOM show the real KB reference, not undefined.
+  const fullRecord = (id) => Object.values(KB_COMPONENT_MODELS).flat().find(i => i.id === id);
+  const arr = Array.isArray(rawArr) ? rawArr.slice(0, 3) : [];
+  const out = arr.map((opt, idx) => {
+    if (!opt) return null;
+    const catalogMatch = catalogArr.find(i => i.id === opt.id);
+    if (catalogMatch) {
+      const full = fullRecord(catalogMatch.id) || catalogMatch;
+      // Merge the AI's annotations (reason, tradeoff, and for valves: selection,
+      // riskIfWrong, standard, component) onto the full catalog record, but the
+      // catalog's own id/model/type/kb/ref always win over anything the AI said.
+      return { ...opt, ...full };
+    }
+    // No catalog match — treat as a web-sourced candidate (or an id the AI invented).
+    const webId = `web-${slot}-${idx}`;
+    const webItem = {
+      ...opt,
+      id: webId,
+      model: opt.model || opt.id || 'Web-sourced component',
+      type: opt.tradeoff || 'Web-sourced option',
+      kb: 'Web',
+      ref: opt.reason || 'Sourced via web search — verify against OEM datasheet before ordering.'
+    };
+    state.webModels[webId] = webItem;
+    return webItem;
+  }).filter(Boolean);
+  return out.length ? out : (catalogArr[0] ? [{ ...(fullRecord(catalogArr[0].id) || catalogArr[0]) }] : []);
+}
+
+function renderModelOptions(slot, group) {
+  const ranked = state.aiOptions[slot];
+  if (ranked && ranked.length) {
+    return `<div class="kb-suggest"><div class="kb-suggest-title">AI-ranked options (KB + web)</div>${ranked.map(item => {
+      const selected = state.selectedModels[slot] === item.id;
+      const webTag = item.kb === 'Web' ? ' <span class="model-web-tag">web-sourced</span>' : '';
+      const label = item.tradeoff ? `<strong>${esc(item.tradeoff)}</strong> — ` : '';
+      return `<div class="model-option ${selected ? 'selected' : ''}">
+        <div><div class="model-name">${esc(item.model)}${webTag}</div><div class="model-meta">${label}${esc(item.reason || item.type)}${item.kb && item.kb !== 'Web' ? ' | ' + esc(item.kb) : ''}</div></div>
+        <button class="model-select ${selected ? 'active' : ''}" onclick="selectModel('${slot}','${item.id}')">${selected ? 'Selected' : 'Select'}</button>
+      </div>`;
+    }).join('')}</div>`;
+  }
+  if (!slot || !group || !KB_COMPONENT_MODELS[group]) return '';
+  return `<div class="kb-suggest"><div class="kb-suggest-title">Suggested type / model from KB</div>${KB_COMPONENT_MODELS[group].map(item => {
+    const selected = state.selectedModels[slot] === item.id;
+    return `<div class="model-option ${selected ? 'selected' : ''}">
+      <div><div class="model-name">${esc(item.model)}</div><div class="model-meta">${esc(item.type)} | ${esc(item.kb)} - ${esc(item.ref)}</div></div>
+      <button class="model-select ${selected ? 'active' : ''}" onclick="selectModel('${slot}','${item.id}')">${selected ? 'Selected' : 'Select'}</button>
+    </div>`;
+  }).join('')}</div>`;
 }
 
 function renderSelectedModelSummary() {
