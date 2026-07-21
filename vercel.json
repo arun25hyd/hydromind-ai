@@ -5,7 +5,19 @@
   "rewrites": [
     { "source": "/api/chat", "destination": "/api/chat.js" },
     { "source": "/api/feedback", "destination": "/api/feedback.js" },
-    { "source": "/((?!api/|maintenance\\.html).*)", "destination": "/maintenance.html" }
+    { "source": "/", "destination": "/maintenance.html" },
+    { "source": "/index.html", "destination": "/maintenance.html" },
+    { "source": "/ai_advisor.html", "destination": "/maintenance.html" },
+    { "source": "/crane_diagnostic.html", "destination": "/maintenance.html" },
+    { "source": "/system_design.html", "destination": "/maintenance.html" },
+    { "source": "/circuit_walkthrough.html", "destination": "/maintenance.html" },
+    { "source": "/knowledge_base.html", "destination": "/maintenance.html" },
+    { "source": "/pricing.html", "destination": "/maintenance.html" },
+    { "source": "/disclaimer.html", "destination": "/maintenance.html" },
+    { "source": "/terms-of-service.html", "destination": "/maintenance.html" },
+    { "source": "/refund-policy.html", "destination": "/maintenance.html" },
+    { "source": "/feedback.html", "destination": "/maintenance.html" },
+    { "source": "/pages/privacy.html", "destination": "/maintenance.html" }
   ],
   "redirects": [
     {
