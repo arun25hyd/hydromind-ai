@@ -1037,8 +1037,12 @@ async function analyzeBrief() {
 
   const sysPrompt = `You are HydroMind's System Design Brief Parser. The user provides an engineering brief describing a hydraulic system requirement, plus selected Application/Environment/Duty dropdown values. Extract structured engineering parameters and generate 2-4 genuinely useful clarifying questions about anything ambiguous, missing, or worth an engineer confirming before sizing proceeds (real engineering judgment calls, not simple presence checks).
 
+If the brief states a required flow rate (LPM, L/min, GPM, etc.), extract it as flowLpm in L/min — this is the user's stated requirement and must be preserved exactly, not replaced with a calculated/assumed value. If no flow rate is stated, return 0 for flowLpm and it will be calculated from load/stroke/cycle time instead.
+
+If the brief states or implies a pump/circuit type preference (e.g. "load-sensing", "pressure-compensated", "closed-loop"), extract it verbatim-ish as circuitPref (e.g. "Load-sensing", "Pressure-compensated"). If none stated, return an empty string.
+
 Respond with ONLY a single valid JSON object — no markdown fences, no preamble, no explanation — matching exactly this schema:
-{"app": string, "environment": string, "duty": string, "actuator": "Hydraulic cylinder" or "Hydraulic motor", "loadHolding": boolean, "standard": string, "control": string, "cooling": string, "loadTon": number, "strokeM": number, "timeSec": number, "pressureBar": number, "questions": [[label, question, assumptionNote], ...]}
+{"app": string, "environment": string, "duty": string, "actuator": "Hydraulic cylinder" or "Hydraulic motor", "loadHolding": boolean, "standard": string, "control": string, "cooling": string, "loadTon": number, "strokeM": number, "timeSec": number, "pressureBar": number, "flowLpm": number, "circuitPref": string, "questions": [[label, question, assumptionNote], ...]}
 
 If a numeric value is not stated or inferable, use a reasonable marine/offshore hydraulic engineering default and surface that assumption as one of the clarifying questions.`;
 
@@ -1087,7 +1091,9 @@ If a numeric value is not stated or inferable, use a reasonable marine/offshore 
       loadTon: Number.isFinite(parsed.loadTon) && parsed.loadTon > 0 ? parsed.loadTon : 10,
       strokeM: Number.isFinite(parsed.strokeM) && parsed.strokeM > 0 ? parsed.strokeM : 1,
       timeSec: Number.isFinite(parsed.timeSec) && parsed.timeSec > 0 ? parsed.timeSec : 30,
-      pressureBar: Number.isFinite(parsed.pressureBar) && parsed.pressureBar > 0 ? parsed.pressureBar : 250
+      pressureBar: Number.isFinite(parsed.pressureBar) && parsed.pressureBar > 0 ? parsed.pressureBar : 250,
+      flowLpm: Number.isFinite(parsed.flowLpm) && parsed.flowLpm > 0 ? parsed.flowLpm : 0,
+      circuitPref: typeof parsed.circuitPref === 'string' ? parsed.circuitPref : ''
     };
     state.questions = (Array.isArray(parsed.questions) && parsed.questions.length)
       ? parsed.questions.filter(q => Array.isArray(q) && q.length >= 2)
@@ -1097,6 +1103,7 @@ If a numeric value is not stated or inferable, use a reasonable marine/offshore 
     setMetricInput('strokeM', 'stroke', state.extracted.strokeM, unitSystem === 'metric' ? 2 : 1);
     $('timeSec').value = state.extracted.timeSec;
     setMetricInput('workPressure', 'pressure', state.extracted.pressureBar, 0);
+    if (state.extracted.flowLpm) setMetricInput('flowRate', 'flow', state.extracted.flowLpm, 1);
     renderQuestions();
     calculatePower();
     setStep(2);
