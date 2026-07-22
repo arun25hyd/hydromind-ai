@@ -1653,7 +1653,7 @@ function selectValvesFallback() {
   }
   ensureDefaultModels({
     dcv: 'dcvClosed',
-    protection: motorCircuit ? 'motor' : loadHolding ? 'loadHolding' : '',
+    protection: hpuOnly ? '' : (motorCircuit ? 'motor' : loadHolding ? 'loadHolding' : ''),
     filtration: 'filtration'
   });
   renderValves();
