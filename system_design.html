@@ -1027,10 +1027,16 @@ function showSdNotice(title, msg, kind) {
   el._hideTimer = setTimeout(() => { el.style.display = 'none'; }, 14000);
 }
 
+function hideSdNotice() {
+  const el = document.getElementById('sdAiNotice');
+  if (el) { clearTimeout(el._hideTimer); el.style.display = 'none'; }
+}
+
 async function analyzeBrief() {
   if (aiAnalyzing) return;
   const text = val('brief');
   if (!text) return;
+  hideSdNotice();
   aiAnalyzing = true;
   const btns = Array.from(document.querySelectorAll('[onclick="analyzeBrief()"]'));
   btns.forEach(b => { b.disabled = true; b.dataset.origText = b.textContent; b.textContent = 'Analyzing with AI…'; });
@@ -1393,6 +1399,11 @@ function selectComponentsFallback() {
     actuator: motorCircuit ? 'motor' : 'cylinder',
     filtration: 'filtration'
   });
+  // If a prior analysis in this same session (before the brief was edited) selected
+  // a fixed actuator, ensureDefaultModels above won't touch it when hpuOnly is true
+  // since 'actuator' is simply absent from its map — clear it explicitly so a stale
+  // selection can't resurface in the Summary tab after re-analyzing.
+  if (hpuOnly) delete state.selectedModels.actuator;
   renderComponents();
   renderLiveSpec();
 }
