@@ -1043,9 +1043,12 @@ If the brief states or implies a pump/circuit type preference (e.g. "load-sensin
 
 Set hpuOnly to true ONLY if the brief is for a stand-alone hydraulic power unit (pump, prime mover, valves, filtration, reservoir) intended to drive a VARIABLE or interchangeable test article — e.g. "a test frame/bench/rig for testing different winches of various types and capacities," where the relief valve or pressure/flow is deliberately adjustable per test article rather than one fixed unit. In that case do NOT size or select a specific cylinder or motor — there is no single fixed actuator to size, only the power supply. Set hpuOnly to false whenever the brief describes sizing one specific, fixed actuator (a named cylinder, a named winch/motor with fixed capacity to drive continuously, a crane function, etc.), even if the word "test" appears.
 
-Respond with ONLY a single valid JSON object — no markdown fences, no preamble, no explanation — matching exactly this schema:
-{"app": string, "environment": string, "duty": string, "actuator": "Hydraulic cylinder" or "Hydraulic motor", "loadHolding": boolean, "standard": string, "control": string, "cooling": string, "loadTon": number, "strokeM": number, "timeSec": number, "pressureBar": number, "flowLpm": number, "circuitPref": string, "hpuOnly": boolean, "questions": [[label, question, assumptionNote], ...]}
+Set multiFunction to true if the brief describes a machine with TWO OR MORE simultaneous distinct actuator functions sharing one HPU — e.g. a crane with hoist + luffing + slewing, or hoist + telescope, etc. This tool sizes only ONE actuator function per design pass, so if multiFunction is true, make the FIRST clarifying question explicitly list the functions you detected and ask the user which single function (e.g. "size the luffing cylinder only") this pass should size — do not silently pick one and proceed as if it were the complete machine.
 
+Respond with ONLY a single valid JSON object — no markdown fences, no preamble, no explanation — matching exactly this schema:
+{"app": string, "environment": string, "duty": string, "actuator": "Hydraulic cylinder" or "Hydraulic motor", "loadHolding": boolean, "standard": string, "control": string, "cooling": string, "loadTon": number, "strokeM": number, "timeSec": number, "pressureBar": number, "flowLpm": number, "circuitPref": string, "hpuOnly": boolean, "multiFunction": boolean, "multiFunctionNote": string, "questions": [[label, question, assumptionNote], ...]}
+
+multiFunctionNote: a one-sentence list of the detected functions (e.g. "Detected hoist, luffing and slewing functions") when multiFunction is true; empty string otherwise.
 If a numeric value is not stated or inferable, use a reasonable marine/offshore hydraulic engineering default and surface that assumption as one of the clarifying questions. If hpuOnly is true, do not ask clarifying questions about cylinder bore/rod/stroke or a specific winch's torque/speed — ask about the HPU's own adjustable range (relief valve range, flow range, reservoir/cooling sizing for worst-case duty) instead.`;
 
   const question = `Application brief: "${text}"\nApplication dropdown: ${val('appType')}\nEnvironment dropdown: ${val('environment')}\nDuty dropdown: ${val('duty')}\n\nExtract the structured parameters and clarifying questions as specified.`;
@@ -1096,8 +1099,12 @@ If a numeric value is not stated or inferable, use a reasonable marine/offshore 
       pressureBar: Number.isFinite(parsed.pressureBar) && parsed.pressureBar > 0 ? parsed.pressureBar : 250,
       flowLpm: Number.isFinite(parsed.flowLpm) && parsed.flowLpm > 0 ? parsed.flowLpm : 0,
       circuitPref: typeof parsed.circuitPref === 'string' ? parsed.circuitPref : '',
-      hpuOnly: !!parsed.hpuOnly
+      hpuOnly: !!parsed.hpuOnly,
+      multiFunction: !!parsed.multiFunction
     };
+    if (state.extracted.multiFunction) {
+      showSdNotice('Multiple Functions Detected', `${esc(parsed.multiFunctionNote || 'This brief describes more than one simultaneous actuator function (e.g. hoist + luffing + slewing).')} This tool sizes ONE actuator function per design pass — see the first clarifying question below to specify which function this pass should size, or run each function separately for a complete package.`, 'warn');
+    }
     state.questions = (Array.isArray(parsed.questions) && parsed.questions.length)
       ? parsed.questions.filter(q => Array.isArray(q) && q.length >= 2)
       : buildQuestions();
@@ -1150,8 +1157,15 @@ function analyzeBriefFallback() {
     // interchangeable test article (e.g. different winches swapped in per test),
     // not a single fixed actuator being sized as part of this design. In that
     // case no cylinder/motor-specific sizing or BOM line should be shown.
-    hpuOnly: (lower.includes('test frame') || lower.includes('test bench') || lower.includes('test rig') || lower.includes('testing frame') || lower.includes('load-testing frame') || lower.includes('load testing frame')) && lower.includes('winch')
+    hpuOnly: (lower.includes('test frame') || lower.includes('test bench') || lower.includes('test rig') || lower.includes('testing frame') || lower.includes('load-testing frame') || lower.includes('load testing frame')) && lower.includes('winch'),
+    // Simple count of distinct crane-style functions mentioned — a real machine
+    // with 2+ of these running off one HPU (e.g. hoist+luff+slew) needs more
+    // than this tool's single-actuator sizing model can represent in one pass.
+    multiFunction: ['hoist', 'luff', 'slew', 'telescop', 'derrick'].filter(kw => lower.includes(kw)).length >= 2
   };
+  if (state.extracted.multiFunction) {
+    showSdNotice('Multiple Functions Detected', 'This brief appears to describe more than one simultaneous actuator function (e.g. hoist + luffing + slewing). This tool sizes ONE actuator function per design pass — please rephrase the brief to focus on a single function (e.g. "size the luffing cylinder only"), or run each function separately for a complete package.', 'warn');
+  }
 
   setMetricInput('loadTon', 'load', state.extracted.loadTon, unitSystem === 'metric' ? 1 : 0);
   setMetricInput('strokeM', 'stroke', state.extracted.strokeM, unitSystem === 'metric' ? 2 : 1);
