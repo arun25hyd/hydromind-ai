@@ -1306,7 +1306,7 @@ Propose 2-3 ranked, differentiated options per slot and justify against this spe
       method: 'POST',
       headers,
       signal: controller.signal,
-      body: JSON.stringify({ question, history: [], system: sysPrompt, max_tokens: 3500, enableWebSearch: true, answerPolicy: { strictRelevance: false, allowEngineeringFallback: true, domain: 'marine_offshore_hydraulics' } })
+      body: JSON.stringify({ question, history: [], system: sysPrompt, max_tokens: 8000, enableWebSearch: true, answerPolicy: { strictRelevance: false, allowEngineeringFallback: true, domain: 'marine_offshore_hydraulics' } })
     });
 
     if (resp.status === 429) {
@@ -1498,7 +1498,7 @@ Write the relief, dump and test-point safety case for this specific brief.`;
     });
 
     const [respA, respB] = await Promise.all([
-      callKbChat(questionA, sysPromptA, { max_tokens: 3500, enableWebSearch: true }),
+      callKbChat(questionA, sysPromptA, { max_tokens: 8000, enableWebSearch: true }),
       callKbChat(questionB, sysPromptB)
     ]);
 
