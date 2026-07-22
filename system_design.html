@@ -1041,10 +1041,12 @@ If the brief states a required flow rate (LPM, L/min, GPM, etc.), extract it as 
 
 If the brief states or implies a pump/circuit type preference (e.g. "load-sensing", "pressure-compensated", "closed-loop"), extract it verbatim-ish as circuitPref (e.g. "Load-sensing", "Pressure-compensated"). If none stated, return an empty string.
 
-Respond with ONLY a single valid JSON object — no markdown fences, no preamble, no explanation — matching exactly this schema:
-{"app": string, "environment": string, "duty": string, "actuator": "Hydraulic cylinder" or "Hydraulic motor", "loadHolding": boolean, "standard": string, "control": string, "cooling": string, "loadTon": number, "strokeM": number, "timeSec": number, "pressureBar": number, "flowLpm": number, "circuitPref": string, "questions": [[label, question, assumptionNote], ...]}
+Set hpuOnly to true ONLY if the brief is for a stand-alone hydraulic power unit (pump, prime mover, valves, filtration, reservoir) intended to drive a VARIABLE or interchangeable test article — e.g. "a test frame/bench/rig for testing different winches of various types and capacities," where the relief valve or pressure/flow is deliberately adjustable per test article rather than one fixed unit. In that case do NOT size or select a specific cylinder or motor — there is no single fixed actuator to size, only the power supply. Set hpuOnly to false whenever the brief describes sizing one specific, fixed actuator (a named cylinder, a named winch/motor with fixed capacity to drive continuously, a crane function, etc.), even if the word "test" appears.
 
-If a numeric value is not stated or inferable, use a reasonable marine/offshore hydraulic engineering default and surface that assumption as one of the clarifying questions.`;
+Respond with ONLY a single valid JSON object — no markdown fences, no preamble, no explanation — matching exactly this schema:
+{"app": string, "environment": string, "duty": string, "actuator": "Hydraulic cylinder" or "Hydraulic motor", "loadHolding": boolean, "standard": string, "control": string, "cooling": string, "loadTon": number, "strokeM": number, "timeSec": number, "pressureBar": number, "flowLpm": number, "circuitPref": string, "hpuOnly": boolean, "questions": [[label, question, assumptionNote], ...]}
+
+If a numeric value is not stated or inferable, use a reasonable marine/offshore hydraulic engineering default and surface that assumption as one of the clarifying questions. If hpuOnly is true, do not ask clarifying questions about cylinder bore/rod/stroke or a specific winch's torque/speed — ask about the HPU's own adjustable range (relief valve range, flow range, reservoir/cooling sizing for worst-case duty) instead.`;
 
   const question = `Application brief: "${text}"\nApplication dropdown: ${val('appType')}\nEnvironment dropdown: ${val('environment')}\nDuty dropdown: ${val('duty')}\n\nExtract the structured parameters and clarifying questions as specified.`;
 
@@ -1093,7 +1095,8 @@ If a numeric value is not stated or inferable, use a reasonable marine/offshore 
       timeSec: Number.isFinite(parsed.timeSec) && parsed.timeSec > 0 ? parsed.timeSec : 30,
       pressureBar: Number.isFinite(parsed.pressureBar) && parsed.pressureBar > 0 ? parsed.pressureBar : 250,
       flowLpm: Number.isFinite(parsed.flowLpm) && parsed.flowLpm > 0 ? parsed.flowLpm : 0,
-      circuitPref: typeof parsed.circuitPref === 'string' ? parsed.circuitPref : ''
+      circuitPref: typeof parsed.circuitPref === 'string' ? parsed.circuitPref : '',
+      hpuOnly: !!parsed.hpuOnly
     };
     state.questions = (Array.isArray(parsed.questions) && parsed.questions.length)
       ? parsed.questions.filter(q => Array.isArray(q) && q.length >= 2)
@@ -1142,7 +1145,12 @@ function analyzeBriefFallback() {
     timeSec: sec || 30,
     pressureBar: pressure || 250,
     flowLpm: flow || 0,
-    circuitPref: (lower.includes('load-sensing') || lower.includes('load sensing') || lower.includes('load-sense')) ? 'Load-sensing' : (lower.includes('pressure-compensated') || lower.includes('pressure compensated')) ? 'Pressure-compensated' : ''
+    circuitPref: (lower.includes('load-sensing') || lower.includes('load sensing') || lower.includes('load-sense')) ? 'Load-sensing' : (lower.includes('pressure-compensated') || lower.includes('pressure compensated')) ? 'Pressure-compensated' : '',
+    // "HPU-only": the brief is for a stand-alone power unit driving a variable/
+    // interchangeable test article (e.g. different winches swapped in per test),
+    // not a single fixed actuator being sized as part of this design. In that
+    // case no cylinder/motor-specific sizing or BOM line should be shown.
+    hpuOnly: (lower.includes('test frame') || lower.includes('test bench') || lower.includes('test rig') || lower.includes('testing frame') || lower.includes('load-testing frame') || lower.includes('load testing frame')) && lower.includes('winch')
   };
 
   setMetricInput('loadTon', 'load', state.extracted.loadTon, unitSystem === 'metric' ? 1 : 0);
@@ -1208,7 +1216,8 @@ function calculatePower() {
 function renderCalcCards() {
   const c = state.calculations;
   const motorCircuit = state.extracted.actuator === 'Hydraulic motor';
-  const cards = motorCircuit ? [] : [
+  const hideActuatorGeometry = motorCircuit || state.extracted.hpuOnly;
+  const cards = hideActuatorGeometry ? [] : [
     ['Cylinder force', fmtUnit(c.forceKN, 'force', unitSystem === 'metric' ? 1 : 0), 'Based on entered load and gravity factor.'],
     ['Cylinder bore', fmtUnit(c.boreMm, 'diameter', unitSystem === 'metric' ? 0 : 2), `Rod estimate ${txtUnit(c.rodMm, 'diameter', unitSystem === 'metric' ? 0 : 2)}.`]
   ];
@@ -1239,31 +1248,35 @@ async function selectComponentsImpl() {
 
   const c = state.calculations;
   const motorCircuit = state.extracted.actuator === 'Hydraulic motor';
+  const hpuOnly = !!state.extracted.hpuOnly;
   const catalog = {
     pumpClosed: KB_COMPONENT_MODELS.pumpClosed.map(i => ({ id: i.id, model: i.model, type: i.type })),
-    actuator: KB_COMPONENT_MODELS[motorCircuit ? 'motor' : 'cylinder'].map(i => ({ id: i.id, model: i.model, type: i.type })),
+    actuator: hpuOnly ? [] : KB_COMPONENT_MODELS[motorCircuit ? 'motor' : 'cylinder'].map(i => ({ id: i.id, model: i.model, type: i.type })),
     filtration: KB_COMPONENT_MODELS.filtration.map(i => ({ id: i.id, model: i.model, type: i.type }))
   };
 
-  const sysPrompt = `You are HydroMind's System Design Component Selector. Given the engineering brief parameters and a catalog of candidate KB components per slot, propose 2-3 ranked candidate options for EACH slot (pump, actuator, filtration), not just one. You may select ids from the supplied catalog freely. If — and only if — the catalog genuinely lacks enough good candidates to reach 2-3 meaningful options for a slot (or none of the catalog items are a strong fit), use the web_search tool to find a real, specific commercial component (name a real manufacturer and model) and include it as an option with "id":null and "source":"web" — never invent a fake catalog id, and never fabricate a web-sourced part; only include it if you actually found it via web_search.
+  const actuatorSlotInstruction = hpuOnly
+    ? `This brief is for a STAND-ALONE HPU driving a variable/interchangeable test article (not a fixed actuator) — do NOT propose an "actuator" slot at all; omit it from your response entirely. Rank options only for pump and filtration.`
+    : `Propose 2-3 ranked candidate options for EACH slot (pump, actuator, filtration), not just one.`;
+
+  const sysPrompt = `You are HydroMind's System Design Component Selector. Given the engineering brief parameters and a catalog of candidate KB components per slot, ${actuatorSlotInstruction} You may select ids from the supplied catalog freely. If — and only if — the catalog genuinely lacks enough good candidates to reach 2-3 meaningful options for a slot (or none of the catalog items are a strong fit), use the web_search tool to find a real, specific commercial component (name a real manufacturer and model) and include it as an option with "id":null and "source":"web" — never invent a fake catalog id, and never fabricate a web-sourced part; only include it if you actually found it via web_search.
 
 Each option must carry a short "tradeoff" label distinguishing it from the others in the same slot, e.g. "Best overall fit", "Most affordable", "Lowest heat generation", "Highest duty/performance". Do not give two options the same tradeoff label in one slot.
 
 If the user's original brief text states a specific pump/circuit type preference (e.g. "load-sensing", "pressure-compensated"), at least one option MUST match that stated preference and should normally be ranked first, unless no catalog or web option can satisfy it.
 
 Respond with ONLY a single valid JSON object — no markdown fences, no preamble — matching exactly this schema:
-{"pump":[{"id":string|null,"source":"kb"|"web","model":string|null,"reason":string,"tradeoff":string}],"actuator":[...same shape...],"filtration":[...same shape...],"primeMoverNote":string,"reservoirNote":string,"coolerNote":string}
+{"pump":[{"id":string|null,"source":"kb"|"web","model":string|null,"reason":string,"tradeoff":string}]${hpuOnly ? '' : ',"actuator":[...same shape...]'},"filtration":[...same shape...],"primeMoverNote":string,"reservoirNote":string,"coolerNote":string}
 
 Each array holds 2-3 options, ordered best-first. "model" is required and must be a real product name when source is "web"; it may be omitted (null) for "kb" options since the id already identifies the catalog model.
 primeMoverNote/reservoirNote/coolerNote are short engineering notes (these slots have no KB catalog, just your reasoning) about prime mover sizing margin, reservoir sizing basis, and cooling basis, specific to this brief.`;
 
-  const question = `Brief parameters: application=${state.extracted.app}, environment=${state.extracted.environment}, duty=${state.extracted.duty}, actuator type=${state.extracted.actuator}, standard=${state.extracted.standard}, control=${state.extracted.control}, cooling preference=${state.extracted.cooling}, stated circuit/pump type preference=${state.extracted.circuitPref || 'none explicitly stated — infer from original brief text below'}.
-Calculated: pressure=${txtUnit(c.pressure,'pressure',0)}, flow=${txtUnit(c.flow,'flow',1)}, power=${txtUnit(c.powerKw,'power',1)}, bore=${txtUnit(c.boreMm,'diameter',0)}, rod=${txtUnit(c.rodMm,'diameter',0)}.
+  const question = `Brief parameters: application=${state.extracted.app}, environment=${state.extracted.environment}, duty=${state.extracted.duty}, actuator type=${hpuOnly ? 'N/A — HPU-only, variable test article' : state.extracted.actuator}, standard=${state.extracted.standard}, control=${state.extracted.control}, cooling preference=${state.extracted.cooling}, stated circuit/pump type preference=${state.extracted.circuitPref || 'none explicitly stated — infer from original brief text below'}.
+Calculated: pressure=${txtUnit(c.pressure,'pressure',0)}, flow=${txtUnit(c.flow,'flow',1)}, power=${txtUnit(c.powerKw,'power',1)}${hpuOnly ? '' : `, bore=${txtUnit(c.boreMm,'diameter',0)}, rod=${txtUnit(c.rodMm,'diameter',0)}`}.
 Original brief text: "${val('brief')}"
 Catalog (pick id only from these lists per slot; supplement with a web-sourced option only if a slot's catalog list is thin or weak):
 Pump options: ${JSON.stringify(catalog.pumpClosed)}
-Actuator options: ${JSON.stringify(catalog.actuator)}
-Filtration options: ${JSON.stringify(catalog.filtration)}
+${hpuOnly ? '' : `Actuator options: ${JSON.stringify(catalog.actuator)}\n`}Filtration options: ${JSON.stringify(catalog.filtration)}
 
 Propose 2-3 ranked, differentiated options per slot and justify against this specific brief.`;
 
@@ -1299,17 +1312,21 @@ Propose 2-3 ranked, differentiated options per slot and justify against this spe
     const parsed = extractJsonFromText(answerText);
 
     state.aiOptions.pump = normalizeOptions(parsed.pump, catalog.pumpClosed, 'pump');
-    state.aiOptions.actuator = normalizeOptions(parsed.actuator, catalog.actuator, 'actuator');
+    state.aiOptions.actuator = hpuOnly ? [] : normalizeOptions(parsed.actuator, catalog.actuator, 'actuator');
     state.aiOptions.filtration = normalizeOptions(parsed.filtration, catalog.filtration, 'filtration');
     const pumpPick = state.aiOptions.pump[0];
-    const actuatorPick = state.aiOptions.actuator[0];
+    const actuatorPick = hpuOnly ? null : state.aiOptions.actuator[0];
     const filtrationPick = state.aiOptions.filtration[0];
 
     state.components = {
       pump: pumpPick.model,
       pumpReason: pumpPick.reason || 'Selected from duty and control requirement.',
-      actuator: motorCircuit ? actuatorPick.model : `${actuatorPick.model}, bore ${txtUnit(c.boreMm, 'diameter', unitSystem === 'metric' ? 0 : 2)}, rod ${txtUnit(c.rodMm, 'diameter', unitSystem === 'metric' ? 0 : 2)}`,
-      actuatorReason: actuatorPick.reason || 'Sized from user load, stroke and cycle time.',
+      actuator: hpuOnly
+        ? 'Test article (customer-supplied winch/actuator) — not sized or included in this HPU BOM'
+        : (motorCircuit ? actuatorPick.model : `${actuatorPick.model}, bore ${txtUnit(c.boreMm, 'diameter', unitSystem === 'metric' ? 0 : 2)}, rod ${txtUnit(c.rodMm, 'diameter', unitSystem === 'metric' ? 0 : 2)}`),
+      actuatorReason: hpuOnly
+        ? 'This HPU is designed to power a variable/interchangeable test winch — the driven unit is swapped per test and sized/selected independently, so no fixed actuator is specified here.'
+        : (actuatorPick.reason || 'Sized from user load, stroke and cycle time.'),
       primeMover: `Electric motor ${txtUnit(c.powerKw * 1.15, 'power', 1)} minimum with service factor`,
       primeMoverReason: parsed.primeMoverNote || 'Calculated from pressure x flow with efficiency and service margin.',
       reservoir: `${txtUnit(Math.max(c.flow * 3, 80), 'reservoir', 0)}-${txtUnit(Math.max(c.flow * 5, 120), 'reservoir', 0)} reservoir`,
@@ -1321,7 +1338,7 @@ Propose 2-3 ranked, differentiated options per slot and justify against this spe
       cleanliness: state.extracted.environment.includes('Marine') ? 'ISO 4406 17/15/12 or better' : 'ISO 4406 18/16/13'
     };
     state.selectedModels.pump = pumpPick.id;
-    state.selectedModels.actuator = actuatorPick.id;
+    if (hpuOnly) { delete state.selectedModels.actuator; } else { state.selectedModels.actuator = actuatorPick.id; }
     state.selectedModels.filtration = filtrationPick.id;
     renderComponents();
     renderLiveSpec();
@@ -1343,16 +1360,21 @@ function selectComponentsFallback() {
   const c = state.calculations;
   const highDuty = state.extracted.duty === 'Continuous';
   const motorCircuit = state.extracted.actuator === 'Hydraulic motor';
+  const hpuOnly = !!state.extracted.hpuOnly;
   state.components = {
     pump: highDuty ? 'Load-sensing variable displacement axial piston pump' : 'Pressure-compensated axial piston pump',
-    actuator: motorCircuit ? 'Hydraulic motor with fail-safe brake' : `Double-acting cylinder, bore ${txtUnit(c.boreMm, 'diameter', unitSystem === 'metric' ? 0 : 2)}, rod ${txtUnit(c.rodMm, 'diameter', unitSystem === 'metric' ? 0 : 2)}`,
+    actuator: hpuOnly ? 'Test article (customer-supplied winch/actuator) — not sized or included in this HPU BOM' : (motorCircuit ? 'Hydraulic motor with fail-safe brake' : `Double-acting cylinder, bore ${txtUnit(c.boreMm, 'diameter', unitSystem === 'metric' ? 0 : 2)}, rod ${txtUnit(c.rodMm, 'diameter', unitSystem === 'metric' ? 0 : 2)}`),
+    actuatorReason: hpuOnly ? 'This HPU is designed to power a variable/interchangeable test winch — the driven unit is swapped per test and sized/selected independently, so no fixed actuator is specified here.' : undefined,
     primeMover: `Electric motor ${txtUnit(c.powerKw * 1.15, 'power', 1)} minimum with service factor`,
     reservoir: `${txtUnit(Math.max(c.flow * 3, 80), 'reservoir', 0)}-${txtUnit(Math.max(c.flow * 5, 120), 'reservoir', 0)} reservoir`,
     cooler: state.extracted.cooling,
     filtration: state.extracted.environment.includes('Marine') ? 'Suction strainer, 10 micron return filter, offline kidney loop, desiccant breather' : 'Suction strainer and 10 micron return filter',
     cleanliness: state.extracted.environment.includes('Marine') ? 'ISO 4406 17/15/12 or better' : 'ISO 4406 18/16/13'
   };
-  ensureDefaultModels({
+  ensureDefaultModels(hpuOnly ? {
+    pump: 'pumpClosed',
+    filtration: 'filtration'
+  } : {
     pump: 'pumpClosed',
     actuator: motorCircuit ? 'motor' : 'cylinder',
     filtration: 'filtration'
@@ -1363,14 +1385,17 @@ function selectComponentsFallback() {
 
 function renderComponents() {
   const x = state.components;
-  $('componentCards').innerHTML = [
+  const cards = [
     ['Pump', x.pump, x.pumpReason || 'Selected from duty and control requirement. Pressure-compensated/LS pumps reduce heating by delivering only demanded flow.', 'pump', 'pumpClosed'],
-    ['Actuator', x.actuator, x.actuatorReason || 'Sized from user load, stroke and cycle time. Final bore/rod must be checked against buckling and mounting geometry.', 'actuator', state.extracted.actuator === 'Hydraulic motor' ? 'motor' : 'cylinder'],
     ['Prime mover', x.primeMover, x.primeMoverReason || 'Calculated from pressure x flow with efficiency and service margin.', '', ''],
     ['Reservoir', x.reservoir, x.reservoirReason || 'Sized from pump flow to support heat rejection, deaeration and contamination settling.', '', ''],
     ['Cooling', x.cooler, x.coolerReason || 'Selected from environment and likely thermal duty. Confirm heat rejection during detailed design.', '', ''],
     ['Filtration', x.filtration, (x.filtrationReason ? x.filtrationReason + ' ' : '') + `Target cleanliness: ${x.cleanliness}.`, 'filtration', 'filtration']
-  ].map(m => `<div class="component-card"><div class="card-label">${m[0]}</div><h3>${esc(m[1])}</h3><p>${esc(m[2])}</p>${renderModelOptions(m[3], m[4])}</div>`).join('');
+  ];
+  if (!state.extracted.hpuOnly) {
+    cards.splice(1, 0, ['Actuator', x.actuator, x.actuatorReason || 'Sized from user load, stroke and cycle time. Final bore/rod must be checked against buckling and mounting geometry.', 'actuator', state.extracted.actuator === 'Hydraulic motor' ? 'motor' : 'cylinder']);
+  }
+  $('componentCards').innerHTML = cards.map(m => `<div class="component-card"><div class="card-label">${m[0]}</div><h3>${esc(m[1])}</h3><p>${esc(m[2])}</p>${renderModelOptions(m[3], m[4])}</div>`).join('');
 }
 
 let aiSelectingValves = false;
@@ -1392,14 +1417,18 @@ async function selectValvesImpl() {
   const c = state.calculations;
   const loadHolding = state.extracted.loadHolding;
   const motorCircuit = state.extracted.actuator === 'Hydraulic motor';
+  const hpuOnly = !!state.extracted.hpuOnly;
   const pump = state.components.pump;
   const closedCentre = pump.includes('Pressure') || pump.includes('Load-sensing') || pump.includes('A10VO') || pump.includes('A4VG') || pump.includes('Series 90');
   const catalog = {
     dcvClosed: KB_COMPONENT_MODELS.dcvClosed.map(i => ({ id: i.id, model: i.model, type: i.type })),
-    protection: motorCircuit ? KB_COMPONENT_MODELS.motor.map(i => ({ id: i.id, model: i.model, type: i.type })) : (loadHolding ? KB_COMPONENT_MODELS.loadHolding.map(i => ({ id: i.id, model: i.model, type: i.type })) : [])
+    // No fixed actuator exists in an HPU-only (variable test article) design, so a
+    // brake/counterbalance valve choice tied to a specific actuator doesn't apply —
+    // that decision depends on whichever winch/actuator is connected per test.
+    protection: hpuOnly ? [] : (motorCircuit ? KB_COMPONENT_MODELS.motor.map(i => ({ id: i.id, model: i.model, type: i.type })) : (loadHolding ? KB_COMPONENT_MODELS.loadHolding.map(i => ({ id: i.id, model: i.model, type: i.type })) : []))
   };
 
-  const briefCtx = `Brief: standard=${state.extracted.standard}, environment=${state.extracted.environment}, actuator type=${state.extracted.actuator}, load holding required=${loadHolding}, motor circuit=${motorCircuit}, stated control method preference=${state.extracted.control}.
+  const briefCtx = `Brief: standard=${state.extracted.standard}, environment=${state.extracted.environment}, actuator type=${hpuOnly ? 'N/A — HPU-only, variable test article, no fixed actuator to protect' : state.extracted.actuator}, load holding required=${loadHolding}, motor circuit=${motorCircuit}, hpu only=${hpuOnly}, stated control method preference=${state.extracted.control}.
 Selected pump: ${pump} (closed-centre requirement: ${closedCentre}).
 Relief pressure target: ${txtUnit(c.relief, 'pressure', 0)}.
 Original brief text: "${val('brief')}"`;
@@ -1508,12 +1537,12 @@ Write the relief, dump and test-point safety case for this specific brief.`;
         standard: (parsed.relief && parsed.relief.standard) || 'ISO 4413 pressure limitation requirement.'
       },
       {
-        component: (protectionPick && protectionPick.component) || (motorCircuit ? 'Motor brake / cross-port protection' : loadHolding ? 'Counterbalance / over-centre valve' : 'Pilot-operated check valve if holding is later required'),
+        component: (protectionPick && protectionPick.component) || (hpuOnly ? 'Load-holding / brake protection (test-article-dependent)' : motorCircuit ? 'Motor brake / cross-port protection' : loadHolding ? 'Counterbalance / over-centre valve' : 'Pilot-operated check valve if holding is later required'),
         isProtectionSlot: !!protectionPick,
-        selection: (protectionPick && (protectionPick.selection || protectionPick.model)) || 'Not mandatory for non-overrunning load; keep as optional lock valve',
-        reason: (protectionPick && protectionPick.reason) || 'No load holding requirement was identified.',
-        risk: (protectionPick && protectionPick.riskIfWrong) || 'If future load holding is needed, omission can allow drift.',
-        omitted: 'Acceptable only for non-critical positioning.',
+        selection: (protectionPick && (protectionPick.selection || protectionPick.model)) || (hpuOnly ? 'Not selected here — depends on the specific winch under test' : 'Not mandatory for non-overrunning load; keep as optional lock valve'),
+        reason: (protectionPick && protectionPick.reason) || (hpuOnly ? 'This HPU powers a variable/interchangeable test winch, so any brake or load-holding valve is specific to whichever winch is connected and is out of scope for this HPU-only design.' : 'No load holding requirement was identified.'),
+        risk: (protectionPick && protectionPick.riskIfWrong) || (hpuOnly ? 'Verify the connected test winch has its own adequate load-holding/brake protection before each test.' : 'If future load holding is needed, omission can allow drift.'),
+        omitted: hpuOnly ? 'Not applicable to the HPU itself — confirm per test article.' : 'Acceptable only for non-critical positioning.',
         standard: (protectionPick && protectionPick.standard) || state.extracted.standard
       },
       {
@@ -1557,6 +1586,7 @@ function selectValvesFallback() {
   const c = state.calculations;
   const loadHolding = state.extracted.loadHolding;
   const motorCircuit = state.extracted.actuator === 'Hydraulic motor';
+  const hpuOnly = !!state.extracted.hpuOnly;
   const pump = state.components.pump;
   const closedCentre = pump.includes('Pressure') || pump.includes('Load-sensing');
   state.warnings = [];
@@ -1579,12 +1609,12 @@ function selectValvesFallback() {
       standard: 'ISO 4413 pressure limitation requirement.'
     },
     {
-      component: motorCircuit ? 'Motor brake / cross-port protection' : loadHolding ? 'Counterbalance / over-centre valve' : 'Pilot-operated check valve if holding is later required',
-      isProtectionSlot: motorCircuit || loadHolding,
-      selection: motorCircuit ? 'Fail-safe brake release valve with cross-port relief / anti-cavitation protection' : loadHolding ? 'Counterbalance valve on load-holding actuator port, pilot ratio selected after load pressure check' : 'Not mandatory for non-overrunning load; keep as optional lock valve',
-      reason: motorCircuit ? 'Selected because winch/motor drives need brake release sequencing and protection from overrun or shock load.' : loadHolding ? 'Selected because the load can overrun or drift. It meters lowering flow and prevents uncontrolled descent.' : 'No load holding requirement was identified.',
-      risk: motorCircuit ? 'Motor overspeed, shock pressure, rope/load run-away, or brake release without hydraulic torque.' : loadHolding ? 'Uncontrolled lowering, load runaway or cylinder drift.' : 'If future load holding is needed, omission can allow drift.',
-      omitted: motorCircuit ? 'The drive may coast or overspeed during load reversal or brake transition.' : loadHolding ? 'Suspended load may move if hose/valve leakage occurs.' : 'Acceptable only for non-critical positioning.',
+      component: hpuOnly ? 'Load-holding / brake protection (test-article-dependent)' : (motorCircuit ? 'Motor brake / cross-port protection' : loadHolding ? 'Counterbalance / over-centre valve' : 'Pilot-operated check valve if holding is later required'),
+      isProtectionSlot: !hpuOnly && (motorCircuit || loadHolding),
+      selection: hpuOnly ? 'Not selected here — depends on the specific winch under test' : (motorCircuit ? 'Fail-safe brake release valve with cross-port relief / anti-cavitation protection' : loadHolding ? 'Counterbalance valve on load-holding actuator port, pilot ratio selected after load pressure check' : 'Not mandatory for non-overrunning load; keep as optional lock valve'),
+      reason: hpuOnly ? 'This HPU powers a variable/interchangeable test winch, so any brake or load-holding valve is specific to whichever winch is connected and is out of scope for this HPU-only design.' : (motorCircuit ? 'Selected because winch/motor drives need brake release sequencing and protection from overrun or shock load.' : loadHolding ? 'Selected because the load can overrun or drift. It meters lowering flow and prevents uncontrolled descent.' : 'No load holding requirement was identified.'),
+      risk: hpuOnly ? 'Verify the connected test winch has its own adequate load-holding/brake protection before each test.' : (motorCircuit ? 'Motor overspeed, shock pressure, rope/load run-away, or brake release without hydraulic torque.' : loadHolding ? 'Uncontrolled lowering, load runaway or cylinder drift.' : 'If future load holding is needed, omission can allow drift.'),
+      omitted: hpuOnly ? 'Not applicable to the HPU itself — confirm per test article.' : (motorCircuit ? 'The drive may coast or overspeed during load reversal or brake transition.' : loadHolding ? 'Suspended load may move if hose/valve leakage occurs.' : 'Acceptable only for non-critical positioning.'),
       standard: state.extracted.standard
     },
     {
@@ -1894,23 +1924,26 @@ function renderHydraulicCircuit() {
 
 function buildCircuitModel() {
   const dcvSelection = state.valves[0]?.selection || '4/3 closed-centre DCV';
-  const actuatorType = state.extracted.actuator === 'Hydraulic motor' ? 'motor' : 'cylinder';
+  const hpuOnly = !!state.extracted.hpuOnly;
+  const actuatorType = hpuOnly ? 'variable' : (state.extracted.actuator === 'Hydraulic motor' ? 'motor' : 'cylinder');
   const closedCentre = /closed|proportional/i.test(dcvSelection);
-  const hasProtection = actuatorType === 'motor' || state.extracted.loadHolding;
+  const hasProtection = !hpuOnly && (actuatorType === 'motor' || state.extracted.loadHolding);
   return {
     calculations: state.calculations,
     components: state.components,
     actuatorType,
     closedCentre,
     hasProtection,
-    title: `${dcvSelection} with ${actuatorType === 'motor' ? 'hydraulic motor / brake circuit' : 'double-acting cylinder circuit'}`,
+    title: hpuOnly ? `${dcvSelection} — stand-alone HPU for variable test article` : `${dcvSelection} with ${actuatorType === 'motor' ? 'hydraulic motor / brake circuit' : 'double-acting cylinder circuit'}`,
     controlLabel: state.extracted.control || 'manual / solenoid',
-    operationLine: actuatorType === 'motor' ? 'Shift left/right: P feeds A or B for motor direction; opposite port returns to T.' : 'Shift left/right: P feeds A or B; opposite cylinder port returns to T.',
-    safetyLine: actuatorType === 'motor'
-      ? 'Brake valve / cross-port protection controls overrun and shock load.'
-      : state.extracted.loadHolding
-        ? 'CBV/load-holding block prevents drift or uncontrolled lowering.'
-        : 'Load holding not marked mandatory; optional lock valve may be added.'
+    operationLine: hpuOnly ? 'A/B ports connect to whichever test article (winch/motor) is fitted; direction and speed set by the DCV and pump.' : (actuatorType === 'motor' ? 'Shift left/right: P feeds A or B for motor direction; opposite port returns to T.' : 'Shift left/right: P feeds A or B; opposite cylinder port returns to T.'),
+    safetyLine: hpuOnly
+      ? 'Load-holding/brake protection is specific to the test article connected — verify per test, not fixed by this HPU.'
+      : (actuatorType === 'motor'
+        ? 'Brake valve / cross-port protection controls overrun and shock load.'
+        : state.extracted.loadHolding
+          ? 'CBV/load-holding block prevents drift or uncontrolled lowering.'
+          : 'Load holding not marked mandatory; optional lock valve may be added.')
   };
 }
 
@@ -1944,6 +1977,18 @@ function circuitActuatorSymbol(model) {
       <circle cx="-40" cy="37" r="3" fill="#2563eb"/>
       <text x="0" y="-72" text-anchor="middle" fill="#111827" stroke="none" font-size="13" font-weight="800">M1</text>
       <text x="0" y="86" text-anchor="middle" fill="#475569" stroke="none" font-size="11">hydraulic motor with fail-safe brake</text>
+    </g>`;
+  }
+  if (model.actuatorType === 'variable') {
+    return `<g transform="translate(940 240)">
+      <rect x="0" y="0" width="150" height="120" stroke-dasharray="8 6"/>
+      <line x1="58" y1="0" x2="58" y2="120" stroke-dasharray="8 6"/>
+      <circle cx="0" cy="47" r="3" fill="#2563eb"/>
+      <circle cx="0" cy="101" r="3" fill="#2563eb"/>
+      <text x="76" y="-18" text-anchor="middle" fill="#111827" stroke="none" font-size="13" font-weight="800">TEST ARTICLE</text>
+      <text x="50" y="60" text-anchor="middle" fill="#475569" stroke="none" font-size="11">winch/motor</text>
+      <text x="50" y="80" text-anchor="middle" fill="#475569" stroke="none" font-size="11">under test</text>
+      <text x="50" y="152" text-anchor="middle" fill="#475569" stroke="none" font-size="11">customer-supplied, swapped per test — not sized here</text>
     </g>`;
   }
   return `<g transform="translate(940 240)">
@@ -1986,18 +2031,25 @@ function filterCoolerSymbol(x, y) {
 function renderBom() {
   const c = state.calculations, x = state.components;
   const motorCircuit = state.extracted.actuator === 'Hydraulic motor';
+  const hpuOnly = !!state.extracted.hpuOnly;
   const actuatorNote = motorCircuit
     ? `Rated flow ${txtUnit(c.flow,'flow',1)} at ${txtUnit(c.pressure,'pressure',0)}; ${selectedModel('actuator')?.kb || 'KB model pending'}`
     : `Load ${txtUnit(c.loadTon,'load',unitSystem === 'metric' ? 1 : 0)}, stroke ${txtUnit(c.strokeM,'stroke',unitSystem === 'metric' ? 2 : 1)}; ${selectedModel('actuator')?.kb || 'KB model pending'}`;
   const rows = [
     ['Pump', selectedModel('pump')?.model || x.pump, '1', `${txtUnit(c.flow,'flow',1)} at ${txtUnit(c.pressure,'pressure',0)}; ${selectedModel('pump')?.kb || 'KB model pending'}`],
-    ['Prime mover', x.primeMover, '1', 'Verify starting current and duty class'],
-    ['Actuator', selectedModel('actuator')?.model || x.actuator, '1', actuatorNote],
-    ['DCV', selectedModel('dcv')?.model || state.valves[0].selection, '1', `Centre condition validated by pump type; ${selectedModel('dcv')?.kb || 'KB model pending'}`],
-    ['Relief valve', state.valves[1].selection, '1', 'Main pressure protection'],
-    ['Protection valve', selectedModel('protection')?.model || state.valves[2].selection, '1 set', `${state.valves[2].selection}; ${selectedModel('protection')?.kb || 'KB model pending'}`],
-    ['Filtration / cooler', selectedModel('filtration')?.model || `${x.filtration}; ${x.cooler}`, '1 set', `${x.cleanliness}; ${selectedModel('filtration')?.kb || 'KB model pending'}`]
+    ['Prime mover', x.primeMover, '1', 'Verify starting current and duty class']
   ];
+  if (!hpuOnly) {
+    rows.push(['Actuator', selectedModel('actuator')?.model || x.actuator, '1', actuatorNote]);
+  }
+  rows.push(
+    ['DCV', selectedModel('dcv')?.model || state.valves[0].selection, '1', `Centre condition validated by pump type; ${selectedModel('dcv')?.kb || 'KB model pending'}`],
+    ['Relief valve', state.valves[1].selection, '1', 'Main pressure protection']
+  );
+  if (!hpuOnly) {
+    rows.push(['Protection valve', selectedModel('protection')?.model || state.valves[2].selection, '1 set', `${state.valves[2].selection}; ${selectedModel('protection')?.kb || 'KB model pending'}`]);
+  }
+  rows.push(['Filtration / cooler', selectedModel('filtration')?.model || `${x.filtration}; ${x.cooler}`, '1 set', `${x.cleanliness}; ${selectedModel('filtration')?.kb || 'KB model pending'}`]);
   return `<table class="bom-table"><thead><tr><th>Component</th><th>Specification</th><th>Qty</th><th>Notes</th></tr></thead><tbody>${rows.map(r => `<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td></tr>`).join('')}</tbody></table>`;
 }
 
@@ -2005,7 +2057,7 @@ function renderLiveSpec() {
   const c = state.calculations;
   const rows = [
     ['Application', state.extracted.app || val('appType')],
-    ['Actuator', state.extracted.actuator || '-'],
+    ['Actuator', state.extracted.hpuOnly ? 'Variable test article (not fixed)' : (state.extracted.actuator || '-')],
     ['Pressure', c.pressure ? txtUnit(c.pressure, 'pressure', 0) : '-'],
     ['Flow', c.flow ? txtUnit(c.flow, 'flow', 1) : '-'],
     ['Power', c.powerKw ? txtUnit(c.powerKw, 'power', 1) : '-'],
