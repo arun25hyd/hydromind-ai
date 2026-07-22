@@ -3,37 +3,1592 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Under Maintenance — HydroMind.AI</title>
+<title>AI Hydraulic Advisor — HydroMind.AI</title>
+<meta name="description" content="Expert AI hydraulic fault diagnosis, system analysis and KB search. Powered by 161+ OEM manuals.">
+<link rel="canonical" href="https://www.hydromindai.com/ai_advisor.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="HydroMind.AI">
+<meta property="og:title" content="AI Hydraulic Advisor — HydroMind.AI">
+<meta property="og:description" content="Expert AI hydraulic fault diagnosis, system analysis and KB search. Powered by 161+ OEM manuals.">
+<meta property="og:url" content="https://www.hydromindai.com/ai_advisor.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AI Hydraulic Advisor — HydroMind.AI">
+<meta name="twitter:description" content="Expert AI hydraulic fault diagnosis, system analysis and KB search. Powered by 161+ OEM manuals.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="css/hm-design.css?v=20260613-v2">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "HydroMind AI Hydraulic Advisor",
+  "url": "https://www.hydromindai.com/ai_advisor.html",
+  "applicationCategory": "EngineeringApplication",
+  "operatingSystem": "Web",
+  "description": "AI hydraulic fault diagnosis, component analysis, system sizing and knowledge-base search for marine and offshore engineers."
+}
+</script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#0d0f12;color:#eef0f4;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
-.card{background:#13161b;border:1px solid #1e2530;border-radius:16px;padding:52px 48px;max-width:520px;width:100%;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.5)}
-.logo{display:inline-flex;align-items:center;gap:12px;margin-bottom:40px}
-.logo-icon{width:44px;height:44px;background:linear-gradient(135deg,#f97316,#fb923c);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#000}
-.logo-text{font-size:20px;font-weight:700;color:#eef0f4}
-.logo-text span{color:#f97316}
-.gear{font-size:52px;margin-bottom:24px;animation:spin 6s linear infinite;display:block}
-@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-h1{font-size:26px;font-weight:800;color:#eef0f4;margin-bottom:12px}
-p{font-size:15px;color:#8b95a5;line-height:1.65;margin-bottom:32px}
-.badge{display:inline-flex;align-items:center;gap:8px;background:#1a2030;border:1px solid #f97316;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:600;color:#f97316;margin-bottom:32px}
-.dot{width:8px;height:8px;background:#f97316;border-radius:50%;animation:pulse 1.4s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
-.contact{font-size:13px;color:#5a6472}
-.contact a{color:#f97316;text-decoration:none}
+/* ══ AI ADVISOR PAGE — FULL SHELL ══ */
+body {
+  overflow: hidden !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100vh !important;
+}
+.hm-sidebar-left, .hm-sidebar-right { display: none !important; }
+.hm-page {
+  padding: 0 !important;
+  margin-top: var(--nav-h);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--nav-h));
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ── THREE-COLUMN SHELL ── */
+.advisor-shell {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ══════════════════════════════
+   LEFT — CONTEXT PANEL
+══════════════════════════════ */
+.ctx-panel {
+  width: 230px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border-md);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 14px 11px;
+  gap: 6px;
+}
+.ctx-panel::-webkit-scrollbar { width: 3px; }
+.ctx-panel::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 2px; }
+
+.ctx-section-label {
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: .10em; text-transform: uppercase;
+  color: var(--text3); padding: 4px 4px 2px;
+  margin-top: 4px;
+}
+
+/* Mode selector */
+.mode-grid { display: flex; flex-direction: column; gap: 5px; }
+.mode-btn {
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 11px; border-radius: 9px;
+  border: 1.5px solid var(--border);
+  background: var(--card); cursor: pointer;
+  transition: all .15s; font-family: var(--sans);
+  text-align: left;
+}
+.mode-btn:hover { border-color: var(--accent-glow); background: var(--accent-dim); }
+.mode-btn.active { border-color: var(--accent); background: var(--accent-dim); }
+.mode-icon {
+  width: 32px; height: 32px; flex-shrink: 0;
+  background: var(--surface); border: 1px solid var(--border-md);
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+}
+.mode-btn.active .mode-icon { background: rgba(6,182,212,.15); border-color: var(--accent-glow); }
+.mode-name { font-size: 12px; font-weight: 700; color: var(--text1); }
+.mode-btn.active .mode-name { color: var(--accent-bright); }
+.mode-sub { font-size: 10px; color: var(--text3); margin-top: 1px; line-height: 1.3; }
+
+/* KB filter */
+.kb-filter {
+  width: 100%; padding: 7px 10px;
+  background: var(--card); border: 1.5px solid var(--border-md);
+  border-radius: 7px; font-size: 11.5px; color: var(--text1);
+  font-family: var(--sans); outline: none; transition: border-color .15s;
+}
+.kb-filter::placeholder { color: var(--text3); }
+.kb-filter:focus { border-color: var(--accent); }
+
+/* Brand chips */
+.brand-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.brand-chip {
+  font-size: 10px; font-weight: 700;
+  background: var(--card); border: 1px solid var(--border-md);
+  border-radius: 5px; padding: 3px 8px; cursor: pointer;
+  color: var(--text2); transition: all .12s; font-family: var(--mono);
+}
+.brand-chip:hover { border-color: var(--accent-glow); color: var(--accent); background: var(--accent-dim); }
+.brand-chip.on { background: var(--accent-dim); color: var(--accent-bright); border-color: var(--accent); }
+
+/* Session stats */
+.session-stats {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 9px; padding: 10px 11px;
+  display: flex; flex-direction: column; gap: 7px;
+}
+.ss-row { display: flex; align-items: center; justify-content: space-between; }
+.ss-key { font-size: 10px; color: var(--text3); font-weight: 600; }
+.ss-val { font-size: 11px; font-weight: 800; color: var(--accent-bright); font-family: var(--mono); }
+.ss-val.warn { color: var(--warning); }
+
+/* History */
+.hist-list { display: flex; flex-direction: column; gap: 4px; }
+.hist-item {
+  display: flex; align-items: flex-start; gap: 7px;
+  padding: 7px 9px; border-radius: 7px;
+  background: var(--card); border: 1px solid var(--border);
+  cursor: pointer; transition: all .12s;
+}
+.hist-item:hover { border-color: var(--accent-glow); background: var(--accent-dim); }
+.hist-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; background: var(--accent); }
+.hist-dot.warn { background: var(--warning); }
+.hist-dot.fault { background: var(--danger); }
+.hist-text { font-size: 10.5px; color: var(--text2); line-height: 1.4; flex: 1; }
+.hist-time { font-size: 9px; color: var(--text3); font-family: var(--mono); white-space: nowrap; }
+
+/* Clear button */
+.clear-btn {
+  width: 100%; padding: 7px; border-radius: 7px;
+  background: var(--danger-dim); border: 1px solid rgba(239,68,68,.18);
+  font-size: 11px; font-weight: 600; color: var(--danger);
+  cursor: pointer; transition: all .15s; font-family: var(--sans);
+}
+.clear-btn:hover { background: var(--danger); color: #fff; }
+
+/* ══════════════════════════════
+   CENTRE — CHAT COLUMN
+══════════════════════════════ */
+.chat-col {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column;
+  overflow: hidden; background: var(--bg);
+  border-right: 1px solid var(--border-md);
+}
+
+/* Mode bar */
+.mode-bar {
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: 6px;
+  padding: 10px 18px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border-md);
+  overflow-x: auto;
+}
+.mode-bar::-webkit-scrollbar { height: 0; }
+.mode-tab {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 7px;
+  font-size: 12.5px; font-weight: 600;
+  color: var(--text2); background: transparent;
+  border: 1.5px solid transparent; cursor: pointer;
+  white-space: nowrap; transition: all .15s; font-family: var(--sans);
+}
+.mode-tab:hover { color: var(--accent-bright); background: var(--accent-dim); border-color: var(--accent-glow); }
+.mode-tab.active { color: var(--accent-bright); background: var(--accent-dim); border-color: var(--accent); }
+.mode-tab svg { width: 14px; height: 14px; flex-shrink: 0; }
+.mode-separator { width: 1px; height: 20px; background: var(--border-md); flex-shrink: 0; }
+.mode-bar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.model-badge {
+  font-size: 10px; font-weight: 700;
+  color: var(--text3); background: var(--card);
+  border: 1px solid var(--border-md); border-radius: 6px;
+  padding: 3px 8px; font-family: var(--mono); white-space: nowrap;
+}
+.online-dot {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 10px; font-weight: 600; color: var(--success);
+}
+.online-dot span { width: 6px; height: 6px; background: var(--success); border-radius: 50%; animation: pulse-dot 2s ease-in-out infinite; }
+
+/* Chat area */
+.chat-area {
+  flex: 1; min-height: 0;
+  overflow-y: auto;
+  padding: 24px 28px;
+  display: flex; flex-direction: column; gap: 18px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+.chat-area::-webkit-scrollbar { width: 8px; }
+.chat-area::-webkit-scrollbar-track { background: rgba(6,182,212,.03); }
+.chat-area::-webkit-scrollbar-thumb { background: rgba(6,182,212,.25); border-radius: 4px; }
+.chat-area::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* Welcome screen */
+.adv-welcome {
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+  width: 100%; padding: 32px 16px 40px; gap: 18px;
+}
+.adv-welcome-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent-dim); border: 1px solid var(--accent-glow);
+  border-radius: 20px; padding: 5px 14px;
+  font-size: 11px; font-weight: 700; color: var(--accent-bright);
+  letter-spacing: .05em;
+}
+.adv-welcome-badge .w-dot { width: 6px; height: 6px; background: var(--accent-bright); border-radius: 50%; animation: pulse-dot 2s ease-in-out infinite; }
+.adv-welcome h2 { font-family: var(--syne); font-size: 26px; font-weight: 800; color: var(--text1); margin-bottom: 6px; }
+.adv-welcome p { font-size: 14px; color: var(--text2); line-height: 1.7; max-width: 520px; }
+
+/* Suggestion grid */
+.sugg-section { width: 100%; max-width: 900px; }
+.sugg-label {
+  font-size: 12px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--text3); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.sugg-label::before, .sugg-label::after {
+  content: ""; flex: 1; height: 1px; background: var(--border-md);
+}
+.sugg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.sugg-card {
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 16px; padding: 24px 22px 22px; cursor: pointer;
+  transition: all .18s; text-align: left;
+  display: flex; flex-direction: column; gap: 10px;
+  font-family: var(--sans); min-height: 140px;
+}
+.sugg-card:hover {
+  border-color: var(--accent); background: var(--accent-dim);
+  transform: translateY(-3px); box-shadow: 0 8px 28px rgba(6,182,212,.15);
+}
+.sugg-cat {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 800;
+  letter-spacing: .07em; text-transform: uppercase;
+  color: var(--accent); background: var(--accent-dim);
+  border: 1px solid var(--accent-glow);
+  border-radius: 6px; padding: 3px 10px;
+}
+.sugg-icon { font-size: 26px; }
+.sugg-title { font-size: 15px; font-weight: 800; color: var(--text1); line-height: 1.3; }
+.sugg-card:hover .sugg-title { color: var(--accent-bright); }
+.sugg-desc { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+/* Messages */
+.msg-row { display: flex; flex-direction: column; gap: 4px; max-width: 88%; }
+.msg-row.user { align-self: flex-end; align-items: flex-end; }
+.msg-row.ai   { align-self: flex-start; align-items: flex-start; max-width: 96%; }
+.msg-sender { font-size: 9.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); }
+.msg-bubble {
+  padding: 12px 16px; border-radius: 14px; font-size: 13.5px; line-height: 1.65;
+}
+.msg-row.user .msg-bubble {
+  background: linear-gradient(135deg, var(--accent-deep), var(--accent-hover));
+  color: #fff; border-bottom-right-radius: 3px;
+  box-shadow: 0 2px 12px rgba(6,182,212,.20);
+}
+.msg-row.ai .msg-bubble {
+  background: var(--card); border: 1px solid var(--border-md);
+  border-left: 3px solid var(--accent); border-bottom-left-radius: 3px;
+  color: var(--text1); box-shadow: var(--card-shadow);
+}
+.msg-time { font-size: 9px; color: var(--text3); margin-top: 2px; }
+.kb-refs { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 6px; }
+.kb-tag {
+  font-size: 9.5px; font-weight: 700;
+  background: var(--accent-dim); color: var(--accent);
+  border: 1px solid var(--accent-glow); border-radius: 4px;
+  padding: 2px 7px; font-family: var(--mono); cursor: pointer;
+  transition: all .12s;
+}
+.kb-tag:hover { background: var(--accent); color: #fff; }
+
+/* Markdown */
+.msg-h2 { font-size:16px;font-weight:800;color:var(--accent-bright);margin:12px 0 6px; }
+.msg-h3 { font-size:14px;font-weight:700;color:var(--text1);margin:10px 0 4px; }
+.msg-h4 { font-size:13px;font-weight:700;color:var(--accent);margin:8px 0 3px; }
+.msg-p  { margin:4px 0;color:var(--text1);line-height:1.7; }
+.msg-ul,.msg-ol { margin:6px 0 6px 18px;padding:0; }
+.msg-ul li,.msg-ol li { margin:4px 0;color:var(--text1);line-height:1.65; }
+.msg-code { background:rgba(6,182,212,.10);border:1px solid var(--accent-glow);border-radius:4px;padding:1px 6px;font-family:var(--mono);font-size:12px;color:var(--accent-bright); }
+.msg-pre { background:var(--surface);border:1px solid var(--border-md);border-radius:8px;padding:12px;font-family:var(--mono);font-size:12px;color:var(--text1);overflow-x:auto;margin:8px 0;line-height:1.6; }
+.msg-strong { color:var(--accent-bright);font-weight:700; }
+.msg-em { color:var(--text2);font-style:italic; }
+.msg-hr { border:none;border-top:1px solid var(--border-md);margin:10px 0; }
+.msg-gap { height:6px; }
+.msg-table { border-collapse:collapse;width:100%;margin:8px 0;font-size:12.5px; }
+.msg-table th { background:var(--surface);border:1px solid var(--border-md);padding:7px 11px;color:var(--accent);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.05em; }
+.msg-table td { border:1px solid var(--border);padding:7px 11px;color:var(--text1); }
+.msg-table tr:nth-child(even) td { background:rgba(6,182,212,.03); }
+
+/* Typing */
+.typing-dots { display:flex;align-items:center;gap:5px;height:18px; }
+.typing-dots span { width:7px;height:7px;background:var(--accent);border-radius:50%;animation:typing-bounce .9s ease-in-out infinite; }
+.typing-dots span:nth-child(2){animation-delay:.18s;}
+.typing-dots span:nth-child(3){animation-delay:.36s;}
+@keyframes typing-bounce{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-6px);opacity:1}}
+
+/* Input bar */
+.input-bar {
+  flex-shrink: 0;
+  padding: 12px 18px 14px;
+  background: var(--surface);
+  border-top: 1px solid var(--border-md);
+}
+.input-wrap {
+  display: flex; align-items: flex-end; gap: 10px;
+  background: var(--card); border: 1.5px solid var(--border-md);
+  border-radius: 14px; padding: 11px 13px;
+  transition: border-color .15s, box-shadow .15s;
+}
+.input-wrap:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+#chat-input {
+  flex: 1; background: none; border: none; outline: none;
+  font-size: 14px; color: var(--text1); font-family: var(--sans);
+  resize: none; max-height: 160px; line-height: 1.6; min-height: 24px;
+}
+#chat-input::placeholder { color: var(--text3); }
+.send-btn {
+  width: 38px; height: 38px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+  border: none; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all .18s;
+  box-shadow: 0 2px 8px rgba(6,182,212,.25);
+}
+.send-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(6,182,212,.35); }
+.send-btn:disabled { opacity: .35; cursor: not-allowed; transform: none; box-shadow: none; }
+.send-btn svg { width: 17px; height: 17px; color: #fff; }
+.input-meta {
+  display: flex; align-items: center; gap: 14px;
+  margin-top: 8px; font-size: 10.5px; color: var(--text3);
+  flex-wrap: wrap;
+}
+.input-meta .hint-chips { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+.hint-chip {
+  padding: 3px 10px; border-radius: 20px;
+  background: var(--card); border: 1px solid var(--border);
+  font-size: 10.5px; font-weight: 600; color: var(--text3);
+  cursor: pointer; transition: all .12s; white-space: nowrap;
+  font-family: var(--sans);
+}
+.hint-chip:hover { color: var(--accent-bright); border-color: var(--accent-glow); background: var(--accent-dim); }
+.input-meta .kbd-hint { margin-left: auto; white-space: nowrap; }
+.input-meta kbd {
+  background: var(--card); border: 1px solid var(--border-md);
+  border-radius: 4px; padding: 1px 5px; font-family: var(--mono);
+  font-size: 9.5px; color: var(--text2);
+}
+
+/* ══════════════════════════════
+   RIGHT — INFO PANEL
+══════════════════════════════ */
+.info-panel {
+  width: 220px; flex-shrink: 0;
+  background: var(--surface);
+  display: flex; flex-direction: column;
+  overflow-y: auto; padding: 14px 12px; gap: 14px;
+}
+.info-panel::-webkit-scrollbar { width: 3px; }
+.ip-section { display: flex; flex-direction: column; gap: 7px; }
+.ip-section h4 {
+  font-size: 9.5px; font-weight: 700; letter-spacing: .10em;
+  text-transform: uppercase; color: var(--text3);
+  padding-bottom: 6px; border-bottom: 1px solid var(--border);
+}
+
+/* KB hit items */
+.kb-hit-item {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 9px 10px; cursor: pointer;
+  transition: all .12s;
+}
+.kb-hit-item:hover { border-color: var(--accent-glow); background: var(--accent-dim); }
+.kb-hit-num { font-size: 9.5px; font-weight: 800; color: var(--accent); font-family: var(--mono); }
+.kb-hit-title { font-size: 10.5px; color: var(--text2); margin-top: 2px; line-height: 1.4; }
+.kb-hit-brand { font-size: 9px; color: var(--text3); margin-top: 3px; font-family: var(--mono); }
+
+/* Capability pills */
+.cap-list { display: flex; flex-direction: column; gap: 5px; }
+.cap-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 9px; border-radius: 7px;
+  background: var(--card); border: 1px solid var(--border);
+}
+.cap-icon { font-size: 13px; flex-shrink: 0; }
+.cap-text { font-size: 10.5px; color: var(--text2); line-height: 1.35; }
+.cap-text strong { color: var(--text1); font-weight: 700; display: block; font-size: 11px; }
+
+/* Upgrade CTA */
+.upgrade-cta {
+  background: var(--accent-dim); border: 1px solid var(--accent-glow);
+  border-radius: 10px; padding: 12px 10px;
+}
+.upgrade-cta h4 { font-size: 11.5px; font-weight: 700; color: var(--accent-bright); margin-bottom: 8px; }
+.upgrade-cta ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+.upgrade-cta li {
+  font-size: 10.5px; color: var(--text2);
+  display: flex; gap: 6px; align-items: flex-start; line-height: 1.4;
+}
+.upgrade-cta li::before { content: "✓"; color: var(--success); font-weight: 700; font-size: 10px; margin-top: 1px; flex-shrink: 0; }
+.upgrade-cta a {
+  display: block; width: 100%; margin-top: 10px; padding: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+  border-radius: 7px; font-size: 11.5px; font-weight: 700; color: #fff;
+  text-align: center; letter-spacing: .03em; transition: opacity .15s;
+}
+.upgrade-cta a:hover { opacity: .85; }
+
+/* Standards panel */
+.std-list { display: flex; flex-direction: column; gap: 4px; }
+.std-tag {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 6px; padding: 6px 9px;
+  font-size: 10px; font-weight: 600; color: var(--text2);
+  font-family: var(--mono); line-height: 1.4;
+}
+.std-tag strong { color: var(--accent-bright); font-weight: 800; }
+
+/* App banner right panel */
+.sb-app-banner { margin-top: 0; }
+
+/* ─── HOW TO USE DROPDOWN ─── */
+.htu-wrap{padding:8px 12px;flex-shrink:0;border-bottom:1px solid var(--border-md);}
+.htu-panel{background:var(--card);border:1.5px solid var(--border-md);border-radius:10px;margin-bottom:0;overflow:hidden;}
+.htu-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;user-select:none;border-bottom:1.5px solid transparent;transition:border-color .2s;}
+.htu-header:hover{border-bottom-color:var(--border-bright);}
+.htu-header-left{display:flex;align-items:center;gap:9px;}
+.htu-header-icon{font-size:.95rem;}
+.htu-header-title{font-size:12.5px;font-weight:700;color:var(--text1);}
+.htu-header-sub{font-size:10.5px;color:var(--text3);margin-top:1px;}
+.htu-arrow{font-size:10px;color:var(--accent);transition:transform .25s ease;}
+.htu-arrow.open{transform:rotate(180deg);}
+.htu-body{display:none;padding:12px 14px 14px;border-top:1px solid var(--border);}
+.htu-body.open{display:block;}
+.htu-steps{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
+.htu-step{display:flex;align-items:flex-start;gap:10px;background:var(--accent-dim);border:1px solid var(--border-md);border-radius:8px;padding:10px 12px;transition:border-color .15s;}
+.htu-step:hover{border-color:var(--accent-glow);}
+.htu-step-num{width:24px;height:24px;background:rgba(6,182,212,.15);border:1.5px solid var(--accent-glow);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--accent);flex-shrink:0;}
+.htu-step-title{font-size:12px;font-weight:700;color:var(--text1);margin-bottom:3px;}
+.htu-step-desc{font-size:11px;color:var(--text2);line-height:1.55;}
+.htu-tips{background:rgba(6,182,212,.04);border:1px solid var(--border);border-radius:8px;padding:10px 12px;}
+.htu-tips-title{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:7px;letter-spacing:.04em;}
+.htu-tip-row{display:flex;align-items:flex-start;gap:7px;margin-bottom:5px;}
+.htu-tip-row:last-child{margin-bottom:0;}
+.htu-tip-dot{width:5px;height:5px;background:var(--accent);border-radius:50%;flex-shrink:0;margin-top:4px;}
+.htu-tip-text{font-size:11px;color:var(--text2);line-height:1.5;}
+
+/* ══════════════════════════════
+   MOBILE FIELD-USE REDESIGN — ADVISOR PAGE
+   Rebuilt 2026-06-23 — one-handed, gloved-thumb, job-site use
+══════════════════════════════ */
+/* Global baseline — must exist OUTSIDE the mobile media query below, or this
+   has no display rule at all on screens wider than 768px and renders as a
+   plain block element in normal page flow instead of staying hidden. */
+.mobile-info-overlay { display: none; }
+@media (max-width: 768px) {
+  .advisor-shell {
+    flex-direction: column;
+    position: relative;
+  }
+  .ctx-panel, .info-panel {
+    display: none !important;
+  }
+  .chat-col {
+    width: 100%;
+    border-right: none;
+  }
+
+  /* Mode tabs — bigger tap targets for gloved thumbs */
+  .mode-bar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 10px;
+  }
+  .mode-tab {
+    flex-shrink: 0;
+    padding: 11px 16px;
+    font-size: 13px;
+    min-height: 40px;
+  }
+  .model-badge { display: none; }
+
+  /* Mobile info button replaces the hidden side panels — fixed, always visible regardless of mode-bar scroll */
+  .mobile-info-btn {
+    display: flex !important;
+    align-items: center;
+    gap: 5px;
+    padding: 9px 13px;
+    position: fixed;
+    top: calc(var(--nav-h) + 8px);
+    right: 10px;
+    z-index: 50;
+    background: var(--accent-dim);
+    border: 1.5px solid var(--accent-glow);
+    border-radius: 8px;
+    color: var(--accent-bright);
+    font-size: 12px;
+    font-weight: 700;
+    min-height: 40px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.35);
+  }
+
+  .sugg-grid { grid-template-columns: 1fr; }
+  .chat-area { padding: 16px 14px; overflow-x: hidden; }
+  .msg-row.user, .msg-row.ai { max-width: 96%; }
+
+  /* Brand filter moved above input — quick access mid-diagnosis */
+  .mobile-brand-row {
+    display: flex !important;
+    gap: 6px;
+    padding: 8px 12px 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-shrink: 0;
+  }
+  .mobile-brand-row .brand-chip {
+    flex-shrink: 0;
+    padding: 7px 13px;
+    font-size: 11.5px;
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Bigger input + send button — primary one-handed touch target */
+  .input-bar { padding: 10px 12px 14px; }
+  .input-wrap { padding: 13px 14px; border-radius: 16px; }
+  #chat-input { font-size: 15px; min-height: 28px; }
+  .send-btn { width: 46px; height: 46px; border-radius: 12px; }
+  .send-btn svg { width: 20px; height: 20px; }
+  .input-meta .hint-chips { display: none; }
+  .input-meta .kbd-hint { display: none; }
+
+  .htu-wrap { padding: 6px 10px; }
+  .htu-header { padding: 12px 14px; min-height: 44px; }
+  .htu-header-sub { display: none; }
+
+  .adv-welcome-badge {
+    white-space: normal;
+    text-align: center;
+    max-width: 92%;
+    font-size: 10px;
+    line-height: 1.5;
+    padding: 6px 12px;
+  }
+  .adv-welcome { padding: 24px 10px 32px; overflow-x: hidden; }
+
+  /* Full-screen info overlay — replaces side panels on mobile */
+  .mobile-info-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 500;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 0 0 24px;
+  }
+  .mobile-info-overlay.open { display: flex; }
+  .mio-header {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border-md);
+    z-index: 1;
+  }
+  .mio-title { font-size: 16px; font-weight: 800; color: var(--text1); }
+  .mio-close {
+    width: 38px; height: 38px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--card); border: 1px solid var(--border-md);
+    border-radius: 10px; font-size: 18px; color: var(--text2);
+  }
+  .mio-body { padding: 16px 18px; display: flex; flex-direction: column; gap: 20px; }
+}
+
+@media (max-width: 480px) {
+  .adv-welcome h2 { font-size: 21px; }
+  .adv-welcome p { font-size: 13px; }
+}
 </style>
 </head>
 <body>
-<div class="card">
-  <div class="logo">
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav class="hm-nav">
+  <a href="index.html" class="nav-logo">
     <div class="logo-icon">HM</div>
-    <div class="logo-text">HydroMind<span>.AI</span></div>
+    <span>HydroMind<span class="logo-ai">.AI</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="navbar-link">Home</a>
+    <a href="ai_advisor.html" class="navbar-link active">AI Advisor</a>
+    <a href="system_design.html" class="navbar-link">System Design</a>
+    <a href="circuit_walkthrough.html" class="navbar-link">Circuit Walkthrough</a>
+    <a href="crane_diagnostic.html" class="navbar-link">Crane Diagnostic</a>
+    <a href="knowledge_base.html" class="navbar-link">Knowledge Base</a>
+    <a href="pricing.html" class="navbar-link">Pricing</a>
   </div>
-  <span class="gear">⚙</span>
-  <h1>Under Maintenance</h1>
-  <p>We are upgrading HydroMind.AI to deliver a better experience.<br>The platform will be back online shortly.</p>
-  <div class="badge"><span class="dot"></span>Work in progress — check back soon</div>
-  <div class="contact">Questions? <a href="mailto:support@hydromindai.com">support@hydromindai.com</a></div>
+  <div class="nav-right" id="hmNavCta">
+    <div class="nav-status"><div class="nav-status-dot"></div>AI Online</div>
+    <a href="#" class="btn btn-ghost btn-sm">Log In</a>
+    <a href="pricing.html" class="btn btn-primary btn-sm">Get Started</a>
+  </div>
+</nav>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<main class="hm-page">
+<div class="advisor-shell">
+
+  <!-- ══ LEFT: CONTEXT PANEL ══ -->
+  <div class="ctx-panel">
+
+    <div class="ctx-section-label">Mode</div>
+    <div class="mode-grid">
+      <button class="mode-btn active" onclick="setMode('hydraulic',this)" id="mode-hydraulic">
+        <div class="mode-icon">🔧</div>
+        <div><div class="mode-name">Hydraulic Advisor</div><div class="mode-sub">Fault diagnosis & analysis</div></div>
+      </button>
+      <button class="mode-btn" onclick="window.location.href='knowledge_base.html'" id="mode-kb">
+        <div class="mode-icon">📚</div>
+        <div><div class="mode-name">KB Search</div><div class="mode-sub">Search 161+ OEM docs</div></div>
+      </button>
+      <button class="mode-btn" onclick="setMode('calculator',this)" id="mode-calculator">
+        <div class="mode-icon">🔢</div>
+        <div><div class="mode-name">Calculator</div><div class="mode-sub">Pump, flow, power sizing</div></div>
+      </button>
+      <button class="mode-btn" onclick="window.location.href='system_design.html'" id="mode-design">
+        <div class="mode-icon">📐</div>
+        <div><div class="mode-name">System Design</div><div class="mode-sub">12-step guided design</div></div>
+      </button>
+    </div>
+
+    <div class="ctx-section-label" style="margin-top:6px;">Filter by Brand</div>
+    <label for="kb-brand-filter" class="sr-only">Filter knowledge base by brand</label>
+    <input type="text" id="kb-brand-filter" name="kb-brand-filter" class="kb-filter" placeholder="🔍 Filter KB brand…" oninput="filterBrand(this.value)">
+    <div class="brand-chips" id="brand-chips">
+      <span class="brand-chip on" onclick="toggleBrand(this,'ALL')">ALL</span>
+      <span class="brand-chip" onclick="toggleBrand(this,'RXR')">Rexroth</span>
+      <span class="brand-chip" onclick="toggleBrand(this,'DAN')">Danfoss</span>
+      <span class="brand-chip" onclick="toggleBrand(this,'PRK')">Parker</span>
+      <span class="brand-chip" onclick="toggleBrand(this,'EAT')">Eaton</span>
+      <span class="brand-chip" onclick="toggleBrand(this,'LBR')">Liebherr</span>
+      <span class="brand-chip" onclick="toggleBrand(this,'MCG')">MacGregor</span>
+      <span class="brand-chip" onclick="toggleBrand(this,'NOV')">NOV</span>
+    </div>
+
+    <div class="ctx-section-label" style="margin-top:6px;">Session Stats</div>
+    <div class="session-stats">
+      <div class="ss-row"><span class="ss-key">Queries</span><span class="ss-val" id="stat-queries">0</span></div>
+      <div class="ss-row"><span class="ss-key">KB Hits</span><span class="ss-val" id="stat-kb">0</span></div>
+      <div class="ss-row"><span class="ss-key">Remaining</span><span class="ss-val warn" id="stat-remain">10</span></div>
+      <div class="ss-row"><span class="ss-key">Model</span><span class="ss-val" style="font-size:9.5px;">sonnet-4-6</span></div>
+    </div>
+
+    <div class="ctx-section-label" style="margin-top:4px;">Recent</div>
+    <div class="hist-list" id="hist-list">
+      <div style="font-size:10px;color:var(--text3);text-align:center;padding:8px 0;">No history yet</div>
+    </div>
+
+    <div class="ctx-section-label" style="margin-top:4px;">Session</div>
+    <button class="clear-btn" onclick="clearChat()">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+      Clear Chat History
+    </button>
+    <div id="hmSidebarNoAuth" style="margin-top:4px;">
+      <div style="background:var(--accent-dim);border:1px solid var(--accent-glow);border-radius:8px;padding:10px 8px;text-align:center;">
+        <div style="font-size:10px;color:var(--text2);margin-bottom:6px;line-height:1.4;">Sign in to save chat history</div>
+        <button onclick="openAuthModal('login')" style="width:100%;padding:6px;background:var(--accent);border:none;border-radius:6px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;">Sign In</button>
+      </div>
+    </div>
+    <div id="hmSidebarProfile" style="display:none;">
+      <div class="hm-profile-card">
+        <div class="sb-avatar-wrap">
+          <div class="sb-avatar" id="hmProfAvatar">AT</div>
+          <div class="sb-avatar-edit" onclick="openProfileEdit()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+        </div>
+        <div class="sb-username" id="hmProfName">User</div>
+        <div class="sb-useremail" id="hmProfEmail"></div>
+        <div class="sb-plan-badge" id="hmProfPlan">Free</div>
+      </div>
+    </div>
+    <div id="hmSidebarHistory" style="display:none;"></div>
+    <div id="hmSidebarLinks" style="display:none;">
+      <button id="hmLogoutBtn" onclick="doLogout()" style="display:none;width:100%;padding:7px;background:var(--danger-dim);border:1px solid rgba(239,68,68,.18);border-radius:7px;font-size:11px;font-weight:600;color:var(--danger);cursor:pointer;margin-top:4px;">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- ══ CENTRE: CHAT ══ -->
+  <div class="chat-col">
+
+    <!-- Mode tabs bar -->
+    <div class="mode-bar">
+      <button class="mode-tab active" onclick="switchTab('hydraulic',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+        Hydraulic Advisor
+      </button>
+      <button class="mode-tab" onclick="window.location.href='knowledge_base.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 006.5 7H20v13H6.5A2.5 2.5 0 014 17.5z"/></svg>
+        KB Search
+      </button>
+      <button class="mode-tab" onclick="switchTab('calculator',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/></svg>
+        Calculator
+      </button>
+      <button class="mode-tab" onclick="window.location.href='system_design.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        System Design
+      </button>
+      <div class="mode-separator"></div>
+      <div class="mode-bar-right">
+        <div class="model-badge">claude-sonnet-4-6</div>
+        <div class="online-dot"><span></span>Online</div>
+      </div>
+      <button class="mobile-info-btn" style="display:none;" onclick="openMobileInfo()">ⓘ Info</button>
+    </div>
+
+    <!-- Mobile brand filter — quick access above input, hidden on desktop -->
+    <div class="mobile-brand-row" id="mobile-brand-row" style="display:none;">
+      <span class="brand-chip on" onclick="toggleBrandMobile(this,'ALL')">ALL</span>
+      <span class="brand-chip" onclick="toggleBrandMobile(this,'RXR')">Rexroth</span>
+      <span class="brand-chip" onclick="toggleBrandMobile(this,'DAN')">Danfoss</span>
+      <span class="brand-chip" onclick="toggleBrandMobile(this,'PRK')">Parker</span>
+      <span class="brand-chip" onclick="toggleBrandMobile(this,'EAT')">Eaton</span>
+      <span class="brand-chip" onclick="toggleBrandMobile(this,'LBR')">Liebherr</span>
+      <span class="brand-chip" onclick="toggleBrandMobile(this,'MCG')">MacGregor</span>
+      <span class="brand-chip" onclick="toggleBrandMobile(this,'NOV')">NOV</span>
+    </div>
+
+    <!-- HOW TO USE DROPDOWN — outside chat-area so it never gets scrolled with messages -->
+    <div class="htu-wrap">
+      <div class="htu-panel">
+        <div class="htu-header" onclick="toggleHtu()">
+          <div class="htu-header-left">
+            <div class="htu-header-icon">📋</div>
+            <div>
+              <div class="htu-header-title">How to Use AI Hydraulic Advisor</div>
+              <div class="htu-header-sub">Click to expand — 5-step guide + pro tips</div>
+            </div>
+          </div>
+          <div class="htu-arrow" id="htu-arrow">▼</div>
+        </div>
+        <div class="htu-body" id="htu-body">
+          <div class="htu-steps">
+            <div class="htu-step">
+              <div class="htu-step-num">1</div>
+              <div>
+                <div class="htu-step-title">Select Your Mode</div>
+                <div class="htu-step-desc">Choose from the four tabs at the top — Hydraulic Advisor (fault diagnosis), KB Search (OEM manual lookup), Calculator (hydraulic sizing), or System Design (guided 12-step design). Each mode changes the AI prompt and input placeholder automatically.</div>
+              </div>
+            </div>
+            <div class="htu-step">
+              <div class="htu-step-num">2</div>
+              <div>
+                <div class="htu-step-title">Filter by Manufacturer (Optional)</div>
+                <div class="htu-step-desc">Use the brand chips in the left panel to narrow the AI context to a specific OEM — Rexroth, Danfoss, Parker, Eaton, Liebherr, MacGregor, NOV, SeaTrax, or Favelle Favco. Selecting a brand focuses the KB search on that manufacturer's documents.</div>
+              </div>
+            </div>
+            <div class="htu-step">
+              <div class="htu-step-num">3</div>
+              <div>
+                <div class="htu-step-title">Describe Your Fault or Query Precisely</div>
+                <div class="htu-step-desc">Include: system type (crane, winch, steering), affected circuit (hoist, luff, slew), component model if known, actual pressure readings (bar), and whether the fault is intermittent or constant. The more specific your input, the more actionable the diagnosis.</div>
+              </div>
+            </div>
+            <div class="htu-step">
+              <div class="htu-step-num">4</div>
+              <div>
+                <div class="htu-step-title">Read the Structured AI Response</div>
+                <div class="htu-step-desc">Responses follow a structured format — Root Cause → Test Points → Corrective Action → KB References. KB tags appear below each AI message and are clickable — tap one to immediately ask a follow-up about that document.</div>
+              </div>
+            </div>
+            <div class="htu-step">
+              <div class="htu-step-num">5</div>
+              <div>
+                <div class="htu-step-title">Use Suggested Questions to Get Started</div>
+                <div class="htu-step-desc">Tap any of the suggestion cards on the welcome screen for one-click fault starters. Or use the Quick Hint chips below the input box for common fault prompts.</div>
+              </div>
+            </div>
+          </div>
+          <div class="htu-tips">
+            <div class="htu-tips-title">💡 Pro Tips</div>
+            <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Always quote actual <strong>pressure readings</strong> (bar/PSI) from your gauges — the AI uses these numbers for precise fault isolation.</div></div>
+            <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Use <strong>Calculator mode</strong> for step-by-step hydraulic sizing with formulas shown.</div></div>
+            <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">Ask the AI to <strong>"Run a full 10-state diagnostic sequence"</strong> for structured fault isolation.</div></div>
+            <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text"><strong>Shift+Enter</strong> for a new line — <strong>Enter</strong> alone sends the message.</div></div>
+            <div class="htu-tip-row"><div class="htu-tip-dot"></div><div class="htu-tip-text">For KB Search: <strong>"Rexroth A4VG90 swashplate control"</strong> returns more targeted results than a generic description.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat area -->
+  <div class="chat-area" id="chat-area">
+      <h1 class="sr-only">AI Hydraulic Advisor</h1>
+
+      <!-- WELCOME STATE -->
+      <div class="adv-welcome" id="adv-welcome">
+        <div class="adv-welcome-badge"><span class="w-dot"></span>161+ OEM Manuals · Real-time AI · ISO 4413</div>
+        <h2>AI Hydraulic Advisor</h2>
+        <p>Expert-level hydraulic fault diagnosis, component analysis, system sizing and KB search — powered by Rexroth, Danfoss, Parker, Liebherr, MacGregor and more.</p>
+        <p id="free-tier-note" style="font-size:12px;color:var(--text3);margin-top:-8px;">10 free queries per day · <a href="pricing.html" style="color:var(--accent);font-weight:600;">Upgrade to Pro</a> for unlimited access</p>
+
+        <div class="sugg-section">
+          <div class="sugg-label">Suggested Questions</div>
+          <div class="sugg-grid">
+            <div class="sugg-card" onclick="injectQ('Diagnose high case drain pressure (4.5 bar) on Rexroth A4VG90 piston pump at full load — root cause and corrective action.')">
+              <span class="sugg-icon">⚡</span>
+              <div class="sugg-cat">Fault Diagnosis</div>
+              <div class="sugg-title">A4VG90 High Case Drain Pressure</div>
+              <div class="sugg-desc">Root cause analysis for elevated case drain — worn barrel, valve plate wear, or bypass fault.</div>
+            </div>
+            <div class="sugg-card" onclick="injectQ('What is the correct counterbalance valve setting for a Liebherr LHBL-D luffing cylinder circuit running at 280 bar working pressure?')">
+              <span class="sugg-icon">⚖️</span>
+              <div class="sugg-cat">Pressure Settings</div>
+              <div class="sugg-title">Counterbalance Valve Setting</div>
+              <div class="sugg-desc">CBV set pressure calculation for luffing cylinder — 110–130% load pressure rule applied.</div>
+            </div>
+            <div class="sugg-card" onclick="injectQ('Size a Rexroth A10V open circuit pump for 250 bar working pressure, 180 L/min flow at 1480 RPM — displacement, drive power and shaft torque.')">
+              <span class="sugg-icon">📐</span>
+              <div class="sugg-cat">Component Sizing</div>
+              <div class="sugg-title">A10V Pump Sizing</div>
+              <div class="sugg-desc">Full pump sizing — displacement, drive power, shaft torque for open circuit application.</div>
+            </div>
+            <div class="sugg-card" onclick="injectQ('What are the DNV-ST-0378 maintenance and inspection requirements for offshore crane hydraulic hose assemblies?')">
+              <span class="sugg-icon">📋</span>
+              <div class="sugg-cat">Maintenance</div>
+              <div class="sugg-title">DNV Hose Inspection Intervals</div>
+              <div class="sugg-desc">Offshore crane hydraulic hose inspection standards — DNV-ST-0378 compliance requirements.</div>
+            </div>
+            <div class="sugg-card" onclick="injectQ('Danfoss H1 bent-axis motor is overheating above 90°C — diagnose possible causes in a closed-loop winch circuit.')">
+              <span class="sugg-icon">🌡️</span>
+              <div class="sugg-cat">Fault Diagnosis</div>
+              <div class="sugg-title">H1 Motor Overheating</div>
+              <div class="sugg-desc">Closed-loop winch circuit overheating — charge pressure, flushing valve, and case drain analysis.</div>
+            </div>
+            <div class="sugg-card" onclick="injectQ('Explain the difference between open-loop and closed-loop hydraulic circuits for marine winch applications — pros, cons and component differences.')">
+              <span class="sugg-icon">🔄</span>
+              <div class="sugg-cat">System Design</div>
+              <div class="sugg-title">Open vs Closed Loop Circuits</div>
+              <div class="sugg-desc">Marine winch circuit comparison — architecture, components, efficiency and fault modes.</div>
+            </div>
+            <div class="sugg-card" onclick="injectQ('Parker proportional directional control valve is not responding to signal — diagnose fault in electronic joystick controlled offshore crane slewing circuit.')">
+              <span class="sugg-icon">🔧</span>
+              <div class="sugg-cat">Fault Diagnosis</div>
+              <div class="sugg-title">Proportional Valve No Response</div>
+              <div class="sugg-desc">PVCM/amplifier card fault analysis for electronic joystick crane slewing circuit.</div>
+            </div>
+            <div class="sugg-card" onclick="injectQ('Calculate pipe bore size for 200 L/min flow at maximum 4 m/s velocity in a pressure line — show working and recommend standard pipe size.')">
+              <span class="sugg-icon">🧮</span>
+              <div class="sugg-cat">Calculation</div>
+              <div class="sugg-title">Pipe Bore Sizing</div>
+              <div class="sugg-desc">Pressure line pipe sizing — velocity limit calculation and standard bore recommendation.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input bar -->
+    <div class="input-bar">
+      <div class="input-wrap">
+        <textarea id="chat-input" rows="1" placeholder="Ask about any hydraulic fault, component sizing, KB search, or system design…" maxlength="3000"></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendMessage()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="input-meta">
+        <div class="hint-chips">
+          <span class="hint-chip" onclick="injectQ('Diagnose A4VG pump fault — high case drain pressure')">Case Drain Fault</span>
+          <span class="hint-chip" onclick="injectQ('Relief valve setting calculation for 250 bar system')">Relief Valve</span>
+          <span class="hint-chip" onclick="injectQ('Charge pressure fault in closed loop circuit')">Charge Pressure</span>
+          <span class="hint-chip" onclick="injectQ('Size hydraulic motor for 150 kW at 250 bar')">Motor Sizing</span>
+          <span class="hint-chip" onclick="injectQ('ISO 4413 hydraulic safety requirements')">ISO 4413</span>
+        </div>
+        <div class="kbd-hint"><kbd>Shift+Enter</kbd> new line &nbsp;·&nbsp; <kbd>Enter</kbd> send</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ RIGHT: INFO PANEL ══ -->
+  <div class="info-panel">
+
+    <div class="ip-section">
+      <h4>KB References</h4>
+      <div id="kb-hit-list">
+        <div style="font-size:10px;color:var(--text3);text-align:center;padding:8px 0;">Refs appear here after query</div>
+      </div>
+    </div>
+
+    <div class="ip-section">
+      <h4>Capabilities</h4>
+      <div class="cap-list">
+        <div class="cap-row"><span class="cap-icon">⚡</span><div class="cap-text"><strong>Fault Diagnosis</strong>Root cause, test points, corrective action</div></div>
+        <div class="cap-row"><span class="cap-icon">📐</span><div class="cap-text"><strong>Component Sizing</strong>Pump, motor, valve, pipe sizing</div></div>
+        <div class="cap-row"><span class="cap-icon">📚</span><div class="cap-text"><strong>KB Search</strong>161+ OEM manuals — Rexroth to Liebherr</div></div>
+        <div class="cap-row"><span class="cap-icon">⚖️</span><div class="cap-text"><strong>Pressure Settings</strong>Relief, CBV, pilot pressure calc</div></div>
+        <div class="cap-row"><span class="cap-icon">📋</span><div class="cap-text"><strong>Standards</strong>ISO 4413, DNV-ST-0378, API RP 2D</div></div>
+      </div>
+    </div>
+
+    <div class="ip-section">
+      <h4>Applied Standards</h4>
+      <div class="std-list">
+        <div class="std-tag"><strong>ISO 4413</strong> — Hydraulic Fluid Power</div>
+        <div class="std-tag"><strong>DNV-ST-0378</strong> — Offshore Cranes</div>
+        <div class="std-tag"><strong>EN 13852-1</strong> — Crane Design</div>
+        <div class="std-tag"><strong>API RP 2D</strong> — Crane Operations</div>
+        <div class="std-tag"><strong>ISO 4406</strong> — Fluid Cleanliness</div>
+      </div>
+    </div>
+
+    <div class="ip-section">
+      <h4>Download App</h4>
+      <div class="sb-app-banner">
+        <div class="banner-title">HydroMind AI App</div>
+        <div class="banner-sub">Full advisor on Android — free download</div>
+        <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" rel="noopener" class="qr-wrap" title="Scan to download">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.hydromind.app&format=png&margin=4&qzone=1" alt="QR code" width="80" height="80" style="border-radius:4px;display:block;">
+        </a>
+        <div class="banner-dl">Scan to Download</div>
+        <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" rel="noopener" class="store-badge">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76a2 2 0 001.91-.19l11.12-6.37-2.93-2.93-10.1 9.49zM20.5 10.36L17.84 8.8l-3.19 3.19 3.19 3.2 2.69-1.56a2 2 0 000-3.27zM1.54.27A2 2 0 001 1.5v21l10.29-10.3L1.54.27zM14.65 12L4.09.24 3.18.24 14.65 12z"/></svg>
+          Google Play
+        </a>
+      </div>
+    </div>
+
+    <div class="ip-section">
+      <div class="upgrade-cta">
+        <h4>🚀 Upgrade to Pro</h4>
+        <ul>
+          <li>Unlimited AI queries</li>
+          <li>Full KB access (161+ docs)</li>
+          <li>Crane Diagnostic AI</li>
+          <li>System Design tool</li>
+          <li>Ad-free experience</li>
+        </ul>
+        <a href="pricing.html">Upgrade Now →</a>
+      </div>
+    </div>
+
+  </div><!-- end info-panel -->
+
+</div><!-- end advisor-shell -->
+
+<!-- ══ MOBILE INFO OVERLAY — full-screen, replaces left/right panels on phones ══ -->
+<div class="mobile-info-overlay" id="mobile-info-overlay">
+  <div class="mio-header">
+    <div class="mio-title">Advisor Info</div>
+    <button class="mio-close" onclick="closeMobileInfo()">✕</button>
+  </div>
+  <div class="mio-body">
+
+    <div class="ip-section">
+      <h4>Session Stats</h4>
+      <div class="session-stats">
+        <div class="ss-row"><span class="ss-key">Queries</span><span class="ss-val" id="stat-queries-m">0</span></div>
+        <div class="ss-row"><span class="ss-key">KB Hits</span><span class="ss-val" id="stat-kb-m">0</span></div>
+        <div class="ss-row"><span class="ss-key">Remaining</span><span class="ss-val warn" id="stat-remain-m">10</span></div>
+      </div>
+    </div>
+
+    <div class="ip-section">
+      <h4>KB References</h4>
+      <div id="kb-hit-list-m">
+        <div style="font-size:11px;color:var(--text3);text-align:center;padding:10px 0;">Refs appear here after query</div>
+      </div>
+    </div>
+
+    <div class="ip-section">
+      <h4>Capabilities</h4>
+      <div class="cap-list">
+        <div class="cap-row"><span class="cap-icon">⚡</span><div class="cap-text"><strong>Fault Diagnosis</strong>Root cause, test points, corrective action</div></div>
+        <div class="cap-row"><span class="cap-icon">📐</span><div class="cap-text"><strong>Component Sizing</strong>Pump, motor, valve, pipe sizing</div></div>
+        <div class="cap-row"><span class="cap-icon">📚</span><div class="cap-text"><strong>KB Search</strong>161+ OEM manuals — Rexroth to Liebherr</div></div>
+        <div class="cap-row"><span class="cap-icon">⚖️</span><div class="cap-text"><strong>Pressure Settings</strong>Relief, CBV, pilot pressure calc</div></div>
+        <div class="cap-row"><span class="cap-icon">📋</span><div class="cap-text"><strong>Standards</strong>ISO 4413, DNV-ST-0378, API RP 2D</div></div>
+      </div>
+    </div>
+
+    <div class="ip-section">
+      <h4>Applied Standards</h4>
+      <div class="std-list">
+        <div class="std-tag"><strong>ISO 4413</strong> — Hydraulic Fluid Power</div>
+        <div class="std-tag"><strong>DNV-ST-0378</strong> — Offshore Cranes</div>
+        <div class="std-tag"><strong>EN 13852-1</strong> — Crane Design</div>
+        <div class="std-tag"><strong>API RP 2D</strong> — Crane Operations</div>
+        <div class="std-tag"><strong>ISO 4406</strong> — Fluid Cleanliness</div>
+      </div>
+    </div>
+
+    <div class="ip-section">
+      <button class="clear-btn" onclick="clearChat();closeMobileInfo();" style="margin-bottom:8px;">Clear Chat History</button>
+      <a href="pricing.html" style="display:block;width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),var(--accent-deep));border-radius:9px;font-size:13.5px;font-weight:700;color:#fff;text-align:center;">🚀 Upgrade to Pro →</a>
+    </div>
+
+  </div>
 </div>
+
+</main>
+
+<script src="js/auth-v2.js"></script>
+<script>
+/* ══ HOW TO USE TOGGLE ══ */
+function toggleHtu() {
+  var body  = document.getElementById('htu-body');
+  var arrow = document.getElementById('htu-arrow');
+  if (!body) return;
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+/* ══ MOBILE INFO OVERLAY ══ */
+function openMobileInfo() {
+  var o = document.getElementById('mobile-info-overlay');
+  if (o) { o.classList.add('open'); document.body.style.overflow = 'hidden'; }
+}
+function closeMobileInfo() {
+  var o = document.getElementById('mobile-info-overlay');
+  if (o) { o.classList.remove('open'); document.body.style.overflow = ''; }
+}
+function toggleBrandMobile(el, brand) {
+  // Mirror selection into the desktop brand-chip row too, so state stays consistent
+  document.querySelectorAll('#mobile-brand-row .brand-chip, #brand-chips .brand-chip').forEach(function(c) {
+    if (c.textContent.trim() === el.textContent.trim()) { c.classList.add('on'); }
+    else { c.classList.remove('on'); }
+  });
+  activeBrand = brand;
+}
+function _showMobileControls() {
+  var isMobile = window.innerWidth <= 768;
+  document.querySelectorAll('.mobile-info-btn').forEach(function(b){ b.style.display = isMobile ? 'flex' : 'none'; });
+  var br = document.getElementById('mobile-brand-row');
+  if (br) br.style.display = isMobile ? 'flex' : 'none';
+}
+window.addEventListener('resize', _showMobileControls);
+document.addEventListener('DOMContentLoaded', _showMobileControls);
+
+/* Write a stat to both the desktop sidebar element and its mobile-overlay twin (id + '-m') */
+function _setStat(id, value) {
+  var d = document.getElementById(id); if (d) d.textContent = value;
+  var m = document.getElementById(id + '-m'); if (m) m.textContent = value;
+}
+
+/* ══ CONSTANTS ══ */
+var BACKEND = 'https://hydromind-backend.onrender.com/api/kb/chat';
+var chatHistory = [];   /* renamed from 'history' — window.history is a reserved browser global */
+var isLoading = false;
+var queriesUsed = 0;
+var queriesMax = 10;
+var dailyQueriesRemaining = null; /* unknown until first server response; null = not-yet-known OR unlimited (Pro) */
+var isProUnlimited = false;
+var kbHits = 0;
+var activeMode = 'hydraulic';
+var activeBrand = 'ALL';
+
+/* Lightweight, non-cryptographic device fingerprint for anonymous daily
+   rate-limiting. Cached in localStorage so it's stable across reloads.
+   Known limitation: private/incognito windows reset localStorage, so this
+   is a best-effort device signal, not a hard identity guarantee. */
+function getClientFingerprint() {
+  try {
+    var cached = localStorage.getItem('hm_fp');
+    if (cached) return cached;
+    var sig = [
+      navigator.userAgent, navigator.language, navigator.platform,
+      screen.width + 'x' + screen.height + 'x' + screen.colorDepth,
+      (Intl.DateTimeFormat().resolvedOptions().timeZone || ''),
+      (navigator.hardwareConcurrency || '')
+    ].join('||');
+    var h = 2166136261;
+    for (var i = 0; i < sig.length; i++) {
+      h ^= sig.charCodeAt(i);
+      h = (h * 16777619) >>> 0;
+    }
+    var fp = 'fp' + h.toString(16) + (sig.length % 97).toString(16);
+    localStorage.setItem('hm_fp', fp);
+    return fp;
+  } catch(e) {
+    return 'fpfallback' + Math.random().toString(36).slice(2, 10);
+  }
+}
+
+/* Update query limit after auth loads */
+function hmUpdateQueryLimit() {
+  try {
+    var u = (typeof hmGetSession === 'function')
+      ? hmGetSession()
+      : JSON.parse(localStorage.getItem('hm_session') || 'null');
+    if (u && (u.isAdmin || u.plan === 'Pro' || u.plan === 'Enterprise' || u.plan === 'Admin')) {
+      isProUnlimited = true;
+      queriesMax = 9999;
+      _setStat('stat-remain', '∞');
+      var el = document.getElementById('stat-remain');
+      if (el) { el.classList.remove('warn'); }
+      var note = document.getElementById('free-tier-note');
+      if (note) { note.style.display = 'none'; }
+    }
+  } catch(e) {}
+}
+
+var MODE_PROMPTS = {
+  hydraulic: 'You are HydroMind AI Hydraulic Advisor — expert marine and offshore hydraulic engineer. Provide structured fault diagnosis, component analysis, pressure settings and system design guidance. Reference KB documents (KB100 to KB322) covering Rexroth, Danfoss, Parker, Eaton, Liebherr, MacGregor, NOV, SeaTrax, Favelle Favco. Apply ISO 4413, DNV-ST-0378, EN 13852-1, API RP 2D. Structure answers: Root Cause → Test Points → Corrective Action → KB References.',
+  kb: 'You are HydroMind KB Search Assistant. The user wants to search the knowledge base of 161+ OEM hydraulic manuals. Identify which KB document(s) (KB100 to KB322) are most relevant to their query and summarize the key technical content. Always cite the KB number.',
+  calculator: 'You are HydroMind Hydraulic Calculator. Perform hydraulic calculations step by step: pump flow (Q=DN/1000), drive power (P=pQ/600η), cylinder force (F=pA), pipe velocity (v=Q/A), motor torque (T=pD/20π), relief valve settings. Show formula, substitution and result with correct units. Support both metric and imperial.',
+  design: 'You are HydroMind System Design Advisor. Guide the user through a 12-step hydraulic system design: (1) Requirements, (2) Circuit type, (3) Pump selection & sizing, (4) Motor/actuator sizing, (5) DCV selection, (6) Relief valve sizing, (7) Filter sizing, (8) Tank sizing, (9) Pipe sizing, (10) Cooler sizing, (11) BOM generation, (12) System validation. Ask clarifying questions at each step.'
+};
+
+var MODE_PLACEHOLDERS = {
+  hydraulic: 'Ask about any hydraulic fault, component sizing, KB search, or system design…',
+  kb: 'Search the knowledge base — e.g. "Rexroth A4VG90 case drain" or "Danfoss H1 charge pressure"…',
+  calculator: 'Enter a calculation — e.g. "Pump flow for 121cc/rev at 1480 RPM" or "Cylinder force at 200 bar, 100mm bore"…',
+  design: 'Describe your system requirements — e.g. "Design a 250 bar, 180 L/min hydraulic winch system"…'
+};
+
+/* ══ MODE SWITCH ══ */
+function setMode(mode, btn) {
+  activeMode = mode;
+  document.querySelectorAll('.mode-btn').forEach(function(b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  /* Sync top tab bar */
+  document.querySelectorAll('.mode-tab').forEach(function(b) {
+    var oc = b.getAttribute('onclick') || '';
+    b.classList.toggle('active', oc.indexOf("switchTab") > -1 && oc.indexOf("'" + mode + "'") > -1);
+  });
+  var inp = document.getElementById('chat-input');
+  if (inp) { inp.placeholder = MODE_PLACEHOLDERS[mode] || MODE_PLACEHOLDERS.hydraulic; inp.focus(); }
+  showModeCard(mode);
+}
+
+function switchTab(mode, btn) {
+  activeMode = mode;
+  document.querySelectorAll('.mode-tab').forEach(function(b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  /* Sync left sidebar buttons */
+  document.querySelectorAll('.mode-btn').forEach(function(b) {
+    b.classList.toggle('active', b.id === 'mode-' + mode);
+  });
+  var inp = document.getElementById('chat-input');
+  if (inp) { inp.placeholder = MODE_PLACEHOLDERS[mode] || MODE_PLACEHOLDERS.hydraulic; inp.focus(); }
+  showModeCard(mode);
+}
+
+/* Show a context card in chat when mode changes */
+var MODE_CARDS = {
+  hydraulic: null, /* no card for default mode */
+  calculator: {
+    icon: '🔢',
+    title: 'Calculator Mode Active',
+    desc: 'Ask me to perform hydraulic calculations step by step. Examples:',
+    examples: [
+      'Pump flow for 121 cc/rev at 1480 RPM',
+      'Drive power for 250 bar, 180 L/min at 90% efficiency',
+      'Cylinder force at 200 bar with 100mm bore',
+      'Pipe bore for 200 L/min at max 4 m/s velocity',
+      'Motor torque for 280 bar, 250 cc/rev displacement'
+    ]
+  },
+  kb: null, /* navigates away */
+  design: null  /* navigates away */
+};
+
+function showModeCard(mode) {
+  var card = MODE_CARDS[mode];
+  if (!card) return;
+  /* Remove any existing mode card */
+  var old = document.getElementById('mode-context-card');
+  if (old) old.remove();
+  /* Remove welcome screen */
+  var welcome = document.getElementById('adv-welcome');
+  if (welcome) welcome.remove();
+  var area = document.getElementById('chat-area');
+  var div = document.createElement('div');
+  div.id = 'mode-context-card';
+  div.style.cssText = 'background:var(--card);border:1.5px solid var(--accent-glow);border-left:3px solid var(--accent);border-radius:12px;padding:16px 18px;margin:0;';
+  var exHtml = card.examples.map(function(e) {
+    return '<div onclick="injectQ(\'' + e.replace(/'/g,"\\'") + '\')" style="display:flex;align-items:center;gap:8px;padding:7px 10px;margin-bottom:5px;background:var(--surface);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:12px;color:var(--text2);transition:all .12s;" onmouseover="this.style.borderColor=\'var(--accent-glow)\';this.style.color=\'var(--accent-bright)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--text2)\'"><span style="color:var(--accent);font-size:10px;">▶</span>' + e + '</div>';
+  }).join('');
+  div.innerHTML = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><span style="font-size:1.4rem;">' + card.icon + '</span><div><div style="font-size:13.5px;font-weight:800;color:var(--accent-bright);">' + card.title + '</div><div style="font-size:11px;color:var(--text3);margin-top:2px;">' + card.desc + '</div></div></div>' + exHtml + '<div style="font-size:10.5px;color:var(--text3);margin-top:8px;">Click any example above to load it into the input box, or type your own calculation.</div>';
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+}
+
+/* ══ BRAND FILTER ══ */
+function toggleBrand(el, brand) {
+  document.querySelectorAll('.brand-chip').forEach(function(c) { c.classList.remove('on'); });
+  el.classList.add('on');
+  activeBrand = brand;
+}
+function filterBrand(val) {
+  document.querySelectorAll('.brand-chip').forEach(function(c) {
+    c.style.display = (!val || c.textContent.toLowerCase().indexOf(val.toLowerCase()) > -1) ? '' : 'none';
+  });
+}
+
+/* ══ INJECT QUESTION ══ */
+function injectQ(text) {
+  var inp = document.getElementById('chat-input');
+  inp.value = text;
+  inp.focus();
+  autoResize(inp);
+}
+
+/* ══ AUTO-RESIZE ══ */
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+}
+
+/* ══ MARKDOWN RENDERER ══ */
+function renderMd(raw) {
+  var lines = (raw || '').split('\n');
+  var out = '', inUl = false, inOl = false, inCode = false, inTable = false;
+  function closeLists() {
+    if (inUl) { out += '</ul>'; inUl = false; }
+    if (inOl) { out += '</ol>'; inOl = false; }
+  }
+  function fmt(t) {
+    return t
+      .replace(/`([^`]+)`/g, '<code class="msg-code">$1</code>')
+      .replace(/\*\*([^*]+)\*\*/g, '<strong class="msg-strong">$1</strong>')
+      .replace(/\*([^*]+)\*/g, '<em class="msg-em">$1</em>')
+      .replace(/__([^_]+)__/g, '<strong class="msg-strong">$1</strong>');
+  }
+  for (var i = 0; i < lines.length; i++) {
+    var l = lines[i];
+    if (l.indexOf('```') === 0) {
+      closeLists();
+      if (inCode) { out += '</pre>'; inCode = false; }
+      else { out += '<pre class="msg-pre">'; inCode = true; }
+      continue;
+    }
+    if (inCode) { out += l.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '\n'; continue; }
+    if (l.indexOf('|') === 0 && l.indexOf('|-') < 0) {
+      if (!inTable) { out += '<table class="msg-table"><thead><tr>'; inTable = true; var isH = true; }
+      else { out += (out.endsWith('</thead>') ? '<tbody>' : '') + '<tr>'; isH = false; }
+      var cells = l.split('|').filter(function(c,j,a){return j>0&&j<a.length-1;});
+      cells.forEach(function(c){out+=(isH?'<th>':'<td>')+fmt(c.trim())+(isH?'</th>':'</td>');});
+      out += isH ? '</tr></thead>' : '</tr>';
+      continue;
+    }
+    if (l.match(/^\|[-| :]+\|$/)) continue;
+    if (inTable) { out += '</tbody></table>'; inTable = false; }
+    if (l.indexOf('#### ') === 0) { closeLists(); out += '<h4 class="msg-h4">'+fmt(l.slice(5))+'</h4>'; continue; }
+    if (l.indexOf('### ')  === 0) { closeLists(); out += '<h3 class="msg-h3">'+fmt(l.slice(4))+'</h3>'; continue; }
+    if (l.indexOf('## ')   === 0) { closeLists(); out += '<h2 class="msg-h2">'+fmt(l.slice(3))+'</h2>'; continue; }
+    if (l.indexOf('# ')    === 0) { closeLists(); out += '<h2 class="msg-h2">'+fmt(l.slice(2))+'</h2>'; continue; }
+    if (l === '---') { closeLists(); out += '<hr class="msg-hr">'; continue; }
+    if (/^[-*•]\s/.test(l)) {
+      if (!inUl) { if(inOl){out+='</ol>';inOl=false;} out += '<ul class="msg-ul">'; inUl = true; }
+      out += '<li>'+fmt(l.replace(/^[-*•]\s+/,''))+'</li>'; continue;
+    }
+    if (/^\d+[.)]\s/.test(l)) {
+      if (!inOl) { if(inUl){out+='</ul>';inUl=false;} out += '<ol class="msg-ol">'; inOl = true; }
+      out += '<li>'+fmt(l.replace(/^\d+[.)]\s+/,''))+'</li>'; continue;
+    }
+    if (l === '') { closeLists(); out += '<div class="msg-gap"></div>'; continue; }
+    closeLists();
+    out += '<p class="msg-p">'+fmt(l)+'</p>';
+  }
+  closeLists();
+  if (inTable) out += '</tbody></table>';
+  if (inCode)  out += '</pre>';
+  return out;
+}
+
+/* ══ ADD MESSAGE ══ */
+function addMsg(role, content, kbInfo) {
+  var welcome = document.getElementById('adv-welcome');
+  if (welcome) welcome.remove();
+  var area = document.getElementById('chat-area');
+  var row = document.createElement('div');
+  row.className = 'msg-row ' + role;
+  var sender = document.createElement('div');
+  sender.className = 'msg-sender';
+  sender.textContent = role === 'user' ? 'YOU' : 'HYDROMIND AI';
+  var bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  if (role === 'ai') { bubble.innerHTML = renderMd(content); }
+  else { bubble.textContent = content; }
+  var time = document.createElement('div');
+  time.className = 'msg-time';
+  time.textContent = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  row.appendChild(sender);
+  row.appendChild(bubble);
+  if (role === 'ai' && kbInfo && typeof kbInfo === 'object' && !Array.isArray(kbInfo)) {
+    var refs = document.createElement('div');
+    refs.className = 'kb-refs';
+    var tag = document.createElement('span');
+    tag.className = 'kb-tag';
+    if (kbInfo.used && kbInfo.count > 0) {
+      tag.textContent = '📚 Grounded in ' + kbInfo.count + ' KB doc' + (kbInfo.count > 1 ? 's' : '');
+      tag.style.cursor = 'default';
+    } else if (kbInfo.weak) {
+      tag.textContent = '⚠ Weak KB match — engineering fallback used';
+      tag.style.cursor = 'default';
+      tag.style.color = 'var(--warning)';
+    } else {
+      tag.textContent = 'ℹ No KB match — general engineering answer';
+      tag.style.cursor = 'default';
+      tag.style.color = 'var(--text3)';
+    }
+    refs.appendChild(tag);
+    row.appendChild(refs);
+    if (kbInfo.used) updateKBPanel(kbInfo.count);
+  }
+  row.appendChild(time);
+  area.appendChild(row);
+  setTimeout(function() {
+    if (role === 'ai') {
+      var rowTop = row.getBoundingClientRect().top - area.getBoundingClientRect().top + area.scrollTop;
+      area.scrollTop = Math.max(0, rowTop - 8);
+    } else { area.scrollTop = area.scrollHeight; }
+  }, 60);
+  if (role === 'user') addToHistory(content);
+}
+
+/* ══ HISTORY ══ */
+function addToHistory(text) {
+  var list = document.getElementById('hist-list');
+  list.innerHTML = '';
+  var recent = [{text: text, time: 'Now'}];
+  recent.forEach(function(h) {
+    var item = document.createElement('div');
+    item.className = 'hist-item';
+    item.innerHTML = '<div class="hist-dot"></div><div class="hist-text">' + h.text.substring(0,60) + (h.text.length>60?'…':'') + '</div><div class="hist-time">' + h.time + '</div>';
+    item.onclick = function() { injectQ(h.text); };
+    list.appendChild(item);
+  });
+}
+
+/* ══ KB PANEL ══ */
+function updateKBPanel(chunkCount) {
+  kbHits += chunkCount;
+  _setStat('stat-kb', kbHits);
+  var html = '<div class="kb-hit-item" style="cursor:default;"><div class="kb-hit-num">✓ ' + chunkCount + ' doc' + (chunkCount > 1 ? 's' : '') + '</div><div class="kb-hit-title">Referenced for this answer</div><div class="kb-hit-brand">From HydroMind KB</div></div>';
+  [document.getElementById('kb-hit-list'), document.getElementById('kb-hit-list-m')].forEach(function(list) {
+    if (!list) return;
+    if (list.querySelector('[style]')) list.innerHTML = '';
+    list.insertAdjacentHTML('afterbegin', html);
+    while (list.children.length > 6) list.removeChild(list.lastChild);
+  });
+}
+
+/* ══ TYPING INDICATOR ══ */
+function showTyping() {
+  var area = document.getElementById('chat-area');
+  var row = document.createElement('div');
+  row.className = 'msg-row ai'; row.id = 'typing-ind';
+  row.innerHTML = '<div class="msg-sender">HYDROMIND AI</div><div class="msg-bubble" style="padding:12px 16px;"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
+  area.appendChild(row);
+  area.scrollTop = area.scrollHeight;
+}
+function hideTyping() { var t = document.getElementById('typing-ind'); if (t) t.remove(); }
+function setUIBusy(busy) {
+  isLoading = busy;
+  var b = document.getElementById('send-btn');
+  var i = document.getElementById('chat-input');
+  if (b) b.disabled = busy;
+  if (i) i.disabled = busy;
+}
+
+/* ══ SEND ══ */
+function restoreFailedInput(text) {
+  // Put the user's text back so they don't have to retype it,
+  // refund the query count (the attempt failed, it shouldn't cost them a free query),
+  // and remove the failed turn from chatHistory so it doesn't pollute the next real request.
+  var inp = document.getElementById('chat-input');
+  if (inp) {
+    inp.value = text;
+    autoResize(inp);
+  }
+  if (chatHistory.length && chatHistory[chatHistory.length - 1].role === 'user' && chatHistory[chatHistory.length - 1].content === text) {
+    chatHistory.pop();
+  }
+  queriesUsed = Math.max(0, queriesUsed - 1);
+  _setStat('stat-queries', queriesUsed);
+  /* dailyQueriesRemaining is left untouched here — a failed request never
+     actually consumed a server-side daily query (increment only happens on
+     success), so there's nothing to refund on the remaining-count display. */
+}
+
+function sendMessage() {
+  if (isLoading) return;
+  var inp = document.getElementById('chat-input');
+  var text = inp.value.trim();
+  if (!text) return;
+  if (!isProUnlimited && dailyQueriesRemaining !== null && dailyQueriesRemaining <= 0) {
+    addMsg('ai', '## Daily Free Limit Reached\n\nYou have used all ' + queriesMax + ' free queries for today. Limit resets at **midnight UTC**. **Upgrade to Pro** for unlimited access to the full AI Hydraulic Advisor.\n\n[View Pricing →](pricing.html)', []);
+    return;
+  }
+  inp.value = ''; inp.style.height = 'auto';
+  setUIBusy(true);
+  addMsg('user', text);
+  showTyping();
+  queriesUsed++;
+  _setStat('stat-queries', queriesUsed);
+  /* Remaining-count display stays at its last server-confirmed value until
+     this response comes back and gives us the real authoritative number. */
+
+  // ── Request grounded KB-backed answer from /api/kb/chat ──
+  // (Client-side MODE_PROMPTS are no longer sent — the backend's
+  // HYDROMIND_ADVISOR_SYSTEM + KB routing fully supersedes them.)
+  var brandFilter = activeBrand !== 'ALL' ? activeBrand : undefined;
+
+  // Now push to chatHistory for future turns
+  chatHistory.push({role:'user', content: text});
+
+  // Warm-up notice if backend might be cold (show after 8s)
+  var warmupTimer = setTimeout(function() {
+    var t = document.getElementById('typing-ind');
+    if (t) {
+      var warm = t.querySelector('.warmup-note');
+      if (!warm) {
+        warm = document.createElement('div');
+        warm.className = 'warmup-note';
+        warm.style.cssText = 'font-size:10.5px;color:var(--text3);margin-top:6px;font-style:italic;';
+        warm.textContent = '⏳ Server warming up — this may take up to 30 seconds on first query…';
+        t.querySelector('.msg-bubble').appendChild(warm);
+      }
+    }
+  }, 8000);
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', BACKEND, true);
+  xhr.setRequestHeader('Content-Type','application/json');
+  /* Identify the caller for daily-limit tracking: logged-in users by JWT,
+     anonymous visitors by a stable device fingerprint. */
+  var hmTok = (typeof hmGetToken === 'function') ? hmGetToken() : null;
+  if (hmTok) xhr.setRequestHeader('Authorization', 'Bearer ' + hmTok);
+  xhr.setRequestHeader('X-Client-Fingerprint', getClientFingerprint());
+  xhr.timeout = 90000; // 90s to handle Render cold starts
+  xhr.onload = function() {
+    clearTimeout(warmupTimer);
+    hideTyping();
+    if (xhr.status >= 200 && xhr.status < 300) {
+      try {
+        var data = JSON.parse(xhr.responseText);
+        var answer = (data.content && data.content[0] && data.content[0].text)
+          || data.answer || data.response || data.text || 'No response received.';
+        // Real KB-grounding signal from the backend (replaces old KB-\d+ regex guess)
+        var kbInfo = {
+          used: !!data.kbUsed,
+          count: data.kbChunkCount || 0,
+          weak: !!data.kbWeakMatch
+        };
+        // Server-authoritative daily remaining count (null = unlimited/Pro)
+        if (data.queriesRemainingToday === null) {
+          isProUnlimited = true;
+          dailyQueriesRemaining = null;
+          _setStat('stat-remain', '∞');
+        } else if (typeof data.queriesRemainingToday === 'number') {
+          dailyQueriesRemaining = data.queriesRemainingToday;
+          _setStat('stat-remain', Math.max(0, dailyQueriesRemaining));
+        }
+        chatHistory.push({role:'assistant', content: answer.substring(0, 3500)});
+        if (chatHistory.length > 24) chatHistory = chatHistory.slice(-24);
+        addMsg('ai', answer, kbInfo);
+      } catch(e) { addMsg('ai','Error parsing response. Please retry.',[]);}
+    } else if (xhr.status === 429) {
+      restoreFailedInput(text);
+      var isDailyLimit = false;
+      try {
+        var errData = JSON.parse(xhr.responseText);
+        if (errData && errData.error === 'Daily free query limit reached') {
+          isDailyLimit = true;
+          dailyQueriesRemaining = 0;
+          _setStat('stat-remain', '0');
+        }
+      } catch(e) {}
+      if (isDailyLimit) {
+        addMsg('ai', '## Daily Free Limit Reached\n\nYou have used all ' + queriesMax + ' free queries for today. Limit resets at **midnight UTC**. **Upgrade to Pro** for unlimited access.\n\n[View Pricing →](pricing.html)', []);
+      } else {
+        addMsg('ai','⚠️ Rate limit reached. Please wait a moment before sending another query — your message has been restored to the input box.',[]);
+      }
+    } else {
+      restoreFailedInput(text);
+      addMsg('ai','Server error ' + xhr.status + '. Your message has been restored to the input box — please try again in a moment.',[]);
+    }
+    setUIBusy(false);
+  };
+  xhr.onerror = function() {
+    clearTimeout(warmupTimer);
+    hideTyping();
+    restoreFailedInput(text);
+    addMsg('ai','Connection error — check network and retry. Your message has been restored to the input box.',[]);
+    setUIBusy(false);
+  };
+  xhr.ontimeout = function() {
+    clearTimeout(warmupTimer);
+    hideTyping();
+    restoreFailedInput(text);
+    addMsg('ai','⏱ Request timed out (90s). The server may be restarting — your message has been restored, please try again.',[]);
+    setUIBusy(false);
+  };
+  xhr.send(JSON.stringify({
+    question: text,
+    history: chatHistory.slice(0, -1).slice(-10).map(function(m){ return {role: m.role, content: m.content}; }),
+    answerPolicy: { strictRelevance: true, allowEngineeringFallback: true, domain: 'marine_offshore_hydraulics' }
+  }));
+}
+
+/* ══ CLEAR CHAT ══ */
+function clearChat() {
+  chatHistory = [];
+  queriesUsed = 0;
+  kbHits = 0;
+  _setStat('stat-queries', '0');
+  _setStat('stat-kb', '0');
+  /* Clearing the chat view does NOT refill the daily query allowance —
+     that's tracked server-side per day, not per chat session. Preserve
+     whatever the last known real value was. */
+  if (isProUnlimited) {
+    _setStat('stat-remain', '∞');
+  } else if (dailyQueriesRemaining !== null) {
+    _setStat('stat-remain', Math.max(0, dailyQueriesRemaining));
+  } else {
+    _setStat('stat-remain', queriesMax); // not yet known — show the policy max as a placeholder
+  }
+  document.getElementById('kb-hit-list').innerHTML = '<div style="font-size:10px;color:var(--text3);text-align:center;padding:8px 0;">Refs appear here after query</div>';
+  document.getElementById('kb-hit-list-m').innerHTML = '<div style="font-size:11px;color:var(--text3);text-align:center;padding:10px 0;">Refs appear here after query</div>';
+  document.getElementById('hist-list').innerHTML = '<div style="font-size:10px;color:var(--text3);text-align:center;padding:8px 0;">No history yet</div>';
+  var area = document.getElementById('chat-area');
+  area.innerHTML = '';
+  var welcome = document.createElement('div');
+  welcome.id = 'adv-welcome';
+  welcome.className = 'adv-welcome';
+  welcome.innerHTML = '<div class="adv-welcome-badge"><span class="w-dot"></span>Chat cleared — ready for new session</div>';
+  area.appendChild(welcome);
+}
+
+/* ══ KEEP BACKEND WARM ══
+   Pings backend from browser every 8 min — Render needs external traffic to stay awake.
+   Self-pings from within Render do NOT prevent sleep. */
+(function() {
+  var warmUrl = 'https://hydromind-backend.onrender.com/';
+  function ping() { fetch(warmUrl, {method:'GET'}).catch(function(){}); }
+  ping(); // fire immediately on page load
+  setInterval(ping, 8 * 60 * 1000); // repeat every 8 minutes
+})();
+
+/* ══ INIT ══ */
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof hmInit === 'function') hmInit();
+  hmUpdateQueryLimit();
+  setTimeout(hmUpdateQueryLimit, 1000); /* re-check after auth.js finishes */
+  /* Refresh query limit immediately when user logs in without page reload */
+  window.addEventListener('hm:login', hmUpdateQueryLimit);
+  var inp = document.getElementById('chat-input');
+  if (inp) {
+    inp.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
+    inp.addEventListener('input', function() { autoResize(inp); });
+  }
+});
+</script>
 </body>
 </html>

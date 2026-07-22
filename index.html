@@ -3,37 +3,1199 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Under Maintenance — HydroMind.AI</title>
+<title>HydroMind.AI — Hydraulic Intelligence for Marine &amp; Offshore</title>
+<meta name="description" content="AI-powered hydraulic fault diagnosis, crane diagnostics, system design and knowledge base for marine and offshore engineers.">
+<link rel="canonical" href="https://www.hydromindai.com/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="HydroMind.AI">
+<meta property="og:title" content="HydroMind.AI — Hydraulic Intelligence for Marine &amp; Offshore">
+<meta property="og:description" content="AI-powered hydraulic fault diagnosis, crane diagnostics, system design and knowledge base for marine and offshore engineers.">
+<meta property="og:url" content="https://www.hydromindai.com/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HydroMind.AI — Hydraulic Intelligence for Marine &amp; Offshore">
+<meta name="twitter:description" content="AI-powered hydraulic fault diagnosis, crane diagnostics, system design and knowledge base for marine and offshore engineers.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="css/hm-design.css?v=20260613-v2">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "HydroMind.AI",
+  "url": "https://www.hydromindai.com/",
+  "email": "support@hydromindai.com",
+  "sameAs": ["https://play.google.com/store/apps/details?id=com.hydromind.app"]
+}
+</script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#0d0f12;color:#eef0f4;font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
-.card{background:#13161b;border:1px solid #1e2530;border-radius:16px;padding:52px 48px;max-width:520px;width:100%;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.5)}
-.logo{display:inline-flex;align-items:center;gap:12px;margin-bottom:40px}
-.logo-icon{width:44px;height:44px;background:linear-gradient(135deg,#f97316,#fb923c);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#000}
-.logo-text{font-size:20px;font-weight:700;color:#eef0f4}
-.logo-text span{color:#f97316}
-.gear{font-size:52px;margin-bottom:24px;animation:spin 6s linear infinite;display:block}
-@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-h1{font-size:26px;font-weight:800;color:#eef0f4;margin-bottom:12px}
-p{font-size:15px;color:#8b95a5;line-height:1.65;margin-bottom:32px}
-.badge{display:inline-flex;align-items:center;gap:8px;background:#1a2030;border:1px solid #f97316;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:600;color:#f97316;margin-bottom:32px}
-.dot{width:8px;height:8px;background:#f97316;border-radius:50%;animation:pulse 1.4s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
-.contact{font-size:13px;color:#5a6472}
-.contact a{color:#f97316;text-decoration:none}
+/* ══ INDEX PAGE STYLES ══ */
+
+/* Hero */
+.hero-section {
+  position: relative;
+  max-width: 1320px !important;
+  min-height: 0 !important;
+  box-sizing: border-box;
+  padding: clamp(18px, 2.4vw, 34px) 0 clamp(28px, 3.2vw, 44px) clamp(18px, 2.4vw, 34px);
+  margin: 0 auto !important;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(340px, 1fr);
+  gap: clamp(18px, 2.2vw, 28px);
+  align-items: start;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border-md);
+}
+.hero-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.032) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255,255,255,.026) 1px, transparent 1px),
+    linear-gradient(120deg, rgba(45,212,191,.11), transparent 42%);
+  background-size: 54px 54px, 54px 54px, auto;
+  mask-image: linear-gradient(90deg, rgba(0,0,0,.96), rgba(0,0,0,.38));
+  pointer-events: none;
+}
+.hero-section > * {
+  position: relative;
+  z-index: 1;
+}
+.hero-section > div:first-child {
+  grid-column: span 2;
+  padding-left: 0;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent-dim); border: 1px solid var(--accent-glow);
+  border-radius: 20px; padding: 5px 14px;
+  font-size: 11.5px; font-weight: 700; color: var(--accent-bright);
+  margin-bottom: 22px; letter-spacing: .06em; text-transform: uppercase;
+}
+.hero-eyebrow .pulse { width: 6px; height: 6px; background: var(--accent-bright); border-radius: 50%; animation: pulse-dot 2s ease-in-out infinite; }
+.hero-h1 {
+  max-width: 660px;
+  font-family: var(--syne); font-size: clamp(34px,3.45vw,48px);
+  font-weight: 800; color: var(--text1); line-height: 1.08;
+  letter-spacing: -.02em; margin-bottom: 18px;
+}
+.hero-h1 .hl { color: var(--accent-bright); }
+.hero-sub { font-size: 14.5px; color: var(--text2); line-height: 1.65; max-width: 720px; margin-bottom: 22px; }
+.hero-btns { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.hero-note { margin-top: 18px; font-size: 11.5px; color: var(--text3); display: flex; align-items: center; gap: 8px; }
+.hero-note::before { content: ""; width: 18px; height: 1px; background: var(--text3); }
+.hero-proof-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  max-width: 100%;
+  margin-top: 20px;
+}
+.hero-proof-item {
+  border: 1px solid var(--border-md);
+  border-radius: 10px;
+  background: rgba(13,23,32,.7);
+  padding: 12px;
+  min-height: 82px;
+}
+.hero-proof-item strong {
+  display: block;
+  color: var(--accent-bright);
+  font-family: var(--mono);
+  font-size: 15px;
+}
+.hero-proof-item span {
+  display: block;
+  margin-top: 4px;
+  color: var(--text3);
+  font-size: 11px;
+  line-height: 1.35;
+}
+.hm-sidebar-left .sb-nav-link {
+  font-size: 10.8px;
+  gap: 6px;
+  padding-inline: 7px;
+}
+
+/* Hero chat card */
+.hero-visual { display: grid; gap: 14px; align-items: start; justify-content: stretch; justify-self: stretch; width: 100%; padding-top: 22px; }
+.hero-chat {
+  width: 100%; max-width: none;
+  background: var(--card); border: 1px solid var(--border-md);
+  border-radius: 16px; overflow: hidden; box-shadow: var(--card-shadow), 0 0 32px rgba(6,182,212,.08);
+}
+@media (max-width: 980px) {
+  .hero-section {
+    grid-template-columns: 1fr;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    padding: 42px 24px;
+    margin: 0 !important;
+  }
+  .hero-section > div:first-child {
+    grid-column: auto;
+    padding-left: 0;
+  }
+  .hero-sub {
+    max-width: 100%;
+  }
+  .hero-visual {
+    justify-content: stretch;
+    padding-top: 0;
+  }
+  .hero-chat {
+    max-width: 100%;
+  }
+  .stats-bar {
+    max-width: 100% !important;
+  }
+}
+@media (max-width: 640px) {
+  .hero-section {
+    padding: 34px 14px 36px;
+  }
+  .hero-proof-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.hc-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 15px; background: var(--surface);
+  border-bottom: 1px solid var(--border-md);
+}
+.hc-bar-left { display: flex; align-items: center; gap: 9px; }
+.hc-icon { width: 28px; height: 28px; background: linear-gradient(135deg,var(--accent),var(--accent-deep)); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 10px; font-weight: 700; color: #fff; }
+.hc-title { font-size: 12.5px; font-weight: 700; color: var(--text1); }
+.hc-sub { font-size: 10px; color: var(--text3); margin-top: 1px; }
+.hc-live { display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 600; color: var(--success); }
+.hc-live .d { width: 5px; height: 5px; background: var(--success); border-radius: 50%; animation: pulse-dot 2s infinite; }
+.hc-modes { display: flex; gap: 4px; padding: 8px 12px; background: var(--bg); border-bottom: 1px solid var(--border); overflow-x: auto; }
+.hc-chip { padding: 3px 10px; border-radius: 20px; font-size: 10.5px; font-weight: 600; color: var(--text3); background: transparent; border: 1px solid transparent; cursor: pointer; white-space: nowrap; transition: all .15s; }
+.hc-chip.on { background: var(--accent-dim); color: var(--accent-bright); border-color: var(--accent-glow); }
+.hc-msgs { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.hc-bubble { display: flex; flex-direction: column; gap: 3px; max-width: 90%; }
+.hc-bubble.u { align-self: flex-end; align-items: flex-end; }
+.hc-bubble.a { align-self: flex-start; align-items: flex-start; }
+.bl { font-size: 9.5px; font-weight: 600; color: var(--text3); letter-spacing: .04em; }
+.bb { padding: 9px 12px; border-radius: 11px; font-size: 12px; line-height: 1.55; }
+.hc-bubble.u .bb { background: var(--accent-deep); color: #fff; border-bottom-right-radius: 3px; }
+.hc-bubble.a .bb { background: var(--surface); color: var(--text1); border: 1px solid var(--border-md); border-left: 3px solid var(--accent); border-bottom-left-radius: 3px; }
+.bb strong { color: var(--accent-bright); font-weight: 700; }
+.hc-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 4px; }
+.hc-tag { font-size: 9.5px; font-weight: 600; background: var(--accent-dim); color: var(--accent); border-radius: 4px; padding: 2px 6px; font-family: var(--mono); }
+.hc-input-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px; border-top: 1px solid var(--border-md); background: var(--card);
+}
+.hc-inp { flex: 1; background: var(--surface); border: 1.5px solid var(--border-md); border-radius: 7px; padding: 7px 11px; font-size: 11.5px; color: var(--text3); font-family: var(--sans); font-style: italic; }
+.hc-send { width: 30px; height: 30px; background: var(--accent); border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.hc-send svg { width: 13px; height: 13px; color: #fff; }
+
+/* Stats bar */
+.stats-bar {
+  max-width: 1320px !important;
+  box-sizing: border-box;
+  background:
+    linear-gradient(90deg, rgba(45,212,191,.075), rgba(103,213,255,.035), transparent),
+    rgba(13,23,32,.78);
+  border: 1px solid var(--border-md);
+  border-radius: 16px;
+  padding: 24px 26px;
+  margin: 4px auto 0 !important;
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 20px;
+  box-shadow: var(--card-shadow);
+}
+.stat-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.stat-val { font-family: var(--mono); font-size: 26px; font-weight: 700; color: var(--accent-bright); letter-spacing: -.02em; }
+.stat-lbl { font-size: 11.5px; color: var(--text2); margin-top: 3px; }
+
+.hm-page > .hero-section,
+.hm-page > .stats-bar,
+.hm-page > .hm-action-strip,
+.hm-page > .features-section,
+.hm-page > .how-section,
+.hm-page > .testi-section,
+.hm-page > .app-section,
+.hm-page > .calc-section,
+.hm-page > .cta-section {
+  width: min(100%, 1320px);
+  max-width: 1320px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.hm-home-page {
+  width: min(100%, 1320px);
+  margin: var(--nav-h) auto 0 !important;
+  padding: clamp(10px, 1.4vw, 18px) 0 0;
+}
 </style>
 </head>
 <body>
-<div class="card">
-  <div class="logo">
+<style>
+/* Features */
+.features-section { padding: 60px 0; }
+.feat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 36px; }
+.feat-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 26px; display: flex; flex-direction: column; gap: 14px;
+  transition: all .2s; cursor: pointer;
+}
+.feat-card:hover { border-color: var(--accent-glow); box-shadow: var(--card-shadow-hover); transform: translateY(-2px); }
+.feat-icon-wrap { width: 44px; height: 44px; background: var(--accent-dim); border: 1px solid var(--accent-glow); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.feat-icon-wrap svg { width: 22px; height: 22px; color: var(--accent-bright); }
+.feat-card h3 { font-size: 15.5px; font-weight: 700; color: var(--text1); }
+.feat-card p { font-size: 13px; color: var(--text2); line-height: 1.65; flex: 1; }
+.feat-link { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 600; color: var(--accent); transition: gap .15s; }
+.feat-link:hover { gap: 8px; }
+.feat-badge { display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px 2px 7px; border-radius: 12px; font-size: 10px; font-weight: 700; margin-bottom: 4px; letter-spacing: .04em; }
+.feat-badge.new { background: rgba(16,185,129,.12); color: var(--success); border: 1px solid rgba(16,185,129,.20); }
+.feat-badge.live { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-glow); }
+.feat-badge .bd { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+/* How it works */
+.how-section { padding: 60px 0; }
+.steps-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 28px; margin-top: 36px; position: relative; }
+.steps-row::before, .steps-row::after {
+  content: ""; position: absolute; top: 24px; height: 1px;
+  background: linear-gradient(90deg, var(--accent-glow), transparent);
+}
+.steps-row::before { left: calc(33.33% - 8px); width: calc(33.33%); }
+.steps-row::after  { left: calc(66.66% - 8px); width: calc(33.33%); }
+.step { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+.step-num { width: 44px; height: 44px; background: linear-gradient(135deg,var(--accent),var(--accent-deep)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; color: #fff; font-family: var(--mono); flex-shrink: 0; box-shadow: 0 4px 12px rgba(6,182,212,.3); }
+.step h3 { font-size: 15px; font-weight: 700; color: var(--text1); }
+.step p  { font-size: 13px; color: var(--text2); line-height: 1.65; }
+
+/* Testimonials */
+.testi-section { padding: 60px 0; }
+.testi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 36px; }
+.testi-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 26px; box-shadow: var(--card-shadow); }
+.testi-stars { display: flex; gap: 3px; margin-bottom: 14px; }
+.testi-stars svg { width: 14px; height: 14px; fill: var(--warning); }
+.testi-quote { font-size: 14px; color: var(--text1); line-height: 1.75; margin-bottom: 18px; font-style: italic; }
+.testi-quote::before { content: "\201C"; color: var(--accent); font-size: 36px; line-height: 0; vertical-align: -12px; margin-right: 3px; font-style: normal; }
+.testi-author { display: flex; align-items: center; gap: 11px; }
+.testi-av { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 13px; font-family: var(--mono); flex-shrink: 0; }
+.testi-name { font-size: 12.5px; font-weight: 700; color: var(--text1); }
+.testi-role { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+/* App Banner */
+.app-section { padding: 24px 0 48px; }
+.app-banner-block {
+  background: linear-gradient(135deg, #0c2233 0%, #0e3347 50%, #0a2030 100%);
+  border: 1px solid var(--border-bright);
+  border-radius: 20px; padding: 36px 40px;
+  display: flex; align-items: center; gap: 36px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 8px 40px rgba(6,182,212,.12);
+}
+.app-banner-block::before {
+  content: ""; position: absolute;
+  top: -80px; right: -80px; width: 300px; height: 300px;
+  border-radius: 50%; background: rgba(6,182,212,.06); pointer-events: none;
+}
+.app-banner-block::after {
+  content: ""; position: absolute;
+  bottom: -50px; right: 180px; width: 180px; height: 180px;
+  border-radius: 50%; background: rgba(6,182,212,.04); pointer-events: none;
+}
+.ab-icon { width: 60px; height: 60px; background: rgba(6,182,212,.15); border: 1.5px solid rgba(6,182,212,.3); border-radius: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ab-icon svg { width: 30px; height: 30px; color: var(--accent-bright); }
+.ab-text { flex: 1; }
+.ab-label { font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: 6px; }
+.ab-title { font-family: var(--syne); font-size: 22px; font-weight: 800; color: #fff; line-height: 1.2; margin-bottom: 8px; }
+.ab-sub { font-size: 13px; color: rgba(255,255,255,.65); line-height: 1.6; max-width: 400px; }
+.ab-stores { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+.ab-store-btn {
+  display: flex; align-items: center; gap: 9px;
+  background: rgba(255,255,255,.12); border: 1.5px solid rgba(255,255,255,.25);
+  border-radius: 10px; padding: 9px 16px; color: #fff;
+  transition: all .18s; cursor: pointer; text-decoration: none;
+}
+.ab-store-btn:hover { background: rgba(255,255,255,.22); border-color: rgba(255,255,255,.45); transform: translateY(-1px); }
+.ab-store-btn svg { width: 20px; height: 20px; color: #fff; flex-shrink: 0; }
+.ab-store-txt .s1 { font-size: 10px; color: rgba(255,255,255,.65); }
+.ab-store-txt .s2 { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.2; }
+.ab-badge { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25); border-radius: 20px; padding: 4px 12px; font-size: 10.5px; font-weight: 700; color: #fff; letter-spacing: .04em; }
+.ab-qr { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 9px; }
+.ab-qr-wrap { background: #fff; border-radius: 12px; padding: 10px; width: 108px; height: 108px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(0,0,0,.25); transition: transform .2s; }
+.ab-qr-wrap:hover { transform: scale(1.04); }
+.ab-qr-wrap img { width: 88px; height: 88px; border-radius: 4px; display: block; }
+.ab-qr-lbl { font-size: 10.5px; font-weight: 600; color: rgba(255,255,255,.65); text-align: center; }
+
+/* Calculator section */
+.calc-section { padding: 56px 0 48px; }
+.calc-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 22px; gap: 16px; flex-wrap: wrap; }
+.unit-toggle-wrap { display: flex; align-items: center; gap: 10px; background: var(--card); border: 1px solid var(--border-md); border-radius: 30px; padding: 6px 16px; }
+.unit-toggle-label { font-size: 10.5px; font-weight: 700; letter-spacing: .07em; color: var(--text3); font-family: var(--mono); user-select: none; }
+.unit-toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+.unit-toggle input { opacity: 0; width: 0; height: 0; }
+.unit-slider { position: absolute; inset: 0; background: var(--accent); border-radius: 22px; cursor: pointer; transition: background .2s; }
+.unit-slider::before { content: ""; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.3); }
+.unit-toggle input:checked + .unit-slider { background: var(--success); }
+.unit-toggle input:checked + .unit-slider::before { transform: translateX(18px); }
+.calc-tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--border-md); margin-bottom: 22px; }
+.ctab { display: flex; align-items: center; gap: 7px; padding: 9px 18px; font-size: 13px; font-weight: 600; color: var(--text2); border: none; border-bottom: 2px solid transparent; margin-bottom: -2px; cursor: pointer; background: none; border-radius: 8px 8px 0 0; transition: all .15s; }
+.ctab:hover { color: var(--text1); background: var(--surface); }
+.ctab.active { color: var(--accent-bright); border-bottom-color: var(--accent); background: var(--accent-dim); }
+.ctab svg { opacity: .7; width: 14px; height: 14px; }
+.ctab.active svg { opacity: 1; }
+.cpanel { display: none; }
+.cpanel.active { display: block; }
+.calc-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+.cc { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: var(--card-shadow); transition: border-color .2s, box-shadow .2s; }
+.cc:hover { border-color: var(--accent-glow); box-shadow: var(--card-shadow-hover); }
+.cc-head { display: flex; align-items: center; gap: 11px; padding: 13px 15px; background: var(--surface); border-bottom: 1px solid var(--border); }
+.cc-sym { width: 34px; height: 34px; background: linear-gradient(135deg,var(--accent),var(--accent-deep)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; font-family: var(--mono); color: #fff; flex-shrink: 0; }
+.cc-title { font-size: 12.5px; font-weight: 700; color: var(--text1); }
+.cc-formula { font-size: 9.5px; color: var(--text3); font-family: var(--mono); margin-top: 1px; }
+.cc-body { padding: 13px 14px; display: flex; flex-direction: column; gap: 11px; }
+.cc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.cc-field { display: flex; flex-direction: column; gap: 3px; }
+.cc-lbl { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: .03em; }
+.cc-wrap { position: relative; }
+.cc-inp { width: 100%; padding: 6px 36px 6px 9px; background: var(--surface); border: 1.5px solid var(--border-md); border-radius: 7px; font-size: 12px; color: var(--text1); font-family: var(--mono); outline: none; transition: border-color .15s; }
+.cc-inp:focus { border-color: var(--accent); }
+.cc-unit { position: absolute; right: 7px; top: 50%; transform: translateY(-50%); font-size: 9px; font-weight: 700; color: var(--text3); font-family: var(--mono); pointer-events: none; }
+.cc-result { display: flex; align-items: center; justify-content: space-between; background: var(--surface); border: 1px solid var(--border-md); border-radius: 7px; padding: 7px 10px; }
+.cc-rlbl { font-size: 10.5px; font-weight: 600; color: var(--text2); }
+.cc-rval { font-size: 14px; font-weight: 800; color: var(--accent-bright); font-family: var(--mono); }
+.cc-rval small { font-size: 9.5px; font-weight: 600; color: var(--text3); }
+
+/* CTA section */
+.cta-section { padding: 48px 0 64px; }
+.cta-card { background: linear-gradient(135deg,var(--card) 0%,var(--card-raised) 100%); border: 1px solid var(--border-bright); border-radius: 20px; padding: 48px; text-align: center; box-shadow: var(--card-shadow), 0 0 40px rgba(6,182,212,.06); }
+.cta-card h2 { font-family: var(--syne); font-size: 28px; font-weight: 800; color: var(--text1); margin-bottom: 12px; }
+.cta-card p { font-size: 15px; color: var(--text2); margin-bottom: 28px; }
+.cta-btns { display: flex; gap: 14px; align-items: center; justify-content: center; flex-wrap: wrap; }
+.cta-note { margin-top: 16px; font-size: 11.5px; color: var(--text3); }
+</style>
+
+<!-- ═══════════════════════════════════════
+     NAV
+════════════════════════════════════════ -->
+<nav class="hm-nav">
+  <a href="index.html" class="nav-logo">
     <div class="logo-icon">HM</div>
-    <div class="logo-text">HydroMind<span>.AI</span></div>
+    <span>HydroMind<span class="logo-ai">.AI</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="navbar-link active">Home</a>
+    <a href="ai_advisor.html" class="navbar-link">AI Advisor</a>
+    <a href="system_design.html" class="navbar-link">System Design</a>
+    <a href="circuit_walkthrough.html" class="navbar-link">Circuit Walkthrough</a>
+    <a href="crane_diagnostic.html" class="navbar-link">Crane Diagnostic</a>
+    <a href="knowledge_base.html" class="navbar-link">Knowledge Base</a>
+    <a href="pricing.html" class="navbar-link">Pricing</a>
   </div>
-  <span class="gear">⚙</span>
-  <h1>Under Maintenance</h1>
-  <p>We are upgrading HydroMind.AI to deliver a better experience.<br>The platform will be back online shortly.</p>
-  <div class="badge"><span class="dot"></span>Work in progress — check back soon</div>
-  <div class="contact">Questions? <a href="mailto:support@hydromindai.com">support@hydromindai.com</a></div>
-</div>
+  <div class="nav-right" id="hmNavCta">
+    <div class="nav-status"><div class="nav-status-dot"></div>AI Online</div>
+    <a href="#" onclick="event.preventDefault(); openAuthModal && openAuthModal('login');" class="btn btn-ghost btn-sm">Log In</a>
+    <a href="#" onclick="event.preventDefault(); openAuthModal && openAuthModal('register');" class="btn btn-primary btn-sm">Get Started</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     LEFT SIDEBAR
+════════════════════════════════════════ -->
+<aside class="hm-sidebar-left">
+  <!-- No-auth state -->
+  <div id="hmSidebarNoAuth">
+    <div class="sb-section-label">Navigation</div>
+    <a href="index.html" class="sb-nav-link active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Home
+    </a>
+    <a href="ai_advisor.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>AI Advisor
+    </a>
+    <a href="crane_diagnostic.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6m-6 4h6m-6 4h4"/></svg>Crane Diagnostic
+    </a>
+    <a href="knowledge_base.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 006.5 7H20v13H6.5A2.5 2.5 0 014 17.5z"/></svg>Knowledge Base
+    </a>
+    <a href="system_design.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>System Design
+    </a>
+    <a href="pricing.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Pricing
+    </a>
+    <div style="margin-top:6px;padding:10px 8px;background:var(--accent-dim);border:1px solid var(--accent-glow);border-radius:8px;text-align:center;">
+      <div style="font-size:10px;color:var(--text2);margin-bottom:6px;line-height:1.4;">Sign in to unlock history & profile</div>
+      <button onclick="openAuthModal('login')" style="width:100%;padding:6px;background:var(--accent);border:none;border-radius:6px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;">Sign In</button>
+    </div>
+  </div>
+
+  <!-- Logged-in profile -->
+  <div id="hmSidebarProfile" style="display:none;">
+    <div class="hm-profile-card">
+      <div class="sb-avatar-wrap">
+        <div class="sb-avatar" id="hmProfAvatar">AT</div>
+        <div class="sb-avatar-edit" onclick="openProfileEdit()" title="Edit Profile">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </div>
+      </div>
+      <div class="sb-username" id="hmProfName">User</div>
+      <div class="sb-useremail" id="hmProfEmail">user@email.com</div>
+      <div class="sb-plan-badge" id="hmProfPlan">Free</div>
+    </div>
+  </div>
+
+  <!-- Chat history -->
+  <div id="hmSidebarHistory" style="display:none;">
+    <div class="sb-section-label">History</div>
+    <div id="hmHistoryList"><div style="font-size:10px;color:var(--text3);text-align:center;padding:8px 0;">No history yet</div></div>
+  </div>
+
+  <!-- Nav links (logged-in) -->
+  <div id="hmSidebarLinks" style="display:none;">
+    <div class="sb-section-label" style="margin-top:6px;">Pages</div>
+    <a href="index.html" class="sb-nav-link active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Home
+    </a>
+    <a href="ai_advisor.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>AI Advisor
+    </a>
+    <a href="crane_diagnostic.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6m-6 4h6m-6 4h4"/></svg>Crane Diagnostic
+    </a>
+    <a href="knowledge_base.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 006.5 7H20v13H6.5A2.5 2.5 0 014 17.5z"/></svg>Knowledge Base
+    </a>
+    <a href="system_design.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>System Design
+    </a>
+    <a href="pricing.html" class="sb-nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Pricing
+    </a>
+    <button id="hmLogoutBtn" onclick="doLogout()" style="display:none;width:100%;margin-top:6px;padding:7px;background:var(--danger-dim);border:1px solid rgba(239,68,68,.18);border-radius:7px;font-size:11px;font-weight:600;color:var(--danger);cursor:pointer;">Sign Out</button>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════
+     RIGHT SIDEBAR
+════════════════════════════════════════ -->
+<aside class="hm-sidebar-right" id="hmAdSidebar">
+  <!-- App Banner with real QR -->
+  <div class="sb-app-banner">
+    <div class="banner-title">HydroMind AI App</div>
+    <div class="banner-sub">Full platform on Android — free download worldwide</div>
+    <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" rel="noopener" class="qr-wrap" title="Scan to download HydroMind AI">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.hydromind.app&format=png&margin=4&qzone=1" alt="QR code to download HydroMind AI on Google Play" width="80" height="80" style="border-radius:4px;display:block;">
+    </a>
+    <div class="banner-dl">Scan to Download</div>
+    <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" rel="noopener" class="store-badge">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76a2 2 0 001.91-.19l11.12-6.37-2.93-2.93-10.1 9.49zM20.5 10.36L17.84 8.8l-3.19 3.19 3.19 3.2 2.69-1.56a2 2 0 000-3.27zM1.54.27A2 2 0 001 1.5v21l10.29-10.3L1.54.27zM14.65 12L4.09.24 3.18.24 14.65 12z"/></svg>
+      Google Play
+    </a>
+    <div style="font-size:9px;color:var(--text3);text-align:center;line-height:1.4;">Available worldwide on Android</div>
+  </div>
+
+  <div style="height:1px;background:var(--border);margin:2px 0;"></div>
+
+  <!-- No-ad badge (paid users) -->
+  <div id="hmNoAdBadge" style="display:none;background:var(--success-dim);border:1px solid rgba(16,185,129,.20);border-radius:8px;padding:9px 8px;text-align:center;">
+    <div style="font-size:11px;font-weight:700;color:var(--success);">✓ Ad-Free</div>
+    <div style="font-size:9.5px;color:var(--text2);margin-top:2px;">Pro subscriber benefit</div>
+  </div>
+
+  <!-- Pro CTA -->
+  <div id="hmAd2" class="sb-pro-cta">
+    <h4>🚀 Go Pro</h4>
+    <ul>
+      <li>Unlimited AI queries</li>
+      <li>Full KB access (155 docs)</li>
+      <li>Crane Diagnostic AI</li>
+      <li>Ad-free experience</li>
+      <li>Priority support</li>
+    </ul>
+    <a href="pricing.html" class="upgrade-btn">Upgrade Now →</a>
+  </div>
+
+</aside>
+
+<!-- ═══════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════ -->
+<main class="hm-page hm-home-page">
+
+  <!-- HERO -->
+  <section class="hero-section">
+    <div>
+      <div class="hero-eyebrow"><span class="pulse"></span>AI-Powered · Offshore Grade · 177 Countries</div>
+      <h1 class="hero-h1">Hydraulic<br><span class="hl">Intelligence</span><br>for Industry</h1>
+      <p class="hero-sub">Expert-level fault diagnosis, crane diagnostics, system design & knowledge base — purpose-built for marine and offshore hydraulic engineers.</p>
+      <div class="hero-btns">
+        <a href="ai_advisor.html" class="btn btn-primary btn-lg">Try AI Advisor →</a>
+        <a href="pricing.html" class="btn btn-secondary btn-lg">View Plans</a>
+      </div>
+      <div class="hero-note">No credit card needed · Free tier available</div>
+      <div class="hero-proof-grid" aria-label="HydroMind capabilities">
+        <div class="hero-proof-item"><strong>155 KB</strong><span>OEM manuals and hydraulic references</span></div>
+        <div class="hero-proof-item"><strong>Design AI</strong><span>Pressure, flow, components and BOM</span></div>
+        <div class="hero-proof-item"><strong>Crane Diag</strong><span>Fault logic for marine hydraulic systems</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-chat">
+        <div class="hc-bar">
+          <div class="hc-bar-left">
+            <div class="hc-icon">HM</div>
+            <div>
+              <div class="hc-title">HydroMind AI Advisor</div>
+              <div class="hc-sub">155 KB documents · Real-time analysis</div>
+            </div>
+          </div>
+          <div class="hc-live"><span class="d"></span>Online</div>
+        </div>
+        <div class="hc-modes">
+          <button class="hc-chip on">🔧 Hydraulic</button>
+          <button class="hc-chip">🏗️ Crane</button>
+          <button class="hc-chip">📐 Calculator</button>
+          <button class="hc-chip">📚 KB Search</button>
+        </div>
+        <div class="hc-msgs">
+          <div class="hc-bubble u">
+            <div class="bl">YOU</div>
+            <div class="bb">A4VG90 case drain pressure is 4.5 bar at full load — what's the cause?</div>
+          </div>
+          <div class="hc-bubble a">
+            <div class="bl">HYDROMIND AI</div>
+            <div class="bb"><strong>Root Cause:</strong> Case drain pressure >3 bar at full displacement on the A4VG90 indicates worn barrel/valve plate interface allowing internal bypass. Verify with case drain flow measurement at TP-3. Expected: &lt;3 L/min. If flow exceeds 6 L/min, pump overhaul is required.</div>
+            <div class="hc-tags">
+              <span class="hc-tag">KB-12 Rexroth A4VG</span>
+              <span class="hc-tag">KB-34 Case Drain</span>
+            </div>
+          </div>
+        </div>
+        <div class="hc-input-row">
+          <input class="hc-inp" placeholder="Ask a hydraulic question…" readonly>
+          <div class="hc-send"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-val">155</div><div class="stat-lbl">KB Documents</div></div>
+    <div class="stat-item"><div class="stat-val">177</div><div class="stat-lbl">Countries</div></div>
+    <div class="stat-item"><div class="stat-val">12</div><div class="stat-lbl">OEM Brands</div></div>
+    <div class="stat-item"><div class="stat-val">24/7</div><div class="stat-lbl">AI Availability</div></div>
+  </div>
+
+  <!-- OEM LOGO STRIP -->
+  <div style="padding:16px 0 20px;border-bottom:1px solid var(--border);margin-bottom:4px;">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);text-align:center;margin-bottom:14px;">Covering equipment from the world's leading OEMs</div>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 10px;">
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">Liebherr</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">Rexroth</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">Danfoss</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">Parker</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">Eaton</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">NOV</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">MacGregor</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">Sauer-Danfoss</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">SeaTrax</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">Favelle Favco</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">Sun Hydraulics</span>
+      <span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--surface);border:1px solid var(--border-md);border-radius:6px;padding:5px 12px;letter-spacing:.02em;">ISO 4413 · DNV</span>
+    </div>
+  </div>
+
+  <div class="hm-action-strip" aria-label="Choose a HydroMind workflow">
+    <a href="ai_advisor.html" class="hm-action-card">
+      <div class="hm-action-top">
+        <div class="hm-action-icon">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        </div>
+        <span class="badge badge-teal">Fastest</span>
+      </div>
+      <h3>Diagnose a fault</h3>
+      <p>Start with symptoms, pressure readings, and component model. HydroMind returns test points and likely root causes.</p>
+      <span class="hm-action-link">Open AI Advisor →</span>
+    </a>
+    <a href="crane_diagnostic.html" class="hm-action-card">
+      <div class="hm-action-top">
+        <div class="hm-action-icon">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16M6 20V8l6-4 6 4v12M9 20v-7h6v7"/></svg>
+        </div>
+        <span class="badge badge-warning">Offshore</span>
+      </div>
+      <h3>Investigate crane issues</h3>
+      <p>Use the crane workflow for hoist, luff, slew, brake release, case drain and proportional valve faults.</p>
+      <span class="hm-action-link">Open Crane Diagnostic →</span>
+    </a>
+    <a href="system_design.html" class="hm-action-card">
+      <div class="hm-action-top">
+        <div class="hm-action-icon">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4zM3 12l9 4 9-4M3 17l9 4 9-4"/></svg>
+        </div>
+        <span class="badge badge-green">Design</span>
+      </div>
+      <h3>Build a hydraulic system</h3>
+      <p>Move from application brief to pressure, flow, fluid, control, safety and BOM recommendations.</p>
+      <span class="hm-action-link">Start System Design →</span>
+    </a>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="features-section">
+    <div class="section-label">Platform Capabilities</div>
+    <h2 class="section-title">Everything a Hydraulic Engineer Needs</h2>
+    <p class="section-subtitle">From first-principles fault diagnosis to full system design — powered by 155 OEM manuals, standards and engineering references from Rexroth, Danfoss, Parker, Liebherr & more.</p>
+    <div class="feat-grid">
+
+      <div class="feat-card">
+        <div><span class="feat-badge live"><span class="bd"></span>Live</span></div>
+        <div class="feat-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        </div>
+        <h3>AI Hydraulic Advisor</h3>
+        <p>Deep fault diagnosis, pressure analysis, component isolation and corrective action — using structured KB retrieval from 155 OEM documents and engineering references across Rexroth, Danfoss, Parker, Eaton, and more.</p>
+        <a href="ai_advisor.html" class="feat-link">Open Advisor <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="feat-card">
+        <div><span class="feat-badge live"><span class="bd"></span>Live</span></div>
+        <div class="feat-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6m-6 4h6m-6 4h4"/></svg>
+        </div>
+        <h3>Crane Diagnostic Agent</h3>
+        <p>10-state AI diagnostic sequence for offshore cranes — covering Liebherr, MacGregor, NOV, SeaTrax, Favelle Favco. Identifies hydraulic, mechanical and operational fault modes with precision.</p>
+        <a href="crane_diagnostic.html" class="feat-link">Open Crane Diag <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="feat-card">
+        <div><span class="feat-badge new"><span class="bd"></span>Updated</span></div>
+        <div class="feat-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <h3>System Design</h3>
+        <p>12-step guided hydraulic system design — pump/motor sizing, DCV selection, filter & tank sizing, BOM generation and cooler sizing. From requirements to full system specification.</p>
+        <a href="system_design.html" class="feat-link">Start Design <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="feat-card">
+        <div><span class="feat-badge live"><span class="bd"></span>Live</span></div>
+        <div class="feat-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 4.5A2.5 2.5 0 006.5 7H20v13H6.5A2.5 2.5 0 014 17.5z"/></svg>
+        </div>
+        <h3>Knowledge Base</h3>
+        <p>KB1-KB155 covering Rexroth, Danfoss, Parker, Eaton, Liebherr, MacGregor, NOV, SeaTrax, Favelle Favco, standards and HydroMind skill references — vector-searchable, categorised and instantly retrievable via AI.</p>
+        <a href="knowledge_base.html" class="feat-link">Browse KB <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-section">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">From Problem to Solution in Minutes</h2>
+    <div class="steps-row">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Describe Your Problem</h3>
+        <p>Type your fault symptom, equipment model, and operating conditions. The AI understands hydraulic engineering context without needing simplified explanations.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>AI Searches the KB</h3>
+        <p>HydroMind searches 155 OEM manuals, standards and engineering references, retrieves the most relevant KB documents, and structures a diagnostic response based on circuit paths and component logic.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Get Actionable Diagnosis</h3>
+        <p>Receive structured fault analysis — root cause, test points, corrective actions, and KB references — ready for your pre-job preparation or post-job report.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testi-section">
+    <div class="section-label">Field Engineers</div>
+    <h2 class="section-title">Trusted by Offshore & Marine Specialists</h2>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="testi-quote">The crane diagnostic agent walked me through a Liebherr LHBL-D luffing fault step by step. Saved hours of manual searching and gave me the exact test points to check.</div>
+        <div class="testi-author">
+          <div class="testi-av" style="background:var(--accent-deep);">RK</div>
+          <div>
+            <div class="testi-name">R. Kumar</div>
+            <div class="testi-role">Crane Supervisor · Offshore Platform, North Sea</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="testi-quote">I used the hydraulic calculator offline during a vessel overhaul — pipe velocity, pump sizing, cylinder force all calculated instantly. The KB search on Danfoss H1 pumps is excellent.</div>
+        <div class="testi-author">
+          <div class="testi-av" style="background:#0f6e56;">MF</div>
+          <div>
+            <div class="testi-name">M. Farooq</div>
+            <div class="testi-role">Marine Mechanical Engineer · Drillship, UAE</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APP DOWNLOAD BANNER -->
+  <section class="app-section">
+    <div class="app-banner-block">
+      <div class="ab-badge">Android App · Live on Play Store</div>
+      <div class="ab-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+      </div>
+      <div class="ab-text">
+        <div class="ab-label">Download Free</div>
+        <div class="ab-title">HydroMind AI on Android</div>
+        <div class="ab-sub">Full platform on your phone — AI Advisor, Crane Diagnostic, Calculator, Voice DPR, Fault Lookup & more. Works in 177 countries and is live now on Google Play.</div>
+        <div class="ab-stores">
+          <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" rel="noopener" class="ab-store-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76a2 2 0 001.91-.19l11.12-6.37-2.93-2.93-10.1 9.49zM20.5 10.36L17.84 8.8l-3.19 3.19 3.19 3.2 2.69-1.56a2 2 0 000-3.27zM1.54.27A2 2 0 001 1.5v21l10.29-10.3L1.54.27zM14.65 12L4.09.24 3.18.24 14.65 12z"/></svg>
+            <div class="ab-store-txt"><div class="s1">Get it on</div><div class="s2">Google Play</div></div>
+          </a>
+        </div>
+      </div>
+      <div class="ab-qr">
+        <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" rel="noopener" class="ab-qr-wrap" title="Scan to download">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.hydromind.app&format=png&margin=4&qzone=1" alt="QR code — HydroMind AI on Google Play" width="88" height="88">
+        </a>
+        <div class="ab-qr-lbl">Scan to Download</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUICK CALCULATOR -->
+  <section class="calc-section">
+    <div class="calc-header">
+      <div>
+        <div class="section-label">Quick Reference</div>
+        <h2 style="font-size:20px;font-weight:800;color:var(--text1);margin:0;">Hydraulic &amp; Electrical Calculator</h2>
+      </div>
+      <div class="unit-toggle-wrap">
+        <span class="unit-toggle-label">METRIC</span>
+        <label class="unit-toggle">
+          <input type="checkbox" id="unit-toggle-cb" onchange="switchUnits()">
+          <span class="unit-slider"></span>
+        </label>
+        <span class="unit-toggle-label">IMPERIAL</span>
+      </div>
+    </div>
+    <div class="calc-tabs">
+      <button class="ctab active" onclick="switchCalcTab('hydraulic',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>Hydraulic
+      </button>
+      <button class="ctab" onclick="switchCalcTab('electrical',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Electrical
+      </button>
+    </div>
+
+    <!-- HYDRAULIC -->
+    <div id="calc-hydraulic" class="cpanel active">
+      <div class="calc-grid">
+        <!-- H1: Pump Flow -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">Q</span><div><div class="cc-title">Pump Flow Rate</div><div class="cc-formula" id="h1-sub">Q = (D × N) / 1000</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl" id="h1-l1">Displacement D</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h1-d" value="121" step="1" oninput="calcH1()"><span class="cc-unit" id="h1-u1">cc/rev</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Speed N</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h1-n" value="1480" step="10" oninput="calcH1()"><span class="cc-unit">RPM</span></div></div>
+            </div>
+            <div class="cc-result"><span class="cc-rlbl">Flow Rate Q =</span><span class="cc-rval" id="h1-result">179.1 <small>L/min</small></span></div>
+          </div>
+        </div>
+        <!-- H2: Drive Power -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">P</span><div><div class="cc-title">Drive Power</div><div class="cc-formula" id="h2-sub">P = (p × Q) / 600η</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Pressure p</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h2-p" value="250" step="5" oninput="calcH2()"><span class="cc-unit" id="h2-u1">bar</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Flow Q</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h2-q" value="179" step="1" oninput="calcH2()"><span class="cc-unit" id="h2-u2">L/min</span></div></div>
+            </div>
+            <div class="cc-result"><span class="cc-rlbl">Power P =</span><span class="cc-rval" id="h2-result">85.8 <small>kW</small></span></div>
+          </div>
+        </div>
+        <!-- H3: Cylinder Force -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">F</span><div><div class="cc-title">Cylinder Force</div><div class="cc-formula">F = p × A</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Pressure p</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h3-p" value="200" step="5" oninput="calcH3()"><span class="cc-unit" id="h3-u1">bar</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Bore Ø</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h3-b" value="100" step="5" oninput="calcH3()"><span class="cc-unit" id="h3-u2">mm</span></div></div>
+            </div>
+            <div class="cc-result"><span class="cc-rlbl">Force F =</span><span class="cc-rval" id="h3-result">157.1 <small>kN</small></span></div>
+          </div>
+        </div>
+        <!-- H4: Pipe Velocity -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">v</span><div><div class="cc-title">Pipe Flow Velocity</div><div class="cc-formula">v = Q / A</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Flow Q</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h4-q" value="100" step="5" oninput="calcH4()"><span class="cc-unit" id="h4-u1">L/min</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Pipe Ø</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h4-d" value="25" step="1" oninput="calcH4()"><span class="cc-unit" id="h4-u2">mm</span></div></div>
+            </div>
+            <div class="cc-result"><span class="cc-rlbl">Velocity v =</span><span class="cc-rval" id="h4-result">3.40 <small>m/s</small></span></div>
+          </div>
+        </div>
+        <!-- H5: Relief Valve Check -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">RV</span><div><div class="cc-title">Relief Valve Check</div><div class="cc-formula">RV ≥ WP × 1.1</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Working Press.</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h5-wp" value="250" step="5" oninput="calcH5()"><span class="cc-unit" id="h5-u1">bar</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">RV Setting</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h5-rv" value="280" step="5" oninput="calcH5()"><span class="cc-unit" id="h5-u2">bar</span></div></div>
+            </div>
+            <div class="cc-result"><span class="cc-rlbl">Status =</span><span class="cc-rval" id="h5-result" style="font-size:12px;color:var(--success);">PASS ✓</span></div>
+          </div>
+        </div>
+        <!-- H6: Tank Volume -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">V</span><div><div class="cc-title">Tank Volume</div><div class="cc-formula">V = 3–5 × Q_pump</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Pump Flow</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h6-q" value="100" step="5" oninput="calcH6()"><span class="cc-unit" id="h6-u1">L/min</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Multiplier</div><div class="cc-wrap"><input class="cc-inp" type="number" id="h6-m" value="3" step="0.5" min="2" max="6" oninput="calcH6()"><span class="cc-unit">×</span></div></div>
+            </div>
+            <div class="cc-result"><span class="cc-rlbl">Min Tank =</span><span class="cc-rval" id="h6-result">300 <small>L</small></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ELECTRICAL -->
+    <div id="calc-electrical" class="cpanel">
+      <div class="calc-grid">
+        <!-- E1: Ohms Law -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">V</span><div><div class="cc-title">Ohm's Law</div><div class="cc-formula">V = I × R</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Current I</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e1-i" value="10" step="0.1" oninput="calcE1()"><span class="cc-unit">A</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Resistance R</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e1-r" value="12" step="0.1" oninput="calcE1()"><span class="cc-unit">Ω</span></div></div>
+            </div>
+            <div class="cc-result"><span class="cc-rlbl">Voltage V =</span><span class="cc-rval" id="e1-result">120 <small>V</small></span></div>
+          </div>
+        </div>
+        <!-- E2: 3-Phase Power -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">P</span><div><div class="cc-title">3-Phase Power</div><div class="cc-formula">P = √3 × V × I × PF</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Voltage V</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e2-v" value="415" step="5" oninput="calcE2()"><span class="cc-unit">V</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Current I</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e2-i" value="75" step="1" oninput="calcE2()"><span class="cc-unit">A</span></div></div>
+            </div>
+            <div class="cc-result"><span class="cc-rlbl">Power P =</span><span class="cc-rval" id="e2-result">45.5 <small>kW</small></span></div>
+          </div>
+        </div>
+        <!-- E3: Motor Current -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">I</span><div><div class="cc-title">Motor Full Load Current</div><div class="cc-formula">I = P / (√3 × V × η × PF)</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Power kW</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e3-p" value="55" step="1" oninput="calcE3kw()"><span class="cc-unit">kW</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Voltage V</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e3-v" value="415" step="5" oninput="calcE3kw()"><span class="cc-unit">V</span></div></div>
+            </div>
+            <div class="cc-result"><span class="cc-rlbl">FLA I =</span><span class="cc-rval" id="e3-result">101.5 <small>A</small></span></div>
+          </div>
+        </div>
+        <!-- E4: Cable Volt Drop -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">ΔV</span><div><div class="cc-title">Cable Voltage Drop</div><div class="cc-formula">ΔV = 2 × I × R × L</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Current I</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e4-i" value="50" step="1" oninput="calcE4()"><span class="cc-unit">A</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Length L</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e4-l" value="30" step="1" oninput="calcE4()"><span class="cc-unit" id="e4-ul">m</span></div></div>
+            </div>
+            <div class="cc-result"><span class="cc-rlbl">Volt Drop =</span><span class="cc-rval" id="e4-result">3.0 <small>V</small></span></div>
+          </div>
+        </div>
+        <!-- E5: Fuse Rating -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">F</span><div><div class="cc-title">Fuse / Breaker Rating</div><div class="cc-formula">F = FLA × 1.25</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Full Load A</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e5-fla" value="75" step="1" oninput="calcE5()"><span class="cc-unit">A</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Factor</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e5-f" value="1.25" step="0.05" oninput="calcE5()"><span class="cc-unit">×</span></div></div>
+            </div>
+            <div class="cc-result"><span class="cc-rlbl">Min Rating =</span><span class="cc-rval" id="e5-result">93.8 <small>A</small></span></div>
+          </div>
+        </div>
+        <!-- E6: Pressure Switch -->
+        <div class="cc">
+          <div class="cc-head"><span class="cc-sym">PS</span><div><div class="cc-title">Pressure Switch Set</div><div class="cc-formula">PS = WP × 0.9 (cutout)</div></div></div>
+          <div class="cc-body">
+            <div class="cc-row">
+              <div class="cc-field"><div class="cc-lbl">Working Press.</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e6-wp" value="200" step="5" oninput="calcE6bar()"><span class="cc-unit" id="e6-u1">bar</span></div></div>
+              <div class="cc-field"><div class="cc-lbl">Deadband %</div><div class="cc-wrap"><input class="cc-inp" type="number" id="e6-db" value="10" step="1" oninput="calcE6bar()"><span class="cc-unit">%</span></div></div>
+            </div>
+            <div class="cc-result"><span class="cc-rlbl">Cut-in / Cut-out =</span><span class="cc-rval" id="e6-result" style="font-size:11px;">180 / 200 <small>bar</small></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="cta-section">
+    <div class="cta-card">
+      <div class="section-label" style="justify-content:center;display:flex;">Get Started Today</div>
+      <h2>Ready to Diagnose Smarter?</h2>
+      <p>Join hydraulic engineers across 177 countries using HydroMind AI for faster, more accurate fault diagnosis and system design.</p>
+      <div class="cta-btns">
+        <a href="ai_advisor.html" class="btn btn-primary btn-xl">Try AI Advisor Free →</a>
+        <a href="pricing.html" class="btn btn-ghost btn-lg">View Pricing</a>
+      </div>
+      <div class="cta-note">Free tier available · No credit card required · Cancel anytime</div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="hm-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo-row">
+          <div style="width:28px;height:28px;background:linear-gradient(135deg,var(--accent),var(--accent-deep));border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;color:#fff;">HM</div>
+          HydroMind<span style="color:var(--accent-bright);">.AI</span>
+        </div>
+        <p>AI-powered hydraulic intelligence for marine, offshore and industrial engineers. Built by engineers, for engineers.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="ai_advisor.html">AI Advisor</a>
+        <a href="crane_diagnostic.html">Crane Diagnostic</a>
+        <a href="knowledge_base.html">Knowledge Base</a>
+        <a href="system_design.html">System Design</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="pricing.html">Pricing</a>
+        <a href="pages/privacy.html">Privacy Policy</a>
+        <a href="terms-of-service.html">Terms of Service</a>
+        <a href="refund-policy.html">Refund Policy</a>
+        <a href="mailto:support@hydromindai.com">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Download</h4>
+        <a href="https://play.google.com/store/apps/details?id=com.hydromind.app" target="_blank" rel="noopener">Google Play →</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 HydroMind.AI — All rights reserved</span>
+      <span>Built for marine &amp; offshore engineers worldwide</span>
+    </div>
+  </footer>
+
+</main>
+
+<script src="js/auth-v2.js"></script>
+<script>
+/* ══ UNIT STATE ══ */
+var imperial = false;
+
+function switchUnits() {
+  imperial = document.getElementById('unit-toggle-cb').checked;
+  var u = imperial;
+  document.getElementById('h1-sub').textContent  = u ? 'Q = (D × N) / 231' : 'Q = (D × N) / 1000';
+  document.getElementById('h1-l1').textContent   = u ? 'Displacement D' : 'Displacement D';
+  document.getElementById('h1-u1').textContent   = u ? 'in³/rev' : 'cc/rev';
+  document.getElementById('h2-sub').textContent  = u ? 'P = (p × Q) / 1714η' : 'P = (p × Q) / 600η';
+  document.getElementById('h2-u1').textContent   = u ? 'PSI' : 'bar';
+  document.getElementById('h2-u2').textContent   = u ? 'GPM' : 'L/min';
+  document.getElementById('h3-u1').textContent   = u ? 'PSI' : 'bar';
+  document.getElementById('h3-u2').textContent   = u ? 'in' : 'mm';
+  document.getElementById('h4-u1').textContent   = u ? 'GPM' : 'L/min';
+  document.getElementById('h4-u2').textContent   = u ? 'in' : 'mm';
+  document.getElementById('h5-u1').textContent   = u ? 'PSI' : 'bar';
+  document.getElementById('h5-u2').textContent   = u ? 'PSI' : 'bar';
+  document.getElementById('h6-u1').textContent   = u ? 'GPM' : 'L/min';
+  document.getElementById('e4-ul').textContent   = u ? 'ft' : 'm';
+  document.getElementById('e6-u1').textContent   = u ? 'PSI' : 'bar';
+  if (u) {
+    var d = document.getElementById('h1-d');
+    d.value = (parseFloat(d.value) / 16.387).toFixed(3);
+    var h2p = document.getElementById('h2-p');
+    h2p.value = (parseFloat(h2p.value) * 14.504).toFixed(0);
+    var h2q = document.getElementById('h2-q');
+    h2q.value = (parseFloat(h2q.value) * 0.2642).toFixed(1);
+    var h3p = document.getElementById('h3-p');
+    h3p.value = (parseFloat(h3p.value) * 14.504).toFixed(0);
+    var h3b = document.getElementById('h3-b');
+    h3b.value = (parseFloat(h3b.value) / 25.4).toFixed(2);
+    var h4q = document.getElementById('h4-q');
+    h4q.value = (parseFloat(h4q.value) * 0.2642).toFixed(1);
+    var h4d = document.getElementById('h4-d');
+    h4d.value = (parseFloat(h4d.value) / 25.4).toFixed(2);
+    var h5wp = document.getElementById('h5-wp');
+    h5wp.value = (parseFloat(h5wp.value) * 14.504).toFixed(0);
+    var h5rv = document.getElementById('h5-rv');
+    h5rv.value = (parseFloat(h5rv.value) * 14.504).toFixed(0);
+    var h6q = document.getElementById('h6-q');
+    h6q.value = (parseFloat(h6q.value) * 0.2642).toFixed(1);
+    var e4l = document.getElementById('e4-l');
+    e4l.value = (parseFloat(e4l.value) * 3.281).toFixed(0);
+    var e6wp = document.getElementById('e6-wp');
+    e6wp.value = (parseFloat(e6wp.value) * 14.504).toFixed(0);
+  } else {
+    var d2 = document.getElementById('h1-d');
+    d2.value = (parseFloat(d2.value) * 16.387).toFixed(0);
+    var h2p2 = document.getElementById('h2-p');
+    h2p2.value = (parseFloat(h2p2.value) / 14.504).toFixed(0);
+    var h2q2 = document.getElementById('h2-q');
+    h2q2.value = (parseFloat(h2q2.value) / 0.2642).toFixed(0);
+    var h3p2 = document.getElementById('h3-p');
+    h3p2.value = (parseFloat(h3p2.value) / 14.504).toFixed(0);
+    var h3b2 = document.getElementById('h3-b');
+    h3b2.value = (parseFloat(h3b2.value) * 25.4).toFixed(0);
+    var h4q2 = document.getElementById('h4-q');
+    h4q2.value = (parseFloat(h4q2.value) / 0.2642).toFixed(0);
+    var h4d2 = document.getElementById('h4-d');
+    h4d2.value = (parseFloat(h4d2.value) * 25.4).toFixed(0);
+    var h5wp2 = document.getElementById('h5-wp');
+    h5wp2.value = (parseFloat(h5wp2.value) / 14.504).toFixed(0);
+    var h5rv2 = document.getElementById('h5-rv');
+    h5rv2.value = (parseFloat(h5rv2.value) / 14.504).toFixed(0);
+    var h6q2 = document.getElementById('h6-q');
+    h6q2.value = (parseFloat(h6q2.value) / 0.2642).toFixed(0);
+    var e4l2 = document.getElementById('e4-l');
+    e4l2.value = (parseFloat(e4l2.value) / 3.281).toFixed(0);
+    var e6wp2 = document.getElementById('e6-wp');
+    e6wp2.value = (parseFloat(e6wp2.value) / 14.504).toFixed(0);
+  }
+  calcH1(); calcH2(); calcH3(); calcH4(); calcH5(); calcH6();
+  calcE1(); calcE2(); calcE3kw(); calcE4(); calcE5(); calcE6bar();
+}
+
+function switchCalcTab(tab, btn) {
+  document.querySelectorAll('.cpanel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.ctab').forEach(function(b) { b.classList.remove('active'); });
+  var el = document.getElementById('calc-' + tab);
+  if (el) el.classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+/* ══ HYDRAULIC CALCULATORS ══ */
+function calcH1() {
+  var D = parseFloat(document.getElementById('h1-d').value) || 0;
+  var N = parseFloat(document.getElementById('h1-n').value) || 0;
+  document.getElementById('h1-result').innerHTML = imperial
+    ? ((D * N) / 231).toFixed(1) + ' <small>GPM</small>'
+    : ((D * N) / 1000).toFixed(1) + ' <small>L/min</small>';
+}
+function calcH2() {
+  var p = parseFloat(document.getElementById('h2-p').value) || 0;
+  var Q = parseFloat(document.getElementById('h2-q').value) || 0;
+  var eta = 0.87;
+  document.getElementById('h2-result').innerHTML = imperial
+    ? ((p * Q) / (1714 * eta)).toFixed(1) + ' <small>HP</small>'
+    : ((p * Q) / (600 * eta)).toFixed(1) + ' <small>kW</small>';
+}
+function calcH3() {
+  var p = parseFloat(document.getElementById('h3-p').value) || 0;
+  var b = parseFloat(document.getElementById('h3-b').value) || 0;
+  if (imperial) {
+    var A = Math.PI * Math.pow(b / 2, 2);
+    document.getElementById('h3-result').innerHTML = (p * A).toFixed(0) + ' <small>lbf</small>';
+  } else {
+    var A2 = Math.PI * Math.pow(b / 2, 2) / 1e6;
+    document.getElementById('h3-result').innerHTML = (p * 1e5 * A2 / 1000).toFixed(1) + ' <small>kN</small>';
+  }
+}
+function calcH4() {
+  var Q = parseFloat(document.getElementById('h4-q').value) || 0;
+  var d = parseFloat(document.getElementById('h4-d').value) || 1;
+  if (imperial) {
+    var Qi = Q * 231 / 60;
+    var Ai = Math.PI * Math.pow(d / 2, 2);
+    document.getElementById('h4-result').innerHTML = (Qi / Ai / 12).toFixed(2) + ' <small>ft/s</small>';
+  } else {
+    var Qm = Q / 60000;
+    var Am = Math.PI * Math.pow(d / 2000, 2);
+    document.getElementById('h4-result').innerHTML = (Qm / Am).toFixed(2) + ' <small>m/s</small>';
+  }
+}
+function calcH5() {
+  var wp = parseFloat(document.getElementById('h5-wp').value) || 0;
+  var rv = parseFloat(document.getElementById('h5-rv').value) || 0;
+  var minRV = wp * 1.1;
+  var pass = rv >= minRV;
+  var el = document.getElementById('h5-result');
+  var unit = imperial ? 'PSI' : 'bar';
+  el.style.color = pass ? 'var(--success)' : 'var(--danger)';
+  el.textContent = pass ? 'PASS ✓  (min ' + minRV.toFixed(0) + ' ' + unit + ')' : 'FAIL ✗  (need \u2265' + minRV.toFixed(0) + ' ' + unit + ')';
+}
+function calcH6() {
+  var Q = parseFloat(document.getElementById('h6-q').value) || 0;
+  var m = parseFloat(document.getElementById('h6-m').value) || 3;
+  var unit = imperial ? 'Gal' : 'L';
+  document.getElementById('h6-result').innerHTML = (Q * m).toFixed(0) + ' <small>' + unit + '</small>';
+}
+
+/* ══ ELECTRICAL CALCULATORS ══ */
+function calcE1() {
+  var I = parseFloat(document.getElementById('e1-i').value) || 0;
+  var R = parseFloat(document.getElementById('e1-r').value) || 0;
+  document.getElementById('e1-result').innerHTML = (I * R).toFixed(1) + ' <small>V</small>';
+}
+function calcE2() {
+  var V = parseFloat(document.getElementById('e2-v').value) || 0;
+  var I = parseFloat(document.getElementById('e2-i').value) || 0;
+  document.getElementById('e2-result').innerHTML = (Math.sqrt(3) * V * I * 0.88 / 1000).toFixed(1) + ' <small>kW</small>';
+}
+function calcE3kw() {
+  var P = parseFloat(document.getElementById('e3-p').value) || 0;
+  var V = parseFloat(document.getElementById('e3-v').value) || 1;
+  document.getElementById('e3-result').innerHTML = (P * 1000 / (Math.sqrt(3) * V * 0.88 * 0.87)).toFixed(1) + ' <small>A</small>';
+}
+function calcE4() {
+  var I = parseFloat(document.getElementById('e4-i').value) || 0;
+  var L = parseFloat(document.getElementById('e4-l').value) || 0;
+  var R = 0.001;
+  document.getElementById('e4-result').innerHTML = (2 * I * R * L).toFixed(1) + ' <small>V</small>';
+}
+function calcE5() {
+  var fla = parseFloat(document.getElementById('e5-fla').value) || 0;
+  var f   = parseFloat(document.getElementById('e5-f').value) || 1.25;
+  document.getElementById('e5-result').innerHTML = (fla * f).toFixed(1) + ' <small>A</small>';
+}
+function calcE6bar() {
+  var wp = parseFloat(document.getElementById('e6-wp').value) || 0;
+  var db = parseFloat(document.getElementById('e6-db').value) || 10;
+  var cutout = wp;
+  var cutin  = wp * (1 - db / 100);
+  var unit = imperial ? 'PSI' : 'bar';
+  document.getElementById('e6-result').innerHTML = cutin.toFixed(0) + ' / ' + cutout.toFixed(0) + ' <small>' + unit + '</small>';
+}
+
+/* ══ HERO CHAT MODE CHIPS ══ */
+document.querySelectorAll('.hc-chip').forEach(function(chip) {
+  chip.addEventListener('click', function() {
+    document.querySelectorAll('.hc-chip').forEach(function(c) { c.classList.remove('on'); });
+    chip.classList.add('on');
+  });
+});
+
+/* ══ INIT ══ */
+document.addEventListener('DOMContentLoaded', function() {
+  calcH1(); calcH2(); calcH3(); calcH4(); calcH5(); calcH6();
+  calcE1(); calcE2(); calcE3kw(); calcE4(); calcE5(); calcE6bar();
+  if (typeof hmInit === 'function') hmInit();
+});
+</script>
 </body>
 </html>
