@@ -672,7 +672,7 @@ function hmImproveA11yLabels(){
 
   document.querySelectorAll('input, textarea, select').forEach((control, index)=>{
     if(control.type==='hidden')return;
-    if(control.getAttribute('aria-label')||control.getAttribute('aria-labelledby'))return;
+    if(control.getAttribute('aria-label')||control.getAttribute('aria-labelledby')||control.labels?.length)return;
     const wrap=control.closest('label');
     const labelText=wrap&&(wrap.textContent||'').replace(/\s+/g,' ').trim();
     const fallback=labelText||control.placeholder||control.name||control.id||('HydroMind field '+(index+1));
