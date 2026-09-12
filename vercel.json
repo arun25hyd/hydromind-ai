@@ -3,8 +3,14 @@
   "outputDirectory": ".",
   "framework": null,
   "rewrites": [
-    { "source": "/api/chat", "destination": "/api/chat.js" },
-    { "source": "/api/feedback", "destination": "/api/feedback.js" }
+    {
+      "source": "/api/chat",
+      "destination": "/api/chat.js"
+    },
+    {
+      "source": "/api/feedback",
+      "destination": "/api/feedback.js"
+    }
   ],
   "redirects": [
     {
@@ -21,6 +27,26 @@
     {
       "source": "/pages/ai_advisor.html",
       "destination": "/ai_advisor.html",
+      "permanent": true
+    },
+    {
+      "source": "/crane-a.html",
+      "destination": "/crane_diagnostic.html",
+      "permanent": true
+    },
+    {
+      "source": "/crane-b.html",
+      "destination": "/crane_diagnostic.html",
+      "permanent": true
+    },
+    {
+      "source": "/crane-c.html",
+      "destination": "/crane_diagnostic.html",
+      "permanent": true
+    },
+    {
+      "source": "/public/:path*",
+      "destination": "/",
       "permanent": true
     },
     {
@@ -115,7 +141,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "public, max-age=0, must-revalidate"
         }
       ]
     },
@@ -124,7 +150,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "public, max-age=0, must-revalidate"
         }
       ]
     },
@@ -142,6 +168,10 @@
         {
           "key": "Referrer-Policy",
           "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
         },
         {
           "key": "Strict-Transport-Security",

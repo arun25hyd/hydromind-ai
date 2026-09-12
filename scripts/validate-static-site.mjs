@@ -1,7 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const root = path.resolve('/Users/Apple/Documents/HydroMind-Website/Web');
+const root = fileURLToPath(new URL('../', import.meta.url));
 
 const pageMap = new Map([
   ['https://www.hydromindai.com/', 'index.html'],
@@ -11,22 +12,25 @@ const pageMap = new Map([
   ['https://www.hydromindai.com/knowledge_base.html', 'knowledge_base.html'],
   ['https://www.hydromindai.com/pricing.html', 'pricing.html'],
   ['https://www.hydromindai.com/feedback.html', 'feedback.html'],
-  ['https://www.hydromindai.com/privacy.html', 'pages/privacy.html'],
+  ['https://www.hydromindai.com/pages/privacy.html', 'pages/privacy.html'],
+  ['https://www.hydromindai.com/terms-of-service.html', 'terms-of-service.html'],
+  ['https://www.hydromindai.com/refund-policy.html', 'refund-policy.html'],
   ['https://www.hydromindai.com/disclaimer.html', 'disclaimer.html'],
   ['https://www.hydromindai.com/circuit_walkthrough.html', 'circuit_walkthrough.html'],
 ]);
 
-const htmlFiles = fs.readdirSync(root).filter((file) => file.endsWith('.html')).sort();
+const htmlFiles = fs.readdirSync(root).filter((file) => file.endsWith('.html')).concat(fs.readdirSync(path.join(root, 'pages')).filter(file => file.endsWith('.html')).map(file => 'pages/' + file)).sort();
 const brokenRefs = [];
 
 for (const file of htmlFiles) {
   const absoluteFile = path.join(root, file);
   const content = fs.readFileSync(absoluteFile, 'utf8');
-  const refPattern = /(?:href|src)=["']([^"'#?]+)["']/g;
+  const refPattern = /(?:href|src)=["']([^"']+)["']/g;
   let match;
 
   while ((match = refPattern.exec(content))) {
-    const ref = match[1];
+    const ref = match[1].split(/[?#]/)[0];
+    if (!ref) continue;
 
     if (/^(https?:|mailto:|tel:|data:|javascript:)/.test(ref)) {
       continue;
@@ -71,9 +75,10 @@ while ((entry = urlPattern.exec(sitemap))) {
     continue;
   }
 
-  const mtime = fs.statSync(filePath).mtime.toISOString().slice(0, 10);
-  if (lastmod !== mtime) {
-    sitemapIssues.push(`${mappedFile} lastmod ${lastmod} does not match file mtime ${mtime}`);
+  // Checkout mtimes are not publication dates. Validate the declared date instead.
+  const date = new Date(lastmod);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(lastmod) || !Number.isFinite(date.getTime()) || date.toISOString().slice(0, 10) !== lastmod || date > new Date()) {
+    sitemapIssues.push(`${mappedFile} has an invalid or future lastmod: ${lastmod}`);
   }
 }
 
@@ -85,4 +90,4 @@ if (sitemapIssues.length > 0) {
   process.exit(1);
 }
 
-console.log(`Validated ${htmlFiles.length} HTML pages, local references, and sitemap freshness.`);
+console.log(`Validated ${htmlFiles.length} HTML pages, local references, and sitemap targets and dates.`);

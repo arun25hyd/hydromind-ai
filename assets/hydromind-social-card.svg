@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">HydroMind.AI</title>
+  <desc id="desc">Hydraulic intelligence for marine and offshore engineering.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071b2a"/><stop offset="1" stop-color="#0b1220"/></linearGradient>
+    <linearGradient id="accent" x1="0" x2="1"><stop stop-color="#2dd4bf"/><stop offset="1" stop-color="#60a5fa"/></linearGradient>
+    <pattern id="grid" width="52" height="52" patternUnits="userSpaceOnUse"><path d="M52 0H0V52" fill="none" stroke="#6ee7d8" stroke-opacity=".09"/></pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/><rect width="1200" height="630" fill="url(#grid)"/>
+  <rect x="70" y="74" width="7" height="482" rx="3.5" fill="url(#accent)"/>
+  <text x="112" y="162" fill="#e6f7f4" font-family="Arial, sans-serif" font-size="34" font-weight="700" letter-spacing="8">HYDROMIND.AI</text>
+  <text x="112" y="260" fill="#ffffff" font-family="Arial, sans-serif" font-size="66" font-weight="700">Hydraulic intelligence</text>
+  <text x="112" y="338" fill="#ffffff" font-family="Arial, sans-serif" font-size="66" font-weight="700">for marine &amp; offshore.</text>
+  <text x="116" y="414" fill="#9fb7c7" font-family="Arial, sans-serif" font-size="28">Engineering preparation · diagnostic support · reference library</text>
+  <g fill="none" stroke="#2dd4bf" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" opacity=".88">
+    <path d="M820 150h180v70h80M850 375h100v-88h95v166h70"/>
+    <path d="M740 220h100v120h110M785 420h100v72h170"/>
+    <rect x="1000" y="184" width="58" height="72" rx="4"/><circle cx="920" cy="375" r="34"/>
+    <path d="M920 341v-36m0 140v-36m-70-34h36m68 0h36"/>
+  </g>
+  <g fill="#60a5fa"><circle cx="740" cy="220" r="9"/><circle cx="850" cy="375" r="9"/><circle cx="1058" cy="220" r="9"/></g>
+</svg>

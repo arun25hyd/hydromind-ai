@@ -6,6 +6,20 @@
 <title>Crane Diagnostic Agent — HydroMind.AI</title>
 <meta name="description" content="AI-powered crane hydraulic fault diagnosis for Liebherr, MacGregor, NOV, SeaTrax, Favelle Favco offshore cranes.">
 <link rel="canonical" href="https://www.hydromindai.com/crane_diagnostic.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="HydroMind.AI">
+<meta property="og:title" content="Crane Diagnostic Agent — HydroMind.AI">
+<meta property="og:description" content="Structured hydraulic fault diagnosis for offshore crane systems.">
+<meta property="og:url" content="https://www.hydromindai.com/crane_diagnostic.html">
+<meta property="og:image" content="https://www.hydromindai.com/assets/hydromind-social-card.svg">
+<meta property="og:image:alt" content="HydroMind.AI — Hydraulic intelligence for marine and offshore engineering">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.hydromindai.com/assets/hydromind-social-card.svg">
+<meta name="twitter:title" content="Crane Diagnostic Agent — HydroMind.AI">
+<meta name="twitter:description" content="Structured hydraulic fault diagnosis for offshore crane systems.">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"HydroMind AI Crane Diagnostic Agent","url":"https://www.hydromindai.com/crane_diagnostic.html","applicationCategory":"EngineeringApplication","operatingSystem":"Web"}
+</script>
 <link rel="stylesheet" href="css/hm-design.css?v=20260614-live">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,6 +64,7 @@ body{margin:0;padding:0;background:#06101a;overflow:hidden}
 .cc-opt-mfr{font-size:9px;font-family:var(--mono);color:var(--t3);margin-left:auto}
 /* gauges vertical */
 .cc-gauges{display:flex;flex-direction:column;gap:9px}
+.cc-sample-note{margin:-2px 0 9px;color:var(--t3);font-size:9px;letter-spacing:.06em;line-height:1.45;text-transform:uppercase}
 .cc-g{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 15px}
 .cc-g.warn{border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.05)}
 .cc-g.fault{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.05)}
@@ -151,7 +166,7 @@ body{margin:0;padding:0;background:#06101a;overflow:hidden}
     <a href="pricing.html" class="navbar-link">Pricing</a>
   </div>
   <div class="nav-right" id="hmNavCta">
-    <div class="nav-status"><div class="nav-status-dot"></div>AI Online</div>
+    <div class="nav-status"><div class="nav-status-dot"></div>Workspace</div>
     <a href="#" onclick="event.preventDefault();if(window.openAuthModal)openAuthModal('login');" class="btn btn-ghost btn-sm">Log In</a>
     <a href="#" onclick="event.preventDefault();if(window.openAuthModal)openAuthModal('register');" class="btn btn-primary btn-sm">Get Started</a>
   </div>
@@ -183,7 +198,8 @@ body{margin:0;padding:0;background:#06101a;overflow:hidden}
     </div>
 
     <div>
-      <div class="cc-bl">Live Parameters</div>
+      <div class="cc-bl">Sample Parameters</div>
+      <div class="cc-sample-note">Demonstration values — not live vessel data</div>
       <div class="cc-gauges">
         <div class="cc-g" id="cdx-g-sys"><span class="cc-g-name">System Pressure</span><span class="cc-g-val"><span class="cc-g-num" id="cdx-sys">248</span><span class="cc-g-unit">bar</span></span></div>
         <div class="cc-g warn" id="cdx-g-drain"><span class="cc-g-name">Case Drain</span><span class="cc-g-val"><span class="cc-g-num" id="cdx-drain">3.8</span><span class="cc-g-unit">bar</span></span></div>
@@ -208,7 +224,7 @@ body{margin:0;padding:0;background:#06101a;overflow:hidden}
       <div class="cc-welcome" id="cdxWelcome">
         <div class="cc-w-ic">🏗️</div>
         <div class="cc-w-t">Crane Diagnostic Agent</div>
-        <div class="cc-w-s">Equipment status is on the left. Pick a crane, watch the live parameters and diagnostic sequence, and run your fault analysis here.</div>
+        <div class="cc-w-s">Select a representative crane, review the sample parameters and diagnostic sequence, then run a structured fault analysis. Demonstration values are not live vessel data.</div>
         <!-- HOW TO USE collapsible panel -->
         <div class="cc-how" id="ccHow">
           <button class="cc-how-toggle" onclick="document.getElementById('ccHow').classList.toggle('open')">
@@ -220,7 +236,7 @@ body{margin:0;padding:0;background:#06101a;overflow:hidden}
             <div class="cc-how-grid">
               <div class="cc-how-step"><span class="cc-how-num">01</span><div><div class="cc-how-tt">Select Your Crane</div><div class="cc-how-dd">Pick the crane make and model from the Equipment panel on the left. Status indicators show current operational state.</div></div></div>
               <div class="cc-how-step"><span class="cc-how-num">02</span><div><div class="cc-how-tt">Describe the Symptom</div><div class="cc-how-dd">Type the fault symptom in the input box — e.g. "high case drain pressure on main hoist pump at full load".</div></div></div>
-              <div class="cc-how-step"><span class="cc-how-num">03</span><div><div class="cc-how-tt">Review Live Parameters</div><div class="cc-how-dd">Check system pressure, case drain, oil temperature, and flow rate in the left panel before and during diagnosis.</div></div></div>
+              <div class="cc-how-step"><span class="cc-how-num">03</span><div><div class="cc-how-tt">Review Sample Parameters</div><div class="cc-how-dd">Use the demonstration pressure, case-drain, oil-temperature and flow values to understand the workflow. Enter and verify actual site readings during a real investigation.</div></div></div>
               <div class="cc-how-step"><span class="cc-how-num">04</span><div><div class="cc-how-tt">Follow the Diagnostic Sequence</div><div class="cc-how-dd">The agent walks through a 10-step ladder — Safety Isolation → HPU Pressure → Pump Flow → Relief Valve → … → Final Check.</div></div></div>
               <div class="cc-how-step"><span class="cc-how-num">05</span><div><div class="cc-how-tt">Use Quick-Start Prompts</div><div class="cc-how-dd">Click any fault card below or the quick-hint chips to start a focused diagnostic session instantly.</div></div></div>
               <div class="cc-how-step"><span class="cc-how-num">06</span><div><div class="cc-how-tt">Export Diagnostic Report</div><div class="cc-how-dd">At session end, click Export Diagnostic Report to download a DPR-style summary for your maintenance records.</div></div></div>
@@ -255,11 +271,11 @@ body{margin:0;padding:0;background:#06101a;overflow:hidden}
   <!-- RIGHT INFO RAIL (wide screens fill empty space) -->
   <aside class="cc-rail">
     <div>
-      <div class="cc-rl">Fault Log</div>
+      <div class="cc-rl">Example fault scenarios</div>
       <div class="cc-flog">
-        <div class="cc-fentry warn"><span class="cc-fdot"></span><div><div class="cc-ftext">Case drain press. elevated (3.8 bar) — Main hoist pump A4VG90</div><div class="cc-ftime">10:42 · Today</div></div></div>
-        <div class="cc-fentry fault"><span class="cc-fdot"></span><div><div class="cc-ftext">Luffing cylinder CBV chattering on deceleration</div><div class="cc-ftime">09:15 · Today</div></div></div>
-        <div class="cc-fentry ok"><span class="cc-fdot"></span><div><div class="cc-ftext">Slewing circuit — proportional valve recalibrated OK</div><div class="cc-ftime">Yesterday</div></div></div>
+        <div class="cc-fentry warn"><span class="cc-fdot"></span><div><div class="cc-ftext">Elevated case-drain pressure — main hoist pump</div><div class="cc-ftime">Scenario 01</div></div></div>
+        <div class="cc-fentry fault"><span class="cc-fdot"></span><div><div class="cc-ftext">Luffing-cylinder counterbalance-valve chatter</div><div class="cc-ftime">Scenario 02</div></div></div>
+        <div class="cc-fentry ok"><span class="cc-fdot"></span><div><div class="cc-ftext">Slewing-circuit response review</div><div class="cc-ftime">Scenario 03</div></div></div>
       </div>
     </div>
     <div>
@@ -280,7 +296,7 @@ body{margin:0;padding:0;background:#06101a;overflow:hidden}
     </div>
   </aside>
 </div>
-<script src="js/auth-v2.js"></script>
+<script src="js/auth-v2.js?v=20260912"></script>
 <script>
 var BACKEND='https://hydromind-backend.onrender.com/api/chat';
 var activeCrane='Liebherr LHBL-D 80',activeCraneType='Offshore Pedestal Crane',activeMfr='Liebherr';
@@ -350,8 +366,8 @@ function cdxSendMsg(){
     cdxAddMsg('user',text);chatHistory.push({role:'user',content:text});cdxTyping();
     function gv(id){var e=document.getElementById(id);return e?e.textContent:'?'}
     var g='System: '+gv('cdx-sys')+' BAR | Case Drain: '+gv('cdx-drain')+' BAR | Temp: '+gv('cdx-temp')+'C | Flow: '+gv('cdx-flow')+' L/min';
-    var sys='You are HydroMind AI Crane Diagnostic Agent — an expert offshore crane hydraulic engineer. Active crane: '+activeCrane+' ('+activeCraneType+'). Manufacturer: '+activeMfr+'. Live gauges: '+g+'. PLC step '+(currentPlcStep+1)+'/10 ('+PLC_STEPS[currentPlcStep]+'). Apply ISO 4413, DNV-ST-0378, EN 13852-1. Provide structured diagnosis: root cause, test points, corrective actions, KB references (KB-01 to KB-86).';
-    var msgs=[{role:'user',content:sys},{role:'assistant',content:'Ready. Monitoring '+activeCrane+'. Describe the fault.'}].concat(chatHistory.slice(-10)).concat([{role:'user',content:text}]);
+    var sys='You are HydroMind AI Crane Diagnostic Agent. The displayed crane and parameter values are demonstration context, not live equipment data. The user must provide and verify actual site readings. Active demonstration context: '+activeCrane+' ('+activeCraneType+'). Sample values: '+g+'. Diagnostic step '+(currentPlcStep+1)+'/10 ('+PLC_STEPS[currentPlcStep]+'). Provide a structured, safety-first investigation plan with test points and references to be verified against current OEM documentation and applicable site procedures.';
+    var msgs=[{role:'user',content:sys},{role:'assistant',content:'Ready. Describe the verified fault symptom and actual site readings.'}].concat(chatHistory.slice(-10)).concat([{role:'user',content:text}]);
     var xhr=new XMLHttpRequest();xhr.open('POST',BACKEND,true);xhr.setRequestHeader('Content-Type','application/json');xhr.timeout=90000;
     rt=setTimeout(function(){try{xhr.abort()}catch(e){}},90000);
     xhr.onload=function(){if(rt)clearTimeout(rt);cdxHideTyping();
@@ -364,9 +380,9 @@ function cdxSendMsg(){
   }catch(err){if(rt)clearTimeout(rt);cdxHideTyping();cdxAddMsg('ai','Unexpected error.',[]);cdxBusy(false)}
 }
 function cdxExport(){
-  var L=['HYDROMIND.AI — CRANE DIAGNOSTIC REPORT','========================================','Date: '+new Date().toLocaleString(),'Crane: '+activeCrane,'Type: '+activeCraneType,'Manufacturer: '+activeMfr,'','LIVE PARAMETERS','---------------','SYS PRESSURE: '+document.getElementById('cdx-sys').textContent+' bar','CASE DRAIN: '+document.getElementById('cdx-drain').textContent+' bar','OIL TEMP: '+document.getElementById('cdx-temp').textContent+' C','FLOW: '+document.getElementById('cdx-flow').textContent+' L/min','','CONVERSATION','------------'];
+  var L=['HYDROMIND.AI — CRANE DIAGNOSTIC REPORT','========================================','Date: '+new Date().toLocaleString(),'Crane: '+activeCrane,'Type: '+activeCraneType,'Manufacturer: '+activeMfr,'','DEMONSTRATION PARAMETERS — NOT LIVE EQUIPMENT DATA','--------------------------------------------------','SYS PRESSURE: '+document.getElementById('cdx-sys').textContent+' bar','CASE DRAIN: '+document.getElementById('cdx-drain').textContent+' bar','OIL TEMP: '+document.getElementById('cdx-temp').textContent+' C','FLOW: '+document.getElementById('cdx-flow').textContent+' L/min','','CONVERSATION','------------'];
   chatHistory.forEach(function(m){L.push('['+m.role.toUpperCase()+'] '+m.content);L.push('')});
-  L.push('Generated by HydroMind.AI');
+  L.push('Generated by HydroMind.AI');L.push('All values and recommendations require verification against OEM documentation, site procedures and a qualified engineer.');
   var b=new Blob([L.join('\n')],{type:'text/plain'}),u=URL.createObjectURL(b),a=document.createElement('a');
   a.href=u;a.download='HydroMind_Crane_Diag_'+activeCrane.replace(/\s+/g,'-')+'.txt';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(u);
 }
@@ -376,7 +392,6 @@ document.addEventListener('DOMContentLoaded',function(){
   setInterval(function(){var p=new XMLHttpRequest();p.open('GET','https://hydromind-backend.onrender.com/',true);p.timeout=10000;p.send()},480000);
   var inp=document.getElementById('cdxInput');
   if(inp){inp.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();cdxSendMsg()}});inp.addEventListener('input',function(){cdxResize(inp)})}
-  setInterval(function(){var d=document.getElementById('cdx-drain');if(d){var v=(3.5+Math.random()*0.6).toFixed(1);d.textContent=v;var g=document.getElementById('cdx-g-drain');g.className=parseFloat(v)>=4.0?'cc-g fault':'cc-g warn'}var t=document.getElementById('cdx-temp');if(t)t.textContent=(60+Math.floor(Math.random()*5));var f=document.getElementById('cdx-flow');if(f)f.textContent=(170+Math.floor(Math.random()*10))},4000);
   document.addEventListener('click',function(e){var p=document.getElementById('ccPick');if(p&&!p.contains(e.target))p.classList.remove('open')});
 });
 </script>
