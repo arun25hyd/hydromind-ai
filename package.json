@@ -15,7 +15,7 @@
   "scripts": {
     "start": "python3 -m http.server 3000",
     "build": "node ./scripts/validate-static-site.mjs",
-    "test": "node ./scripts/validate-static-site.mjs"
+    "test": "node ./scripts/validate-static-site.mjs && node ./scripts/test-calculators.mjs"
   },
   "eslintConfig": {
     "extends": [
