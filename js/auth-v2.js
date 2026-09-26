@@ -160,6 +160,11 @@ function _authErr(msg){
   if(el){el.textContent=msg;el.style.display='block';}
 }
 
+function hmNotifyAuthenticated(user,method){
+  if(typeof window.hmTrack==='function')window.hmTrack('auth_completed',{method});
+  window.dispatchEvent(new CustomEvent('hm:authenticated',{detail:{user,method}}));
+}
+
 /* ── Login (backend Supabase auth) ── */
 async function doLogin(){
   const email=(document.getElementById('hmLoginEmail')?.value||'').trim().toLowerCase();
@@ -212,6 +217,7 @@ async function doLogin(){
     hmSaveSession(user);
     closeAuthModal();
     hmOnLogin(user);
+    hmNotifyAuthenticated(user,'login');
   }catch(err){
     _authErr('Connection error — the server may be waking up. Please wait 30 seconds and try again.');
     if(btn){btn.disabled=false;btn.textContent=origTxt;}
@@ -248,13 +254,15 @@ async function doRegister(){
     const isAdmin=(u.email===ADMIN_EMAIL);
     const plan=isAdmin?'Admin':(u.isPremium?'Pro':'Free');
     const user={first,last,email:u.email||email,plan,isAdmin,id:u.id,joined:new Date().toLocaleDateString()};
+    const checkoutPending=localStorage.getItem('hm_checkout_intent')==='pro';
     hmSaveSession(user);
     closeAuthModal();
     hmOnLogin(user);
+    hmNotifyAuthenticated(user,'register');
     setTimeout(()=>{
       const welcomeEl=document.createElement('div');
       welcomeEl.style.cssText='position:fixed;top:80px;right:1.5rem;z-index:9999;background:#fff;border:1px solid var(--accent-glow);border-radius:12px;padding:14px 18px;font-family:Inter,sans-serif;font-size:13px;color:var(--text1);max-width:280px;box-shadow:0 8px 32px rgba(8,145,178,0.15);';
-      welcomeEl.innerHTML='<div style="font-weight:800;font-size:14px;color:var(--accent);margin-bottom:4px;">Welcome, '+first+'! ✓</div><div style="font-size:12px;color:var(--text2);line-height:1.5;">Your '+plan+' account is ready.<br>Start with the AI Advisor.</div>';
+      welcomeEl.innerHTML='<div style="font-weight:800;font-size:14px;color:var(--accent);margin-bottom:4px;">Welcome, '+first+'! ✓</div><div style="font-size:12px;color:var(--text2);line-height:1.5;">Your '+plan+' account is ready.<br>'+(checkoutPending?'Opening secure checkout…':'Start with the AI Advisor.')+'</div>';
       document.body.appendChild(welcomeEl);
       setTimeout(()=>welcomeEl.remove(),5000);
     },300);
@@ -702,3 +710,4 @@ function hmInit(){
 }
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',hmInit);}
 else{hmInit();}
+hmNotifyAuthenticated
