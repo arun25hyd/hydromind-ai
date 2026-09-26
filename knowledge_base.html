@@ -18,7 +18,7 @@
 <meta name="twitter:title" content="Knowledge Base — HydroMind.AI">
 <meta name="twitter:description" content="150+ indexed OEM hydraulic manuals and engineering references — Rexroth, Danfoss, Parker, Liebherr, MacGregor, NOV, standards and more.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="css/hm-design.css?v=20260613-v2">
+<link rel="stylesheet" href="css/hm-design.css?v=20260926-unified">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -279,7 +279,6 @@
     <a href="index.html" class="navbar-link">Home</a>
     <a href="ai_advisor.html" class="navbar-link">AI Advisor</a>
     <a href="system_design.html" class="navbar-link">System Design</a>
-    <a href="circuit_walkthrough.html" class="navbar-link">Circuit Walkthrough</a>
     <a href="crane_diagnostic.html" class="navbar-link">Crane Diagnostic</a>
     <a href="knowledge_base.html" class="navbar-link active">Knowledge Base</a>
     <a href="pricing.html" class="navbar-link">Pricing</a>
@@ -682,12 +681,12 @@ function loadKnowledgeBaseData() {
       updateKbPageStats(raw.stats || {});
       renderFilterChips();
     })
-    .catch(function(err) {
-      console.error('Failed to load live KB data:', err);
-      var docs = document.getElementById('stat-docs');
-      if (docs) docs.textContent = '—';
-      var desc = document.querySelector('.kb-hero-desc');
-      if (desc) desc.textContent = 'Knowledge base is temporarily unavailable. Please try again shortly.';
+    .catch(function() {
+      // The curated fallback keeps the library usable during a cold start or
+      // temporary API interruption without surfacing a broken-page state.
+      KB_DATA = KB_DATA.map(normalizeKbEntry);
+      updateKbPageStats(KB_STATS);
+      renderFilterChips();
     });
 }
 
@@ -752,7 +751,7 @@ function highlight(text) {
 function getSorted(data) {
   var s = document.getElementById('sort-select').value;
   return data.slice().sort(function(a, b) {
-    if (s === 'num')   return (parseInt(a.rawNum.replace(/[^0-9]/g,''), 10) || 0) - (parseInt(b.rawNum.replace(/[^0-9]/g,''), 10) || 0);
+    if (s === 'num')   return (parseInt(String(a.rawNum || a.num || '').replace(/[^0-9]/g,''), 10) || 0) - (parseInt(String(b.rawNum || b.num || '').replace(/[^0-9]/g,''), 10) || 0);
     if (s === 'title') return a.title.localeCompare(b.title);
     if (s === 'mfr')   return a.mfr.localeCompare(b.mfr);
     if (s === 'chunks') return (b.chunks || 0) - (a.chunks || 0);
