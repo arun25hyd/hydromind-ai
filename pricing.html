@@ -221,60 +221,127 @@
 
       <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
       <script>
-        // Client-side token is fetched from the backend (never hardcoded here)
-        // so sandbox/live can be swapped by changing PADDLE_CLIENT_TOKEN/PADDLE_ENV
-        // server-side only. See GET /api/paddle/client-token in server.js.
-        (async function(){
-          const PADDLE_CONFIG_API = 'https://hydromind-backend.onrender.com/api/paddle/client-token';
-          const PADDLE_SUBSCRIPTION_API = 'https://hydromind-backend.onrender.com/api/subscription/status';
+        const HM_PRICING_API_BASE = 'https://hydromind-backend.onrender.com';
+        const PADDLE_CONFIG_API = HM_PRICING_API_BASE + '/api/paddle/client-token';
+        const PADDLE_SUBSCRIPTION_API = HM_PRICING_API_BASE + '/api/subscription/status';
+
+        // First-party, aggregate funnel events only. No email, user id, query
+        // text, device fingerprint, or advertising identifier is transmitted.
+        window.hmTrack = function(event, context){
+          fetch(HM_PRICING_API_BASE + '/api/analytics/event', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ event: event, context: context || {} }),
+            keepalive: true
+          }).catch(function(){});
+        };
+
+        function hmCheckoutMessage(message, isError){
+          var el = document.getElementById('checkout-status');
+          if (!el) return;
+          el.textContent = message;
+          el.style.display = 'block';
+          el.style.color = isError ? 'var(--danger)' : 'var(--accent)';
+          el.style.borderColor = isError ? 'rgba(239,68,68,.35)' : 'var(--accent-glow)';
+        }
+
+        window.hmOpenPaddleCheckout = async function(options){
+          options = options || {};
           try {
-            var cfgRes = await fetch(PADDLE_CONFIG_API);
-            if (!cfgRes.ok) throw new Error('client-token fetch failed: ' + cfgRes.status);
-            var cfg = await cfgRes.json();
-            if (cfg.environment === 'sandbox') Paddle.Environment.set('sandbox');
+            var cfg = await window.hmPaddleReady;
+            var priceId = options.priceId || (cfg.prices && cfg.prices.pro);
+            if (!priceId) throw new Error('Pro checkout is not configured');
+            var session = options.user || (window.hmGetSession ? hmGetSession() : null);
+            var email = options.email || (session && session.email) || undefined;
+            var uid = options.uid || (session && session.id) || '';
 
-            var initOpts = { token: cfg.token };
-
-            // pwCustomer (Paddle Retain) — only for a signed-in user who already
-            // has a Paddle customer ID on file. Fetched fresh from the backend
-            // (source of truth), never read from the local session object.
-            var jwt = window.hmGetToken ? hmGetToken() : null;
-            if (jwt) {
-              try {
-                var subRes = await fetch(PADDLE_SUBSCRIPTION_API, { headers: { Authorization: 'Bearer ' + jwt } });
-                if (subRes.ok) {
-                  var sub = await subRes.json();
-                  if (sub.paddleCustomerId) initOpts.pwCustomer = { id: sub.paddleCustomerId };
-                }
-              } catch (e) {
-                console.error('[Paddle] subscription status fetch failed:', e);
-              }
-            }
-
-            Paddle.Initialize(initOpts);
-
-            // Auto-open checkout when arriving from a trial-conversion email link
-            // (?checkout=<paddle_price_id>&uid=<hm_user_id>&email=...), generated
-            // server-side by the trial-conversion cron job in server.js.
-            var params = new URLSearchParams(window.location.search);
-            var priceId = params.get('checkout');
-            if (!priceId) return;
-            var email = params.get('email') || undefined;
-            var uid = params.get('uid') || '';
-            try {
-              Paddle.Checkout.open({
-                items: [{ priceId: priceId, quantity: 1 }],
-                customer: email ? { email: email } : undefined,
-                customData: { hm_user_id: uid },
-                settings: { displayMode: 'overlay' }
-              });
-            } catch (e) {
-              console.error('[Paddle] Checkout auto-open failed:', e);
-            }
+            hmCheckoutMessage('Opening secure Paddle checkout…', false);
+            Paddle.Checkout.open({
+              items: [{ priceId: priceId, quantity: 1 }],
+              customer: email ? { email: email } : undefined,
+              customData: { hm_user_id: uid },
+              settings: { displayMode: 'overlay' }
+            });
+            localStorage.removeItem('hm_checkout_intent');
+            hmTrack('checkout_opened', { plan: 'pro' });
           } catch (e) {
-            console.error('[Paddle] init failed:', e);
+            console.error('[Paddle] Checkout open failed:', e);
+            hmTrack('checkout_error', { stage: 'open' });
+            hmCheckoutMessage('Checkout could not open. Please refresh and try again, or contact support@hydromindai.com.', true);
           }
-        })();
+        };
+
+        window.startProCheckout = function(source){
+          hmTrack('pro_cta_clicked', { source: source || 'pricing' });
+          var session = window.hmGetSession ? hmGetSession() : null;
+          if (!session) {
+            localStorage.setItem('hm_checkout_intent', 'pro');
+            hmTrack('auth_required', { plan: 'pro' });
+            if (window.openAuthModal) openAuthModal('register');
+            return;
+          }
+          hmOpenPaddleCheckout({ user: session });
+        };
+
+        window.addEventListener('hm:authenticated', function(event){
+          if (localStorage.getItem('hm_checkout_intent') === 'pro') {
+            hmOpenPaddleCheckout({ user: event.detail && event.detail.user });
+          }
+        });
+
+        // Client-side token and public catalog ids are fetched from the backend;
+        // API keys and webhook secrets never leave the server.
+        window.hmPaddleReady = (async function(){
+          var cfgRes = await fetch(PADDLE_CONFIG_API);
+          if (!cfgRes.ok) throw new Error('client-token fetch failed: ' + cfgRes.status);
+          var cfg = await cfgRes.json();
+          if (cfg.environment === 'sandbox') Paddle.Environment.set('sandbox');
+
+          var initOpts = {
+            token: cfg.token,
+            eventCallback: function(data){
+              if (data && data.name === 'checkout.completed') hmTrack('checkout_completed', { plan: 'pro' });
+              if (data && data.name === 'checkout.closed') hmTrack('checkout_closed', { plan: 'pro' });
+            }
+          };
+
+          // pwCustomer (Paddle Retain) is only set for a signed-in user with a
+          // customer id already stored by the verified webhook flow.
+          var jwt = window.hmGetToken ? hmGetToken() : null;
+          if (jwt) {
+            try {
+              var subRes = await fetch(PADDLE_SUBSCRIPTION_API, { headers: { Authorization: 'Bearer ' + jwt } });
+              if (subRes.ok) {
+                var sub = await subRes.json();
+                if (sub.paddleCustomerId) initOpts.pwCustomer = { id: sub.paddleCustomerId };
+              }
+            } catch (e) {
+              console.error('[Paddle] subscription status fetch failed:', e);
+            }
+          }
+
+          Paddle.Initialize(initOpts);
+          hmTrack('pricing_view');
+
+          return cfg;
+        })().catch(function(e){
+            console.error('[Paddle] init failed:', e);
+            hmTrack('checkout_error', { stage: 'initialize' });
+            hmCheckoutMessage('Secure checkout is temporarily unavailable. Please refresh or contact support@hydromindai.com.', true);
+            throw e;
+        });
+
+        // Preserve existing checkout links from onboarding emails after the
+        // Paddle initialization promise has resolved.
+        window.hmPaddleReady.then(function(){
+          var params = new URLSearchParams(window.location.search);
+          var priceId = params.get('checkout');
+          if (priceId) hmOpenPaddleCheckout({
+            priceId: priceId,
+            email: params.get('email') || undefined,
+            uid: params.get('uid') || ''
+          });
+        }).catch(function(){});
       </script>
 </head>
 <body>
@@ -289,7 +356,6 @@
     <a href="index.html" class="navbar-link">Home</a>
     <a href="ai_advisor.html" class="navbar-link">AI Advisor</a>
     <a href="system_design.html" class="navbar-link">System Design</a>
-    <a href="circuit_walkthrough.html" class="navbar-link">Circuit Walkthrough</a>
     <a href="crane_diagnostic.html" class="navbar-link">Crane Diagnostic</a>
     <a href="knowledge_base.html" class="navbar-link">Knowledge Base</a>
     <a href="pricing.html" class="navbar-link active">Pricing</a>
@@ -343,7 +409,7 @@
     <div style="font-size:11px;font-weight:700;color:var(--success);">✓ Ad-Free</div>
     <div style="font-size:9.5px;color:var(--text2);margin-top:2px;">Pro subscriber benefit</div>
   </div>
-  <div class="sb-pro-cta"><h4>Pro — Most Popular</h4><ul><li>Unlimited queries</li><li>All 6 advisor modes</li><li>Full knowledge base</li><li>BOM export</li></ul><a href="#" onclick="event.preventDefault(); openAuthModal && openAuthModal('register');" class="btn btn-primary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">Start Free Trial →</a></div>
+  <div class="sb-pro-cta"><h4>Pro — Most Popular</h4><ul><li>Unlimited queries</li><li>All 6 advisor modes</li><li>Full knowledge base</li><li>BOM export</li></ul><a href="#" onclick="event.preventDefault(); startProCheckout('sidebar');" class="btn btn-primary btn-sm" style="width:100%;justify-content:center;margin-top:4px;">Choose Pro →</a></div>
 </aside>
 
 <!-- MAIN -->
@@ -353,18 +419,15 @@
   <div class="page-header" style="text-align:center;max-width:600px;margin:0 auto 16px;">
     <div class="section-label" style="justify-content:center;display:flex;">Simple, Transparent Pricing</div>
     <h1 style="font-size:32px;font-weight:800;color:var(--text1);margin-bottom:10px;">Choose Your Plan</h1>
-    <p style="font-size:15px;color:var(--text2);line-height:1.65;">Choose the HydroMind access level that fits your work. Prices are in USD; final billing details are confirmed at checkout.</p>
+    <p style="font-size:15px;color:var(--text2);line-height:1.65;">Start on Free with no card required, or upgrade to Pro for unlimited access. Prices are in USD and the complete billing terms are shown before payment.</p>
   </div>
 
   <div class="billing-toggle-wrap">
-    <span class="billing-label active" id="label-monthly">Monthly</span>
-    <label class="billing-toggle">
-      <input type="checkbox" id="billing-cb" onchange="toggleBilling()">
-      <span class="billing-slider"></span>
-    </label>
-    <span class="billing-label" id="label-annual">Annual</span>
-    <span class="save-badge">Save 20%</span>
+    <span class="billing-label active">Monthly billing</span>
+    <span class="save-badge">Cancel anytime</span>
   </div>
+
+  <div id="checkout-status" role="status" aria-live="polite" style="display:none;max-width:600px;margin:0 auto 16px;padding:10px 14px;border:1px solid var(--accent-glow);border-radius:8px;background:var(--accent-dim);text-align:center;font-size:12px;font-weight:600;"></div>
 
   <div class="pricing-recommendation" aria-label="Plan recommendations">
     <div class="pricing-rec-card">
@@ -395,7 +458,7 @@
       <div class="plan-desc">Perfect for exploring the platform and occasional hydraulic reference queries.</div>
       <div class="plan-divider"></div>
       <ul class="plan-features">
-        <li><span class="fi yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>Current access limit shown in account</li>
+        <li><span class="fi yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>10 AI queries per day</li>
         <li><span class="fi yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>General advisor mode only</li>
         <li><span class="fi yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>Selected reference access</li>
         <li><span class="fi yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>Hydraulic calculator tool</li>
@@ -415,7 +478,7 @@
         <span class="amount" id="pro-price" style="color:var(--accent);">29</span>
         <span class="period">/mo</span>
       </div>
-      <div class="plan-desc">Expanded access for working hydraulic engineers. The included tools and limits are confirmed before checkout.</div>
+      <div class="plan-desc">Unlimited AI queries and the complete engineering toolkit for working hydraulic professionals.</div>
       <div class="plan-divider"></div>
       <ul class="plan-features">
         <li><span class="fi yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>Expanded AI Advisor access</li>
@@ -426,10 +489,10 @@
         <li><span class="fi yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>PDF downloads & offline KB</li>
         <li><span class="fi yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>Priority email support</li>
       </ul>
-      <a href="#" onclick="event.preventDefault(); openAuthModal && openAuthModal('register');" class="btn btn-primary w-full" style="justify-content:center;font-size:14px;padding:12px;">Choose Pro →</a>
+      <a href="#" onclick="event.preventDefault(); startProCheckout('pro_card');" class="btn btn-primary w-full" style="justify-content:center;font-size:14px;padding:12px;">Choose Pro — $29/month →</a>
       <div style="background:rgba(6,182,212,0.07);border:1px solid var(--accent-glow);border-radius:8px;padding:9px 12px;text-align:center;margin-top:10px;">
         <div style="font-size:11px;color:var(--accent);font-weight:700;">$29/month · Cancel anytime</div>
-        <div style="font-size:10.5px;color:var(--text3);margin-top:2px;">Final billing details are shown before purchase</div>
+        <div style="font-size:10.5px;color:var(--text3);margin-top:2px;">No trial claim · review and confirm in secure checkout</div>
       </div>
       <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;font-size:10.5px;color:var(--text3);">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
@@ -457,7 +520,7 @@
         <li><span class="fi yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>SLA & data residency options</li>
       </ul>
       <a href="mailto:support@hydromindai.com" class="btn btn-secondary w-full" style="justify-content:center;">Get Enterprise →</a>
-      <div style="text-align:center;margin-top:10px;font-size:11.5px;color:var(--text3);">Monthly billing · annual price shown with toggle</div>
+      <div style="text-align:center;margin-top:10px;font-size:11.5px;color:var(--text3);">Contact us for team pricing and annual terms</div>
     </div>
 
   </div>
@@ -476,7 +539,7 @@
       </thead>
       <tbody>
         <tr><td class="section-row" colspan="4">AI Advisor</td></tr>
-        <tr><td>AI query access</td><td class="plan-col">Current plan limit</td><td class="plan-col featured-col"><strong>Expanded</strong></td><td class="plan-col">Tailored</td></tr>
+        <tr><td>AI query access</td><td class="plan-col">10/day</td><td class="plan-col featured-col"><strong>Unlimited</strong></td><td class="plan-col">Tailored</td></tr>
         <tr><td>Advisor modes</td><td class="plan-col"><span class="partial">General only</span></td><td class="plan-col featured-col"><strong>All 6 modes</strong></td><td class="plan-col">All 6 modes</td></tr>
         <tr><td>Conversation history</td><td class="plan-col">Current plan limit</td><td class="plan-col featured-col">Expanded</td><td class="plan-col">Tailored</td></tr>
         <tr><td class="section-row" colspan="4">Knowledge Base</td></tr>
@@ -505,7 +568,7 @@
           What counts as a query on the Free plan?
           <span class="faq-icon">+</span>
         </div>
-        <div class="faq-a">Each message sent to the AI Advisor counts as a query. The current allowance and reset timing are shown in your account and at checkout.</div>
+        <div class="faq-a">Each message sent to the AI Advisor counts as one query. Free accounts receive 10 queries per day, resetting at midnight UTC. Pro accounts are unlimited.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFAQ(this)">
@@ -516,10 +579,10 @@
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFAQ(this)">
-          How does the annual billing discount work?
+          Is annual billing available?
           <span class="faq-icon">+</span>
         </div>
-        <div class="faq-a">If annual billing is available, the applicable price and any promotion are shown at checkout before purchase.</div>
+        <div class="faq-a">The self-serve Pro checkout currently uses monthly billing. Contact support for annual or team pricing.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFAQ(this)">
@@ -530,10 +593,10 @@
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFAQ(this)">
-          Is there a trial period for Pro?
+          Is there a free trial for Pro?
           <span class="faq-icon">+</span>
         </div>
-        <div class="faq-a">Any trial availability, duration, payment requirement, and included access are shown at checkout before activation.</div>
+        <div class="faq-a">There is no automatic Pro trial at present. The Free plan needs no card and remains available indefinitely. Pro billing starts only after you review and confirm the Paddle checkout.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFAQ(this)">
@@ -656,14 +719,6 @@
 </footer>
 
 <script>
-function toggleBilling() {
-  const annual = document.getElementById('billing-cb').checked;
-  document.getElementById('pro-price').textContent = annual ? '23' : '29';
-  document.getElementById('ent-price').textContent = annual ? '239' : '299';
-  document.getElementById('label-monthly').classList.toggle('active', !annual);
-  document.getElementById('label-annual').classList.toggle('active', annual);
-}
-
 /* ── Feedback ── */
 let fbRating = 0;
 function setRating(val) {
@@ -738,6 +793,6 @@ function toggleFAQ(el) {
   if (!isOpen) { el.classList.add('open'); el.nextElementSibling.classList.add('open'); }
 }
 </script>
-<script src="js/auth-v2.js?v=20260912"></script>
+<script src="js/auth-v2.js?v=20260926"></script>
 </body>
 </html>
