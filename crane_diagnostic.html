@@ -20,7 +20,7 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebApplication","name":"HydroMind AI Crane Diagnostic Agent","url":"https://www.hydromindai.com/crane_diagnostic.html","applicationCategory":"EngineeringApplication","operatingSystem":"Web"}
 </script>
-<link rel="stylesheet" href="css/hm-design.css?v=20260926-unified">
+<link rel="stylesheet" href="css/hm-design.css?v=20260926-workspaces3">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
@@ -153,7 +153,7 @@ body{margin:0;padding:0;background:#06101a;overflow:hidden}
 .cc-how{margin:22px auto 0;max-width:860px;text-align:left;border:1px solid var(--border-md);border-radius:13px;background:var(--card);overflow:hidden}.cc-how-toggle{width:100%;display:flex;align-items:center;gap:10px;padding:14px 18px;background:transparent;border:none;cursor:pointer;color:var(--t1);font-family:var(--sans);font-size:13px;font-weight:700;transition:background .15s}.cc-how-toggle:hover{background:var(--card-hi)}.cc-how-ic{font-size:17px}.cc-how-label{flex:1}.cc-how-arr{font-size:11px;color:var(--t3);transition:transform .2s}.cc-how.open .cc-how-arr{transform:rotate(180deg)}.cc-how-body{display:none;padding:4px 18px 18px;border-top:1px solid var(--border)}.cc-how.open .cc-how-body{display:block}.cc-how-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}.cc-how-step{display:flex;gap:13px;align-items:flex-start;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:13px 14px}.cc-how-num{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--teal-br);background:var(--teal-dim);border:1px solid var(--teal-glow);border-radius:6px;padding:3px 7px;flex-shrink:0;line-height:1.6}.cc-how-tt{font-size:12.5px;font-weight:700;color:var(--t1);margin-bottom:4px}.cc-how-dd{font-size:11.5px;color:var(--t2);line-height:1.55}.cc-how-note{margin-top:14px;font-size:11px;color:var(--warn);background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:10px 13px;line-height:1.5}.cdx .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
 </style>
 </head>
-<body>
+<body class="crane-page">
 <nav class="hm-nav">
   <a href="index.html" class="nav-logo"><div class="logo-icon">HM</div><span>HydroMind<span class="logo-ai">.AI</span></span></a>
   <div class="nav-links">
@@ -173,6 +173,12 @@ body{margin:0;padding:0;background:#06101a;overflow:hidden}
 
 <div class="cdx" id="cdxApp">
   <h1 class="sr-only">Crane Diagnostic Agent</h1>
+
+  <section class="cc-status-strip" aria-label="Active diagnostic summary">
+    <div class="cc-status-crane"><span class="cc-status-label">Equipment</span><strong>LHBL-D 80</strong><small>Offshore Pedestal Crane</small></div>
+    <div class="cc-status-fault"><span class="cc-status-dot"></span><div><span class="cc-status-label">Active diagnosis</span><strong>High Case Drain Pressure</strong><small>Main hoist pump · A4VG90</small></div></div>
+    <div class="cc-status-meta"><div><span>Location</span><strong>Offshore Unit A</strong></div><div><span>Environment</span><strong>Marine</strong></div><div><span>Status</span><strong class="warn">Fault analysis</strong></div></div>
+  </section>
 
   <!-- LEFT board -->
   <aside class="cc-board">
