@@ -710,4 +710,3 @@ function hmInit(){
 }
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',hmInit);}
 else{hmInit();}
-hmNotifyAuthenticated
