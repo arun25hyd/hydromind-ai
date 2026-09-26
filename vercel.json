@@ -45,6 +45,11 @@
       "permanent": true
     },
     {
+      "source": "/circuit_walkthrough.html",
+      "destination": "/crane_diagnostic.html",
+      "permanent": true
+    },
+    {
       "source": "/public/:path*",
       "destination": "/",
       "permanent": true
