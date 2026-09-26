@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/hm-design.css?v=20260926-unified">
+<link rel="stylesheet" href="css/hm-design.css?v=20260926-workspaces3">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -466,7 +466,7 @@ h1 { margin: 0; font-family: Syne, sans-serif; font-size: clamp(28px, 4vw, 42px)
 .sd-htu-tip-text{font-size:11px;color:var(--sd-muted);line-height:1.5;}
 </style>
 </head>
-<body>
+<body class="system-design-page">
 <div class="sd-app">
   <nav class="hm-nav">
   <a href="index.html" class="nav-logo">
@@ -598,11 +598,44 @@ h1 { margin: 0; font-family: Syne, sans-serif; font-size: clamp(28px, 4vw, 42px)
         </div>
       </div>
 
+      <section class="sd-studio-schematic" aria-label="Live hydraulic system schematic">
+        <div class="studio-head">
+          <div><strong>Live system schematic</strong><span>AI draft · updates as you design</span></div>
+          <div class="studio-view-switch"><button class="active" type="button">Schematic</button><button type="button">3D View</button></div>
+        </div>
+        <div class="studio-canvas">
+          <svg viewBox="0 0 760 390" role="img" aria-label="Preliminary marine crane hydraulic circuit">
+            <defs><pattern id="sdGrid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="currentColor" stroke-opacity=".08"/></pattern></defs>
+            <rect width="760" height="390" fill="url(#sdGrid)"/>
+            <g fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="45" y="102" width="182" height="178" rx="10" stroke-dasharray="7 6"/>
+              <circle cx="92" cy="190" r="30"/><path d="M62 190H35M122 190h34"/>
+              <circle cx="178" cy="190" r="34"/><path d="M178 156v-28M157 239h42M178 224v15"/>
+              <path d="M156 190h-34M212 190h98V295H690" class="sd-pressure"/>
+              <path d="M250 315H690" class="sd-return"/>
+              <rect x="350" y="176" width="82" height="48"/><path d="M371 176v48M411 176v48M350 200h82"/>
+              <rect x="535" y="176" width="82" height="48"/><path d="M556 176v48M596 176v48M535 200h82"/>
+              <path d="M390 176V99h-40V54h80v45h-40M575 176V99h-40V54h80v45h-40"/>
+              <path d="M390 224v91M575 224v91" class="sd-return"/>
+            </g>
+            <g class="studio-labels"><text x="44" y="88">HYDRAULIC POWER UNIT</text><text x="337" y="38">HOIST CYLINDER</text><text x="527" y="38">LUFF CYLINDER</text><text x="296" y="184">P</text><text x="696" y="320">T</text></g>
+          </svg>
+        </div>
+        <div class="studio-basis">
+          <div><span>System type</span><strong>Marine crane</strong></div>
+          <div><span>Actuators</span><strong>2</strong></div>
+          <div><span>Environment</span><strong>Offshore</strong></div>
+          <div><span>Target load</span><strong>50 tonne</strong></div>
+          <div><span>Pressure range</span><strong>250–320 bar</strong></div>
+          <div><span>Target flow</span><strong>≈ 180 L/min</strong></div>
+        </div>
+      </section>
+
       <section class="panel step-panel" id="step1">
         <div class="panel-head">
           <div>
-            <div class="panel-title">1. Enter Requirement</div>
-            <div class="panel-sub">Start from context. The page will parse load, stroke, speed, environment, control preference and standards where possible.</div>
+            <div class="panel-title">Application brief</div>
+            <div class="panel-sub">Define the system type, duty, environment and target performance.</div>
           </div>
         </div>
         <div class="grid">
