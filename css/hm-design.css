@@ -1620,3 +1620,6 @@ select:focus {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* Retired workflow: keep obsolete navigation entry hidden during redirect migration. */
+a.navbar-link[href="circuit_walkthrough.html"] { display: none !important; }
