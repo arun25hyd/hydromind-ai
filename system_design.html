@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/hm-design.css?v=20260926-workspaces3">
+<link rel="stylesheet" href="css/hm-design.css?v=20260926-iso-layout4">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -604,28 +604,103 @@ h1 { margin: 0; font-family: Syne, sans-serif; font-size: clamp(28px, 4vw, 42px)
           <div class="studio-view-switch"><button class="active" type="button">Schematic</button><button type="button">3D View</button></div>
         </div>
         <div class="studio-canvas">
-          <svg viewBox="0 0 760 390" role="img" aria-label="Preliminary marine crane hydraulic circuit">
-            <defs><pattern id="sdGrid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="currentColor" stroke-opacity=".08"/></pattern></defs>
-            <rect width="760" height="390" fill="url(#sdGrid)"/>
-            <g fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="45" y="102" width="182" height="178" rx="10" stroke-dasharray="7 6"/>
-              <circle cx="92" cy="190" r="30"/><path d="M62 190H35M122 190h34"/>
-              <circle cx="178" cy="190" r="34"/><path d="M178 156v-28M157 239h42M178 224v15"/>
-              <path d="M156 190h-34M212 190h98V295H690" class="sd-pressure"/>
-              <path d="M250 315H690" class="sd-return"/>
-              <rect x="350" y="176" width="82" height="48"/><path d="M371 176v48M411 176v48M350 200h82"/>
-              <rect x="535" y="176" width="82" height="48"/><path d="M556 176v48M596 176v48M535 200h82"/>
-              <path d="M390 176V99h-40V54h80v45h-40M575 176V99h-40V54h80v45h-40"/>
-              <path d="M390 224v91M575 224v91" class="sd-return"/>
+          <svg viewBox="0 0 920 500" role="img" aria-labelledby="isoCircuitTitle isoCircuitDesc">
+            <title id="isoCircuitTitle">ISO 1219-style twin actuator marine lifting circuit</title>
+            <desc id="isoCircuitDesc">Variable displacement pump draws from reservoir and supplies two closed-centre four-three directional valves. Each double-acting cylinder has a dual load-holding valve. A pressure relief valve protects the pressure line and return flow passes through a cooler and filter to tank.</desc>
+            <defs>
+              <pattern id="sdGrid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="currentColor" stroke-opacity=".07"/></pattern>
+              <marker id="flowArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0l10 5-10 5z" fill="currentColor"/></marker>
+            </defs>
+            <rect width="920" height="500" fill="url(#sdGrid)"/>
+
+            <g class="sd-symbols" fill="none" stroke="currentColor" stroke-width="2">
+              <!-- Reservoir, motor and variable displacement pump -->
+              <path d="M34 412v50h164v-50M34 452h164"/>
+              <circle cx="76" cy="354" r="25"/><text class="sd-symbol-text" x="76" y="360">M</text>
+              <path d="M101 354h20"/>
+              <circle cx="148" cy="354" r="27"/>
+              <path class="sd-symbol-fill" d="M137 344l22 10-22 10z"/>
+              <path d="M124 379l49-50m-7 1l8-2-2 8"/>
+              <path class="sd-suction" d="M90 412v-28h58v-3"/>
+
+              <!-- Pressure manifold, gauge and adjustable relief -->
+              <path class="sd-pressure" d="M175 354h47v-48h660"/>
+              <path class="sd-pressure" d="M236 306v-42"/>
+              <circle cx="236" cy="238" r="20"/><path d="M236 238l10-9M216 238h4M252 238h4"/>
+              <path class="sd-pressure" d="M205 306v54h21"/>
+              <rect x="226" y="338" width="52" height="46"/>
+              <path d="M235 375l33-29m-5 0h7v7M232 346l8 6-8 6 8 6-8 6"/>
+              <path class="sd-return" d="M278 361h18v60H198"/>
+
+              <!-- Cylinder 1 and load-holding module -->
+              <rect x="330" y="42" width="118" height="60"/>
+              <path d="M330 72h118M392 42V14M379 14h26"/>
+              <path class="sd-work" d="M348 102v54M430 102v54"/>
+              <rect x="318" y="156" width="142" height="54" rx="4"/>
+              <path d="M331 183h32m22 0h32m22 0h8M351 172l12 11-12 11zM407 172l12 11-12 11z"/>
+              <circle cx="376" cy="183" r="4"/><circle cx="432" cy="183" r="4"/>
+              <path class="sd-pilot" d="M348 201l84-36M430 201l-84-36"/>
+              <path class="sd-work" d="M348 210v35M430 210v35"/>
+
+              <!-- Closed-centre 4/3 DCV 1 -->
+              <rect x="318" y="245" width="126" height="60"/>
+              <path d="M360 245v60M402 245v60"/>
+              <path marker-end="url(#flowArrow)" d="M326 296l26-42M352 296l-26-42M410 296v-42M436 296v-42"/>
+              <path d="M368 258h26m-26 34h26M373 253l-5 5 5 5M389 287l5 5-5 5"/>
+              <path d="M308 252l10 8-10 8 10 8-10 8 10 8M444 274h20m0-12v24"/>
+              <path class="sd-pressure" d="M339 305v1"/><path class="sd-return" d="M423 305v85"/>
+
+              <!-- Cylinder 2 and load-holding module -->
+              <rect x="630" y="42" width="118" height="60"/>
+              <path d="M630 72h118M692 42V14M679 14h26"/>
+              <path class="sd-work" d="M648 102v54M730 102v54"/>
+              <rect x="618" y="156" width="142" height="54" rx="4"/>
+              <path d="M631 183h32m22 0h32m22 0h8M651 172l12 11-12 11zM707 172l12 11-12 11z"/>
+              <circle cx="676" cy="183" r="4"/><circle cx="732" cy="183" r="4"/>
+              <path class="sd-pilot" d="M648 201l84-36M730 201l-84-36"/>
+              <path class="sd-work" d="M648 210v35M730 210v35"/>
+
+              <!-- Closed-centre 4/3 DCV 2 -->
+              <rect x="618" y="245" width="126" height="60"/>
+              <path d="M660 245v60M702 245v60"/>
+              <path marker-end="url(#flowArrow)" d="M626 296l26-42M652 296l-26-42M710 296v-42M736 296v-42"/>
+              <path d="M668 258h26m-26 34h26M673 253l-5 5 5 5M689 287l5 5-5 5"/>
+              <path d="M608 252l10 8-10 8 10 8-10 8 10 8M744 274h20m0-12v24"/>
+              <path class="sd-pressure" d="M639 305v1"/><path class="sd-return" d="M723 305v85"/>
+
+              <!-- Return conditioning -->
+              <path class="sd-return" d="M882 390H808M658 390H296"/>
+              <path d="M782 390l13-13 13 13-13 13z"/>
+              <rect x="658" y="372" width="76" height="36"/>
+              <path d="M666 402l22-24m-5 24l22-24m-5 24l22-24"/>
+              <path class="sd-return" d="M658 390h-20v31H198"/>
             </g>
-            <g class="studio-labels"><text x="44" y="88">HYDRAULIC POWER UNIT</text><text x="337" y="38">HOIST CYLINDER</text><text x="527" y="38">LUFF CYLINDER</text><text x="296" y="184">P</text><text x="696" y="320">T</text></g>
+
+            <g class="studio-labels">
+              <text x="34" y="483">RESERVOIR / TANK</text><text x="54" y="321">ELECTRIC MOTOR</text><text x="116" y="321">VARIABLE PUMP</text>
+              <text x="209" y="209">PG</text><text x="219" y="331">ADJUSTABLE RELIEF</text>
+              <text x="333" y="30">HOIST CYLINDER</text><text x="633" y="30">LUFF CYLINDER</text>
+              <text x="328" y="149">DUAL LOAD-HOLDING VALVE</text><text x="628" y="149">DUAL LOAD-HOLDING VALVE</text>
+              <text x="340" y="236">4/3 DCV · CLOSED CENTRE</text><text x="640" y="236">4/3 DCV · CLOSED CENTRE</text>
+              <text class="sd-port-label" x="331" y="322">P</text><text class="sd-port-label" x="417" y="322">T</text><text class="sd-port-label" x="341" y="239">A</text><text class="sd-port-label" x="423" y="239">B</text>
+              <text class="sd-port-label" x="631" y="322">P</text><text class="sd-port-label" x="717" y="322">T</text><text class="sd-port-label" x="641" y="239">A</text><text class="sd-port-label" x="723" y="239">B</text>
+              <text x="770" y="420">RETURN FILTER</text><text x="665" y="420">COOLER</text>
+              <text class="sd-line-label sd-line-p" x="840" y="297">P</text><text class="sd-line-label sd-line-t" x="850" y="382">T</text>
+            </g>
+            <g class="sd-legend">
+              <path class="sd-pressure" d="M310 466h28"/><text x="344" y="470">pressure</text>
+              <path class="sd-work" d="M422 466h28"/><text x="456" y="470">A / B work line</text>
+              <path class="sd-return" d="M574 466h28"/><text x="608" y="470">return</text>
+              <path class="sd-pilot" d="M677 466h28"/><text x="711" y="470">pilot</text>
+            </g>
           </svg>
+          <p class="studio-iso-note"><strong>Concept reference · ISO 1219 conventions.</strong> Verify valve centre condition, port numbering, pressure settings, load-control stability, ratings, and DNV/OEM requirements before detailed design or commissioning.</p>
         </div>
         <div class="studio-basis">
-          <div><span>System type</span><strong>Marine crane</strong></div>
-          <div><span>Actuators</span><strong>2</strong></div>
+          <div><span>System type</span><strong>Variable pump · closed centre</strong></div>
+          <div><span>Actuators</span><strong>2 × double acting</strong></div>
           <div><span>Environment</span><strong>Offshore</strong></div>
-          <div><span>Target load</span><strong>50 tonne</strong></div>
+          <div><span>Load control</span><strong>Dual load holding</strong></div>
           <div><span>Pressure range</span><strong>250–320 bar</strong></div>
           <div><span>Target flow</span><strong>≈ 180 L/min</strong></div>
         </div>
@@ -1143,7 +1218,7 @@ If a numeric value is not stated or inferable, use a reasonable marine/offshore 
     calculatePower();
     setStep(2);
   } catch (err) {
-    console.error('AI brief parsing failed, falling back to local parsing:', err);
+    console.warn('AI brief parsing unavailable; using local parsing for this draft.', err);
     const reason = err.name === 'AbortError' ? 'request timed out' : err.message;
     showSdNotice('AI Parsing Unavailable', `Could not reach the AI parser (${esc(reason)}). Using quick local keyword parsing instead — review the extracted values carefully.`, 'warn');
     analyzeBriefFallback();
@@ -1386,7 +1461,7 @@ Propose 2-3 ranked, differentiated options per slot and justify against this spe
     renderComponents();
     renderLiveSpec();
   } catch (err) {
-    console.error('AI component selection failed, falling back to rule-based selection:', err);
+    console.warn('AI component selection unavailable; using rule-based selection.', err);
     const reason = err.name === 'AbortError' ? 'request timed out' : err.message;
     showSdNotice('AI Selection Unavailable', `Could not reach the AI component selector (${esc(reason)}). Using rule-based selection instead — review choices carefully.`, 'warn');
     selectComponentsFallback();
@@ -1617,7 +1692,7 @@ Write the relief, dump and test-point safety case for this specific brief.`;
     renderValves();
     renderLiveSpec();
   } catch (err) {
-    console.error('AI valve selection failed, falling back to rule-based selection:', err);
+    console.warn('AI valve selection unavailable; using rule-based selection.', err);
     const reason = err.name === 'AbortError' ? 'request timed out' : err.message;
     showSdNotice('AI Selection Unavailable', `Could not reach the AI valve selector (${esc(reason)}). Using rule-based selection instead — review choices carefully.`, 'warn');
     selectValvesFallback();
