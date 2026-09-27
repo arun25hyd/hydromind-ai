@@ -18,7 +18,7 @@
 <meta name="twitter:title" content="HydroMind.AI — Hydraulic Intelligence for Marine &amp; Offshore">
 <meta name="twitter:description" content="AI-powered hydraulic fault diagnosis, crane diagnostics, system design and knowledge base for marine and offshore engineers.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="css/hm-design.css?v=20260926-iso-layout4">
+<link rel="stylesheet" href="css/hm-design.css?v=20260927-home-pricing-align1">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -211,8 +211,15 @@
 .stat-val { font-family: var(--mono); font-size: 26px; font-weight: 700; color: var(--accent-bright); letter-spacing: -.02em; }
 .stat-lbl { font-size: 11.5px; color: var(--text2); margin-top: 3px; }
 
-.hm-page > .hero-section,
+.hm-page > .hero-section {
+  width: 100%;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
 .hm-page > .stats-bar,
+.hm-page > .home-workflows,
 .hm-page > .hm-action-strip,
 .hm-page > .features-section,
 .hm-page > .how-section,
@@ -220,20 +227,21 @@
 .hm-page > .app-section,
 .hm-page > .calc-section,
 .hm-page > .cta-section {
-  width: min(100%, 1320px);
-  max-width: 1320px !important;
+  width: min(calc(100% - 48px), 1180px);
+  max-width: 1180px !important;
   margin-left: auto !important;
   margin-right: auto !important;
 }
 
 .hm-home-page {
-  width: min(100%, 1320px);
-  margin: var(--nav-h) auto 0 !important;
-  padding: clamp(10px, 1.4vw, 18px) 0 0;
+  width: 100%;
+  max-width: none;
+  margin: 0 !important;
+  padding: 0 0 90px;
 }
 </style>
 </head>
-<body>
+<body class="home-page">
 <style>
 /* Features */
 .features-section { padding: 60px 0; }
@@ -575,6 +583,12 @@
         </div>
       </div>
     </div>
+  </section>
+
+  <section class="home-workflows" aria-labelledby="home-workflows-title">
+    <div class="section-label">Hydraulic engineering workflows</div>
+    <h2 id="home-workflows-title">Choose the job you need to solve.</h2>
+    <p>Start with a fault, a crane symptom, a system requirement, or the technical reference you need to verify.</p>
   </section>
 
   <!-- STATS BAR -->
